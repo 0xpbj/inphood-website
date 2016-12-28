@@ -1,9 +1,9 @@
 import {
-  CONNECTION_INACTIVE
+  IG_LOGIN_REQUEST
 } from '../constants/ActionTypes'
 
-export function connectionInactive() {
+export function igLoginRequest() {
   return {
-    type: CONNECTION_INACTIVE
+    type: IG_LOGIN_REQUEST
   }
 }

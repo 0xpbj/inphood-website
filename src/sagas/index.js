@@ -1,6 +1,6 @@
 import { fork } from 'redux-saga/effects'
-// import data from './dataSagas'
+import data from './dataSagas'
 
 export default function* rootSaga() {
-  // yield fork(data)
+  yield fork(data)
 }

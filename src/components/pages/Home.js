@@ -12,14 +12,8 @@ import ControlLabel from 'react-bootstrap/lib/ControlLabel'
 import Hello from 'hellojs'
 
 export default class Home extends React.Component {
-  handleClick(){
+  handleClick() {
     this.props.igLoginRequest()
-    // Hello('instagram').api('me').then((data) => {
-    //   console.log('Profile: ', data)
-    // })
-    // Hello('instagram').api('me/photos').then((data) => {
-    //   console.log('Photos: ', data)
-    // })
   }
   render() {
     const containerStyle = {

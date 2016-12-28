@@ -10,7 +10,6 @@ import Layout from "./pages/Layout"
 import './styles/App.css'
 import './styles/custom-styles.css'
 
-
 export default class App extends Component {
   render() {
     return (

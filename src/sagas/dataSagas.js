@@ -35,11 +35,9 @@ function* igDataFlow() {
     yield call (igLogin)
     yield put({type: IG_LOGIN_SUCCESS})
     const {profile} = yield call (igProfile)
-    console.log('Profile: ', profile)
-    yield put({type: IG_PROFILE_SUCCESS})
+    yield put({type: IG_PROFILE_SUCCESS, profile})
     const {photos} = yield call (igPhotos)
-    console.log('Photos: ', photos)
-    yield put({type: IG_PHOTOS_SUCCESS})
+    yield put({type: IG_PHOTOS_SUCCESS, photos})
   }
   catch(error) {
     yield put ({type: IG_LOGIN_ERROR, error})

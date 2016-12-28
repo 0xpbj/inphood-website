@@ -12,6 +12,9 @@ import ControlLabel from 'react-bootstrap/lib/ControlLabel'
 import Hello from 'hellojs'
 
 export default class Home extends React.Component {
+  constructor() {
+    super()
+  }
   handleClick() {
     this.props.igLoginRequest()
   }

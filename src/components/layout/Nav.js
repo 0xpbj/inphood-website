@@ -17,6 +17,7 @@ export default class Nav extends React.Component {
     const { collapsed } = this.state
     const homeClass = location.pathname === "/" ? "active" : ""
     const galleryClass = location.pathname.match(/^\/gallery/) ? "active" : ""
+    const userClass = location.pathname.match(/^\/user/) ? "active" : ""
     const navClass = collapsed ? "collapse" : ""
     return (
       <nav className="navbar navbar-inverse navbar-fixed-top" role="navigation">
@@ -36,6 +37,9 @@ export default class Nav extends React.Component {
               </li>
               <li className={galleryClass}>
                 <Link to="gallery" onClick={this.toggleCollapse.bind(this)}>Gallery</Link>
+              </li>
+              <li className={userClass}>
+                <Link to="user" onClick={this.toggleCollapse.bind(this)}>User</Link>
               </li>
             </ul>
           </div>

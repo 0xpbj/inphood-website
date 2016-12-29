@@ -4,9 +4,8 @@ import Router from 'react-router/lib/Router'
 import IndexRoute from 'react-router/lib/IndexRoute'
 import browserHistory from 'react-router/lib/browserHistory'
 
-import Gallery from "./pages/Gallery"
+import User from "./pages/User"
 import Home from "../containers/HomeContainer"
-import User from "../containers/UserContainer"
 import Layout from "./pages/Layout"
 import './styles/App.css'
 import './styles/custom-styles.css'
@@ -17,7 +16,6 @@ export default class App extends Component {
       <Router history={browserHistory}>
         <Route path="/" component={Layout}>
           <IndexRoute component={Home}></IndexRoute>
-          <Route path="gallery" name="gallery" component={Gallery}></Route>
           <Route path="user" name="user" component={User}></Route>
         </Route>
       </Router>

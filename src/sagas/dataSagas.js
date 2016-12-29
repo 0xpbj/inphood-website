@@ -1,10 +1,11 @@
 import {
   IG_LOGIN_REQUEST, IG_LOGIN_SUCCESS, IG_LOGIN_ERROR,
+  IG_LOGOUT_REQUEST, IG_LOGOUT_SUCCESS, IG_LOGOUT_ERROR,
   IG_PHOTOS_SUCCESS, IG_PHOTOS_ERROR, IG_PROFILE_SUCCESS,
-  IG_PROFILE_ERROR,
+  IG_PROFILE_ERROR, IG_REFRESH_REQUEST,
 } from '../constants/ActionTypes'
 
-import { take, put, call, fork, select } from 'redux-saga/effects'
+import { take, put, call, fork, select, takeLatest } from 'redux-saga/effects'
 import fetch from 'isomorphic-fetch'
 import Hello from 'hellojs'
 
@@ -29,9 +30,12 @@ const igPhotos = () => {
   .then(photos => ({ photos }))
 }
 
-function* igDataFlow() {
+const igLogout = () => {
+  return Hello('instagram').logout()
+}
+
+function* igLoginFlow() {
   try {
-    yield take(IG_LOGIN_REQUEST)
     yield call (igLogin)
     yield put({type: IG_LOGIN_SUCCESS})
     const {profile} = yield call (igProfile)
@@ -44,6 +48,23 @@ function* igDataFlow() {
   }
 }
 
+function* igLogoutFlow() {
+  try {
+    yield call (igLogout)
+    yield put({type: IG_LOGOUT_SUCCESS})
+  }
+  catch(error) {
+    yield put ({type: IG_LOGOUT_ERROR, error})
+  }
+}
+
+function* igRefreshFlow() {
+  const {photos} = yield call (igPhotos)
+  yield put({type: IG_PHOTOS_SUCCESS, photos})
+}
+
 export default function* root() {
-  yield fork(igDataFlow)
+  yield fork(takeLatest, IG_LOGIN_REQUEST, igLoginFlow)
+  yield fork(takeLatest, IG_LOGOUT_REQUEST, igLogoutFlow)
+  yield fork(takeLatest, IG_REFRESH_REQUEST, igRefreshFlow)
 }

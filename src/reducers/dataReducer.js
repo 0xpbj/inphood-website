@@ -1,11 +1,16 @@
 import { 
   IG_PHOTOS_SUCCESS,
+  IG_LOGOUT_SUCCESS,
   IG_PROFILE_SUCCESS,
+  IG_LOGIN_ERROR,
+  IG_LOGOUT_ERROR,
+  IG_PROFILE_ERROR,
 } from '../constants/ActionTypes'
 
 const initialState = {
   photos: [],
   profile: null,
+  error: ''
 }
 export default function igdata(state = initialState, action) {
   switch (action.type) {
@@ -18,6 +23,17 @@ export default function igdata(state = initialState, action) {
       return {
         ...state,
         profile: action.profile
+      }
+    case IG_LOGOUT_SUCCESS:
+      return {
+        ...initialState
+      }
+    case IG_LOGIN_ERROR:
+    case IG_LOGOUT_ERROR:
+    case IG_PROFILE_ERROR:
+      return {
+        ...state,
+        error: action.error
       }
     default:
       return state

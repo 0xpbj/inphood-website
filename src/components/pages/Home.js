@@ -17,6 +17,7 @@ export default class Home extends React.Component {
   }
   handleClick() {
     this.props.igLoginRequest()
+    this.props.router.push('/user')
   }
   render() {
     const containerStyle = {

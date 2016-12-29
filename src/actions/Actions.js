@@ -1,4 +1,5 @@
 import {
+  SELECTED_PHOTO,
   IG_LOGIN_REQUEST,
   IG_LOGOUT_REQUEST,
   IG_REFRESH_REQUEST,
@@ -19,5 +20,12 @@ export function igLogoutRequest() {
 export function igRefreshRequest() {
   return {
     type: IG_REFRESH_REQUEST
+  }
+}
+
+export function setPhoto(photo) {
+  return {
+    type: SELECTED_PHOTO,
+    photo
   }
 }

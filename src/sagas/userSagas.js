@@ -13,7 +13,7 @@ const igLogin = () => {
   Hello.init({
       instagram : '7ca65e72ec6f4763aae5ad5e3779a1f8'
   },{
-      scope : 'basic+public_content+follower_list',
+      scope : 'basic+public_content',
       redirect_uri:'http://127.0.0.1:3000/'
   });
   return Hello('instagram').login()

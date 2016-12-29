@@ -12,7 +12,7 @@ const initialState = {
   profile: null,
   error: ''
 }
-export default function igdata(state = initialState, action) {
+export default function igUser(state = initialState, action) {
   switch (action.type) {
     case IG_PHOTOS_SUCCESS:
       return {

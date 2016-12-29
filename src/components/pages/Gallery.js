@@ -20,72 +20,67 @@ export default class GalleryGrid extends React.Component {
   }
   toggleGrid(index) {
     this.setState({grid: !this.state.grid, index})
+    this.props.setPhoto(this.props.data[index])
   }
   render() {
-    console.log(this.props)
-    if (this.props.data.photos.length === 0) {
-      return (
-        <Alert bsStyle="info">
-          <strong>Photos Loading...</strong>
-        </Alert>
-      )
+    const containerStyle = {
+      marginTop: "60px"
     }
-    else if (this.props.data.error !== '') {
-      return (
-        <Alert bsStyle="danger">
-          <strong>Error: {this.props.data.error}</strong>
-        </Alert>
-      )
-    }
-    else {
-      const {data} = this.props.data.photos
-      if (!this.state.grid) {
-        var images = []
-        for (let img of data) {
-          let image = {
-            src: img.picture,
-            thumbnail: img.thumbnail,
-            caption: img.caption.text,
-            // tags: img.tags,
-            thumbnailWidth: 150,
-            thumbnailHeight: 150
-          }
-          images.push(image)
+    if (!this.state.grid) {
+      var images = []
+      for (let img of this.props.data) {
+        let image = {
+          src: img.picture,
+          thumbnail: img.thumbnail,
+          caption: img.caption.text,
+          // tags: img.tags,
+          thumbnailWidth: 150,
+          thumbnailHeight: 150
         }
-        return (
-          <Grid>
-            <Row className="show-grid">
-              <Col md={10}>
-              <Gallery images={images} onClickThumbnail={this.toggleGrid.bind(this)}/>
+        images.push(image)
+      }
+      return (
+        <Grid>
+          <Row className="show-grid">
+            <Col md={12}>
+              <Col xs={4} md={4} xsOffset={4}>
+                <Image src={this.props.profile.thumbnail} rounded />
               </Col>
-              <Col md={2}>
+              <Col xs={6} md={4}>
                 <DropdownButton bsStyle="info" title="Options">
                   <MenuItem key="1" onClick={() => this.props.refresh()}>Refresh</MenuItem>
                   <MenuItem key="2" onClick={() => this.props.logout()}>Logout</MenuItem>
                 </DropdownButton>
               </Col>
-            </Row>
-          </Grid>
-        )
-      }
-      else {
-        return (
-          <Grid>
-            <Row className="show-grid">
-              <Col xs={12} md={8}>
-                <Image src={data[this.state.index].picture} rounded />
-              </Col>
-              <Col xs={6} md={4}>
-                <ControlLabel>Ingredients</ControlLabel>
-                <textarea rows="4" cols="50">
-                  {data[this.state.index].caption.text}
-                </textarea>
-                <Button bsStyle="success" onClick={this.toggleGrid.bind(this)}>Done</Button>
-              </Col>
-            </Row>
-          </Grid>
-        )
-      }
+            </Col>
+          </Row>
+          <Row className="show-grid">
+            <div className="text-center" style={containerStyle}/>
+            <Col md={12}>
+              <Gallery images={images} onClickThumbnail={this.toggleGrid.bind(this)}/>
+            </Col>
+          </Row>
+        </Grid>
+      )
+    }
+    else {
+      return (
+        <Grid>
+          <Row className="show-grid">
+            <Col xs={12} md={8}>
+              <Image src={this.props.data[this.state.index].picture} rounded />
+            </Col>
+            <Col xs={6} md={4}>
+              <ControlLabel>Ingredients</ControlLabel>
+              <textarea rows="4" cols="50">
+                {this.props.data[this.state.index].caption.text}
+              </textarea>
+              <Button className="btn-primary-spacing" bsStyle="success" onClick={this.toggleGrid.bind(this)}>Done</Button>
+              <Button className="btn-primary-spacing" bsStyle="info" onClick={() => this.props.goToNutrition()}>Get Nutrition</Button>
+            </Col>
+          </Row>
+        </Grid>
+      )
     }
   }
 }

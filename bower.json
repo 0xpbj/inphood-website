@@ -1,0 +1,24 @@
+{
+  "name": "inphood",
+  "description": "nutrition label web app",
+  "main": "index.html",
+  "authors": [
+    "?"
+  ],
+  "license": "?",
+  "keywords": [
+    "?"  
+  ],
+  "homepage": "",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "nutrition-label-jquery-plugin": "^6.0.18"
+  }
+}

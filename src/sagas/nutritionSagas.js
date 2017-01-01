@@ -1,5 +1,5 @@
 import {
-  
+  SELECTED_PHOTO,
 } from '../constants/ActionTypes'
 
 import { take, put, call, fork, select, takeLatest } from 'redux-saga/effects'

@@ -31,5 +31,9 @@ module.exports = {
         loader: "json-loader"
       }
     ]
-  }
+  },
+  resolve: {
+    extensions: ['', '.webpack.js', '.web.js', '.js']
+  },
+  target: 'node',
 };

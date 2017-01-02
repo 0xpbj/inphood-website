@@ -1,5 +1,6 @@
 import React from "react"
 import NutritionAlg from '../../algorithms/NutritionAlg'
+import Label from './Label'
 
 export default class Nutrition extends React.Component {
   render() {
@@ -18,6 +19,7 @@ export default class Nutrition extends React.Component {
     return (
       <div>
         <text>Nutrition label, mixer, etc... for ingredients: {this.props.nutrition.photo.caption.text}</text>
+        <Label />
       </div>
     )
   }

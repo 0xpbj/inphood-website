@@ -1,9 +1,24 @@
 import React from "react"
 import NutritionAlg from '../../algorithms/NutritionAlg'
 import Label from './LiteLabel'
-import { Button } from 'react-toolbox/lib/button';
+import '../../../node_modules/react-input-range/dist/react-input-range.css'
+import InputRange from 'react-input-range'
 
 export default class Nutrition extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      value: 2
+    };
+  }
+
+  handleValuesChange(component, value) {
+    this.setState({
+      value: value,
+    });
+  }
+
   render() {
     console.log("Nutrition render() ----------------------------------")
     console.log(this.props)
@@ -19,7 +34,18 @@ export default class Nutrition extends React.Component {
 
     return (
       <div>
-        <Button label="Hello World!" />
+        <text>Some food name</text>
+        <InputRange
+           maxValue={20}
+           minValue={0}
+           value={this.state.value}
+           onChange={this.handleValuesChange.bind(this)}/>
+         <text>Another food name</text>
+         <InputRange
+            maxValue={20}
+            minValue={0}
+            value={this.state.value}
+            onChange={this.handleValuesChange.bind(this)}/>
         <Label
           servingAmount="100" servingUnit="g"
           totalCal="200" totalFatCal="130"

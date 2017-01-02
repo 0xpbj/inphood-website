@@ -1,6 +1,7 @@
 import React from "react"
 import NutritionAlg from '../../algorithms/NutritionAlg'
 import Label from './LiteLabel'
+import { Button } from 'react-toolbox/lib/button';
 
 export default class Nutrition extends React.Component {
   render() {
@@ -18,6 +19,7 @@ export default class Nutrition extends React.Component {
 
     return (
       <div>
+        <Button label="Hello World!" />
         <Label
           servingAmount="100" servingUnit="g"
           totalCal="200" totalFatCal="130"

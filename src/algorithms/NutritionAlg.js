@@ -138,6 +138,18 @@ export default class NutritionAlg {
       console.log(this.matches)
     }
   }
+
+  getMatches() {
+    return this.matches
+  }
+
+  getBestMatchForTag(tag) {
+    if (this.matches[tag].length != 0) {
+      return this.matches[tag][0][0]
+    } else {
+      return ""
+    }
+  }
 }
 
 

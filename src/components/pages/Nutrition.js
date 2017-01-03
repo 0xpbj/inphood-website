@@ -31,21 +31,37 @@ export default class Nutrition extends React.Component {
     const tagString = this.props.nutrition.photo.caption.text
     let nutAlg = new NutritionAlg()
     nutAlg.processTags(tagString)
-
-    return (
-      <div>
-        <text>Some food name</text>
-        <InputRange
-           maxValue={20}
-           minValue={0}
-           value={this.state.value}
-           onChange={this.handleValuesChange.bind(this)}/>
-         <text>Another food name</text>
-         <InputRange
+    const matches = nutAlg.getMatches()
+    var sliders = []
+    var notFound = ""
+    for (var tag in matches) {
+      const bestMatch = nutAlg.getBestMatchForTag(tag)
+      if (bestMatch == "") {
+        notFound = notFound + tag + " "
+        continue
+      }
+      sliders.push(
+        <div>
+          <text>{bestMatch} (grams)</text>
+          <InputRange
             maxValue={20}
             minValue={0}
             value={this.state.value}
             onChange={this.handleValuesChange.bind(this)}/>
+          <br/><br/>
+        </div>)
+    }
+
+    if (notFound != "") {
+      notFound = "(No data for: " + notFound + ")"
+    }
+
+
+    return (
+      <div>
+        <text>Nutrition info for "{tagString}":</text><br/>
+        <text>{notFound}</text><br/><br/>
+        {sliders}
         <Label
           servingAmount="100" servingUnit="g"
           totalCal="200" totalFatCal="130"

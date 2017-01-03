@@ -5,7 +5,7 @@ import {
 import { call, fork, select, takeLatest } from 'redux-saga/effects'
 import request from 'request'
 
-const uploadImageToS3 = (uri) => {
+const uploadImageToS3 = (uri, key) => {
   var AWS = require('aws-sdk')
   AWS.config.region = 'us-west-2'
   var s3 = new AWS.S3({
@@ -23,9 +23,10 @@ const uploadImageToS3 = (uri) => {
     else {
       s3.putObject({
         Body: body,
-        Key: "data/test.jpg",
+        Key: key,
         ACL: "public-read",
         Bucket: "inphoodlabels",
+        ContentType: "image/jpeg"
       }, function(error, data) {
         if (error) {
           console.log("error downloading image to s3", error)
@@ -39,7 +40,9 @@ const uploadImageToS3 = (uri) => {
 
 function* loadAWSPut() {
   const {photo} = yield select(state => state.nutritionReducer)
-  yield call (uploadImageToS3, photo.picture)
+  const link = photo.link.slice(0, photo.link.length - 1)
+  const key = photo.user.username + '/' + link.substring(link.lastIndexOf('/')+1) + '.jpg'
+  yield call (uploadImageToS3, photo.picture, key)
 }
 
 export default function* root() {

@@ -23,9 +23,10 @@ const uploadImageToS3 = (uri) => {
     else {
       s3.putObject({
         Body: body,
-        Key: "data/test.jpg",
+        Key: "data/test.jpeg",
         ACL: "public-read",
         Bucket: "inphoodlabels",
+        ContentType: "image/jpeg"
       }, function(error, data) {
         if (error) {
           console.log("error downloading image to s3", error)

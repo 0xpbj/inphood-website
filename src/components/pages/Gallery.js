@@ -20,7 +20,7 @@ export default class GalleryGrid extends React.Component {
   }
   toggleGrid(index) {
     this.setState({grid: !this.state.grid, index})
-    this.props.setPhoto(this.props.data[index])
+    this.props.selectedPhoto(this.props.data[index])
   }
   render() {
     const containerStyle = {

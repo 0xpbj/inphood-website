@@ -22,9 +22,9 @@ export default class Home extends React.Component {
   }
   goToNutrition() {
     this.props.router.push('/nutrition')
+    this.props.uploadPhoto()
   }
   render() {
-    console.log('Home: ', this.props)
     const containerStyle = {
       marginTop: "30px"
     }
@@ -43,7 +43,7 @@ export default class Home extends React.Component {
             profile={this.props.user.profile}
             refresh={this.props.igRefreshRequest}
             logout={this.props.igLogoutRequest}
-            setPhoto={(data) => this.props.setPhoto(data)}
+            selectedPhoto={(data) => this.props.selectedPhoto(data)}
             goToNutrition={this.goToNutrition.bind(this)}
           />
         )

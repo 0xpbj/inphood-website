@@ -39,6 +39,11 @@ module.exports = {
   resolve: {
     extensions: ['', '.webpack.js', '.web.js', '.js']
   },
-  // TODO: figure out why this next line breaks the site for AC
   // target: 'node',
+  node: {
+    console: true,
+    fs: 'empty',
+    net: 'empty',
+    tls: 'empty'
+  }
 };

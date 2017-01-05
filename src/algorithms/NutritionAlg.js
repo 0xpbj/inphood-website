@@ -150,6 +150,10 @@ export default class NutritionAlg {
       return ""
     }
   }
+
+  getDataForKey(key) {
+    return NutritionAlg.data[key]
+  }
 }
 
 

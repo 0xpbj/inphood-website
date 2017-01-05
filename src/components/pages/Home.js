@@ -12,69 +12,117 @@ import FormControl from 'react-bootstrap/lib/FormControl'
 import ControlLabel from 'react-bootstrap/lib/ControlLabel'
 import Hello from 'hellojs'
 import Gallery from './Gallery'
+import Anon from './Anon'
+import Nutrition from "../../containers/NutritionContainer"
 
 export default class Home extends React.Component {
   constructor() {
     super()
+    this.state = {
+      nutritionView: false
+    }
   }
   handleClick() {
     this.props.igLoginRequest()
   }
-  goToNutrition() {
-    this.props.router.push('/nutrition')
-    this.props.uploadPhoto()
+  goToNutrition(flag) {
+    this.setState({nutritionView: true})
+    if (flag)
+      this.props.igUploadPhoto()
+  }
+  goToGallery() {
+    this.setState({nutritionView: false})
+  }
+  handleUrl(e) {
+    this.props.anSelectedPhoto(e.target.value)
   }
   render() {
     const containerStyle = {
       marginTop: "30px"
     }
-    if (this.props.user.profile !== null) {
-      if (this.props.user.photos.length === 0 || this.props.user.photos.data.length === 0) {
+    if (!this.state.nutritionView) {
+      if (this.props.user.profile !== null) {
+        if (this.props.user.photos.length === 0 || this.props.user.photos.data.length === 0) {
+          return (
+            <Alert bsStyle="info">
+              <strong>Photos loading...</strong>
+            </Alert>
+          )
+        }
+        else {
+          return (
+            <Gallery 
+              data={this.props.user.photos.data} 
+              profile={this.props.user.profile}
+              refresh={this.props.igRefreshRequest}
+              logout={this.props.igLogoutRequest}
+              igSelectedPhoto={(data) => this.props.igSelectedPhoto(data)}
+              goToNutrition={(flag) => this.goToNutrition(flag)}
+            />
+          )
+        }
+      }
+      else if (this.props.user.error !== '') {
         return (
-          <Alert bsStyle="info">
-            <strong>Photos loading...</strong>
+          <Alert bsStyle="danger">
+            <strong>Error: {this.props.user.error}</strong>
           </Alert>
+        )
+      }
+      else if (this.props.nutrition.anonymous) {
+        return (
+          <div style={containerStyle}>
+            <Col md={12} className="text-center">
+              <Anon
+                nutrition={this.props.nutrition}
+                goToNutrition={(flag) => this.goToNutrition(flag)}
+                anAddCaption={(data) => this.props.anAddCaption(data)}
+                anSelectedPhoto={(data) => this.props.anSelectedPhoto(data)}
+                anClearData={() => this.props.anClearData()}
+              />
+            </Col>
+          </div>
         )
       }
       else {
         return (
-          <Gallery 
-            data={this.props.user.photos.data} 
-            profile={this.props.user.profile}
-            refresh={this.props.igRefreshRequest}
-            logout={this.props.igLogoutRequest}
-            selectedPhoto={(data) => this.props.selectedPhoto(data)}
-            goToNutrition={this.goToNutrition.bind(this)}
-          />
+          <div>
+          <Jumbotron>
+            <h1 className="text-center">Welcome to inPhood!</h1>
+          </Jumbotron>
+            <div>
+              <Grid>
+                <Row>
+                  <div className="text-center" style={containerStyle}>
+                    <Col md={12} className="text-center">
+                      <button onClick={this.handleClick.bind(this)}>Sign in with Instagram</button>
+                    </Col>
+                  </div>
+                  <div className="text-center" style={containerStyle}>
+                    <form>
+                      <FormGroup
+                        controlId="formBasicText"
+                      >
+                        <FormControl
+                          className="text-center" 
+                          type="text"
+                          value={this.state.value}
+                          placeholder="www.google.com/images"
+                          onChange={this.handleUrl.bind(this)}
+                        />
+                        <FormControl.Feedback />
+                      </FormGroup>
+                    </form>
+                  </div>
+                </Row>
+              </Grid>
+            </div>
+          </div>
         )
       }
     }
-    else if (this.props.user.error !== '') {
-      return (
-        <Alert bsStyle="danger">
-          <strong>Error: {this.props.user.error}</strong>
-        </Alert>
-      )
-    }
     else {
-      return (
-        <div>
-        <Jumbotron>
-          <h1 className="text-center">Welcome to inPhood!</h1>
-        </Jumbotron>
-          <div>
-            <Grid>
-              <Row>
-                <div className="text-center" style={containerStyle}>
-                  <Col md={12} className="text-center">
-                    <button onClick={this.handleClick.bind(this)}>Sign in with Instagram</button>
-                  </Col>
-                </div>
-              </Row>
-            </Grid>
-          </div>
-        </div>
-      )
+      return <Nutrition goToGallery={this.goToGallery.bind(this)}/>
     }
   }
 }

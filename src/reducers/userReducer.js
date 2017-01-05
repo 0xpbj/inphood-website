@@ -10,7 +10,8 @@ import {
 const initialState = {
   photos: [],
   profile: null,
-  error: ''
+  error: '',
+  textFlow: null,
 }
 export default function igUser(state = initialState, action) {
   switch (action.type) {
@@ -22,7 +23,8 @@ export default function igUser(state = initialState, action) {
     case IG_PROFILE_SUCCESS:
       return {
         ...state,
-        profile: action.profile
+        profile: action.profile,
+        textFlow: false
       }
     case IG_LOGOUT_SUCCESS:
       return {

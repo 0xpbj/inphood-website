@@ -3,6 +3,7 @@ import NutritionAlg from '../../algorithms/NutritionAlg'
 import Label from './LiteLabel'
 import '../../../node_modules/react-input-range/dist/react-input-range.css'
 import InputRange from 'react-input-range'
+import Button from 'react-bootstrap/lib/Button'
 
 export default class Nutrition extends React.Component {
   constructor(props) {
@@ -28,7 +29,8 @@ export default class Nutrition extends React.Component {
     //        ingredient quantity unit nutrition_info
     //        ...
     //        ingredient quantity unit nutrition_info
-    const tagString = this.props.nutrition.photo.caption.text
+    const tagString = this.props.nutrition.caption
+    // AC! **************** regexp errors here for / characters
     let nutAlg = new NutritionAlg()
     nutAlg.processTags(tagString)
     const matches = nutAlg.getMatches()
@@ -75,6 +77,7 @@ export default class Nutrition extends React.Component {
 
     return (
       <div>
+        <Button className="btn-primary-spacing" bsStyle="success" onClick={() => this.props.goToGallery()}>Gallery</Button>
         <text>Nutrition info for "{tagString}":</text><br/>
         <text>{notFound}</text><br/><br/>
         {sliders}

@@ -6,6 +6,7 @@ import * as actionCreators from '../actions/Actions'
 function mapStateToProps (state) {
   return {
     user: state.userReducer,
+    nutrition: state.nutritionReducer,
   }
 }
 

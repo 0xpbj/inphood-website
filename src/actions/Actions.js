@@ -1,20 +1,24 @@
 import {
-  UPLOAD_PHOTO,
-  SELECTED_PHOTO,
+  IG_UPLOAD_PHOTO,
+  IG_SELECTED_PHOTO,
   IG_LOGIN_REQUEST,
   IG_LOGOUT_REQUEST,
   IG_REFRESH_REQUEST,
+  AN_ADD_CAPTION,
+  AN_UPLOAD_PHOTO,
+  AN_SELECTED_PHOTO,
+  AN_CLEAR_DATA,
 } from '../constants/ActionTypes'
 
-export function uploadPhoto() {
+export function igUploadPhoto() {
   return {
-    type: UPLOAD_PHOTO,
+    type: IG_UPLOAD_PHOTO,
   }
 }
 
-export function selectedPhoto(photo) {
+export function igSelectedPhoto(photo) {
   return {
-    type: SELECTED_PHOTO,
+    type: IG_SELECTED_PHOTO,
     photo
   }
 }
@@ -34,5 +38,31 @@ export function igLogoutRequest() {
 export function igRefreshRequest() {
   return {
     type: IG_REFRESH_REQUEST
+  }
+}
+
+export function anAddCaption(caption) {
+  return {
+    type: AN_ADD_CAPTION,
+    caption
+  }
+}
+
+export function anUploadPhoto() {
+  return {
+    type: AN_UPLOAD_PHOTO,
+  }
+}
+
+export function anSelectedPhoto(photo) {
+  return {
+    type: AN_SELECTED_PHOTO,
+    photo
+  }
+}
+
+export function anClearData() {
+  return {
+    type: AN_CLEAR_DATA,
   }
 }

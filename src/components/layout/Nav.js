@@ -16,7 +16,7 @@ export default class Nav extends React.Component {
     const { location } = this.props
     const { collapsed } = this.state
     const homeClass = location.pathname === "/" ? "active" : ""
-    const nutritionClass = location.pathname.match(/^\/nutrition/) ? "active" : ""
+    const aboutClass = location.pathname.match(/^\/about/) ? "active" : ""
     const navClass = collapsed ? "collapse" : ""
     return (
       <nav className="navbar navbar-inverse navbar-fixed-top" role="navigation">
@@ -34,8 +34,8 @@ export default class Nav extends React.Component {
               <li className={homeClass}>
                 <IndexLink to="/" onClick={this.toggleCollapse.bind(this)}>Home</IndexLink>
               </li>
-              <li className={nutritionClass}>
-                <Link to="nutrition" onClick={this.toggleCollapse.bind(this)}>Nutrition</Link>
+              <li className={aboutClass}>
+                <Link to="about" onClick={this.toggleCollapse.bind(this)}>About</Link>
               </li>
             </ul>
           </div>

@@ -1,5 +1,5 @@
 import {
-  UPLOAD_PHOTO,
+  IG_UPLOAD_PHOTO,
 } from '../constants/ActionTypes'
 
 import { call, fork, select, takeLatest } from 'redux-saga/effects'
@@ -39,12 +39,12 @@ const uploadImageToS3 = (uri, key) => {
 }
 
 function* loadAWSPut() {
-  const {photo} = yield select(state => state.nutritionReducer)
-  const link = photo.link.slice(0, photo.link.length - 1)
-  const key = photo.user.username + '/' + link.substring(link.lastIndexOf('/')+1) + '.jpg'
-  yield call (uploadImageToS3, photo.picture, key)
+  const {link, picture, username} = yield select(state => state.nutritionReducer)
+  const slink = link.slice(0, link.length - 1)
+  const key = username + '/' + slink.substring(slink.lastIndexOf('/')+1) + '.jpg'
+  yield call (uploadImageToS3, picture, key)
 }
 
 export default function* root() {
-  yield fork(takeLatest, UPLOAD_PHOTO, loadAWSPut)
+  yield fork(takeLatest, IG_UPLOAD_PHOTO, loadAWSPut)
 }

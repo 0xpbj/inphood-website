@@ -1,5 +1,6 @@
 import React from "react"
-import Slider from 'react-toolbox/lib/slider';
+import Slider from 'react-toolbox/lib/slider'
+import { VictoryPie } from 'victory'
 
 class SliderTest extends React.Component {
   state = {
@@ -33,7 +34,10 @@ class SliderTest extends React.Component {
 export default class About extends React.Component {
   render() {
     return (
-      <SliderTest />
+      <div>
+        <SliderTest />
+        <VictoryPie />
+      </div>
     )
   }
 }

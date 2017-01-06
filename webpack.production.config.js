@@ -15,8 +15,8 @@ loaders.push({
 
 // local scss modules
 loaders.push({
-	test: /[\/\\]src[\/\\].*\.scss/,
-	exclude: /(node_modules|bower_components|public\/)/,
+	test: /[\/\\](node_modules|src)[\/\\].*\.scss/,
+	exclude: /(bower_components|public\/)/,
 	loader: ExtractTextPlugin.extract('style', 'css?modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]!postcss!sass')
 });
 // global css files
@@ -49,6 +49,12 @@ module.exports = {
       FIREBASE_DATABASE_URL:'https://inphooddb-e0dfd.firebaseio.com',
       FIREBASE_STORAGE_BUCKET:'inphooddb-e0dfd.appspot.com'
     })
+  },
+  node: {
+    console: true,
+    fs: 'empty',
+    net: 'empty',
+    tls: 'empty'
   },
 	plugins: [
 		new WebpackCleanupPlugin(),

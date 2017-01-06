@@ -3,7 +3,6 @@ module.exports = [
 		test: /\.js$/,
 		exclude: /(node_modules|bower_components|public\/)/,
 		loader: "babel"
-		// loaders: ['react-hot-loader/webpack', 'babel'],
 	},
 	{
 		test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,

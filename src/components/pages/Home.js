@@ -1,4 +1,5 @@
 import React from "react"
+import ReactGA from 'react-ga'
 
 import Row from 'react-bootstrap/lib/Row'
 import Col from 'react-bootstrap/lib/Col'
@@ -24,17 +25,43 @@ export default class Home extends React.Component {
   }
   handleClick() {
     this.props.igLoginRequest()
+    ReactGA.event({
+      category: 'User',
+      action: 'Instagram Login',
+      label: 'Social Flow',
+      nonInteraction: false
+    });
   }
-  goToNutrition(flag) {
+  goToNutrition() {
     this.setState({nutritionView: true})
-    if (flag)
-      this.props.igUploadPhoto()
+    ReactGA.event({
+      category: 'User',
+      action: 'Get nutrition information for image',
+      nonInteraction: false
+    });
+    this.props.igUploadPhoto()
+    ReactGA.event({
+      category: 'User',
+      action: 'Uploading image to AWS',
+      nonInteraction: true
+    });
   }
   goToGallery() {
     this.setState({nutritionView: false})
+    ReactGA.event({
+      category: 'User',
+      action: 'Go back to gallery page',
+      nonInteraction: false
+    });
   }
   handleUrl(e) {
     this.props.anSelectedPhoto(e.target.value)
+    ReactGA.event({
+      category: 'User',
+      action: 'Anonymous flow initiated',
+      label: 'URL Flow',
+      nonInteraction: false
+    });
   }
   render() {
     const containerStyle = {

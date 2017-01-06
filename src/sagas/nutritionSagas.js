@@ -18,7 +18,7 @@ const uploadImageToS3 = (uri, key) => {
   }
   request(options, function(error, response, body) {
     if (error || response.statusCode !== 200) {
-      console.log("failed to get image")
+      console.log("failed to get image", error)
     }
     else {
       s3.putObject({

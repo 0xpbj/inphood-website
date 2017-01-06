@@ -13,7 +13,7 @@ import './styles/custom-styles.css'
 export default class App extends Component {
   render() {
     return (
-      <Router history={browserHistory}>
+      <Router onUpdate={() => this.props.fireTracking()} history={browserHistory}>
         <Route path="/" component={Layout}>
           <IndexRoute component={Home}></IndexRoute>
           <Route path="about" name="about" component={About}></Route>

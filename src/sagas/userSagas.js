@@ -7,13 +7,14 @@ import {
 
 import { take, put, call, fork, select, takeLatest } from 'redux-saga/effects'
 import Hello from 'hellojs'
+const Config = require('Config')
 
 const igLogin = () => {
   Hello.init({
-      instagram : '7ca65e72ec6f4763aae5ad5e3779a1f8'
+      instagram : Config.instagram
   },{
       scope : 'basic+public_content',
-      redirect_uri:'http://127.0.0.1:3000/'
+      redirect_uri: Config.redirect_uri
   });
   return Hello('instagram').login()
   .then(() => {})

@@ -1,4 +1,5 @@
 import React from "react"
+import ReactGA from 'react-ga'
 import Gallery from 'react-grid-gallery'
 import Alert from 'react-bootstrap/lib/Alert'
 import Row from 'react-bootstrap/lib/Row'
@@ -21,6 +22,12 @@ export default class GalleryGrid extends React.Component {
   toggleGrid(index) {
     this.setState({grid: !this.state.grid, index})
     this.props.igSelectedPhoto(this.props.data[index])
+    ReactGA.event({
+      category: 'User',
+      action: 'Image selected for nutrition information',
+      nonInteraction: false,
+      label: 'Social Flow'
+    });
   }
   render() {
     const containerStyle = {
@@ -76,7 +83,7 @@ export default class GalleryGrid extends React.Component {
                 {this.props.data[this.state.index].caption.text}
               </textarea>
               <Button className="btn-primary-spacing" bsStyle="success" onClick={this.toggleGrid.bind(this)}>Done</Button>
-              <Button className="btn-primary-spacing" bsStyle="info" onClick={() => this.props.goToNutrition(true)}>Get Nutrition</Button>
+              <Button className="btn-primary-spacing" bsStyle="info" onClick={() => this.props.goToNutrition()}>Get Nutrition</Button>
             </Col>
           </Row>
         </Grid>

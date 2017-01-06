@@ -7,6 +7,17 @@ module.exports = {
     'webpack-hot-middleware/client',
     './src/index'
   ],
+  externals: {
+    'Config': JSON.stringify({
+      instagram : '7ca65e72ec6f4763aae5ad5e3779a1f8',
+      redirect_uri:'http://127.0.0.1:3000/',
+      // redirect_uri:'http://www.inphood.com/',
+      FIREBASE_API_KEY:'AIzaSyBmW9xYOdOWcasrKN102p9RCoWhG97hMeY',
+      FIREBASE_AUTH_DOMAIN:'inphooddb-e0dfd.firebaseio.com',
+      FIREBASE_DATABASE_URL:'https://inphooddb-e0dfd.firebaseio.com',
+      FIREBASE_STORAGE_BUCKET:'inphooddb-e0dfd.appspot.com'
+    })
+  },
   output: {
     path: path.join(__dirname, 'dist'),
     filename: 'bundle.js',

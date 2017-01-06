@@ -35,7 +35,7 @@ export default class Anonymous extends React.Component {
               {this.props.nutrition.caption}
             </textarea>
             <Button className="btn-primary-spacing" bsStyle="success" onClick={() => this.props.anClearData()}>Done</Button>
-            <Button className="btn-primary-spacing" bsStyle="info" onClick={() => this.props.goToNutrition(false)}>Get Nutrition</Button>
+            <Button className="btn-primary-spacing" bsStyle="info" onClick={() => this.props.goToNutrition()}>Get Nutrition</Button>
           </Col>
         </Row>
       </Grid>

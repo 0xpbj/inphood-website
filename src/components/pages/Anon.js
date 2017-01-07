@@ -26,7 +26,7 @@ export default class Anonymous extends React.Component {
         <Row className="show-grid">
           <Col xs={12} md={8}>
             <ControlLabel>Food Image</ControlLabel>
-            <Image src={this.props.nutrition.picture} rounded />
+            <Image src={this.props.nutrition.picture} responsive rounded/>
           </Col>
           <Col xs={6} md={4}>
             <ControlLabel>Ingredients</ControlLabel>

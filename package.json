@@ -27,6 +27,7 @@
     "react": "^15.4.2",
     "react-bootstrap": "^0.30.7",
     "react-dom": "^15.4.2",
+    "react-dropzone": "^3.8.0",
     "react-ga": "^2.1.2",
     "react-grid-gallery": "^0.2.9",
     "react-redux": "^5.0.1",

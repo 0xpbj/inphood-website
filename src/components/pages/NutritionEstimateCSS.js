@@ -21,11 +21,11 @@ export default class NutritionEstimateCSS extends React.Component {
             <tbody>
               <tr>
                 <th colSpan={2}>
-                  <b>Calories</b>
+                  <b>Calories </b>
                   {this.props.totalCal}
                 </th>
                 <td>
-                  Calories from Fat
+                  Calories from Fat&nbsp;
                   {this.props.totalFatCal}
                 </td>
               </tr>
@@ -36,7 +36,7 @@ export default class NutritionEstimateCSS extends React.Component {
               </tr>
               <tr>
                 <th colSpan={2}>
-                  <b>Total Fat</b>
+                  <b>Total Fat </b>
                   {this.props.totalFat}
                 </th>
                 <td>
@@ -47,7 +47,7 @@ export default class NutritionEstimateCSS extends React.Component {
                 <td className="blank-cell">
                 </td>
                 <th>
-                  Saturated Fat
+                  Saturated Fat&nbsp;
                   {this.props.saturatedFat}
                 </th>
                 <td>
@@ -58,7 +58,7 @@ export default class NutritionEstimateCSS extends React.Component {
                 <td className="blank-cell">
                 </td>
                 <th>
-                  Trans Fat
+                  Trans Fat&nbsp;
                   {this.props.transFat}
                 </th>
                 <td>
@@ -66,7 +66,7 @@ export default class NutritionEstimateCSS extends React.Component {
               </tr>
               <tr>
                 <th colSpan={2}>
-                  <b>Cholesterol</b>
+                  <b>Cholesterol </b>
                   {this.props.cholesterol}
                 </th>
                 <td>
@@ -75,7 +75,7 @@ export default class NutritionEstimateCSS extends React.Component {
               </tr>
               <tr>
                 <th colSpan={2}>
-                  <b>Sodium</b>
+                  <b>Sodium </b>
                   {this.props.sodium}
                 </th>
                 <td>
@@ -84,7 +84,7 @@ export default class NutritionEstimateCSS extends React.Component {
               </tr>
               <tr>
                 <th colSpan={2}>
-                  <b>Total Carbohydrate</b>
+                  <b>Total Carbohydrate </b>
                   {this.props.totalCarb}
                 </th>
                 <td>
@@ -95,7 +95,7 @@ export default class NutritionEstimateCSS extends React.Component {
                 <td className="blank-cell">
                 </td>
                 <th>
-                  Dietary Fiber
+                  Dietary Fiber&nbsp;
                   {this.props.fiber}
                 </th>
                 <td>
@@ -106,7 +106,7 @@ export default class NutritionEstimateCSS extends React.Component {
                 <td className="blank-cell">
                 </td>
                 <th>
-                  Sugars
+                  Sugars&nbsp;
                   {this.props.sugars}
                 </th>
                 <td>
@@ -114,7 +114,7 @@ export default class NutritionEstimateCSS extends React.Component {
               </tr>
               <tr className="thick-end">
                 <th colSpan={2}>
-                  <b>Protein</b>
+                  <b>Protein </b>
                   {this.props.protein}
                 </th>
                 <td>

@@ -1,128 +1,159 @@
 import React from "react"
-import '../styles/LiteLabel.css'
+import Style from "../styles/PerformanceFacts"
+// import '../styles/LiteLabel.css'
+
 
 export default class LiteLabel extends React.Component {
   render() {
+    const myStyles = new Style()
+
     return (
       <div>
-        <section className="performance-facts">
-          <header className="performance-facts__header">
-            <h1 className="performance-facts__title">Nutrition Facts</h1>
-            <p>Serving Size {this.props.servingAmount} {this.props.servingUnit}</p>
+        <section style={myStyles.performanceFacts}>
+          <header style={myStyles.performanceFactsHeader}>
+            <h1 style={myStyles.performanceFactsTitle}>Nutrition Facts</h1>
+            <p style={myStyles.perfomanceFactsHeaderElementP}>
+              Serving Size {this.props.servingAmount} {this.props.servingUnit}</p>
           </header>
-          <table className="performance-facts__table">
+          <table style={myStyles.performanceFactsTable}>
             <thead>
               <tr>
-                <th colSpan={3} className="small-info">
+                <th
+                  colSpan={3}
+                  style={{...myStyles.performanceFactsTableElementTheadTrTh,
+                          ...myStyles.smallInfo}}>
                   Amount Per Serving
                 </th>
               </tr>
             </thead>
             <tbody>
+
               <tr>
-                <th colSpan={2}>
-                  <b>Calories</b>
+                <th colSpan={2} style={myStyles.performanceFactsTableElementTh}>
+                  <b>Calories </b>
                   {this.props.totalCal}
                 </th>
-                <td>
-                  Calories from Fat
+                <td style={myStyles.performanceFactsTableElementTd}>
+                  Calories from Fat&nbsp;
                   {this.props.totalFatCal}
                 </td>
               </tr>
+
               <tr className="thick-row">
-                <td colSpan={3} className="small-info">
+                <td colSpan={3}
+                style={{...myStyles.performanceFactsTableClassThickRowTd,
+                        ...myStyles.smallInfo,
+                        ...myStyles.performanceFactsTableElementTd}}>
                   <b>% Daily Value*</b>
                 </td>
               </tr>
+
               <tr>
-                <th colSpan={2}>
-                  <b>Total Fat</b>
+                <th colSpan={2} style={myStyles.performanceFactsTableElementTh}>
+                  <b>Total Fat </b>
                   {this.props.totalFat}
                 </th>
-                <td>
+                <td style={myStyles.performanceFactsTableElementTdLastChild}>
                   <b>{this.props.totalFatDayPerc}</b>
                 </td>
               </tr>
+
               <tr>
-                <td className="blank-cell">
+                <td
+                  style={{...myStyles.performanceFactsTableClassBlankCell,
+                          ...myStyles.performanceFactsTableElementTd}}>
                 </td>
-                <th>
-                  Saturated Fat
+                <th style={myStyles.performanceFactsTableElementTh}>
+                  Saturated Fat&nbsp;
                   {this.props.saturatedFat}
                 </th>
-                <td>
+                <td style={myStyles.performanceFactsTableElementTdLastChild}>
                   <b>{this.props.saturatedFatDayPerc}</b>
                 </td>
               </tr>
+
               <tr>
-                <td className="blank-cell">
+                <td
+                  style={{...myStyles.performanceFactsTableClassBlankCell,
+                          ...myStyles.performanceFactsTableElementTd}}>
                 </td>
-                <th>
-                  Trans Fat
+                <th style={myStyles.performanceFactsTableElementTh}>
+                  Trans Fat&nbsp;
                   {this.props.transFat}
                 </th>
-                <td>
+                <td style={myStyles.performanceFactsTableElementTdLastChild}>
                 </td>
               </tr>
+
               <tr>
-                <th colSpan={2}>
-                  <b>Cholesterol</b>
+                <th colSpan={2} style={myStyles.performanceFactsTableElementTh}>
+                  <b>Cholesterol </b>
                   {this.props.cholesterol}
                 </th>
-                <td>
+                <td style={myStyles.performanceFactsTableElementTdLastChild}>
                   <b>{this.props.cholesterolDayPerc}</b>
                 </td>
               </tr>
+
               <tr>
-                <th colSpan={2}>
-                  <b>Sodium</b>
+                <th colSpan={2} style={myStyles.performanceFactsTableElementTh}>
+                  <b>Sodium </b>
                   {this.props.sodium}
                 </th>
-                <td>
+                <td style={myStyles.performanceFactsTableElementTdLastChild}>
                   <b>{this.props.sodiumDayPerc}</b>
                 </td>
               </tr>
+
               <tr>
-                <th colSpan={2}>
-                  <b>Total Carbohydrate</b>
+                <th colSpan={2} style={myStyles.performanceFactsTableElementTh}>
+                  <b>Total Carbohydrate </b>
                   {this.props.totalCarb}
                 </th>
-                <td>
+                <td style={myStyles.performanceFactsTableElementTdLastChild}>
                   <b>{this.props.totalCarbDayPerc}</b>
                 </td>
               </tr>
+
               <tr>
-                <td className="blank-cell">
+                <td
+                  style={{...myStyles.performanceFactsTableClassBlankCell,
+                          ...myStyles.performanceFactsTableElementTd}}>
                 </td>
-                <th>
-                  Dietary Fiber
+                <th style={myStyles.performanceFactsTableElementTh}>
+                  Dietary Fiber&nbsp;
                   {this.props.fiber}
                 </th>
-                <td>
+                <td style={myStyles.performanceFactsTableElementTdLastChild}>
                   <b>{this.props.fiberDayPerc}</b>
                 </td>
               </tr>
+
               <tr>
-                <td className="blank-cell">
+                <td
+                  style={{...myStyles.performanceFactsTableClassBlankCell,
+                          ...myStyles.performanceFactsTableElementTd}}>
                 </td>
-                <th>
-                  Sugars
+                <th style={myStyles.performanceFactsTableElementTh}>
+                  Sugars&nbsp;
                   {this.props.sugars}
                 </th>
-                <td>
+                <td style={myStyles.performanceFactsTableElementTdLastChild}>
                 </td>
               </tr>
-              <tr className="thick-end">
-                <th colSpan={2}>
-                  <b>Protein</b>
+
+              <tr style={myStyles.thickEnd}>
+                <th colSpan={2} style={myStyles.performanceFactsTableElementTh}>
+                  <b>Protein </b>
                   {this.props.protein}
                 </th>
-                <td>
+                <td style={myStyles.performanceFactsTableElementTdLastChild}>
                 </td>
               </tr>
+
             </tbody>
           </table>
-          <p className="small-info">* Percent Daily Values are based on a 2,000 calorie diet. Your daily values may be higher or lower depending on your calorie needs:</p>
+          <p style={myStyles.smallInfo}>* Percent Daily Values are based on a 2,000 calorie diet. Your daily values may be higher or lower depending on your calorie needs:</p>
         </section>
       </div>
     );

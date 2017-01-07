@@ -6,6 +6,8 @@ import '../../../node_modules/react-input-range/dist/react-input-range.css'
 
 import InputRange from 'react-input-range'
 import Button from 'react-bootstrap/lib/Button'
+import Slider from 'react-toolbox/lib/slider'
+// import { VictoryPie } from 'victory'
 
 export default class Nutrition extends React.Component {
   constructor(props) {
@@ -18,9 +20,11 @@ export default class Nutrition extends React.Component {
     };
   }
 
-  handleSliderValuesChange(component, value) {
+  handleSliderValuesChange(sliderId, value) {
+    console.log("handleSliderValuesChange -----------------------------")
+    console.log("value = " + value + ", sliderId = " + sliderId)
     var sliderValueDict = this.state.sliderValueDict
-    sliderValueDict[component.props.id] = value
+    sliderValueDict[sliderId] = value
     this.setState({
       sliderValueDict: sliderValueDict,
     })
@@ -29,7 +33,8 @@ export default class Nutrition extends React.Component {
   componentWillMount() {
     // Process the caption for matches in the FDA database:
     //
-    const tagString = this.props.nutrition.caption
+    // const tagString = this.props.nutrition.caption
+    const tagString = "tomato"
     // TODO: AC! **************** regexp errors here for / characters
     this.state.nutAlg.processTags(tagString)
 
@@ -77,14 +82,14 @@ export default class Nutrition extends React.Component {
       console.log("Value for tag '" + tag + "' = " + this.state.sliderValueDict[tag])
 
       sliders.push(
-        <div>
+        <div key={tag}>
           <text>{bestMatch} (grams)</text>
-          <InputRange
-            id={tag}
-            maxValue={100}
-            minValue={0}
+          <Slider
             value={this.state.sliderValueDict[tag]}
-            onChange={this.handleSliderValuesChange.bind(this)}/>
+            onChange={this.handleSliderValuesChange.bind(this, tag)}
+            min={0}
+            max={100}
+            editable/>
           <br/><br/>
         </div>)
     }
@@ -98,33 +103,51 @@ export default class Nutrition extends React.Component {
     const carbRDA = 100.0 * carbs / 300.0
     const proteinRDA = 100.0 * protein / 50.0
 
-    const totalFatStr = fat.toFixed(2) + " g"
+    const totalFatStr = fat.toFixed(2) + "g"
     const fatRDAStr = fatRDA.toFixed(2) + "%"
 
-    const totalCarbsStr = carbs.toFixed(2) + " g"
+    const totalCarbsStr = carbs.toFixed(2) + "g"
     const carbRDAStr = carbRDA.toFixed(2) + "%"
 
-    const totalProteinStr = protein.toFixed(2) + " g"
+    const totalProteinStr = protein.toFixed(2) + "g"
 
     const tagString = this.props.nutrition.caption
+
+    const pieChartData = [
+        {category: "Fat", amount: fat},
+        {category: "Carbs", amount: carbs},
+        {category: "Protein", amount: protein}
+      ]
+
     return (
       <div>
-        <Button className="btn-primary-spacing" bsStyle="success" onClick={() => this.props.goToGallery()}>Gallery</Button>
-        <text>Nutrition info for "{tagString}":</text><br/>
-        <text>{notFound}</text><br/><br/>
-        {sliders}
-        <Label
-          servingAmount="100" servingUnit="g"
-          totalCal="200" totalFatCal="130"
-          totalFat={totalFatStr} totalFatDayPerc={fatRDAStr}
-          saturatedFat="9g" saturatedFatDayPerc="22%"
-          transFat="0g"
-          cholesterol="55mg" cholesterolDayPerc="80%"
-          sodium="40mg" sodiumDayPerc="2%"
-          totalCarb={totalCarbsStr} totalCarbDayPerc={carbRDAStr}
-          fiber="1g" fiberDayPerc="4%"
-          sugars="14g"
-          protein={totalProteinStr}/>
+        <div>
+          <Button className="btn-primary-spacing" bsStyle="success" onClick={() => this.props.goToGallery()}>Gallery</Button>
+        </div>
+        <div>
+          <text>Nutrition info for "{tagString}":</text><br/>
+          <text>{notFound}</text><br/><br/>
+          {sliders}
+        </div>
+        <div>
+          <Label
+            servingAmount="100" servingUnit="g"
+            totalCal="200" totalFatCal="130"
+            totalFat={totalFatStr} totalFatDayPerc={fatRDAStr}
+            saturatedFat="9g" saturatedFatDayPerc="22%"
+            transFat="0g"
+            cholesterol="55mg" cholesterolDayPerc="80%"
+            sodium="40mg" sodiumDayPerc="2%"
+            totalCarb={totalCarbsStr} totalCarbDayPerc={carbRDAStr}
+            fiber="1g" fiberDayPerc="4%"
+            sugars="14g"
+            protein={totalProteinStr}/>
+        </div>
+        {/*<VictoryPie
+          data={pieChartData}
+            x="category"
+            y="amount"
+          />*/}
       </div>
     )
   }

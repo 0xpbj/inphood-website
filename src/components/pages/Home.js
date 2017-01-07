@@ -15,13 +15,14 @@ import Hello from 'hellojs'
 import Gallery from './Gallery'
 import Anon from './Anon'
 import Nutrition from "../../containers/NutritionContainer"
+import Dropzone from 'react-dropzone'
 
 export default class Home extends React.Component {
   constructor() {
     super()
     this.state = {
       // TODO: AC for dev set this to true to go direct to Nutrition.js scene
-      nutritionView: true
+      nutritionView: false
     }
   }
   handleClick() {
@@ -63,6 +64,19 @@ export default class Home extends React.Component {
       label: 'URL Flow',
       nonInteraction: false
     });
+  }
+  onDrop(acceptedFiles, rejectedFiles) {
+    ReactGA.event({
+      category: 'User',
+      action: 'Image upload flow initiated',
+      label: 'Local Image Flow',
+      nonInteraction: false
+    });
+    if (acceptedFiles.length > 0) {
+      this.props.anSelectedPhoto(acceptedFiles[0].preview)
+    }
+    // console.log('Accepted files: ', acceptedFiles)
+    // console.log('Rejected files: ', rejectedFiles)
   }
   render() {
     const containerStyle = {
@@ -127,20 +141,27 @@ export default class Home extends React.Component {
                     </Col>
                   </div>
                   <div className="text-center" style={containerStyle}>
-                    <form>
-                      <FormGroup
-                        controlId="formBasicText"
-                      >
-                        <FormControl
-                          className="text-center"
-                          type="text"
-                          value={this.state.value}
-                          placeholder="www.google.com/images"
-                          onChange={this.handleUrl.bind(this)}
-                        />
-                        <FormControl.Feedback />
-                      </FormGroup>
-                    </form>
+                    <Col xs={12} md={8}>
+                      <form>
+                        <FormGroup
+                          controlId="formBasicText"
+                        >
+                          <FormControl
+                            className="text-center"
+                            type="text"
+                            value={this.state.value}
+                            placeholder="www.google.com/images"
+                            onChange={this.handleUrl.bind(this)}
+                          />
+                          <FormControl.Feedback />
+                        </FormGroup>
+                      </form>
+                    </Col>
+                    <Col xs={6} md={4}>
+                      <Dropzone onDrop={this.onDrop.bind(this)}>
+                        <Image src={'https://image.freepik.com/free-icon/upload-button_318-76475.jpg'} rounded />
+                      </Dropzone>
+                    </Col>
                   </div>
                 </Row>
               </Grid>

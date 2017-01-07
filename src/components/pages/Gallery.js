@@ -75,7 +75,8 @@ export default class GalleryGrid extends React.Component {
         <Grid>
           <Row className="show-grid">
             <Col xs={12} md={8}>
-              <Image src={this.props.data[this.state.index].picture} rounded />
+              <ControlLabel>Food Image</ControlLabel>
+              <Image src={this.props.data[this.state.index].picture} responsive rounded/>
             </Col>
             <Col xs={6} md={4}>
               <ControlLabel>Ingredients</ControlLabel>

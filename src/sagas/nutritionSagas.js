@@ -3,8 +3,15 @@ import {
 } from '../constants/ActionTypes'
 
 import { call, fork, select, takeLatest } from 'redux-saga/effects'
+import firebase from 'firebase'
 import request from 'request'
 const Config = require('Config')
+
+const firebaseLogin = () => {
+  return firebase.auth().signInAnonymously()
+  .then(user => ({ user }))
+  .catch(error => ({ error }))
+}
 
 const uploadImageToS3 = (uri, key) => {
   var AWS = require('aws-sdk')
@@ -20,29 +27,43 @@ const uploadImageToS3 = (uri, key) => {
   request(options, function(error, response, body) {
     if (error || response.statusCode !== 200) {
       console.log("failed to get image", error)
+      firebase.database().ref('/global/nutritionLabel/'+key).set('error')
     }
     else {
       s3.putObject({
         Body: body,
-        Key: key,
+        Key: key + '.jpg',
         ACL: "public-read",
         Bucket: "inphoodlabels",
         ContentType: "image/jpeg"
       }, function(error, data) {
         if (error) {
           console.log("error downloading image to s3", error)
+          firebase.database().ref('/global/nutritionLabel/'+key).set('error')
         } else {
           console.log("success uploading to s3", data)
         }
       })
+      firebase.database().ref('/global/nutritionLabel/'+key).set('online')
     }
   })
 }
 
 function* loadAWSPut() {
+  const {profile} = yield select(state => state.userReducer)
   const {link, picture, username} = yield select(state => state.nutritionReducer)
   const slink = link.slice(0, link.length - 1)
-  const key = username + '/' + slink.substring(slink.lastIndexOf('/')+1) + '.jpg'
+  yield call (firebaseLogin)
+  console.log(slink)
+  let key = ''
+  let subKey = ''
+  if (!profile) {
+    subKey = firebase.database().ref('/global/nutritionLabel/anonymous').push().key
+  }
+  else {
+    subKey = slink.substring(slink.lastIndexOf('/')+1)
+  }
+  key = username + '/' + subKey
   yield call (uploadImageToS3, picture, key)
 }
 

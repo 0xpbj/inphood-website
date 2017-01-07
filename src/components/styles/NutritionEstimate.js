@@ -1,4 +1,4 @@
-export default class PerformanceFacts {
+export default class Style {
   // TODO: unable to convert this CSS yet:
   // table {
   //   border-collapse: collapse;
@@ -94,7 +94,7 @@ export default class PerformanceFacts {
 
 
   smallInfo = {
-    fontSize: '0.7rem'
+    fontSize: '0.9rem'
   }
 
   thickEnd = {

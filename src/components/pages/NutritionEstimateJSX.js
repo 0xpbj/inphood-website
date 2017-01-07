@@ -1,9 +1,7 @@
 import React from "react"
-import Style from "../styles/PerformanceFacts"
-// import '../styles/LiteLabel.css'
+import Style from "../styles/NutritionEstimate.js"
 
-
-export default class LiteLabel extends React.Component {
+export default class NutritionEstimateJSX extends React.Component {
   render() {
     const myStyles = new Style()
 
@@ -11,7 +9,7 @@ export default class LiteLabel extends React.Component {
       <div>
         <section style={myStyles.performanceFacts}>
           <header style={myStyles.performanceFactsHeader}>
-            <h1 style={myStyles.performanceFactsTitle}>Nutrition Facts</h1>
+            <h1 style={myStyles.performanceFactsTitle}>Nutrition Estimate</h1>
             <p style={myStyles.perfomanceFactsHeaderElementP}>
               Serving Size {this.props.servingAmount} {this.props.servingUnit}</p>
           </header>

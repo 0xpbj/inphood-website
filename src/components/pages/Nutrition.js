@@ -1,10 +1,8 @@
 import React from "react"
 import NutritionAlg from '../../algorithms/NutritionAlg'
-import Label from './LiteLabel'
-import '../../../node_modules/react-input-range/dist/react-input-range.css'
-// import '../../../node_modules/react-input-range/scss/InputRange.scss'
+import Label from './NutritionEstimateJSX'
+import LabelCSS from './NutritionEstimateCSS.js'
 
-import InputRange from 'react-input-range'
 import Button from 'react-bootstrap/lib/Button'
 import Slider from 'react-toolbox/lib/slider'
 // import { VictoryPie } from 'victory'
@@ -131,6 +129,20 @@ export default class Nutrition extends React.Component {
         </div>
         <div>
           <Label
+            servingAmount="100" servingUnit="g"
+            totalCal="200" totalFatCal="130"
+            totalFat={totalFatStr} totalFatDayPerc={fatRDAStr}
+            saturatedFat="9g" saturatedFatDayPerc="22%"
+            transFat="0g"
+            cholesterol="55mg" cholesterolDayPerc="80%"
+            sodium="40mg" sodiumDayPerc="2%"
+            totalCarb={totalCarbsStr} totalCarbDayPerc={carbRDAStr}
+            fiber="1g" fiberDayPerc="4%"
+            sugars="14g"
+            protein={totalProteinStr}/>
+        </div>
+        <div>
+          <LabelCSS
             servingAmount="100" servingUnit="g"
             totalCal="200" totalFatCal="130"
             totalFat={totalFatStr} totalFatDayPerc={fatRDAStr}

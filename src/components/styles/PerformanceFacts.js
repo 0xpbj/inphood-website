@@ -1,0 +1,105 @@
+export default class PerformanceFacts {
+  // TODO: unable to convert this CSS yet:
+  // table {
+  //   border-collapse: collapse;
+  // }
+  //
+  performanceFacts = {
+    borderWidth: '1px',
+    borderStyle: 'solid',
+    borderColor: 'black',
+    margin: '20px',
+    float: 'left',
+    width: '320px',
+    padding: '0.5rem',
+    borderCollapse: 'collapse'
+  }
+
+  performanceFactsHeader = {
+    borderBottomWidth: '10px',
+    borderBottomStyle: 'solid',
+    borderBottomColor: 'black',
+    paddingBottom: '0.25rem',
+    marginBottom: '0.5rem',
+  }
+
+  perfomanceFactsHeaderElementP = {
+    margin: 0
+  }
+
+  performanceFactsTitle = {
+    fontWeight: 'bold',
+    fontSize: '3rem',
+    marginBottom: '0.25rem'
+  }
+
+  performanceFactsTable = {
+    width: '100%'
+  }
+
+  performanceFactsTableElementTheadTrTh = {
+    borderWidth: 0
+  }
+
+  performanceFactsTableElementTh = {
+    fontWeight: 'normal',
+    textAlign: 'left',
+    paddingTop: '0.25rem',
+    paddingBottom: '0.25rem',
+    borderTop: '1px',
+    borderTopStyle: 'solid',
+    borderTopColor: 'black',
+    whiteSpace: 'nowrap'
+  }
+
+  performanceFactsTableElementTd = {
+    fontWeight: 'normal',
+    textAlign: 'left',
+    paddingTop: '0.25rem',
+    paddingBottom: '0.25rem',
+    borderTop: '1px',
+    borderTopStyle: 'solid',
+    borderTopColor: 'black',
+    whiteSpace: 'nowrap'
+  }
+
+  // performanceFactsTableElementTdLastChild implements this CSS
+  // td {
+  //   &:last-child {
+  //     text-align: right;
+  //   }
+  // }
+  performanceFactsTableElementTdLastChild = {
+    fontWeight: 'normal',
+    textAlign: 'left',
+    paddingTop: '0.25rem',
+    paddingBottom: '0.25rem',
+    borderTop: '1px',
+    borderTopStyle: 'solid',
+    borderTopColor: 'black',
+    whiteSpace: 'nowrap',
+    textAlign: 'right'
+  }
+
+  performanceFactsTableClassBlankCell = {
+    width: '1rem',
+    borderTopWidth: 0
+  }
+
+  performanceFactsTableClassThickRowTh = {
+    borderTopWidth: '5px'
+  }
+
+  performanceFactsTableClassThickRowTd = this.performanceFactsTableClassThickRowTh
+
+
+  smallInfo = {
+    fontSize: '0.7rem'
+  }
+
+  thickEnd = {
+    borderBottomWidth: '10px',
+    borderBottomStyle: 'solid',
+    borderBottomColor: 'black'
+  }
+}

@@ -20,7 +20,8 @@ export default class Home extends React.Component {
   constructor() {
     super()
     this.state = {
-      nutritionView: false
+      // TODO: AC for dev set this to true to go direct to Nutrition.js scene
+      nutritionView: true
     }
   }
   handleClick() {
@@ -78,8 +79,8 @@ export default class Home extends React.Component {
         }
         else {
           return (
-            <Gallery 
-              data={this.props.user.photos.data} 
+            <Gallery
+              data={this.props.user.photos.data}
               profile={this.props.user.profile}
               refresh={this.props.igRefreshRequest}
               logout={this.props.igLogoutRequest}
@@ -131,7 +132,7 @@ export default class Home extends React.Component {
                         controlId="formBasicText"
                       >
                         <FormControl
-                          className="text-center" 
+                          className="text-center"
                           type="text"
                           value={this.state.value}
                           placeholder="www.google.com/images"

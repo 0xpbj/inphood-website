@@ -1,12 +1,3 @@
-.image {
-  width: 250px;
-  float: left;
-  margin: 20px;
-}
-body {
-  font-size: small;
-  line-height: 1.4;
-}
 p {
   margin: 0;
 }
@@ -21,11 +12,13 @@ p {
     border-collapse: collapse;
   }
 }
+
 .performance-facts__title {
   font-weight: bold;
   font-size: 2rem;
   margin: 0 0 0.25rem 0;
 }
+
 .performance-facts__header {
   border-bottom: 10px solid black;
   padding: 0 0 0.25rem 0;
@@ -34,6 +27,7 @@ p {
     margin: 0;
   }
 }
+
 .performance-facts__table {
   width: 100%;
   thead tr {
@@ -45,7 +39,7 @@ p {
     font-weight: normal;
     text-align: left;
     padding: 0.25rem 0;
-    border-top: 1px solid black; 
+    border-top: 1px solid black;
     white-space: nowrap;
   }
   td {
@@ -63,6 +57,7 @@ p {
     }
   }
 }
+
 .small-info {
   font-size: 0.7rem;
 }
@@ -73,7 +68,7 @@ p {
   margin: 0 0 0.5rem 0;
   thead {
     tr {
-      border-bottom: 1px solid black; 
+      border-bottom: 1px solid black;
     }
   }
   td {
@@ -105,9 +100,11 @@ p {
 .text-center {
   text-align: center;
 }
+
 .thick-end {
   border-bottom: 10px solid black;
 }
+
 .thin-end {
   border-bottom: 1px solid black;
 }

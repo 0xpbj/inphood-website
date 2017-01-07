@@ -1,5 +1,4 @@
 import React from "react"
-import Gallery from 'react-grid-gallery'
 import Alert from 'react-bootstrap/lib/Alert'
 import Row from 'react-bootstrap/lib/Row'
 import Col from 'react-bootstrap/lib/Col'

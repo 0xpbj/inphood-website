@@ -6,38 +6,38 @@ var HtmlWebpackPlugin = require('html-webpack-plugin');
 var DashboardPlugin = require('webpack-dashboard/plugin');
 
 const HOST = process.env.HOST || "127.0.0.1";
-const PORT = process.env.PORT || "8888";
+const PORT = process.env.PORT || "3000";
 
-// global css
-loaders.push({
-	test: /\.css$/,
-	exclude: /[\/\\]src[\/\\]/,
-	loaders: [
-		'style?sourceMap',
-		'css'
-	]
-});
 // local scss modules
 loaders.push({
-	test: /\.scss$/,
-	exclude: /[\/\\](bower_components|public\/)[\/\\]/,
-	loaders: [
-		'style?sourceMap',
-		'css?modules&importLoaders=1&localIdentName=[path]___[name]__[local]___[hash:base64:5]&sourceMap',
-		'postcss',
-		'sass'
-	],
+  test: /\.scss$/,
+  exclude: /[\/\\](bower_components|public\/)[\/\\]/,
+  loaders: [
+    'style?sourceMap',
+    'css?modules&importLoaders=1&localIdentName=[path]___[name]__[local]___[hash:base64:5]&sourceMap',
+    'postcss',
+    'sass'
+  ]
 });
-
-// local css modules
-loaders.push({
-	test: /\.css$/,
-	exclude: /[\/\\](node_modules|bower_components|public\/)[\/\\]/,
-	loaders: [
-		'style?sourceMap',
-		'css?modules&importLoaders=1&localIdentName=[path]___[name]__[local]___[hash:base64:5]&sourceMap'
-	]
-});
+// // global css
+// loaders.push({
+//   test: /\.css$/,
+//   exclude: /[\/\\]src[\/\\]/,
+//   loaders: [
+//     'style?sourceMap',
+//     'css'
+//   ]
+// });
+// // local css modules
+// loaders.push({
+//   test: /\.css$/,
+//   exclude: /[\/\\](node_modules|bower_components|public\/)[\/\\]/,
+//   loaders: [
+//     'style?sourceMap',
+//     'css?modules&importLoaders=1&localIdentName=[path]___[name]__[local]___[hash:base64:5]&sourceMap'
+//   ]
+// });
+loaders.push({ test: /\.css$/, loader: "style-loader!css-loader" });
 
 module.exports = {
 	entry: [
@@ -77,7 +77,9 @@ module.exports = {
       FIREBASE_API_KEY:'AIzaSyBmW9xYOdOWcasrKN102p9RCoWhG97hMeY',
       FIREBASE_AUTH_DOMAIN:'inphooddb-e0dfd.firebaseio.com',
       FIREBASE_DATABASE_URL:'https://inphooddb-e0dfd.firebaseio.com',
-      FIREBASE_STORAGE_BUCKET:'inphooddb-e0dfd.appspot.com'
+      FIREBASE_STORAGE_BUCKET:'inphooddb-e0dfd.appspot.com',
+      AWS_ACCESS_ID: 'AKIAI25XHNISG4KDDM3Q',
+      AWS_SECRET_KEY: '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'
     })
   },
   node: {
@@ -91,7 +93,7 @@ module.exports = {
 		new webpack.HotModuleReplacementPlugin(),
 		new DashboardPlugin(),
 		new HtmlWebpackPlugin({
-			template: './src/template.html'
+			template: './src/index.html'
 		}),
 	]
 };

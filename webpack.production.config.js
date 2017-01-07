@@ -12,7 +12,6 @@ loaders.push({
 	exclude: /(node_modules|bower_components|public\/)/,
 	loader: ExtractTextPlugin.extract('style', 'css?modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]')
 });
-
 // local scss modules
 loaders.push({
 	test: /[\/\\](node_modules|src)[\/\\].*\.scss/,
@@ -47,7 +46,9 @@ module.exports = {
       FIREBASE_API_KEY:'AIzaSyBmW9xYOdOWcasrKN102p9RCoWhG97hMeY',
       FIREBASE_AUTH_DOMAIN:'inphooddb-e0dfd.firebaseio.com',
       FIREBASE_DATABASE_URL:'https://inphooddb-e0dfd.firebaseio.com',
-      FIREBASE_STORAGE_BUCKET:'inphooddb-e0dfd.appspot.com'
+      FIREBASE_STORAGE_BUCKET:'inphooddb-e0dfd.appspot.com',
+      AWS_ACCESS_ID: 'AKIAI25XHNISG4KDDM3Q',
+      AWS_SECRET_KEY: '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'
     })
   },
   node: {
@@ -76,7 +77,7 @@ module.exports = {
 			allChunks: true
 		}),
 		new HtmlWebpackPlugin({
-			template: './src/template.html',
+			template: './src/index.html',
 			title: 'Webpack App'
 		}),
 		new webpack.optimize.DedupePlugin()

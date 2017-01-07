@@ -2,6 +2,8 @@ import React from "react"
 import NutritionAlg from '../../algorithms/NutritionAlg'
 import Label from './LiteLabel'
 import '../../../node_modules/react-input-range/dist/react-input-range.css'
+// import '../../../node_modules/react-input-range/scss/InputRange.scss'
+
 import InputRange from 'react-input-range'
 import Button from 'react-bootstrap/lib/Button'
 

@@ -4,13 +4,14 @@ import {
 
 import { call, fork, select, takeLatest } from 'redux-saga/effects'
 import request from 'request'
+const Config = require('Config')
 
 const uploadImageToS3 = (uri, key) => {
   var AWS = require('aws-sdk')
   AWS.config.region = 'us-west-2'
   var s3 = new AWS.S3({
-    accessKeyId:     "AKIAI25XHNISG4KDDM3Q",
-    secretAccessKey: "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"
+    accessKeyId:     Config.AWS_ACCESS_ID,
+    secretAccessKey: Config.AWS_SECRET_KEY
   })
   var options = {
     uri: uri,

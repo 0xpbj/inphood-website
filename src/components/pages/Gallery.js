@@ -23,7 +23,7 @@ export default class GalleryGrid extends React.Component {
   }
   selectPhoto() {
     this.setState({grid: !this.state.grid, index: this._imageGallery.getCurrentIndex()})
-    this.props.igSelectedPhoto(this.props.data[this.state.index])
+    this.props.igSelectedPhoto(this.props.data[this._imageGallery.getCurrentIndex()])
     ReactGA.event({
       category: 'User',
       action: 'Image selected for nutrition information',

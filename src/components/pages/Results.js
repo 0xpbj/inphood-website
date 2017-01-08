@@ -5,18 +5,20 @@ import Grid from 'react-bootstrap/lib/Grid'
 import Alert from 'react-bootstrap/lib/Alert'
 import Image from 'react-bootstrap/lib/Image'
 import ControlLabel from 'react-bootstrap/lib/ControlLabel'
+import Label from './NutritionEstimateJSX'
 
-export default class Label extends React.Component {
+export default class Results extends React.Component {
   constructor() {
     super()
     this.state = {
-      imageUrl: ''
+      labelId: ''
     }
   }
   componentDidMount() {
     this.setState({
-      imageUrl: this.props.params.labelId
+      labelId: this.props.params.labelId
     })
+    this.props.getLabelId(this.props.params.labelId)
   }
   render() {
     const containerStyle = {
@@ -27,10 +29,22 @@ export default class Label extends React.Component {
         <Row className="show-grid">
           <Col xs={12} md={8}>
             <ControlLabel>Food Image</ControlLabel>
-            <Image src={'www.label.inphood.com/inphood/' + this.state.imageUrl + '.jpg'} responsive rounded/>
+            <Image src={this.props.results.data.oUrl} responsive rounded/>
           </Col>
           <Col xs={6} md={4}>
             <ControlLabel>Nutrition Label</ControlLabel>
+            <Label
+              servingAmount="100" servingUnit="g"
+              totalCal="200" totalFatCal="130"
+              totalFat="100" totalFatDayPerc="100"
+              saturatedFat="9g" saturatedFatDayPerc="22%"
+              transFat="0g"
+              cholesterol="55mg" cholesterolDayPerc="80%"
+              sodium="40mg" sodiumDayPerc="2%"
+              totalCarb="20g" totalCarbDayPerc="30%"
+              fiber="1g" fiberDayPerc="4%"
+              sugars="14g"
+              protein="50g"/>
           </Col>
         </Row>
       </Grid>

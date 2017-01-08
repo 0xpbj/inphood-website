@@ -1,10 +1,12 @@
 import { combineReducers } from 'redux'
 import userReducer from './userReducer'
 import nutritionReducer from './nutritionReducer'
+import resultsReducer from './resultsReducer'
 
 const appReducer = combineReducers({
     userReducer,
     nutritionReducer,
+    resultsReducer,
 })
 
 const rootReducer = (state, action) => {

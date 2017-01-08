@@ -3,6 +3,7 @@ import {
   AN_ADD_CAPTION,
   AN_SELECTED_PHOTO,
   IG_SELECTED_PHOTO,
+  RESULT_URL,
 } from '../constants/ActionTypes'
 
 const initialState = {
@@ -10,7 +11,8 @@ const initialState = {
   picture: '',
   caption: '',
   username: '',
-  anonymous: false
+  anonymous: false,
+  resultUrl: '',
 }
 export default function nutrition(state = initialState, action) {
   switch (action.type) {
@@ -38,6 +40,11 @@ export default function nutrition(state = initialState, action) {
         picture: action.photo.picture,
         caption: action.photo.caption.text,
         username: action.photo.user.username
+      }
+    case RESULT_URL:
+      return {
+        ...state,
+        resultUrl: action.url
       }
     default:
       return state

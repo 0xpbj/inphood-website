@@ -1,5 +1,10 @@
+<<<<<<< HEAD
 var React = require('react')
 import Style from "../styles/NutritionEstimate.js"
+=======
+import React from "react"
+import Style from "../styles/NutritionEstimateStyles.js"
+>>>>>>> b333f5c2719121c076e98b7163c0cdfb4822d38d
 
 export default class NutritionEstimateJSX extends React.Component {
   render() {

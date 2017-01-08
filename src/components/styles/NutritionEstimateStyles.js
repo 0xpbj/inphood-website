@@ -1,9 +1,4 @@
-export default class Style {
-  // TODO: unable to convert this CSS yet:
-  // table {
-  //   border-collapse: collapse;
-  // }
-  //
+export default class NutritionEstimateStyles {
   performanceFacts = {
     borderWidth: '1px',
     borderStyle: 'solid',

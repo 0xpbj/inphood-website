@@ -27,7 +27,7 @@ export default class Label extends React.Component {
         <Row className="show-grid">
           <Col xs={12} md={8}>
             <ControlLabel>Food Image</ControlLabel>
-            <Image src={'www.label.inphood.com/t3zcat/' + this.state.imageUrl + '.jpg'} responsive rounded/>
+            <Image src={'www.label.inphood.com/inphood/' + this.state.imageUrl + '.jpg'} responsive rounded/>
           </Col>
           <Col xs={6} md={4}>
             <ControlLabel>Nutrition Label</ControlLabel>

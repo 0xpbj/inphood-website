@@ -2,6 +2,8 @@ import React from "react"
 import NutritionAlg from '../../algorithms/NutritionAlg'
 import Label from './NutritionEstimateJSX'
 
+import {Ingredient} from '../models/NutritionModel'
+
 import Button from 'react-bootstrap/lib/Button'
 import Slider from 'react-toolbox/lib/slider'
 // import { VictoryPie } from 'victory'
@@ -31,7 +33,7 @@ export default class Nutrition extends React.Component {
     // Process the caption for matches in the FDA database:
     //
     // const tagString = this.props.nutrition.caption
-    const tagString = "tomato"
+    const tagString = "#tomato #cucumber #onion #lettuce #olive #feta"
     // TODO: AC! **************** regexp errors here for / characters
     this.state.nutAlg.processTags(tagString)
 
@@ -57,6 +59,9 @@ export default class Nutrition extends React.Component {
     //        ...
     //        ingredient quantity unit nutrition_info
 
+    // TODO: move the ingredients array/construction to somewhere else for higher perf/lower mem
+    var ingredients = []
+
     var sliders = []
     var notFound = ""
     var fat = 0.0
@@ -64,13 +69,13 @@ export default class Nutrition extends React.Component {
     var protein = 0.0
     for (var tag in this.state.matches) {
 
-      const bestMatch = this.state.nutAlg.getBestMatchForTag(tag)
-      if (bestMatch == "") {
+      const key = this.state.nutAlg.getBestMatchForTag(tag)
+      if (key == "") {
         notFound = notFound + tag + " "
         continue
       }
 
-      const dataForKey = this.state.nutAlg.getDataForKey(bestMatch)
+      const dataForKey = this.state.nutAlg.getDataForKey(key)
       // TODO: need a big number (non float limited version to do real math here)
       fat += parseFloat(dataForKey['Fat'] * this.state.sliderValueDict[tag] / 100)
       carbs += parseFloat(dataForKey['Carbohydrate'] * this.state.sliderValueDict[tag] / 100)
@@ -78,9 +83,11 @@ export default class Nutrition extends React.Component {
 
       console.log("Value for tag '" + tag + "' = " + this.state.sliderValueDict[tag])
 
+      ingredients.push(new Ingredient(key, tag, dataForKey))
+
       sliders.push(
         <div key={tag}>
-          <text>{bestMatch} (grams)</text>
+          <text>{key} (grams)</text>
           <Slider
             value={this.state.sliderValueDict[tag]}
             onChange={this.handleSliderValuesChange.bind(this, tag)}

@@ -1,5 +1,5 @@
 import React from "react"
-import Style from "../styles/NutritionEstimate.js"
+import Style from "../styles/NutritionEstimateStyles.js"
 
 export default class NutritionEstimateJSX extends React.Component {
   render() {

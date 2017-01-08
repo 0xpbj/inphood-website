@@ -14,7 +14,7 @@ export default class Nutrition extends React.Component {
 
     this.state = {
       sliderValueDict: {},
-      // ingredientComposite = new NutritionModel(),
+      ingredientComposite: new NutritionModel(),
       matches: [],
       nutAlg: new NutritionAlg()
     };
@@ -23,14 +23,22 @@ export default class Nutrition extends React.Component {
   handleSliderValuesChange(sliderId, value) {
     console.log("handleSliderValuesChange -----------------------------")
     console.log("value = " + value + ", sliderId = " + sliderId)
+
     var sliderValueDict = this.state.sliderValueDict
     sliderValueDict[sliderId] = value
+
+    const key = sliderId
+    var ingredientComposite = this.state.ingredientComposite
+    ingredientComposite.scaleIngredient(key, value)
+
     this.setState({
       sliderValueDict: sliderValueDict,
+      ingredientComposite: ingredientComposite
     })
   }
 
   componentWillMount() {
+    console.log("componentWillMount -----------------------------")
     // Process the caption for matches in the FDA database:
     //
     // const tagString = this.props.nutrition.caption
@@ -43,11 +51,21 @@ export default class Nutrition extends React.Component {
     var sliderValueDict = {}
     for (var tag in this.state.nutAlg.getMatches()) {
       sliderValueDict[tag] = 100
+
+      const key = this.state.nutAlg.getBestMatchForTag(tag)
+      const dataForKey = this.state.nutAlg.getDataForKey(key)
+
+      var ingredient = new Ingredient()
+      ingredient.initializeSingle(key, tag, dataForKey)
+
+      var ingredientComposite = this.state.ingredientComposite
+      ingredientComposite.addIngredient(key, ingredient)
     }
 
     this.setState({
       matches: this.state.nutAlg.getMatches(),
-      sliderValueDict: sliderValueDict
+      sliderValueDict: sliderValueDict,
+      ingredientComposite: ingredientComposite
     })
   }
 
@@ -64,7 +82,7 @@ export default class Nutrition extends React.Component {
 
     // TODO: move this var to state
 
-    var ingredientComposite = new NutritionModel()
+    // var ingredientComposite = new NutritionModel()
 
     var sliders = []
     var notFound = ""
@@ -87,9 +105,9 @@ export default class Nutrition extends React.Component {
 
       console.log("Value for tag '" + tag + "' = " + this.state.sliderValueDict[tag])
 
-      var ingredient = new Ingredient()
-      ingredient.initializeSingle(key, tag, dataForKey)
-      ingredientComposite.addIngredient(key, ingredient)
+      // var ingredient = new Ingredient()
+      // ingredient.initializeSingle(key, tag, dataForKey)
+      // ingredientComposite.addIngredient(key, ingredient)
 
       sliders.push(
         <div key={tag}>
@@ -141,6 +159,7 @@ export default class Nutrition extends React.Component {
         </div>
         <div>
           <Label
+            nutritionModel={this.state.ingredientComposite.getScaledCompositeIngredient()}
             servingAmount="100" servingUnit="g"
             totalCal="200" totalFatCal="130"
             totalFat={totalFatStr} totalFatDayPerc={fatRDAStr}

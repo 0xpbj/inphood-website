@@ -22,7 +22,7 @@ export default class Home extends React.Component {
     super()
     this.state = {
       // TODO: AC for dev set this to true to go direct to Nutrition.js scene
-      nutritionView: false
+      nutritionView: true
     }
   }
   handleClick() {

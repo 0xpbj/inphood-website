@@ -38,7 +38,9 @@ export class NutritionModel {
   }
 
   getScaledCompositeIngredient() {
-    // TODO:
+    var compositeIngredient = new Ingredient()
+    compositeIngredient.initializeComposite(this._ingredients)
+    return compositeIngredient
   }
 }
 
@@ -118,8 +120,8 @@ export class Ingredient {
 
   initializeComposite(ingredientTuples) {
     for (var ingredientTuple in ingredientTuples) {
-      scaleFactor = ingredientTuple.getScale()
-      ingredient = ingredientTuple.getIngredient()
+      const scaleFactor = ingredientTuple.getScale()
+      const ingredient = ingredientTuple.getIngredient()
 
       // TODO add remaining checks for serving unit compatibility or appropriate
       // conversions:
@@ -159,6 +161,19 @@ export class Ingredient {
       //   Protein measures/metrics:
       this._totalProteinPerServing += ingredient._totalProteinPerServing * scaleFactor
     }
+  }
+
+  setServingAmount() {
+    // TODO: get the current serving amount and scale all the numbers appropriately
+    // for the getter functions.
+  }
+
+  getServingAmount() {
+    return this._servingAmount
+  }
+
+  getServingUnit() {
+    return this._servingUnit
   }
 
   throwIfUnitMismatch(category, mainUnit, otherUnit, otherTag, otherKey) {

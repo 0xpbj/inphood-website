@@ -1,6 +1,5 @@
-import React from "react"
+var React = require('react')
 import Slider from 'react-toolbox/lib/slider'
-import { VictoryPie } from 'victory'
 
 class SliderTest extends React.Component {
   state = {
@@ -36,7 +35,6 @@ export default class About extends React.Component {
     return (
       <div>
         <SliderTest />
-        <VictoryPie />
       </div>
     )
   }

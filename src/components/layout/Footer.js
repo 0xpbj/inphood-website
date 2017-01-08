@@ -1,4 +1,4 @@
-import React from "react"
+var React = require('react')
 
 export default class Footer extends React.Component {
   render() {

@@ -1,4 +1,4 @@
-import React from "react"
+var React = require('react')
 import Alert from 'react-bootstrap/lib/Alert'
 import Row from 'react-bootstrap/lib/Row'
 import Col from 'react-bootstrap/lib/Col'

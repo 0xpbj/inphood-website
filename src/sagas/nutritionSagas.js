@@ -6,6 +6,7 @@ import { call, fork, select, takeLatest } from 'redux-saga/effects'
 import firebase from 'firebase'
 import request from 'request'
 const Config = require('Config')
+var AWS = require('aws-sdk')
 
 const firebaseLogin = () => {
   return firebase.auth().signInAnonymously()
@@ -14,11 +15,10 @@ const firebaseLogin = () => {
 }
 
 const uploadImageToS3 = (uri, key) => {
-  var AWS = require('aws-sdk')
-  AWS.config.region = 'us-west-2'
   var s3 = new AWS.S3({
     accessKeyId:     Config.AWS_ACCESS_ID,
-    secretAccessKey: Config.AWS_SECRET_KEY
+    secretAccessKey: Config.AWS_SECRET_KEY,
+    region: 'us-west-2', 
   })
   var options = {
     uri: uri,

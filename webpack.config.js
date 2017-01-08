@@ -4,6 +4,7 @@ var path = require('path');
 var loaders = require('./webpack.loaders');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var DashboardPlugin = require('webpack-dashboard/plugin');
+var BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 const HOST = process.env.HOST || "127.0.0.1";
 const PORT = process.env.PORT || "3000";
@@ -80,7 +81,11 @@ module.exports = {
       FIREBASE_STORAGE_BUCKET:'inphooddb-e0dfd.appspot.com',
       AWS_ACCESS_ID: 'AKIAI25XHNISG4KDDM3Q',
       AWS_SECRET_KEY: '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'
-    })
+    }),
+    'react': 'React',
+    'react-dom': 'ReactDOM',
+    'aws-sdk': 'AWS',
+    'react-redux': 'ReactRedux'
   },
   node: {
     console: true,
@@ -92,6 +97,7 @@ module.exports = {
 		new webpack.NoErrorsPlugin(),
 		new webpack.HotModuleReplacementPlugin(),
 		new DashboardPlugin(),
+    // new BundleAnalyzerPlugin(),
 		new HtmlWebpackPlugin({
 			template: './src/index.html'
 		}),

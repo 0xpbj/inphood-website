@@ -9,14 +9,14 @@ export default class NutritionEstimateJSX extends React.Component {
     // ************************************************************************
     // USING OUR NUTRITION MODEL
     // ************************************************************************
-    if (ingredientComposite != "") {
+    if (ingredientComposite != undefined) {
       return(
         <div>
           <section style={myStyles.performanceFacts}>
             <header style={myStyles.performanceFactsHeader}>
               <h1 style={myStyles.performanceFactsTitle}>Nutrition Estimate</h1>
               <p style={myStyles.perfomanceFactsHeaderElementP}>
-                Serving Size {ingredientComposite.getServingAmount()} {this.props.getServingUnit()}</p>
+                Serving Size {ingredientComposite.getServingAmount()} {ingredientComposite.getServingUnit()}</p>
             </header>
             <table style={myStyles.performanceFactsTable}>
               <thead>
@@ -34,11 +34,11 @@ export default class NutritionEstimateJSX extends React.Component {
                 <tr>
                   <th colSpan={2} style={myStyles.performanceFactsTableElementTh}>
                     <b>Calories </b>
-                    {this.props.totalCal}
+                    {ingredientComposite.getCalories()}
                   </th>
                   <td style={myStyles.performanceFactsTableElementTd}>
                     Calories from Fat&nbsp;
-                    {this.props.totalFatCal}
+                    {ingredientComposite.getCaloriesFromFat()}
                   </td>
                 </tr>
 
@@ -54,10 +54,11 @@ export default class NutritionEstimateJSX extends React.Component {
                 <tr>
                   <th colSpan={2} style={myStyles.performanceFactsTableElementTh}>
                     <b>Total Fat </b>
-                    {this.props.totalFat}
+                    {ingredientComposite.getTotalFatPerServing()}
+                    {ingredientComposite.getTotalFatUnits()}
                   </th>
                   <td style={myStyles.performanceFactsTableElementTdLastChild}>
-                    <b>{this.props.totalFatDayPerc}</b>
+                    <b>{ingredientComposite.getTotalFatRDA()}</b>
                   </td>
                 </tr>
 
@@ -68,10 +69,11 @@ export default class NutritionEstimateJSX extends React.Component {
                   </td>
                   <th style={myStyles.performanceFactsTableElementTh}>
                     Saturated Fat&nbsp;
-                    {this.props.saturatedFat}
+                    {ingredientComposite.getSaturatedFatPerServing()}
+                    {ingredientComposite.getSaturatedFatUnits()}
                   </th>
                   <td style={myStyles.performanceFactsTableElementTdLastChild}>
-                    <b>{this.props.saturatedFatDayPerc}</b>
+                    <b>{ingredientComposite.getTotalFatRDA()}</b>
                   </td>
                 </tr>
 
@@ -82,7 +84,8 @@ export default class NutritionEstimateJSX extends React.Component {
                   </td>
                   <th style={myStyles.performanceFactsTableElementTh}>
                     Trans Fat&nbsp;
-                    {this.props.transFat}
+                    {ingredientComposite.getTransFatPerServing()}
+                    {ingredientComposite.getTransFatUnit()}
                   </th>
                   <td style={myStyles.performanceFactsTableElementTdLastChild}>
                   </td>
@@ -91,30 +94,33 @@ export default class NutritionEstimateJSX extends React.Component {
                 <tr>
                   <th colSpan={2} style={myStyles.performanceFactsTableElementTh}>
                     <b>Cholesterol </b>
-                    {this.props.cholesterol}
+                    {ingredientComposite.getCholestorol()}
+                    {ingredientComposite.getCholestorolUnit()}
                   </th>
                   <td style={myStyles.performanceFactsTableElementTdLastChild}>
-                    <b>{this.props.cholesterolDayPerc}</b>
+                    <b>{ingredientComposite.getCholestorolRDA()}</b>
                   </td>
                 </tr>
 
                 <tr>
                   <th colSpan={2} style={myStyles.performanceFactsTableElementTh}>
                     <b>Sodium </b>
-                    {this.props.sodium}
+                    {ingredientComposite.getSodium()}
+                    {ingredientComposite.getSodumUnit()}
                   </th>
                   <td style={myStyles.performanceFactsTableElementTdLastChild}>
-                    <b>{this.props.sodiumDayPerc}</b>
+                    <b>{ingredientComposite.getSodiumRDA()}</b>
                   </td>
                 </tr>
 
                 <tr>
                   <th colSpan={2} style={myStyles.performanceFactsTableElementTh}>
                     <b>Total Carbohydrate </b>
-                    {this.props.totalCarb}
+                    {ingredientComposite.getTotalCarbohydratePerServing()}
+                    {ingredientComposite.getTotalCarbohydrateUnit()}
                   </th>
                   <td style={myStyles.performanceFactsTableElementTdLastChild}>
-                    <b>{this.props.totalCarbDayPerc}</b>
+                    <b>{ingredientComposite.getTotalCarbohydrateRDA()}</b>
                   </td>
                 </tr>
 
@@ -125,10 +131,11 @@ export default class NutritionEstimateJSX extends React.Component {
                   </td>
                   <th style={myStyles.performanceFactsTableElementTh}>
                     Dietary Fiber&nbsp;
-                    {this.props.fiber}
+                    {ingredientComposite.getDietaryFiber()}
+                    {ingredientComposite.getDietaryFiberUnit()}
                   </th>
                   <td style={myStyles.performanceFactsTableElementTdLastChild}>
-                    <b>{this.props.fiberDayPerc}</b>
+                    <b>{ingredientComposite.getDietaryFiberRDA()}</b>
                   </td>
                 </tr>
 
@@ -139,7 +146,8 @@ export default class NutritionEstimateJSX extends React.Component {
                   </td>
                   <th style={myStyles.performanceFactsTableElementTh}>
                     Sugars&nbsp;
-                    {this.props.sugars}
+                    {ingredientComposite.getSugars()}
+                    {ingredientComposite.getSugarsUnit()}
                   </th>
                   <td style={myStyles.performanceFactsTableElementTdLastChild}>
                   </td>
@@ -148,7 +156,8 @@ export default class NutritionEstimateJSX extends React.Component {
                 <tr style={myStyles.thickEnd}>
                   <th colSpan={2} style={myStyles.performanceFactsTableElementTh}>
                     <b>Protein </b>
-                    {this.props.protein}
+                    {ingredientComposite.getTotalProteinPerServing()}
+                    {ingredientComposite.getTotalProteinUnit()}
                   </th>
                   <td style={myStyles.performanceFactsTableElementTdLastChild}>
                   </td>

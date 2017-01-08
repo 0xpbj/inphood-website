@@ -66,7 +66,6 @@ export default class NutritionEstimateStyles {
   // }
   performanceFactsTableElementTdLastChild = {
     fontWeight: 'normal',
-    textAlign: 'left',
     paddingTop: '0.25rem',
     paddingBottom: '0.25rem',
     borderTop: '1px',

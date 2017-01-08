@@ -32,7 +32,7 @@ export default class Nutrition extends React.Component {
 
     const key = sliderId
     var ingredientComposite = this.state.ingredientComposite
-    ingredientComposite.scaleIngredient(key, value)
+    ingredientComposite.scaleIngredientToPercent(key, value)
 
     this.setState({
       sliderValueDict: sliderValueDict,
@@ -41,6 +41,7 @@ export default class Nutrition extends React.Component {
   }
 
   componentWillMount() {
+    // debugger;
     console.log("componentWillMount -----------------------------")
     // Process the caption for matches in the FDA database:
     //
@@ -51,9 +52,10 @@ export default class Nutrition extends React.Component {
 
     // Create the slider values dictionary state and initialize each one to 100:
     //
+    const sliderInitValue = 100.0
     var sliderValueDict = {}
     for (var tag in this.state.nutAlg.getMatches()) {
-      sliderValueDict[tag] = 100
+      sliderValueDict[tag] = sliderInitValue
 
       const key = this.state.nutAlg.getBestMatchForTag(tag)
       const dataForKey = this.state.nutAlg.getDataForKey(key)
@@ -62,7 +64,7 @@ export default class Nutrition extends React.Component {
       ingredient.initializeSingle(key, tag, dataForKey)
 
       var ingredientComposite = this.state.ingredientComposite
-      ingredientComposite.addIngredient(key, ingredient)
+      ingredientComposite.addIngredient(key, ingredient, sliderInitValue)
     }
 
     this.setState({
@@ -160,7 +162,7 @@ export default class Nutrition extends React.Component {
         </div>
         <div>
           <Label
-            nutritionModel={this.state.ingredientComposite.getScaledCompositeIngredient()}
+            nutritionModel={this.state.ingredientComposite.getScaledCompositeIngredient}
             servingAmount="100" servingUnit="g"
             totalCal="200" totalFatCal="130"
             totalFat={totalFatStr} totalFatDayPerc={fatRDAStr}

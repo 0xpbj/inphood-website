@@ -6,6 +6,9 @@ import {Ingredient, NutritionModel} from '../models/NutritionModel'
 
 import Button from 'react-bootstrap/lib/Button'
 import Slider from 'react-toolbox/lib/slider'
+import FormGroup from 'react-bootstrap/lib/FormGroup'
+import FormControl from 'react-bootstrap/lib/FormControl'
+import ControlLabel from 'react-bootstrap/lib/ControlLabel'
 // import { VictoryPie } from 'victory'
 
 export default class Nutrition extends React.Component {
@@ -70,8 +73,6 @@ export default class Nutrition extends React.Component {
   }
 
   render() {
-    console.log("Nutrition render() ----------------------------------")
-
     // 1. Separate out the content of the photo caption into the following
     //    structure for each ingredient:
     //        ingredient quantity unit nutrition_info
@@ -177,6 +178,12 @@ export default class Nutrition extends React.Component {
             x="category"
             y="amount"
           />*/}
+          <FormGroup>
+            <ControlLabel>Share URL</ControlLabel>
+            <FormControl.Static>
+              {this.props.resultUrl}
+            </FormControl.Static>
+          </FormGroup>
       </div>
     )
   }

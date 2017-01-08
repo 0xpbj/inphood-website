@@ -22,3 +22,9 @@ export const AN_CLEAR_DATA = 'AN_CLEAR_DATA'
 export const AN_ADD_CAPTION = 'AN_ADD_CAPTION'
 export const AN_UPLOAD_PHOTO = 'AN_UPLOAD_PHOTO'
 export const AN_SELECTED_PHOTO = 'AN_SELECTED_PHOTO'
+
+
+// Results Actions
+export const GET_LABEL_ID = 'GET_LABEL_ID'
+export const LABEL_DATA = 'LABEL_DATA'
+export const RESULT_URL = 'RESULT_URL'

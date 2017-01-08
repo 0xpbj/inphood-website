@@ -8,6 +8,7 @@ import {
   AN_UPLOAD_PHOTO,
   AN_SELECTED_PHOTO,
   AN_CLEAR_DATA,
+  GET_LABEL_ID,
 } from '../constants/ActionTypes'
 
 export function igUploadPhoto() {
@@ -64,5 +65,12 @@ export function anSelectedPhoto(photo) {
 export function anClearData() {
   return {
     type: AN_CLEAR_DATA,
+  }
+}
+
+export function getLabelId(labelId) {
+  return {
+    type: GET_LABEL_ID,
+    labelId
   }
 }

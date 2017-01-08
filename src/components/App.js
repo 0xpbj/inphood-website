@@ -7,7 +7,7 @@ import browserHistory from 'react-router/lib/browserHistory'
 import Home from "../containers/HomeContainer"
 import Layout from "./pages/Layout"
 import About from "./pages/About"
-import Label from "./pages/Label"
+import Results from "../containers/ResultsContainer"
 import './styles/App.css'
 import './styles/custom-styles.css'
 
@@ -17,8 +17,7 @@ export default class App extends React.Component {
       <Router onUpdate={() => this.props.fireTracking()} history={browserHistory}>
         <Route path="/" component={Layout}>
           <IndexRoute component={Home}></IndexRoute>
-          <Route path="label" name="label" component={Home}></Route>
-          <Route path="label/:labelId" name="label" component={Label}></Route>
+          <Route path="/:labelId" name="label" component={Results}></Route>
           <Route path="about" name="about" component={About}></Route>
         </Route>
       </Router>

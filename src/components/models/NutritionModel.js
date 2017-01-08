@@ -53,13 +53,25 @@ class IngredientTuple {
   setScale(scale) {
     this._scale = scale
   }
+
+  getScale() {
+    return this._scale
+  }
+
+  getIngredient() {
+    return this._ingredient
+  }
 }
 
 export class Ingredient {
 
+  constructor() {
+    this._ndbno = -1
+  }
+
   // This constructor initializes a NutritionItem from the DB/JSON which
   // contains FDA data per 100g of ingredient.
-  constructor(key, tag, dataForKey) {
+  initializeSingle(key, tag, dataForKey) {
     this._key = key
     this._tag = tag
 
@@ -102,5 +114,61 @@ export class Ingredient {
     //
     //   National Database Number
     this._ndbno = dataForKey['NDB']
+  }
+
+  initializeComposite(ingredientTuples) {
+    for (var ingredientTuple in ingredientTuples) {
+      scaleFactor = ingredientTuple.getScale()
+      ingredient = ingredientTuple.getIngredient()
+
+      // TODO add remaining checks for serving unit compatibility or appropriate
+      // conversions:
+
+      // Add the ingredients together to get a composite label
+      //
+      //   Generic measures/units:
+      throwIfUnitMismatch('serving size', this._servingUnits,
+        ingredient._servingUnits, ingredient._tag, ingredient._key)
+      // Only need this assingment on the first ingredient, but in a hurry ...
+      this._servingUnits = ingredient._servingUnits
+      this._servingAmount += ingredient._servingAmount * scaleFactor
+      // TODO: pretty sure this works for calories (everything is linear
+      // I believe). Need to confirm.
+      this._calories += ingredient._calories * scaleFactor
+      this._caloriesFromFat += ingredient._caloriesFromFat * scaleFactor
+      //
+      //   Fat measures/metrics:
+      throwIfUnitMismatch('total fat', this._totalFatUnits,
+        ingredient._totalFatUnits, ingredient._tag, ingredient._key)
+      // Only need this assingment on the first ingredient, but in a hurry ...
+      this._totalFatUnits = ingredient._totalFatUnits
+      this._totalFatPerServing += ingredient._totalFatPerServing * scaleFactor
+      this._totalFatRDA += ingredient._totalFatRDA * scaleFactor
+      this._saturatedFatPerServing += ingredient._saturatedFatPerServing * scaleFactor
+      this._transFatPerServing += ingredient._transFatPerServing * scaleFactor
+      //
+      //   Cholesterol & Sodium measures/metrics:
+      this._cholesterol += ingredient._cholesterol * scaleFactor
+      this._sodium += ingredient._sodium * scaleFactor
+      //
+      //   Carbohydrate measures/metrics:
+      this._totalCarbohydratePerServing += ingredient._totalCarbohydratePerServing * scaleFactor
+      this._dietaryFiber += ingredient._dietaryFiber * scaleFactor
+      this._sugars += ingredient._sugars * scaleFactor
+      //
+      //   Protein measures/metrics:
+      this._totalProteinPerServing += ingredient._totalProteinPerServing * scaleFactor
+    }
+  }
+
+  throwIfUnitMismatch(category, mainUnit, otherUnit, otherTag, otherKey) {
+    if (mainUnit != "") {
+      if (mainUnit != otherUnit) {
+        throw "Ingredient " + otherTag + "(" + otherKey
+              + ") uses different units, " + otherUnit
+              + ", from other ingredients: " + mainUnit + " "
+              + category + "."
+      }
+    }
   }
 }

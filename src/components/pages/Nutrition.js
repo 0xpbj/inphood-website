@@ -2,7 +2,7 @@ import React from "react"
 import NutritionAlg from '../../algorithms/NutritionAlg'
 import Label from './NutritionEstimateJSX'
 
-import {Ingredient} from '../models/NutritionModel'
+import {Ingredient, NutritionModel} from '../models/NutritionModel'
 
 import Button from 'react-bootstrap/lib/Button'
 import Slider from 'react-toolbox/lib/slider'
@@ -14,6 +14,7 @@ export default class Nutrition extends React.Component {
 
     this.state = {
       sliderValueDict: {},
+      // ingredientComposite = new NutritionModel(),
       matches: [],
       nutAlg: new NutritionAlg()
     };
@@ -60,7 +61,10 @@ export default class Nutrition extends React.Component {
     //        ingredient quantity unit nutrition_info
 
     // TODO: move the ingredients array/construction to somewhere else for higher perf/lower mem
-    var ingredients = []
+
+    // TODO: move this var to state
+
+    var ingredientComposite = new NutritionModel()
 
     var sliders = []
     var notFound = ""
@@ -83,7 +87,9 @@ export default class Nutrition extends React.Component {
 
       console.log("Value for tag '" + tag + "' = " + this.state.sliderValueDict[tag])
 
-      ingredients.push(new Ingredient(key, tag, dataForKey))
+      var ingredient = new Ingredient()
+      ingredient.initializeSingle(key, tag, dataForKey)
+      ingredientComposite.addIngredient(key, ingredient)
 
       sliders.push(
         <div key={tag}>

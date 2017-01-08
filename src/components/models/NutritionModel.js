@@ -29,7 +29,7 @@ export class NutritionModel {
   scaleIngredientToUnit(key, amount, unit) {
     // TODO:
     //  - determine the scale factor (percent) by converting the given amount
-    // and unit to the Ingredient's _servingUnits and then determining the factor
+    // and unit to the Ingredient's _servingUnit and then determining the factor
     // by comparing to the Ingredient's _servingAmount.
   }
 
@@ -62,10 +62,52 @@ class IngredientTuple {
 }
 
 export class Ingredient {
-
   constructor() {
+    this.decimalPlaces = 2
+
     this._ndbno = -1
     this.scaleGettersTo = 1.0
+    //
+    //   Generic measures/Unit:
+    this._servingAmount = 0
+    this._servingUnit = 'g'
+    this._calories = 0
+    this._caloriesFromFat = 0
+    //
+    //   Fat measures/metrics:
+    this._totalFatPerServing = 0
+    this._totalFatUnit = 'g'
+    this._totalFatRDA = 0
+    this._saturatedFatPerServing = 0
+    this._saturatedFatUnit = 'g'
+    this._saturatedFatRDA = 0
+    this._transFatPerServing = 0
+    this._transFatUnit = 'g'
+    //
+    //   Cholesterol & Sodium measures/metrics:
+    this._cholesterol = 0
+    this._cholesterolUnit = 'mg'
+    this._cholesterolRDA = 0
+    this._sodium = 0
+    this._sodiumUnit = 'mg'
+    this._sodiumRDA = 0
+    //
+    //   Carbohydrate measures/metrics:
+    this._totalCarbohydratePerServing = 0
+    this._totalCarbohydrateUnit = 'g'
+    this._totalCarbohydrateRDA = 0
+    this._dietaryFiber = 0
+    this._dietaryFiberUnit = 'g'
+    this._dietaryFiberRDA = 0
+    this._sugars = 0
+    this._sugarsUnit = 'g'
+    //
+    //   Protein measures/metrics:
+    this._totalProteinPerServing = 0
+    this._totalProteinUnit = 'g'
+    //
+    //   National Database Number
+    this._ndbno = -1
   }
 
   // This constructor initializes a NutritionItem from the DB/JSON which
@@ -78,51 +120,52 @@ export class Ingredient {
 
     // Pull data from DB/JSON to initialize remainder of class instance:
     //
-    //   Generic measures/units:
+    //   Generic measures/Unit:
     this._servingAmount = 100
-    this._servingUnits = 'g'
+    this._servingUnit = 'g'
     this._calories = TODO
     this._caloriesFromFat = TODO
     //
     //   Fat measures/metrics:
-    this._totalFatPerServing = dataForKey['Fat']
-    this._totalFatUnits = 'g'
+    this._totalFatPerServing = parseFloat(dataForKey['Fat'])
+    this._totalFatUnit = 'g'
     this._totalFatRDA = TODO
     this._saturatedFatPerServing = TODO
-    this._saturatedFatUnits = 'g'
+    this._saturatedFatUnit = 'g'
     this._saturatedFatRDA = TODO
     this._transFatPerServing = TODO
-    this._transFatUnits = 'g'
+    this._transFatUnit = 'g'
     //
     //   Cholesterol & Sodium measures/metrics:
     this._cholesterol = TODO
-    this._cholesterolUnits = 'mg'
+    this._cholesterolUnit = 'mg'
     this._cholesterolRDA = TODO
     this._sodium = TODO
-    this._sodiumUnits = 'mg'
+    this._sodiumUnit = 'mg'
     this._sodiumRDA = TODO
     //
     //   Carbohydrate measures/metrics:
-    this._totalCarbohydratePerServing = dataForKey['Carbohydrate']
-    this._totalCarbohydrateUnits = 'g'
+    this._totalCarbohydratePerServing = parseFloat(dataForKey['Carbohydrate'])
+    this._totalCarbohydrateUnit = 'g'
     this._totalCarbohydrateRDA = TODO
     this._dietaryFiber = TODO
-    this._dietaryFiberUnits = 'g'
+    this._dietaryFiberUnit = 'g'
     this._dietaryFiberRDA = TODO
     this._sugars = TODO
-    this._sugarsUnits = 'g'
+    this._sugarsUnit = 'g'
     //
     //   Protein measures/metrics:
-    this._totalProteinPerServing = dataForKey['Protein']
-    this._totalProteinUnits = 'g'
+    this._totalProteinPerServing = parseFloat(dataForKey['Protein'])
+    this._totalProteinUnit = 'g'
     //
     //   National Database Number
-    this._ndbno = dataForKey['NDB']
+    this._ndbno = parseInt(dataForKey['NDB'])
   }
 
   initializeComposite(ingredientTuples) {
-    for (var ingredientTuple in ingredientTuples) {
-      const scaleFactor = ingredientTuple.getScale()
+    for (var key in ingredientTuples) {
+      var ingredientTuple = ingredientTuples[key]
+      const scaleFactor = ingredientTuple.getScale() / 100.0
       const ingredient = ingredientTuple.getIngredient()
 
       // TODO add remaining checks for serving unit compatibility or appropriate
@@ -130,11 +173,11 @@ export class Ingredient {
 
       // Add the ingredients together to get a composite label
       //
-      //   Generic measures/units:
-      throwIfUnitMismatch('serving size', this._servingUnits,
-        ingredient._servingUnits, ingredient._tag, ingredient._key)
+      //   Generic measures/Unit:
+      this.throwIfUnitMismatch('serving size', this._servingUnit,
+        ingredient._servingUnit, ingredient._tag, ingredient._key)
       // Only need this assingment on the first ingredient, but in a hurry ...
-      this._servingUnits = ingredient._servingUnits
+      this._servingUnit = ingredient._servingUnit
       this._servingAmount += ingredient._servingAmount * scaleFactor
       // TODO: pretty sure this works for calories (everything is linear
       // I believe). Need to confirm.
@@ -142,10 +185,10 @@ export class Ingredient {
       this._caloriesFromFat += ingredient._caloriesFromFat * scaleFactor
       //
       //   Fat measures/metrics:
-      throwIfUnitMismatch('total fat', this._totalFatUnits,
-        ingredient._totalFatUnits, ingredient._tag, ingredient._key)
+      this.throwIfUnitMismatch('total fat', this._totalFatUnit,
+        ingredient._totalFatUnit, ingredient._tag, ingredient._key)
       // Only need this assingment on the first ingredient, but in a hurry ...
-      this._totalFatUnits = ingredient._totalFatUnits
+      this._totalFatUnit = ingredient._totalFatUnit
       this._totalFatPerServing += ingredient._totalFatPerServing * scaleFactor
       this._totalFatRDA += ingredient._totalFatRDA * scaleFactor
       this._saturatedFatPerServing += ingredient._saturatedFatPerServing * scaleFactor
@@ -176,7 +219,7 @@ export class Ingredient {
   }
 
   getServingAmount() {
-    return this._servingAmount * this.scaleGettersTo
+    return (this._servingAmount * this.scaleGettersTo).toFixed(this.decimalPlaces)
   }
 
   getServingUnit() {
@@ -192,106 +235,106 @@ export class Ingredient {
   }
 
   getTotalFatPerServing() {
-    return this._totalFatPerServing * this.scaleGettersTo
+    return (this._totalFatPerServing * this.scaleGettersTo).toFixed(this.decimalPlaces)
   }
 
   getTotalFatUnit() {
-    return this._totalFatUnits
+    return this._totalFatUnit
   }
 
   getTotalFatRDA() {
-    return this._totalFatRDA * this.scaleGettersTo
+    return (this._totalFatRDA * this.scaleGettersTo).toFixed(this.decimalPlaces)
   }
 
   getSaturatedFatPerServing() {
-    return this._saturatedFatPerServing * this.scaleGettersTo
+    return (this._saturatedFatPerServing * this.scaleGettersTo).toFixed(this.decimalPlaces)
   }
 
   getSaturatedFatUnit() {
-    return this._saturatedFatUnits
+    return this._saturatedFatUnit
   }
 
   getSaturatedFatRDA() {
-    return this._saturatedFatRDA
+    return this._saturatedFatRDA.toFixed(this.decimalPlaces)
   }
 
   getTransFatPerServing() {
-    return this._transFatPerServing * this.scaleGettersTo
+    return (this._transFatPerServing * this.scaleGettersTo).toFixed(this.decimalPlaces)
   }
 
   getTransFatUnit() {
-    return this._transFatUnits
+    return this._transFatUnit
   }
 
   getCholestorol() {
-    return this._cholesterol * this.scaleGettersTo
+    return (this._cholesterol * this.scaleGettersTo).toFixed(this.decimalPlaces)
   }
 
   getCholestorolUnit() {
-    return this._cholesterolUnits
+    return this._cholesterolUnit
   }
 
   getCholestorolRDA() {
-    return this._cholesterolRDA
+    return this._cholesterolRDA.toFixed(this.decimalPlaces)
   }
 
   getSodium() {
-    return this._sodium
+    return this._sodium.toFixed(this.decimalPlaces)
   }
 
   getSodumUnit() {
-    return this._sodiumUnits
+    return this._sodiumUnit
   }
 
   getSodiumRDA() {
-    return this._sodiumRDA
+    return this._sodiumRDA.toFixed(this.decimalPlaces)
   }
 
   getTotalCarbohydratePerServing() {
-    return this._totalCarbohydratePerServing
+    return this._totalCarbohydratePerServing.toFixed(this.decimalPlaces)
   }
 
   getTotalCarbohydrateUnit() {
-    return this._totalCarbohydrateUnits
+    return this._totalCarbohydrateUnit
   }
 
   getTotalCarbohydrateRDA() {
-    return this._totalCarbohydrateRDA
+    return this._totalCarbohydrateRDA.toFixed(this.decimalPlaces)
   }
 
   getDietaryFiber() {
-    return this._dietaryFiber
+    return this._dietaryFiber.toFixed(this.decimalPlaces)
   }
 
   getDietaryFiberUnit() {
-    return this._dietaryFiberUnits
+    return this._dietaryFiberUnit
   }
 
   getDietaryFiberRDA() {
-    return this._dietaryFiberRDA
+    return this._dietaryFiberRDA.toFixed(this.decimalPlaces)
   }
 
   getSugars() {
-    return this._sugars
+    return this._sugars.toFixed(this.decimalPlaces)
   }
 
   getSugarsUnit() {
-    return this.sugarsUnits
+    return this.sugarsUnit
   }
 
   getTotalProteinPerServing() {
-    return this._totalProteinPerServing
+    return this._totalProteinPerServing.toFixed(this.decimalPlaces)
   }
 
   getTotalProteinUnit() {
-    return this._totalProteinUnits
+    return this._totalProteinUnit
   }
 
   throwIfUnitMismatch(category, mainUnit, otherUnit, otherTag, otherKey) {
-    if (mainUnit != "") {
+    if (mainUnit != undefined) {
       if (mainUnit != otherUnit) {
         throw "Ingredient " + otherTag + "(" + otherKey
-              + ") uses different units, " + otherUnit
+              + ") uses different Unit, " + otherUnit
               + ", from other ingredients: " + mainUnit + " "
               + category + "."
       }

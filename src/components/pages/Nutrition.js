@@ -17,7 +17,7 @@ export default class Nutrition extends React.Component {
 
     this.state = {
       sliderValueDict: {},
-      ingredientComposite: new NutritionModel(),
+      nutritionModel: new NutritionModel(),
       matches: [],
       nutAlg: new NutritionAlg()
     };
@@ -31,12 +31,12 @@ export default class Nutrition extends React.Component {
     sliderValueDict[sliderId] = value
 
     const key = sliderId
-    var ingredientComposite = this.state.ingredientComposite
-    ingredientComposite.scaleIngredientToPercent(key, value)
+    var nutritionModel = this.state.nutritionModel
+    nutritionModel.scaleIngredientToPercent(key, value)
 
     this.setState({
       sliderValueDict: sliderValueDict,
-      ingredientComposite: ingredientComposite
+      nutritionModel: nutritionModel
     })
   }
 
@@ -55,22 +55,23 @@ export default class Nutrition extends React.Component {
     const sliderInitValue = 100.0
     var sliderValueDict = {}
     for (var tag in this.state.nutAlg.getMatches()) {
-      sliderValueDict[tag] = sliderInitValue
+      // sliderValueDict[tag] = sliderInitValue
 
       const key = this.state.nutAlg.getBestMatchForTag(tag)
       const dataForKey = this.state.nutAlg.getDataForKey(key)
 
+      sliderValueDict[key] = sliderInitValue
       var ingredient = new Ingredient()
       ingredient.initializeSingle(key, tag, dataForKey)
 
-      var ingredientComposite = this.state.ingredientComposite
-      ingredientComposite.addIngredient(key, ingredient, sliderInitValue)
+      var nutritionModel = this.state.nutritionModel
+      nutritionModel.addIngredient(key, ingredient, sliderInitValue)
     }
 
     this.setState({
       matches: this.state.nutAlg.getMatches(),
       sliderValueDict: sliderValueDict,
-      ingredientComposite: ingredientComposite
+      nutritionModel: nutritionModel
     })
   }
 
@@ -85,7 +86,7 @@ export default class Nutrition extends React.Component {
 
     // TODO: move this var to state
 
-    // var ingredientComposite = new NutritionModel()
+    // var nutritionModel = new NutritionModel()
 
     var sliders = []
     var notFound = ""
@@ -102,22 +103,22 @@ export default class Nutrition extends React.Component {
 
       const dataForKey = this.state.nutAlg.getDataForKey(key)
       // TODO: need a big number (non float limited version to do real math here)
-      fat += parseFloat(dataForKey['Fat'] * this.state.sliderValueDict[tag] / 100)
-      carbs += parseFloat(dataForKey['Carbohydrate'] * this.state.sliderValueDict[tag] / 100)
-      protein += parseFloat(dataForKey['Protein'] * this.state.sliderValueDict[tag] / 100)
+      // fat += parseFloat(dataForKey['Fat'] * this.state.sliderValueDict[tag] / 100)
+      // carbs += parseFloat(dataForKey['Carbohydrate'] * this.state.sliderValueDict[tag] / 100)
+      // protein += parseFloat(dataForKey['Protein'] * this.state.sliderValueDict[tag] / 100)
 
-      console.log("Value for tag '" + tag + "' = " + this.state.sliderValueDict[tag])
+      console.log("Value for key '" + key + "' = " + this.state.sliderValueDict[key])
 
       // var ingredient = new Ingredient()
       // ingredient.initializeSingle(key, tag, dataForKey)
-      // ingredientComposite.addIngredient(key, ingredient)
+      // nutritionModel.addIngredient(key, ingredient)
 
       sliders.push(
-        <div key={tag}>
+        <div key={key}>
           <text>{key} (grams)</text>
           <Slider
-            value={this.state.sliderValueDict[tag]}
-            onChange={this.handleSliderValuesChange.bind(this, tag)}
+            value={this.state.sliderValueDict[key]}
+            onChange={this.handleSliderValuesChange.bind(this, key)}
             min={0}
             max={100}
             editable/>
@@ -130,17 +131,17 @@ export default class Nutrition extends React.Component {
     }
 
     // Numbers based on 2000 calorie diet (https://www.dsld.nlm.nih.gov/dsld/dailyvalue.jsp)
-    const fatRDA = 100.0 * fat / 65.0
-    const carbRDA = 100.0 * carbs / 300.0
-    const proteinRDA = 100.0 * protein / 50.0
-
-    const totalFatStr = fat.toFixed(2) + "g"
-    const fatRDAStr = fatRDA.toFixed(2) + "%"
-
-    const totalCarbsStr = carbs.toFixed(2) + "g"
-    const carbRDAStr = carbRDA.toFixed(2) + "%"
-
-    const totalProteinStr = protein.toFixed(2) + "g"
+    // const fatRDA = 100.0 * fat / 65.0
+    // const carbRDA = 100.0 * carbs / 300.0
+    // const proteinRDA = 100.0 * protein / 50.0
+    //
+    // const totalFatStr = fat.toFixed(2) + "g"
+    // const fatRDAStr = fatRDA.toFixed(2) + "%"
+    //
+    // const totalCarbsStr = carbs.toFixed(2) + "g"
+    // const carbRDAStr = carbRDA.toFixed(2) + "%"
+    //
+    // const totalProteinStr = protein.toFixed(2) + "g"
 
     const tagString = this.props.nutrition.caption
 
@@ -156,25 +157,15 @@ export default class Nutrition extends React.Component {
           <Button className="btn-primary-spacing" bsStyle="success" onClick={() => this.props.goToGallery()}>Gallery</Button>
         </div>
         <div>
+          <Label
+            nutritionModel={this.state.nutritionModel}/>
+        </div>
+        <div>
           <text>Nutrition info for "{tagString}":</text><br/>
           <text>{notFound}</text><br/><br/>
           {sliders}
         </div>
-        <div>
-          <Label
-            nutritionModel={this.state.ingredientComposite.getScaledCompositeIngredient}
-            servingAmount="100" servingUnit="g"
-            totalCal="200" totalFatCal="130"
-            totalFat={totalFatStr} totalFatDayPerc={fatRDAStr}
-            saturatedFat="9g" saturatedFatDayPerc="22%"
-            transFat="0g"
-            cholesterol="55mg" cholesterolDayPerc="80%"
-            sodium="40mg" sodiumDayPerc="2%"
-            totalCarb={totalCarbsStr} totalCarbDayPerc={carbRDAStr}
-            fiber="1g" fiberDayPerc="4%"
-            sugars="14g"
-            protein={totalProteinStr}/>
-        </div>
+
         {/*<VictoryPie
           data={pieChartData}
             x="category"

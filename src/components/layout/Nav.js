@@ -1,4 +1,4 @@
-import React from "react"
+var React = require('react')
 import { IndexLink, Link } from "react-router"
 
 export default class Nav extends React.Component {
@@ -15,8 +15,6 @@ export default class Nav extends React.Component {
   render() {
     const { location } = this.props
     const { collapsed } = this.state
-    const homeClass = location.pathname === "/" ? "active" : ""
-    const aboutClass = location.pathname.match(/^\/about/) ? "active" : ""
     const navClass = collapsed ? "collapse" : ""
     return (
       <nav className="navbar navbar-inverse navbar-fixed-top" role="navigation">
@@ -31,10 +29,10 @@ export default class Nav extends React.Component {
           </div>
           <div className={"navbar-collapse " + navClass} id="bs-example-navbar-collapse-1">
             <ul className="nav navbar-nav">
-              <li className={homeClass}>
+              <li activeClassName="active" onlyActiveOnIndex={true}>
                 <IndexLink to="/" onClick={this.toggleCollapse.bind(this)}>Home</IndexLink>
               </li>
-              <li className={aboutClass}>
+              <li activeClassName="active">
                 <Link to="about" onClick={this.toggleCollapse.bind(this)}>About</Link>
               </li>
             </ul>

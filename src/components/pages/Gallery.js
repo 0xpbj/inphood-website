@@ -1,6 +1,5 @@
-import React from "react"
+var React = require('react')
 import ReactGA from 'react-ga'
-import Gallery from 'react-grid-gallery'
 import Alert from 'react-bootstrap/lib/Alert'
 import Row from 'react-bootstrap/lib/Row'
 import Col from 'react-bootstrap/lib/Col'
@@ -10,6 +9,9 @@ import Button from 'react-bootstrap/lib/Button'
 import MenuItem from 'react-bootstrap/lib/MenuItem'
 import ControlLabel from 'react-bootstrap/lib/ControlLabel'
 import DropdownButton from 'react-bootstrap/lib/DropdownButton'
+import ImageGallery from 'react-image-gallery'
+
+import "react-image-gallery/styles/css/image-gallery.css"
 
 export default class GalleryGrid extends React.Component {
   constructor() {
@@ -19,9 +21,9 @@ export default class GalleryGrid extends React.Component {
       index: 0
     }
   }
-  toggleGrid(index) {
-    this.setState({grid: !this.state.grid, index})
-    this.props.igSelectedPhoto(this.props.data[index])
+  selectPhoto() {
+    this.setState({grid: !this.state.grid, index: this._imageGallery.getCurrentIndex()})
+    this.props.igSelectedPhoto(this.props.data[this.state.index])
     ReactGA.event({
       category: 'User',
       action: 'Image selected for nutrition information',
@@ -37,12 +39,8 @@ export default class GalleryGrid extends React.Component {
       var images = []
       for (let img of this.props.data) {
         let image = {
-          src: img.picture,
+          original: img.picture,
           thumbnail: img.thumbnail,
-          caption: img.caption.text,
-          // tags: img.tags,
-          thumbnailWidth: 150,
-          thumbnailHeight: 150
         }
         images.push(image)
       }
@@ -64,7 +62,16 @@ export default class GalleryGrid extends React.Component {
           <Row className="show-grid">
             <div className="text-center" style={containerStyle}/>
             <Col md={12}>
-              <Gallery images={images} onClickThumbnail={this.toggleGrid.bind(this)}/>
+              <ImageGallery
+                ref={i => this._imageGallery = i}
+                items={images}
+                slideInterval={2000}
+                showFullscreenButton={false}
+                showNav={false}
+                showPlayButton={false}
+                onClick={this.selectPhoto.bind(this)}
+              />
+              <Button className="btn-primary-spacing" bsStyle="success" onClick={this.selectPhoto.bind(this)}>Select Image</Button>
             </Col>
           </Row>
         </Grid>
@@ -83,7 +90,7 @@ export default class GalleryGrid extends React.Component {
               <textarea rows="4" cols="50">
                 {this.props.data[this.state.index].caption.text}
               </textarea>
-              <Button className="btn-primary-spacing" bsStyle="success" onClick={this.toggleGrid.bind(this)}>Done</Button>
+              <Button className="btn-primary-spacing" bsStyle="success" onClick={() => this.setState({grid: !this.state.grid})}>Done</Button>
               <Button className="btn-primary-spacing" bsStyle="info" onClick={() => this.props.goToNutrition()}>Get Nutrition</Button>
             </Col>
           </Row>

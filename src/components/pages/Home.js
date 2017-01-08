@@ -1,4 +1,4 @@
-import React from "react"
+var React = require('react')
 import ReactGA from 'react-ga'
 
 import Row from 'react-bootstrap/lib/Row'

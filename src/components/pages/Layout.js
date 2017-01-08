@@ -1,4 +1,4 @@
-import React from "react"
+var React = require('react')
 import { Link } from "react-router"
 
 import Footer from "../layout/Footer"

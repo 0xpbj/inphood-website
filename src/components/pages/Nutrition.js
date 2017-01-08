@@ -1,4 +1,4 @@
-import React from "react"
+var React = require('react')
 import NutritionAlg from '../../algorithms/NutritionAlg'
 import Label from './NutritionEstimateJSX'
 

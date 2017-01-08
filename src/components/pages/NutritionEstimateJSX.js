@@ -1,4 +1,4 @@
-import React from "react"
+var React = require('react')
 import Style from "../styles/NutritionEstimate.js"
 
 export default class NutritionEstimateJSX extends React.Component {

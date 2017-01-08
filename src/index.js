@@ -1,5 +1,5 @@
-import React from 'react'
-import { render } from 'react-dom'
+var React = require('react')
+var ReactDOM = require('react-dom')
 import { Provider } from 'react-redux'
 import App from './components/App'
 
@@ -46,7 +46,7 @@ function fireTracking() {
   ReactGA.pageview(window.location.pathname)
 }
 
-render(
+ReactDOM.render(
   <Provider store={store}>
     <App fireTracking={fireTracking}/>
   </Provider>,

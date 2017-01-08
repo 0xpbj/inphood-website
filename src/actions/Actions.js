@@ -9,6 +9,7 @@ import {
   AN_SELECTED_PHOTO,
   AN_CLEAR_DATA,
   GET_LABEL_ID,
+  IG_UPDATED_CAPTION,
 } from '../constants/ActionTypes'
 
 export function igUploadPhoto() {
@@ -72,5 +73,12 @@ export function getLabelId(labelId) {
   return {
     type: GET_LABEL_ID,
     labelId
+  }
+}
+
+export function igUpdatedCaption(caption) {
+  return {
+    type: IG_UPDATED_CAPTION,
+    caption
   }
 }

@@ -15,6 +15,7 @@ export const IG_PROFILE_SUCCESS = 'IG_PROFILE_SUCCESS'
 export const IG_PROFILE_ERROR = 'IG_PROFILE_ERROR'
 export const IG_SELECTED_PHOTO = 'IG_SELECTED_PHOTO'
 export const IG_UPLOAD_PHOTO = 'IG_UPLOAD_PHOTO'
+export const IG_UPDATED_CAPTION = 'IG_UPDATED_CAPTION'
 
 
 // Anonymous Flow Actions

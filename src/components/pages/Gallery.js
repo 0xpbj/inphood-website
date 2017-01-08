@@ -10,6 +10,7 @@ import MenuItem from 'react-bootstrap/lib/MenuItem'
 import ControlLabel from 'react-bootstrap/lib/ControlLabel'
 import DropdownButton from 'react-bootstrap/lib/DropdownButton'
 import ImageGallery from 'react-image-gallery'
+import Chip from 'react-toolbox/lib/chip'
 
 import "react-image-gallery/styles/css/image-gallery.css"
 
@@ -18,7 +19,9 @@ export default class GalleryGrid extends React.Component {
     super()
     this.state = {
       grid: false,
-      index: 0
+      index: 0,
+      chips: [],
+      chipData: []
     }
   }
   selectPhoto() {
@@ -30,6 +33,45 @@ export default class GalleryGrid extends React.Component {
       nonInteraction: false,
       label: 'Social Flow'
     });
+    this.generateChips()
+  }
+  handleDeleteClick(word) {
+    let {chipData} = this.state
+    chipData.delete(word)
+    let caption = ''
+    let chips = []
+    for (let word of chipData) {
+      chips.push(
+        <Chip onDeleteClick={this.handleDeleteClick.bind(this, word)} deletable>{word}</Chip>
+      )
+      caption += word + ' '
+    }
+    this.props.igUpdatedCaption(caption)
+    this.setState({chips, chipData})
+    ReactGA.event({
+      category: 'User',
+      action: 'User removed parsed tags',
+      nonInteraction: false,
+      label: 'Social Flow'
+    });
+  }
+  parseCaption(caption) {
+    let regex = /\w+/g
+    let words = caption.match(regex)
+    var file = require("raw-loader!../../data/complete-001.unique-words.txt")
+    let fileWords = new Set(file.match(regex))
+    let intersection = new Set([...words].filter(x => fileWords.has(x)))
+    return intersection
+  }
+  generateChips() {
+    let chipData = this.parseCaption(this.props.data[this.state.index].caption.text)
+    let chips = []
+    for (let word of chipData) {
+      chips.push(
+        <Chip onDeleteClick={this.handleDeleteClick.bind(this, word)} deletable>{word}</Chip>
+      )
+    }
+    this.setState({chips, chipData})
   }
   render() {
     const containerStyle = {
@@ -87,9 +129,11 @@ export default class GalleryGrid extends React.Component {
             </Col>
             <Col xs={6} md={4}>
               <ControlLabel>Ingredients</ControlLabel>
-              <textarea rows="4" cols="50">
-                {this.props.data[this.state.index].caption.text}
-              </textarea>
+              <div>
+              <section>
+                {this.state.chips}
+              </section>
+              </div>
               <Button className="btn-primary-spacing" bsStyle="success" onClick={() => this.setState({grid: !this.state.grid})}>Done</Button>
               <Button className="btn-primary-spacing" bsStyle="info" onClick={() => this.props.goToNutrition()}>Get Nutrition</Button>
             </Col>

@@ -31,9 +31,9 @@ ReactGA.initialize('UA-88850545-1', {
   }
 })
 
-import sagaMonitor from './sagas/sagaMonitor'
-const sagaMiddleware = createSagaMiddleware({sagaMonitor})
-// const sagaMiddleware = createSagaMiddleware()
+// import sagaMonitor from './sagas/sagaMonitor'
+// const sagaMiddleware = createSagaMiddleware({sagaMonitor})
+const sagaMiddleware = createSagaMiddleware()
 const store = createStore(
   rootReducer,
   applyMiddleware(sagaMiddleware)

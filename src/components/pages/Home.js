@@ -22,7 +22,7 @@ export default class Home extends React.Component {
     super()
     this.state = {
       // TODO: AC for dev set this to true to go direct to Nutrition.js scene
-      nutritionView: true
+      nutritionView: false
     }
   }
   handleClick() {
@@ -100,6 +100,7 @@ export default class Home extends React.Component {
               logout={this.props.igLogoutRequest}
               igSelectedPhoto={(data) => this.props.igSelectedPhoto(data)}
               goToNutrition={(flag) => this.goToNutrition(flag)}
+              igUpdatedCaption={(caption) => this.props.igUpdatedCaption(caption)}
             />
           )
         }

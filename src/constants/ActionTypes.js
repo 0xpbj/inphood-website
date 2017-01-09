@@ -26,6 +26,8 @@ export const AN_SELECTED_PHOTO = 'AN_SELECTED_PHOTO'
 
 
 // Results Actions
-export const GET_LABEL_ID = 'GET_LABEL_ID'
 export const LABEL_DATA = 'LABEL_DATA'
 export const RESULT_URL = 'RESULT_URL'
+export const GET_LABEL_ID = 'GET_LABEL_ID'
+export const POST_LABEL_ID = 'POST_LABEL_ID'
+export const SEND_SERIALIZED_DATA = 'SEND_SERIALIZED_DATA'

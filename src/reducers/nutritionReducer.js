@@ -5,6 +5,7 @@ import {
   IG_SELECTED_PHOTO,
   IG_UPDATED_CAPTION,
   RESULT_URL,
+  SEND_SERIALIZED_DATA,
 } from '../constants/ActionTypes'
 
 const initialState = {
@@ -14,6 +15,9 @@ const initialState = {
   username: '',
   anonymous: false,
   resultUrl: '',
+  key: '',
+  composite: '',
+  full: ''
 }
 export default function nutrition(state = initialState, action) {
   switch (action.type) {
@@ -50,7 +54,15 @@ export default function nutrition(state = initialState, action) {
     case RESULT_URL:
       return {
         ...state,
-        resultUrl: action.url
+        resultUrl: action.url,
+        key: action.key,
+        anonymous: action.anonymous,
+      }
+    case SEND_SERIALIZED_DATA:
+      return {
+        ...state,
+        composite: action.composite,
+        full: action.full
       }
     default:
       return state

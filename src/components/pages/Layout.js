@@ -1,5 +1,4 @@
 var React = require('react')
-import { Link } from "react-router"
 
 import Footer from "../layout/Footer"
 import Nav from "../layout/Nav"

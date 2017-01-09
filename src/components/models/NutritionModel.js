@@ -81,6 +81,25 @@ var RDA2000Cal = {
   fiber: 25,
 }
 
+// The FDA DB sometimes has values of '--' for nutrition metrics, this method
+// converts those to 0.0.  If the value is not '--', this method parses the
+// FDA value to a float and returns it.
+//
+function getFloatFromDB(dataForKey, key) {
+  var data = 0.0
+
+  if (key in dataForKey) {
+    const field = dataForKey[key]
+    if (field == "--") {
+      data = 0.0
+    } else {
+      data = parseFloat(field)
+    }
+  }
+
+  return data
+}
+
 export class Ingredient {
   constructor() {
     this.decimalPlaces = 2
@@ -147,7 +166,7 @@ export class Ingredient {
     this._caloriesFromFat = TODO
     //
     //   Fat measures/metrics:
-    this._totalFatPerServing = parseFloat(dataForKey['Fat'])
+    this._totalFatPerServing = getFloatFromDB(dataForKey, 'Fat')
     this._totalFatUnit = 'g'
     this._totalFatRDA = 100.0 * this._totalFatPerServing / RDA2000Cal.totalFat
     this._saturatedFatPerServing = TODO
@@ -165,7 +184,7 @@ export class Ingredient {
     this._sodiumRDA = 100.0 * this._sodium / RDA2000Cal.sodium
     //
     //   Carbohydrate measures/metrics:
-    this._totalCarbohydratePerServing = parseFloat(dataForKey['Carbohydrate'])
+    this._totalCarbohydratePerServing = getFloatFromDB(dataForKey, 'Carbohydrate')
     this._totalCarbohydrateUnit = 'g'
     this._totalCarbohydrateRDA = 100.0 * this._totalCarbohydratePerServing / RDA2000Cal.carbohydrate
     this._dietaryFiber = TODO
@@ -175,7 +194,7 @@ export class Ingredient {
     this._sugarsUnit = 'g'
     //
     //   Protein measures/metrics:
-    this._totalProteinPerServing = parseFloat(dataForKey['Protein'])
+    this._totalProteinPerServing = getFloatFromDB(dataForKey, 'Protein')
     this._totalProteinUnit = 'g'
     //
     //   National Database Number

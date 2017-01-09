@@ -33,7 +33,7 @@ export default class GalleryGrid extends React.Component {
       nonInteraction: false,
       label: 'Social Flow'
     });
-    this.generateChips()
+    this.generateChips(this._imageGallery.getCurrentIndex())
   }
   handleDeleteClick(word) {
     let {chipData} = this.state
@@ -66,8 +66,8 @@ export default class GalleryGrid extends React.Component {
     // let foodIntersection = new Set([...fileIntersection].filter(x => foodWords.has(x)))
     return fileIntersection
   }
-  generateChips() {
-    let chipData = this.parseCaption(this.props.data[this.state.index].caption.text)
+  generateChips(index) {
+    let chipData = this.parseCaption(this.props.data[index].caption.text)
     let chips = []
     for (let word of chipData) {
       chips.push(

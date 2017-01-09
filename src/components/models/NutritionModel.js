@@ -3,6 +3,16 @@ export class NutritionModel {
     this._ingredients = {}
   }
 
+  serialize() {
+    // Serialize nutritionModel for firebase storage
+    var typeToInstance = {NutritionModel: this}
+    return JSON.stringify(typeToInstance)
+  }
+
+  deserialize(typeToInstanceString) {
+    // TODO:
+  }
+
   addIngredient(key, anIngredient, scale) {
     this._ingredients[key] = new IngredientTuple(anIngredient, scale)
   }
@@ -59,6 +69,16 @@ class IngredientTuple {
   getIngredient() {
     return this._ingredient
   }
+}
+
+// from: https://www.dsld.nlm.nih.gov/dsld/dailyvalue.jsp
+var RDA2000Cal = {
+  totalFat: 65,
+  saturatedFat: 20,
+  cholesterol: 300,
+  sodium: 2400,
+  carbohydrate: 300,
+  fiber: 25,
 }
 
 export class Ingredient {
@@ -129,28 +149,28 @@ export class Ingredient {
     //   Fat measures/metrics:
     this._totalFatPerServing = parseFloat(dataForKey['Fat'])
     this._totalFatUnit = 'g'
-    this._totalFatRDA = TODO
+    this._totalFatRDA = 100.0 * this._totalFatPerServing / RDA2000Cal.totalFat
     this._saturatedFatPerServing = TODO
     this._saturatedFatUnit = 'g'
-    this._saturatedFatRDA = TODO
+    this._saturatedFatRDA = 100.0 * this._saturatedFatPerServing / RDA2000Cal.saturatedFat
     this._transFatPerServing = TODO
     this._transFatUnit = 'g'
     //
     //   Cholesterol & Sodium measures/metrics:
     this._cholesterol = TODO
     this._cholesterolUnit = 'mg'
-    this._cholesterolRDA = TODO
+    this._cholesterolRDA = 100.0 * this._cholesterol / RDA2000Cal.cholesterol
     this._sodium = TODO
     this._sodiumUnit = 'mg'
-    this._sodiumRDA = TODO
+    this._sodiumRDA = 100.0 * this._sodium / RDA2000Cal.sodium
     //
     //   Carbohydrate measures/metrics:
     this._totalCarbohydratePerServing = parseFloat(dataForKey['Carbohydrate'])
     this._totalCarbohydrateUnit = 'g'
-    this._totalCarbohydrateRDA = TODO
+    this._totalCarbohydrateRDA = 100.0 * this._totalCarbohydratePerServing / RDA2000Cal.carbohydrate
     this._dietaryFiber = TODO
     this._dietaryFiberUnit = 'g'
-    this._dietaryFiberRDA = TODO
+    this._dietaryFiberRDA = 100.0 * this._dietaryFiber / RDA2000Cal.fiber
     this._sugars = TODO
     this._sugarsUnit = 'g'
     //
@@ -211,6 +231,16 @@ export class Ingredient {
       //   Protein measures/metrics:
       this._totalProteinPerServing += ingredient._totalProteinPerServing * scaleFactor
     }
+  }
+
+  serialize() {
+    // Serialize nutritionModel for firebase storage
+    var typeToInstance = {Ingredient: this}
+    return JSON.stringify(typeToInstance)
+  }
+
+  deserialize(typeToInstanceString) {
+    // TODO:
   }
 
   setServingAmount() {

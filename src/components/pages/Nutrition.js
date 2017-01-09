@@ -24,9 +24,6 @@ export default class Nutrition extends React.Component {
   }
 
   handleSliderValuesChange(sliderId, value) {
-    console.log("handleSliderValuesChange -----------------------------")
-    console.log("value = " + value + ", sliderId = " + sliderId)
-
     var sliderValueDict = this.state.sliderValueDict
     sliderValueDict[sliderId] = value
 
@@ -41,8 +38,6 @@ export default class Nutrition extends React.Component {
   }
 
   componentWillMount() {
-    // debugger;
-    console.log("componentWillMount -----------------------------")
     // Process the caption for matches in the FDA database:
     //
     // const tagString = this.props.nutrition.caption
@@ -55,8 +50,6 @@ export default class Nutrition extends React.Component {
     const sliderInitValue = 100.0
     var sliderValueDict = {}
     for (var tag in this.state.nutAlg.getMatches()) {
-      // sliderValueDict[tag] = sliderInitValue
-
       const key = this.state.nutAlg.getBestMatchForTag(tag)
       const dataForKey = this.state.nutAlg.getDataForKey(key)
 
@@ -76,18 +69,6 @@ export default class Nutrition extends React.Component {
   }
 
   render() {
-    // 1. Separate out the content of the photo caption into the following
-    //    structure for each ingredient:
-    //        ingredient quantity unit nutrition_info
-    //        ...
-    //        ingredient quantity unit nutrition_info
-
-    // TODO: move the ingredients array/construction to somewhere else for higher perf/lower mem
-
-    // TODO: move this var to state
-
-    // var nutritionModel = new NutritionModel()
-
     var sliders = []
     var notFound = ""
     var fat = 0.0
@@ -107,12 +88,6 @@ export default class Nutrition extends React.Component {
       // carbs += parseFloat(dataForKey['Carbohydrate'] * this.state.sliderValueDict[tag] / 100)
       // protein += parseFloat(dataForKey['Protein'] * this.state.sliderValueDict[tag] / 100)
 
-      console.log("Value for key '" + key + "' = " + this.state.sliderValueDict[key])
-
-      // var ingredient = new Ingredient()
-      // ingredient.initializeSingle(key, tag, dataForKey)
-      // nutritionModel.addIngredient(key, ingredient)
-
       sliders.push(
         <div key={key}>
           <text>{key} (grams)</text>
@@ -130,26 +105,14 @@ export default class Nutrition extends React.Component {
       notFound = "(No data for: " + notFound + ")"
     }
 
-    // Numbers based on 2000 calorie diet (https://www.dsld.nlm.nih.gov/dsld/dailyvalue.jsp)
-    // const fatRDA = 100.0 * fat / 65.0
-    // const carbRDA = 100.0 * carbs / 300.0
-    // const proteinRDA = 100.0 * protein / 50.0
-    //
-    // const totalFatStr = fat.toFixed(2) + "g"
-    // const fatRDAStr = fatRDA.toFixed(2) + "%"
-    //
-    // const totalCarbsStr = carbs.toFixed(2) + "g"
-    // const carbRDAStr = carbRDA.toFixed(2) + "%"
-    //
-    // const totalProteinStr = protein.toFixed(2) + "g"
-
     const tagString = this.props.nutrition.caption
 
-    const pieChartData = [
-        {category: "Fat", amount: fat},
-        {category: "Carbs", amount: carbs},
-        {category: "Protein", amount: protein}
-      ]
+    // console.log('----------------------------------- Nutrition Model ---------')
+    // console.log('')
+    // console.log(this.state.nutritionModel.serialize())
+    // console.log('----------------------------------- Composite Ingredient ---------')
+    // console.log('')
+    // console.log(this.state.nutritionModel.getScaledCompositeIngredient().serialize())
 
     return (
       <div>
@@ -165,12 +128,6 @@ export default class Nutrition extends React.Component {
           <text>{notFound}</text><br/><br/>
           {sliders}
         </div>
-
-        {/*<VictoryPie
-          data={pieChartData}
-            x="category"
-            y="amount"
-          />*/}
           <ControlLabel>Share URL</ControlLabel>
           <Well>
             <a href={this.props.resultUrl}>{this.props.resultUrl}</a>

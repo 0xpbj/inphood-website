@@ -2,6 +2,19 @@ var React = require('react')
 import Style from "../styles/NutritionEstimateStyles.js"
 
 export default class NutritionEstimateJSX extends React.Component {
+  getInPhoodLogo() {
+    return(
+      <a href="http://www.inphood.com">
+        <span style={{color:'black'}}>i</span>
+        <span style={{color:'green'}}>n</span>
+        <span style={{color:'blue'}}>P</span>
+        <span style={{color:'red'}}>h</span>
+        <span style={{color:'green'}}>o</span>
+        <span style={{color:'blue'}}>o</span>
+        <span style={{color:'red'}}>d</span>
+      </a>
+    )
+  }
   render() {
     const myStyles = new Style()
 
@@ -12,7 +25,7 @@ export default class NutritionEstimateJSX extends React.Component {
       <div>
         <section style={myStyles.performanceFacts}>
           <header style={myStyles.performanceFactsHeader}>
-            <h1 style={myStyles.performanceFactsTitle}>Nutrition Estimate</h1>
+            <h1 style={myStyles.performanceFactsTitle}>{this.getInPhoodLogo()} Nutrition Estimate</h1>
             <p style={myStyles.perfomanceFactsHeaderElementP}>
               Serving Size {ingredientComposite.getServingAmount()}{ingredientComposite.getServingUnit()}</p>
           </header>
@@ -42,9 +55,9 @@ export default class NutritionEstimateJSX extends React.Component {
 
               <tr className="thick-row">
                 <td colSpan={3}
-                style={{...myStyles.performanceFactsTableClassThickRowTd,
-                        ...myStyles.smallInfo,
-                        ...myStyles.performanceFactsTableElementTd}}>
+                  style={{...myStyles.smallInfo,
+                          ...myStyles.performanceFactsTableElementTdLastChild,
+                          ...myStyles.performanceFactsTableClassThickRowTd}}>
                   <b>% Daily Value*</b>
                 </td>
               </tr>
@@ -56,14 +69,14 @@ export default class NutritionEstimateJSX extends React.Component {
                   {ingredientComposite.getTotalFatUnit()}
                 </th>
                 <td style={myStyles.performanceFactsTableElementTdLastChild}>
-                  <b>{ingredientComposite.getTotalFatRDA()}</b>
+                  <b>{ingredientComposite.getTotalFatRDA()}%</b>
                 </td>
               </tr>
 
               <tr>
                 <td
-                  style={{...myStyles.performanceFactsTableClassBlankCell,
-                          ...myStyles.performanceFactsTableElementTd}}>
+                  style={{...myStyles.performanceFactsTableElementTd,
+                          ...myStyles.performanceFactsTableClassBlankCell}}>
                 </td>
                 <th style={myStyles.performanceFactsTableElementTh}>
                   Saturated Fat&nbsp;
@@ -71,14 +84,14 @@ export default class NutritionEstimateJSX extends React.Component {
                   {ingredientComposite.getSaturatedFatUnit()}
                 </th>
                 <td style={myStyles.performanceFactsTableElementTdLastChild}>
-                  <b>{ingredientComposite.getTotalFatRDA()}</b>
+                  <b>{ingredientComposite.getSaturatedFatRDA()}%</b>
                 </td>
               </tr>
 
               <tr>
                 <td
-                  style={{...myStyles.performanceFactsTableClassBlankCell,
-                          ...myStyles.performanceFactsTableElementTd}}>
+                  style={{...myStyles.performanceFactsTableElementTd,
+                          ...myStyles.performanceFactsTableClassBlankCell}}>
                 </td>
                 <th style={myStyles.performanceFactsTableElementTh}>
                   Trans Fat&nbsp;
@@ -96,7 +109,7 @@ export default class NutritionEstimateJSX extends React.Component {
                   {ingredientComposite.getCholestorolUnit()}
                 </th>
                 <td style={myStyles.performanceFactsTableElementTdLastChild}>
-                  <b>{ingredientComposite.getCholestorolRDA()}</b>
+                  <b>{ingredientComposite.getCholestorolRDA()}%</b>
                 </td>
               </tr>
 
@@ -107,7 +120,7 @@ export default class NutritionEstimateJSX extends React.Component {
                   {ingredientComposite.getSodumUnit()}
                 </th>
                 <td style={myStyles.performanceFactsTableElementTdLastChild}>
-                  <b>{ingredientComposite.getSodiumRDA()}</b>
+                  <b>{ingredientComposite.getSodiumRDA()}%</b>
                 </td>
               </tr>
 
@@ -118,14 +131,14 @@ export default class NutritionEstimateJSX extends React.Component {
                   {ingredientComposite.getTotalCarbohydrateUnit()}
                 </th>
                 <td style={myStyles.performanceFactsTableElementTdLastChild}>
-                  <b>{ingredientComposite.getTotalCarbohydrateRDA()}</b>
+                  <b>{ingredientComposite.getTotalCarbohydrateRDA()}%</b>
                 </td>
               </tr>
 
               <tr>
                 <td
-                  style={{...myStyles.performanceFactsTableClassBlankCell,
-                          ...myStyles.performanceFactsTableElementTd}}>
+                  style={{...myStyles.performanceFactsTableElementTd,
+                          ...myStyles.performanceFactsTableClassBlankCell}}>
                 </td>
                 <th style={myStyles.performanceFactsTableElementTh}>
                   Dietary Fiber&nbsp;
@@ -133,14 +146,14 @@ export default class NutritionEstimateJSX extends React.Component {
                   {ingredientComposite.getDietaryFiberUnit()}
                 </th>
                 <td style={myStyles.performanceFactsTableElementTdLastChild}>
-                  <b>{ingredientComposite.getDietaryFiberRDA()}</b>
+                  <b>{ingredientComposite.getDietaryFiberRDA()}%</b>
                 </td>
               </tr>
 
               <tr>
                 <td
-                  style={{...myStyles.performanceFactsTableClassBlankCell,
-                          ...myStyles.performanceFactsTableElementTd}}>
+                  style={{...myStyles.performanceFactsTableElementTd,
+                          ...myStyles.performanceFactsTableClassBlankCell}}>
                 </td>
                 <th style={myStyles.performanceFactsTableElementTh}>
                   Sugars&nbsp;

@@ -24,7 +24,7 @@ export default class NutritionEstimateStyles {
 
   performanceFactsTitle = {
     fontWeight: 'bold',
-    fontSize: '3rem',
+    fontSize: '2.25rem',
     marginBottom: '0.25rem'
   }
 

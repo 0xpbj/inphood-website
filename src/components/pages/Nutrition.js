@@ -6,7 +6,7 @@ import {Ingredient, NutritionModel} from '../models/NutritionModel'
 
 import Button from 'react-bootstrap/lib/Button'
 import Slider from 'react-toolbox/lib/slider'
-import FormGroup from 'react-bootstrap/lib/FormGroup'
+import Well from 'react-bootstrap/lib/Well'
 import FormControl from 'react-bootstrap/lib/FormControl'
 import ControlLabel from 'react-bootstrap/lib/ControlLabel'
 // import { VictoryPie } from 'victory'
@@ -171,12 +171,10 @@ export default class Nutrition extends React.Component {
             x="category"
             y="amount"
           />*/}
-          <FormGroup>
-            <ControlLabel>Share URL</ControlLabel>
-            <FormControl.Static>
-              {this.props.resultUrl}
-            </FormControl.Static>
-          </FormGroup>
+          <ControlLabel>Share URL</ControlLabel>
+          <Well>
+            <a href={this.props.resultUrl}>{this.props.resultUrl}</a>
+          </Well>
       </div>
     )
   }

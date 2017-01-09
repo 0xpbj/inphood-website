@@ -101,7 +101,7 @@ export default class GalleryGrid extends React.Component {
                 <Image src={this.props.profile.thumbnail} rounded />
               </Col>
               <Col xs={6} md={4}>
-                <DropdownButton bsStyle="info" title="Options">
+                <DropdownButton bsStyle="info" title="Options" id={`dropdown-basic`}>
                   <MenuItem key="1" onClick={() => this.props.refresh()}>Refresh</MenuItem>
                   <MenuItem key="2" onClick={() => this.props.logout()}>Logout</MenuItem>
                 </DropdownButton>
@@ -111,6 +111,7 @@ export default class GalleryGrid extends React.Component {
           <Row className="show-grid">
             <div className="text-center" style={containerStyle}/>
             <Col md={12}>
+              <Button className="btn-primary-spacing" bsStyle="success" onClick={this.selectPhoto.bind(this)}>Select Image</Button>
               <ImageGallery
                 ref={i => this._imageGallery = i}
                 items={images}
@@ -120,7 +121,6 @@ export default class GalleryGrid extends React.Component {
                 showPlayButton={false}
                 onClick={this.selectPhoto.bind(this)}
               />
-              <Button className="btn-primary-spacing" bsStyle="success" onClick={this.selectPhoto.bind(this)}>Select Image</Button>
             </Col>
           </Row>
         </Grid>

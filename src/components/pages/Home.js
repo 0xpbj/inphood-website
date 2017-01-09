@@ -10,19 +10,21 @@ import Button from 'react-bootstrap/lib/Button'
 import Jumbotron from 'react-bootstrap/lib/Jumbotron'
 import FormGroup from 'react-bootstrap/lib/FormGroup'
 import FormControl from 'react-bootstrap/lib/FormControl'
+import Glyphicon from 'react-bootstrap/lib/Glyphicon'
 import ControlLabel from 'react-bootstrap/lib/ControlLabel'
 import Hello from 'hellojs'
 import Gallery from './Gallery'
 import Anon from './Anon'
 import Nutrition from "../../containers/NutritionContainer"
-import Dropzone from 'react-dropzone'
+import UploadModal from '../layout/UploadModal'
 
 export default class Home extends React.Component {
   constructor() {
     super()
     this.state = {
       // TODO: AC for dev set this to true to go direct to Nutrition.js scene
-      nutritionView: false
+      nutritionView: false,
+      showUploadModal: false
     }
   }
   handleClick() {
@@ -75,8 +77,6 @@ export default class Home extends React.Component {
     if (acceptedFiles.length > 0) {
       this.props.anSelectedPhoto(acceptedFiles[0].preview)
     }
-    // console.log('Accepted files: ', acceptedFiles)
-    // console.log('Rejected files: ', rejectedFiles)
   }
   render() {
     const containerStyle = {
@@ -129,6 +129,7 @@ export default class Home extends React.Component {
         )
       }
       else {
+        let hideUploadModal = () => this.setState({ showUploadModal: false });
         return (
           <div>
           <Jumbotron>
@@ -138,12 +139,7 @@ export default class Home extends React.Component {
               <Grid>
                 <Row>
                   <div className="text-center" style={containerStyle}>
-                    <Col md={12} className="text-center">
-                      <button onClick={this.handleClick.bind(this)}>Sign in with Instagram</button>
-                    </Col>
-                  </div>
-                  <div className="text-center" style={containerStyle}>
-                    <Col xs={12} md={8}>
+                    <Col xs={6} md={6}>
                       <form>
                         <FormGroup
                           controlId="formBasicText"
@@ -159,10 +155,18 @@ export default class Home extends React.Component {
                         </FormGroup>
                       </form>
                     </Col>
-                    <Col xs={6} md={4}>
-                      <Dropzone onDrop={this.onDrop.bind(this)}>
-                        <Image src={'https://image.freepik.com/free-icon/upload-button_318-76475.jpg'} rounded />
-                      </Dropzone>
+                    <Col xs={1} md={1}>
+                      <Button bsStyle="default" onClick={()=>this.setState({ showUploadModal: true })}>
+                        <Glyphicon glyph="glyphicon glyphicon-open" />
+                      </Button>
+                      <UploadModal 
+                        onDrop={(acceptedFiles, rejectedFiles) => this.onDrop.bind(this)}
+                        show={this.state.showUploadModal} 
+                        onHide={hideUploadModal} 
+                      />
+                    </Col>
+                    <Col xs={5} md={5}>
+                      <Button onClick={this.handleClick.bind(this)}>Sign in with Instagram</Button>
                     </Col>
                   </div>
                 </Row>

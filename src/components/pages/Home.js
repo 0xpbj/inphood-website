@@ -101,6 +101,7 @@ export default class Home extends React.Component {
               igSelectedPhoto={(data) => this.props.igSelectedPhoto(data)}
               goToNutrition={(flag) => this.goToNutrition(flag)}
               igUpdatedCaption={(caption) => this.props.igUpdatedCaption(caption)}
+              anClearData={() => this.props.anClearData()}
             />
           )
         }

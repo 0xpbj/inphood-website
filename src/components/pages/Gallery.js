@@ -60,8 +60,11 @@ export default class GalleryGrid extends React.Component {
     let words = caption.match(regex)
     var file = require("raw-loader!../../data/complete-001.unique-words.txt")
     let fileWords = new Set(file.match(regex))
-    let intersection = new Set([...words].filter(x => fileWords.has(x)))
-    return intersection
+    let fileIntersection = new Set([...words].filter(x => fileWords.has(x)))
+    // var food = require("raw-loader!../../data/ingredients.txt")
+    // let foodWords = new Set(food.match(regex))
+    // let foodIntersection = new Set([...fileIntersection].filter(x => foodWords.has(x)))
+    return fileIntersection
   }
   generateChips() {
     let chipData = this.parseCaption(this.props.data[this.state.index].caption.text)
@@ -72,6 +75,10 @@ export default class GalleryGrid extends React.Component {
       )
     }
     this.setState({chips, chipData})
+  }
+  backToGrid() {
+    this.props.anClearData()
+    this.setState({grid: !this.state.grid})
   }
   render() {
     const containerStyle = {
@@ -134,7 +141,7 @@ export default class GalleryGrid extends React.Component {
                 {this.state.chips}
               </section>
               </div>
-              <Button className="btn-primary-spacing" bsStyle="success" onClick={() => this.setState({grid: !this.state.grid})}>Done</Button>
+              <Button className="btn-primary-spacing" bsStyle="success" onClick={this.backToGrid.bind(this)}>Done</Button>
               <Button className="btn-primary-spacing" bsStyle="info" onClick={() => this.props.goToNutrition()}>Get Nutrition</Button>
             </Col>
           </Row>

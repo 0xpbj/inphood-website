@@ -82,7 +82,7 @@ export default class NutritionAlg {
         var cleanedTag = tag.charAt(0).toUpperCase() + tag.slice(1)
       }
 
-      newTags.push(cleanedTag)
+      newTags.push(cleanedTag.trim())
     }
 
     return newTags

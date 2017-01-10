@@ -13,7 +13,7 @@ import Modal from 'react-bootstrap/lib/Modal'
 import Slider from 'react-toolbox/lib/slider'
 import Button from 'react-bootstrap/lib/Button'
 import MenuItem from 'react-bootstrap/lib/MenuItem'
-import SplitButton from 'react-bootstrap/lib/SplitButton'
+import DropdownButton from 'react-bootstrap/lib/DropdownButton'
 import FormControl from 'react-bootstrap/lib/FormControl'
 import ControlLabel from 'react-bootstrap/lib/ControlLabel'
 
@@ -181,11 +181,11 @@ export default class Nutrition extends React.Component {
         </Row>
         <div>
           <Button className="btn-primary-spacing" bsStyle="info" onClick={() => this.props.goToGallery()}>Gallery</Button>
-          <SplitButton bsStyle="success" title="Share Label" key={1} id={`split-button-basic`}>
+          <DropdownButton bsStyle="success" title="Share Label" key={1} id={`split-button-basic`}>
             <MenuItem eventKey="1" onClick={this.transitionToLabelPage.bind(this, true, composite, full)}>Post to Instagram</MenuItem>
             <MenuItem divider />
             <MenuItem eventKey="2" onClick={this.transitionToLabelPage.bind(this, false, composite, full)}>Share URL</MenuItem>
-          </SplitButton>
+          </DropdownButton>
         </div>
       </Grid>
     )

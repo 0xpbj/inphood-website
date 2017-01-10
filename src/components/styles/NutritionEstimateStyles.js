@@ -5,7 +5,7 @@ export default class NutritionEstimateStyles {
     borderColor: 'black',
     margin: '20px',
     float: 'left',
-    width: '320px',
+    // width: '320px',
     padding: '0.5rem',
     borderCollapse: 'collapse'
   }
@@ -16,6 +16,7 @@ export default class NutritionEstimateStyles {
     borderBottomColor: 'black',
     paddingBottom: '0.25rem',
     marginBottom: '0.5rem',
+    textAlign: 'left',
   }
 
   perfomanceFactsHeaderElementP = {
@@ -88,7 +89,8 @@ export default class NutritionEstimateStyles {
 
 
   smallInfo = {
-    fontSize: '0.9rem'
+    fontSize: '0.9rem',
+    textAlign: 'left',
   }
 
   thickEnd = {

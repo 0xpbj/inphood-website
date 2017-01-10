@@ -3,14 +3,21 @@ export class NutritionModel {
     this._ingredients = {}
   }
 
+  initializeFromSerialization(serialization) {
+    // TODO: Todoneit?!
+    // TODO: check to make sure this has the right properties etc.
+    // let ingredients = serialization.NutritionModel.ingredients
+    // for (let key in ingredients) {
+    //   let ingredient = ingredients[key]
+    //   console.log("Key: " + key)
+    //   console.log(ingredient)
+    // }
+  }
+
   serialize() {
     // Serialize nutritionModel for firebase storage
     var typeToInstance = {NutritionModel: this}
     return JSON.stringify(typeToInstance)
-  }
-
-  deserialize(typeToInstanceString) {
-    // TODO:
   }
 
   addIngredient(key, anIngredient, scale) {
@@ -253,14 +260,61 @@ export class Ingredient {
     }
   }
 
+  initializeFromSerialization(serializedData) {
+    let ingredientData = serializedData.Ingredient
+    
+    this._key = ""
+    this._tag = ""
+
+    // Pull data from DB/JSON to initialize remainder of class instance:
+    //
+    //   Generic measures/Unit:
+    this._servingAmount = ingredientData._servingAmount
+    this._servingUnit = ingredientData._servingUnit
+    this._calories = ingredientData._calories
+    // 9 calories per gram of fat:
+    this._caloriesFromFat = ingredientData._caloriesFromFat
+    //
+    //   Fat measures/metrics:
+    this._totalFatPerServing = ingredientData._totalFatPerServing
+    this._totalFatUnit = ingredientData._totalFatUnit
+    this._totalFatRDA = ingredientData._totalFatRDA
+    this._saturatedFatPerServing = ingredientData._saturatedFatPerServing
+    this._saturatedFatUnit = ingredientData._saturatedFatUnit
+    this._saturatedFatRDA = ingredientData._saturatedFatRDA
+    this._transFatPerServing = ingredientData._transFatPerServing
+    this._transFatUnit = ingredientData._transFatUnit
+    //
+    //   Cholesterol & Sodium measures/metrics:
+    this._cholesterol = ingredientData._cholesterol
+    this._cholesterolUnit = ingredientData._cholesterolUnit
+    this._cholesterolRDA = ingredientData._cholesterolRDA
+    this._sodium = ingredientData._sodium
+    this._sodiumUnit = ingredientData._sodiumUnit
+    this._sodiumRDA = ingredientData._sodiumRDA
+    //
+    //   Carbohydrate measures/metrics:
+    this._totalCarbohydratePerServing = ingredientData._totalCarbohydratePerServing
+    this._totalCarbohydrateUnit = ingredientData._totalCarbohydrateUnit
+    this._totalCarbohydrateRDA = ingredientData._totalCarbohydrateRDA
+    this._dietaryFiber = ingredientData._dietaryFiber
+    this._dietaryFiberUnit = ingredientData._dietaryFiberUnit
+    this._dietaryFiberRDA = ingredientData._dietaryFiberRDA
+    this._sugars = ingredientData._sugars
+    this._sugarsUnit = ingredientData._sugarsUnit
+    //
+    //   Protein measures/metrics:
+    this._totalProteinPerServing = ingredientData._totalProteinPerServing
+    this._totalProteinUnit = ingredientData._totalProteinUnit
+    //
+    //   National Database Number
+    this._ndbno = ingredientData._ndbno
+  }
+
   serialize() {
     // Serialize nutritionModel for firebase storage
     var typeToInstance = {Ingredient: this}
     return JSON.stringify(typeToInstance)
-  }
-
-  deserialize(typeToInstanceString) {
-    // TODO:
   }
 
   setServingAmount() {

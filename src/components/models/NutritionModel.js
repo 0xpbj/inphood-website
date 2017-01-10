@@ -169,17 +169,17 @@ export class Ingredient {
     this._totalFatPerServing = getFloatFromDB(dataForKey, 'Fat')
     this._totalFatUnit = 'g'
     this._totalFatRDA = 100.0 * this._totalFatPerServing / RDA2000Cal.totalFat
-    this._saturatedFatPerServing = TODO
+    this._saturatedFatPerServing = getFloatFromDB(dataForKey, 'Fatty acids, total saturated(g)Per 100 g')
     this._saturatedFatUnit = 'g'
     this._saturatedFatRDA = 100.0 * this._saturatedFatPerServing / RDA2000Cal.saturatedFat
-    this._transFatPerServing = TODO
+    this._transFatPerServing = getFloatFromDB(dataForKey, 'Fatty acids, total trans(g)Per 100 g')
     this._transFatUnit = 'g'
     //
     //   Cholesterol & Sodium measures/metrics:
-    this._cholesterol = TODO
+    this._cholesterol = getFloatFromDB(dataForKey, 'Cholesterol(mg)Per 100 g')
     this._cholesterolUnit = 'mg'
     this._cholesterolRDA = 100.0 * this._cholesterol / RDA2000Cal.cholesterol
-    this._sodium = TODO
+    this._sodium = getFloatFromDB(dataForKey, 'Sodium, Na(mg)Per 100 g')
     this._sodiumUnit = 'mg'
     this._sodiumRDA = 100.0 * this._sodium / RDA2000Cal.sodium
     //
@@ -187,10 +187,10 @@ export class Ingredient {
     this._totalCarbohydratePerServing = getFloatFromDB(dataForKey, 'Carbohydrate')
     this._totalCarbohydrateUnit = 'g'
     this._totalCarbohydrateRDA = 100.0 * this._totalCarbohydratePerServing / RDA2000Cal.carbohydrate
-    this._dietaryFiber = TODO
+    this._dietaryFiber = getFloatFromDB(dataForKey, 'Fiber, total dietary(g)Per 100 g')
     this._dietaryFiberUnit = 'g'
     this._dietaryFiberRDA = 100.0 * this._dietaryFiber / RDA2000Cal.fiber
-    this._sugars = TODO
+    this._sugars = getFloatFromDB(dataForKey, 'Sugars, total(g)Per 100 g')
     this._sugarsUnit = 'g'
     //
     //   Protein measures/metrics:

@@ -4,6 +4,7 @@ import Col from 'react-bootstrap/lib/Col'
 import Grid from 'react-bootstrap/lib/Grid'
 import Alert from 'react-bootstrap/lib/Alert'
 import Image from 'react-bootstrap/lib/Image'
+import Button from 'react-bootstrap/lib/Button'
 import Tooltip from 'react-bootstrap/lib/Tooltip'
 import ControlLabel from 'react-bootstrap/lib/ControlLabel'
 import Label from './NutritionEstimateJSX'
@@ -12,9 +13,6 @@ import {Ingredient} from '../models/NutritionModel'
 export default class Results extends React.Component {
   constructor() {
     super()
-    this.state = {
-      labelId: ''
-    }
   }
   componentWillMount() {
     this.props.getLabelId(this.props.params.labelId)
@@ -30,41 +28,55 @@ export default class Results extends React.Component {
     const containerStyle = {
       marginTop: "60px"
     }
-    if (!this.props.results.data || this.props.results.data.oUrl === '') {
-      this.props.router.push('/')
+    if (this.props.results.data === null) {
+      return (
+        <Alert bsStyle="danger" onDismiss={() => this.props.router.push('/')}>
+          <h4>Oh snap! Label not found!</h4>
+          <p>
+            <Button bsStyle="danger" onClick={() => this.props.router.push('/')}>Go Home</Button>
+          </p>
+        </Alert>
+      )
     }
-    // If we've received the data for the Nutrition label, deserialize it for
-    // rendering, otherwise display a loading message.
-    //   - TODO: make the loading message suck less
-    let nutritionLabel = <text> Loading ...</text>
-    if (this.hasProp(this.props.results.data, 'composite')) {
-      let ingredientData = JSON.parse(this.props.results.data.composite)
-      let ingredient = new Ingredient()
-      ingredient.initializeFromSerialization(ingredientData)
-      nutritionLabel = <Label ingredientComposite={ingredient}/>
+    else {
+      const image = this.props.results.data.user === 'anonymous'
+      ? <Image src={this.props.results.data.oUrl} responsive rounded/>
+      : (
+          <a href={'http://www.instagram.com/p/' + this.props.results.data.key}>
+            <Tooltip placement="top" className="in" id="tooltip-top">
+              @{this.props.results.data.user}
+            </Tooltip>
+            <Image src={this.props.results.data.oUrl} responsive rounded/>
+          </a>
+      )
+      // If we've received the data for the Nutrition label, deserialize it for
+      // rendering, otherwise display a loading message.
+      //   - TODO: make the loading message suck less
+      let nutritionLabel = <text> Loading ...</text>
+      if (this.hasProp(this.props.results.data, 'composite')) {
+        let ingredientData = JSON.parse(this.props.results.data.composite)
+        let ingredient = new Ingredient()
+        ingredient.initializeFromSerialization(ingredientData)
+        nutritionLabel = <Label ingredientComposite={ingredient}/>
+      }
+      return (
+        <Grid>
+          <div className="text-center">
+          <Row className="show-grid">
+            <Col xs={6} md={4}>
+              <Row className="show-grid">
+                <ControlLabel>Food Image</ControlLabel>
+                {image}
+              </Row>
+            </Col>
+            <Col xs={6} md={4}>
+              <ControlLabel>Nutrition Label</ControlLabel>
+              {nutritionLabel}
+            </Col>
+          </Row>
+          </div>
+        </Grid>
+      )
     }
-    return (
-      <Grid>
-        <div className="text-center">
-        <Row className="show-grid">
-          <Col xs={6} md={4}>
-            <Row className="show-grid">
-              <ControlLabel>Food Image</ControlLabel>
-              <a href={'http://www.instagram.com/' + this.props.results.data.user}>
-                <Tooltip placement="top" className="in" id="tooltip-top">
-                  @{this.props.results.data.user}
-                </Tooltip>
-                <Image src={this.props.results.data.oUrl} responsive rounded/>
-              </a>
-            </Row>
-          </Col>
-          <Col xs={6} md={4}>
-            <ControlLabel>Nutrition Label</ControlLabel>
-            {nutritionLabel}
-          </Col>
-        </Row>
-        </div>
-      </Grid>
-    )
   }
 }

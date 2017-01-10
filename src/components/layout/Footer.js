@@ -1,4 +1,6 @@
 var React = require('react')
+import Button from 'react-bootstrap/lib/Button'
+import Glyphicon from 'react-bootstrap/lib/Glyphicon'
 
 export default class Footer extends React.Component {
   render() {
@@ -15,7 +17,12 @@ export default class Footer extends React.Component {
                     <h4><strong>inPhood Inc.,</strong>
                     </h4>
                     <ul className="list-unstyled">
-                        <li><i className="fa fa-envelope-o fa-fw"></i> <a href="mailto:info@inphood.com">info@inphood.com</a>
+                        <li><i className="fa fa-envelope-o fa-fw"></i>
+                            <a href="mailto:info@inphood.com">
+                              <Button bsStyle="info">
+                                <Glyphicon glyph="glyphicon glyphicon-envelope" /> Contact Us
+                              </Button>
+                            </a>
                         </li>
                     </ul>
                     <a href="http://www.inphood.com/privacy_policy_1.0.2.pdf">Privacy Policy</a>

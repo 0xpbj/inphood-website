@@ -1,11 +1,14 @@
 import {
   IG_UPLOAD_PHOTO,
+  POST_LABEL_ID,
   RESULT_URL,
+  SEND_SERIALIZED_DATA,
 } from '../constants/ActionTypes'
 
-import { call, fork, put, select, takeLatest } from 'redux-saga/effects'
+import { call, fork, put, select, take, takeLatest } from 'redux-saga/effects'
 import firebase from 'firebase'
 import request from 'request'
+import Hello from 'hellojs'
 const Config = require('Config')
 var AWS = require('aws-sdk')
 
@@ -28,7 +31,7 @@ const uploadImageToS3 = (uri, key, username) => {
   request(options, function(error, response, body) {
     if (error || response.statusCode !== 200) {
       console.log("failed to get image", error)
-      firebase.database().ref('/global/nutritionLabel/'+key).set({ 
+      firebase.database().ref('/global/nutritionLabel/'+key).update({ 
         key,
         user: username,
         oUrl: uri,
@@ -45,7 +48,7 @@ const uploadImageToS3 = (uri, key, username) => {
       }, function(error, data) {
         if (error) {
           console.log("error downloading image to s3", error)
-          firebase.database().ref('/global/nutritionLabel/'+key).set({ 
+          firebase.database().ref('/global/nutritionLabel/'+key).update({ 
             key,
             user: username,
             oUrl: uri,
@@ -55,7 +58,7 @@ const uploadImageToS3 = (uri, key, username) => {
           console.log("success uploading to s3", data)
         }
       })
-      firebase.database().ref('/global/nutritionLabel/'+key).set({
+      firebase.database().ref('/global/nutritionLabel/'+key).update({
         key,
         user: username,
         oUrl: uri,
@@ -79,9 +82,71 @@ function* loadAWSPut() {
   }
   yield call (uploadImageToS3, picture, key, username)
   const url = "www.inphood.com/" + key
-  yield put ({type: RESULT_URL, url})
+  if (profile)
+    yield put ({type: RESULT_URL, url, key, anonymous: false})
+  else
+    yield put ({type: RESULT_URL, url, key, anonymous: true})
+}
+
+function* loadSerializedData() {
+  const {composite, full, key, anonymous} = yield select(state => state.nutritionReducer)
+  if (anonymous)
+    firebase.database().ref('/global/nutritionLabel/anonymous/' + key).update({
+      composite,
+      full
+    })
+  else
+    firebase.database().ref('/global/nutritionLabel/' + key).update({
+      composite,
+      full
+    })
+}
+
+function* postLabelData() {
+  while (true) {
+    const {labelId, comment} = yield take (POST_LABEL_ID)
+    const token = Hello('instagram').getAuthResponse().access_token
+    const url = 'https://api.instagram.com/v1/media/' + labelId + '/comments'
+    console.log('LabelId: ', labelId)
+    console.log('Comment: ', comment)
+    console.log('Token: ', token)
+    console.log('URL: ', url)
+    var options = {
+      url: url,
+      method: 'post',
+      form: {
+        access_token: token, 
+        text: comment
+      }
+    }
+    request(options, function(error, response, body) { 
+      console.log('Error: ', error)
+      console.log('Response: ', response)
+      console.log('Body: ', body)
+    })
+    // fetch(url, {
+    //   mode: 'no-cors',
+    //   method: 'post',
+    //   form: {access_token: token, text: 'www.inphood.com/BPCIqRoDtV4'}
+    // }).then(function(response) {
+    //   console.log(response.status)
+    //   console.log("response");
+    //   console.log(response)
+    // })
+    // Hello( 'instagram' ).api( 'me/comments', 'post', {
+    //   id: labelId,
+    //   text: comment
+    // })
+    // .then(function(r) {
+    //   if (r.meta.code === 200) {
+    //     console.log('Comment Added')
+    //   }
+    // }, console.error.bind(console))
+  }
 }
 
 export default function* root() {
+  yield fork(postLabelData)
+  yield fork(takeLatest, SEND_SERIALIZED_DATA, loadSerializedData)
   yield fork(takeLatest, IG_UPLOAD_PHOTO, loadAWSPut)
 }

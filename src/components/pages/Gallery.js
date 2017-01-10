@@ -27,6 +27,7 @@ export default class GalleryGrid extends React.Component {
   selectPhoto() {
     this.setState({grid: !this.state.grid, index: this._imageGallery.getCurrentIndex()})
     this.props.igSelectedPhoto(this.props.data[this._imageGallery.getCurrentIndex()])
+    console.log('Photo Information: ', this.props.data[this._imageGallery.getCurrentIndex()])
     ReactGA.event({
       category: 'User',
       action: 'Image selected for nutrition information',
@@ -110,7 +111,8 @@ export default class GalleryGrid extends React.Component {
           </Row>
           <Row className="show-grid">
             <div className="text-center" style={containerStyle}/>
-            <Col md={12}>
+            <Col md={2} />
+            <Col md={8}>
               <Button className="btn-primary-spacing" bsStyle="success" onClick={this.selectPhoto.bind(this)}>Select Image</Button>
               <ImageGallery
                 ref={i => this._imageGallery = i}
@@ -122,6 +124,7 @@ export default class GalleryGrid extends React.Component {
                 onClick={this.selectPhoto.bind(this)}
               />
             </Col>
+            <Col md={2} />
           </Row>
         </Grid>
       )

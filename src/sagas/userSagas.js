@@ -13,11 +13,10 @@ const igLogin = () => {
   Hello.init({
       instagram : Config.instagram
   },{
-      scope : 'basic+public_content',
+      scope : 'basic+public_content+comments+likes',
       redirect_uri: Config.redirect_uri
   });
   return Hello('instagram').login()
-  .then(() => {})
 }
 
 const igProfile = () => {

@@ -10,6 +10,8 @@ import {
   AN_CLEAR_DATA,
   GET_LABEL_ID,
   IG_UPDATED_CAPTION,
+  POST_LABEL_ID,
+  SEND_SERIALIZED_DATA
 } from '../constants/ActionTypes'
 
 export function igUploadPhoto() {
@@ -80,5 +82,21 @@ export function igUpdatedCaption(caption) {
   return {
     type: IG_UPDATED_CAPTION,
     caption
+  }
+}
+
+export function postLabelId(labelId, comment) {
+  return {
+    type: POST_LABEL_ID,
+    labelId,
+    comment
+  }
+}
+
+export function sendSerializedData(composite, full) {
+  return {
+    type: SEND_SERIALIZED_DATA,
+    composite,
+    full
   }
 }

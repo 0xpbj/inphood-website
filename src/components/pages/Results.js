@@ -33,7 +33,7 @@ export default class Results extends React.Component {
       const image = this.props.results.data.user === 'anonymous'
       ? <Image src={this.props.results.data.oUrl} responsive rounded/>  
       : ( 
-          <a href={'http://www.instagram.com/' + this.props.results.data.user}>
+          <a href={'http://www.instagram.com/p/' + this.props.results.data.key}>
             <Tooltip placement="top" className="in" id="tooltip-top">
               @{this.props.results.data.user}
             </Tooltip>

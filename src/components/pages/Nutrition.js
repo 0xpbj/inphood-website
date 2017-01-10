@@ -160,7 +160,20 @@ export default class Nutrition extends React.Component {
     }
     const full = this.state.nutritionModel.serialize()
     const composite = this.state.nutritionModel.getScaledCompositeIngredient().serialize()
-    let hideUrlModal = () => this.setState({ showUrlModal: false });
+    let hideUrlModal = () => this.setState({ showUrlModal: false })
+    const menuItems = this.props.nutrition.anonymous === false
+    ? (
+        <DropdownButton bsStyle="success" title="Share Label" key={1} id={`split-button-basic`}>
+        <MenuItem eventKey="1" onClick={this.transitionToLabelPage.bind(this, true, composite, full)}>Post to Instagram</MenuItem>
+        <MenuItem divider />
+        <MenuItem eventKey="2" onClick={this.transitionToLabelPage.bind(this, false, composite, full)}>Share URL</MenuItem>
+        </DropdownButton>
+    )
+    : (
+        <DropdownButton bsStyle="success" title="Share Label" key={1} id={`split-button-basic`}>
+        <MenuItem eventKey="1" onClick={this.transitionToLabelPage.bind(this, false, composite, full)}>Share URL</MenuItem>
+        </DropdownButton>
+    )
     return (
       <Grid>
         <Row className="show-grid">
@@ -181,11 +194,7 @@ export default class Nutrition extends React.Component {
         </Row>
         <div>
           <Button className="btn-primary-spacing" bsStyle="info" onClick={() => this.props.goToGallery()}>Gallery</Button>
-          <DropdownButton bsStyle="success" title="Share Label" key={1} id={`split-button-basic`}>
-            <MenuItem eventKey="1" onClick={this.transitionToLabelPage.bind(this, true, composite, full)}>Post to Instagram</MenuItem>
-            <MenuItem divider />
-            <MenuItem eventKey="2" onClick={this.transitionToLabelPage.bind(this, false, composite, full)}>Share URL</MenuItem>
-          </DropdownButton>
+            {menuItems}
         </div>
       </Grid>
     )

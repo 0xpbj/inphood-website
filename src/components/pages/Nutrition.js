@@ -27,7 +27,8 @@ export default class Nutrition extends React.Component {
       nutAlg: new NutritionAlg(),
       showUrlModal: false,
       parChips: [],
-      updChips: []
+      updChips: [],
+      servingValue: 0
     }
   }
   componentWillMount() {
@@ -109,6 +110,11 @@ export default class Nutrition extends React.Component {
     }
     return result
   }
+  handleServingValuesChange(servingValue) {
+    this.setState({
+      servingValue
+    })
+  }
   handleSliderValuesChange(sliderId, value) {
     var sliderValueDict = this.state.sliderValueDict
     sliderValueDict[sliderId] = value
@@ -189,6 +195,13 @@ export default class Nutrition extends React.Component {
             </div>
           </Col>
           <Col xs={8} md={8}>
+            <text>Servings Size</text>
+            <Slider
+              value={this.state.servingValue}
+              onChange={this.handleServingValuesChange.bind(this)}
+              min={0}
+              max={100}
+              editable/>
             {sliders}
           </Col>
         </Row>

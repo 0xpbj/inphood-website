@@ -1,15 +1,21 @@
 var React = require('react')
-import NutritionAlg from '../../algorithms/NutritionAlg'
 import Label from './NutritionEstimateJSX'
-
+import NutritionAlg from '../../algorithms/NutritionAlg'
 import {Ingredient, NutritionModel} from '../models/NutritionModel'
 
-import Button from 'react-bootstrap/lib/Button'
-import Slider from 'react-toolbox/lib/slider'
+// import { VictoryPie } from 'victory'
+import Chip from 'react-toolbox/lib/chip'
+import Row from 'react-bootstrap/lib/Row'
+import Col from 'react-bootstrap/lib/Col'
 import Well from 'react-bootstrap/lib/Well'
+import Grid from 'react-bootstrap/lib/Grid'
+import Modal from 'react-bootstrap/lib/Modal'
+import Slider from 'react-toolbox/lib/slider'
+import Button from 'react-bootstrap/lib/Button'
+import MenuItem from 'react-bootstrap/lib/MenuItem'
+import SplitButton from 'react-bootstrap/lib/SplitButton'
 import FormControl from 'react-bootstrap/lib/FormControl'
 import ControlLabel from 'react-bootstrap/lib/ControlLabel'
-// import { VictoryPie } from 'victory'
 
 export default class Nutrition extends React.Component {
   constructor(props) {
@@ -18,7 +24,10 @@ export default class Nutrition extends React.Component {
       sliderValueDict: {},
       nutritionModel: new NutritionModel(),
       matches: [],
-      nutAlg: new NutritionAlg()
+      nutAlg: new NutritionAlg(),
+      showUrlModal: false,
+      parChips: [],
+      updChips: []
     }
   }
   componentWillMount() {
@@ -48,6 +57,53 @@ export default class Nutrition extends React.Component {
       sliderValueDict: sliderValueDict,
       nutritionModel: nutritionModel
     })
+    this.generateChips()
+  }
+  parseCaption(caption) {
+    if (caption !== '') {
+      let regex = /\w+/g
+      let words = caption.match(regex)
+      var file = require("raw-loader!../../data/complete-001.unique-words.txt")
+      let fileWords = new Set(file.match(regex))
+      let fileIntersection = new Set([...words].filter(x => fileWords.has(x)))
+      // var food = require("raw-loader!../../data/ingredients.txt")
+      // let foodWords = new Set(food.match(regex))
+      // let foodIntersection = new Set([...fileIntersection].filter(x => foodWords.has(x)))
+      return fileIntersection
+    }
+  }
+  generateChips() {
+    const {caption, updatedCaption} = this.props.nutrition
+    let regex = /\w+/g
+    debugger
+    if (updatedCaption === '') {
+      let originalWords = this.parseCaption(caption)
+      let updChips = []
+      for (let word of originalWords) {
+        updChips.push(
+          <Chip>{word}</Chip>
+        )
+      }
+      this.setState({parChips: [], updChips})
+    }
+    else {
+      let originalCaption = this.parseCaption(caption)
+      let updatedWords= new Set(updatedCaption.match(regex))
+      let cancelledWords = new Set([...originalCaption].filter(x => !updatedWords.has(x)))
+      let parChips = []
+      let updChips = []
+      for (let word of cancelledWords) {
+        parChips.push(
+          <Chip><span style={{textDecoration: 'line-through'}}>{word}</span></Chip>
+        )
+      }
+      for (let word of updatedWords) {
+        updChips.push(
+          <Chip>{word}</Chip>
+        )
+      }
+      this.setState({parChips, updChips})
+    }
   }
   handleSliderValuesChange(sliderId, value) {
     var sliderValueDict = this.state.sliderValueDict
@@ -96,35 +152,41 @@ export default class Nutrition extends React.Component {
     if (notFound != "") {
       notFound = "(No data for: " + notFound + ")"
     }
-    const tagString = this.props.nutrition.caption
-    // console.log('----------------------------------- Nutrition Model ---------')
-    // console.log('')
-    // console.log('----------------------------------- Composite Ingredient ---------')
-    // console.log('')
     const full = this.state.nutritionModel.serialize()
     const composite = this.state.nutritionModel.getScaledCompositeIngredient().serialize()
+    let hideUrlModal = () => this.setState({ showUrlModal: false });
     return (
-      <div>
+      <Grid>
+        <Row className="show-grid">
+          <Col xs={4} md={4}>
+            <Label nutritionModel={this.state.nutritionModel}/>
+            <div>
+              <section>
+                {this.state.updChips}
+              </section>
+              <section>
+                {this.state.parChips}
+              </section>
+            </div>
+          </Col>
+          <Col xs={8} md={8}>
+            {sliders}
+          </Col>
+        </Row>
         <div>
-          <Button className="btn-primary-spacing" bsStyle="success" onClick={() => this.props.goToGallery()}>Gallery</Button>
+          <Button className="btn-primary-spacing" bsStyle="info" onClick={() => this.props.goToGallery()}>Gallery</Button>
+          <SplitButton bsStyle="success" title="Share Label" key={1} id={`split-button-basic`}>
+            <MenuItem eventKey="1" onClick={this.transitionToLabelPage.bind(this, composite, full)}>Post to Instagram</MenuItem>
+            <MenuItem divider />
+            <MenuItem eventKey="2" onClick={()=>this.setState({ showUrlModal: true })}>Share URL</MenuItem>
+          </SplitButton>
+          <Modal show={this.state.showUrlModal} onHide={hideUrlModal} bsSize="small" aria-labelledby="contained-modal-title-sm">
+            <Modal.Body>
+              <a href={this.props.resultUrl}>{this.props.resultUrl}</a>
+            </Modal.Body>
+          </Modal>
         </div>
-        <div>
-          <Label
-            nutritionModel={this.state.nutritionModel}/>
-        </div>
-        <div>
-          <text>Nutrition info for "{tagString}":</text><br/>
-          <text>{notFound}</text><br/><br/>
-          {sliders}
-        </div>
-          <ControlLabel>Share URL</ControlLabel>
-          <Well>
-            <a href={this.props.resultUrl}>{this.props.resultUrl}</a>
-          </Well>
-          <Button bsStyle="default" onClick={this.transitionToLabelPage.bind(this, composite, full)}>
-            Post to Instagram
-          </Button>
-      </div>
+      </Grid>
     )
   }
 }

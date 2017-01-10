@@ -12,6 +12,7 @@ const initialState = {
   link: '',
   picture: '',
   caption: '',
+  updatedCaption: '',
   username: '',
   anonymous: false,
   resultUrl: '',
@@ -49,7 +50,7 @@ export default function nutrition(state = initialState, action) {
     case IG_UPDATED_CAPTION:
       return {
         ...state,
-        caption: action.caption
+        updatedCaption: action.caption
       }
     case RESULT_URL:
       return {

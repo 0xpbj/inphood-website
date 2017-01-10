@@ -18,7 +18,7 @@ const firebaseLogin = () => {
   .catch(error => ({ error }))
 }
 
-const uploadImageToS3 = (uri, key, username) => {
+const uploadImageToS3 = (uri, key, username, thumbnail) => {
   var s3 = new AWS.S3({
     accessKeyId:     Config.AWS_ACCESS_ID,
     secretAccessKey: Config.AWS_SECRET_KEY,
@@ -35,7 +35,8 @@ const uploadImageToS3 = (uri, key, username) => {
         key,
         user: username,
         oUrl: uri,
-        iUrl: ''
+        iUrl: '',
+        thumbnail
       })
     }
     else {
@@ -52,17 +53,20 @@ const uploadImageToS3 = (uri, key, username) => {
             key,
             user: username,
             oUrl: uri,
-            iUrl: ''
+            iUrl: '',
+            thumbnail
           })
         } else {
           console.log("success uploading to s3", data)
         }
       })
+      console.log('Thumbnail: ', thumbnail)
       firebase.database().ref('/global/nutritionLabel/'+key).update({
         key,
         user: username,
         oUrl: uri,
-        iUrl: 'http://label.inphood.com/' + username + '/' + key + '.jpg'
+        iUrl: 'http://label.inphood.com/' + username + '/' + key + '.jpg',
+        thumbnail
       })
     }
   })
@@ -74,13 +78,15 @@ function* loadAWSPut() {
   const slink = link.slice(0, link.length - 1)
   yield call (firebaseLogin)
   let key = ''
+  let thumbnail = ''
   if (!profile) {
     key = firebase.database().ref('/global/nutritionLabel/anonymous').push().key
   }
   else {
     key = slink.substring(slink.lastIndexOf('/')+1)
+    thumbnail = profile.thumbnail
   }
-  yield call (uploadImageToS3, picture, key, username)
+  yield call (uploadImageToS3, picture, key, username, thumbnail)
   const url = "www.inphood.com/" + key
   if (profile)
     yield put ({type: RESULT_URL, url, key, anonymous: false})

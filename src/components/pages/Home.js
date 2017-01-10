@@ -177,7 +177,7 @@ export default class Home extends React.Component {
       }
     }
     else {
-      return <Nutrition goToGallery={this.goToGallery.bind(this)} resultUrl={this.props.nutrition.resultUrl}/>
+      return <Nutrition router={this.props.router} goToGallery={this.goToGallery.bind(this)} resultUrl={this.props.nutrition.resultUrl}/>
     }
   }
 }

@@ -87,7 +87,7 @@ function* loadAWSPut() {
     thumbnail = profile.thumbnail
   }
   yield call (uploadImageToS3, picture, key, username, thumbnail)
-  const url = "www.inphood.com/" + key
+  const url = "http://www.inphood.com/" + key
   if (profile)
     yield put ({type: RESULT_URL, url, key, anonymous: false})
   else

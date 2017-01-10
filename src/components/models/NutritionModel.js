@@ -277,11 +277,11 @@ export class Ingredient {
   }
 
   getCalories() {
-    return this._calories * this.scaleGettersTo
+    return (this._calories * this.scaleGettersTo).toFixed(this.decimalPlaces)
   }
 
   getCaloriesFromFat() {
-    return this._caloriesFromFat * this.scaleGettersTo
+    return (this._caloriesFromFat * this.scaleGettersTo).toFixed(this.decimalPlaces)
   }
 
   getTotalFatPerServing() {

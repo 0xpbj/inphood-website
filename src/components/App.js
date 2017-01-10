@@ -17,7 +17,7 @@ export default class App extends React.Component {
       <Router onUpdate={() => this.props.fireTracking()} history={browserHistory}>
         <Route path="/" component={Layout}>
           <IndexRoute component={Home}></IndexRoute>
-          <Route path="about" name="about" component={About}></Route>
+          {/*<Route path="about" name="about" component={About}></Route>*/}
           <Route path="/:labelId" name="label" component={Results}></Route>
         </Route>
       </Router>

@@ -119,9 +119,11 @@ export default class Nutrition extends React.Component {
       nutritionModel: nutritionModel
     })
   }
-  transitionToLabelPage(composite, full) {
-    this.props.postLabelId(this.props.nutrition.key, this.props.resultUrl)
+  transitionToLabelPage(flag, composite, full) {
+    if (flag)
+      this.props.postLabelId(this.props.nutrition.key, this.props.resultUrl)
     this.props.sendSerializedData(composite, full)
+    this.props.router.push('/'+this.props.nutrition.key)
   }
   render() {
     var sliders = []
@@ -179,15 +181,10 @@ export default class Nutrition extends React.Component {
         <div>
           <Button className="btn-primary-spacing" bsStyle="info" onClick={() => this.props.goToGallery()}>Gallery</Button>
           <SplitButton bsStyle="success" title="Share Label" key={1} id={`split-button-basic`}>
-            <MenuItem eventKey="1" onClick={this.transitionToLabelPage.bind(this, composite, full)}>Post to Instagram</MenuItem>
+            <MenuItem eventKey="1" onClick={this.transitionToLabelPage.bind(this, true, composite, full)}>Post to Instagram</MenuItem>
             <MenuItem divider />
-            <MenuItem eventKey="2" onClick={()=>this.setState({ showUrlModal: true })}>Share URL</MenuItem>
+            <MenuItem eventKey="2" onClick={this.transitionToLabelPage.bind(this, false, composite, full)}>Share URL</MenuItem>
           </SplitButton>
-          <Modal show={this.state.showUrlModal} onHide={hideUrlModal} bsSize="small" aria-labelledby="contained-modal-title-sm">
-            <Modal.Body>
-              <a href={this.props.resultUrl}>{this.props.resultUrl}</a>
-            </Modal.Body>
-          </Modal>
         </div>
       </Grid>
     )

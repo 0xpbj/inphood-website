@@ -24,6 +24,9 @@ export default class Results extends React.Component {
     const containerStyle = {
       marginTop: "60px"
     }
+    if (!this.props.results.data || this.props.results.data.oUrl === '') {
+      this.props.router.push('/')
+    }
     return (
       <Grid>
         <div className="text-center">

@@ -31,14 +31,13 @@ export default class Nutrition extends React.Component {
     }
   }
   componentWillMount() {
-    const tagString = this.generateChips().trim()
-
     // Process the caption for matches in the FDA database:
     //
-    // const tagString = this.props.nutrition.caption
-    // Test tags: const tagString = "#tomato #cucumber #onion #lettuce #olive #feta"
+    const tagString = this.generateChips().trim()
+    // const tagString = "#tomato #cucumber #onion #lettuce #olive #feta"
     // TODO: AC! **************** regexp errors here for / characters
     this.state.nutAlg.processTags(tagString)
+    //
     // Create the slider values dictionary state and initialize each one to 100:
     //
     const sliderInitValue = 100.0

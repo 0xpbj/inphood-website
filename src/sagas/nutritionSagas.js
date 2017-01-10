@@ -120,6 +120,8 @@ function* postLabelData() {
     var options = {
       url: url,
       method: 'post',
+      headers: {'Access-Control-Allow-Origin': 'http://www.inphood.com'},
+      // 'Access-Control-Allow-Origin': 'http://127.0.0.1:3000',
       form: {
         access_token: token, 
         text: comment

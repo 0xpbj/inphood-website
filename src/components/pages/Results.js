@@ -65,12 +65,10 @@ export default class Results extends React.Component {
           <Row className="show-grid">
             <Col xs={6} md={4}>
               <Row className="show-grid">
-                <ControlLabel>Food Image</ControlLabel>
                 {image}
               </Row>
             </Col>
             <Col xs={6} md={4}>
-              <ControlLabel>Nutrition Label</ControlLabel>
               {nutritionLabel}
             </Col>
           </Row>

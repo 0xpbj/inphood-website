@@ -3,7 +3,7 @@ export default class NutritionEstimateStyles {
     borderWidth: '1px',
     borderStyle: 'solid',
     borderColor: 'black',
-    margin: '20px',
+    // margin: '20px',
     float: 'left',
     // width: '320px',
     padding: '0.5rem',

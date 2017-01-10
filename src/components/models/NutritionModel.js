@@ -1,6 +1,7 @@
 export class NutritionModel {
   constructor() {
     this._ingredients = {}
+    this._suggestedServingAmount = 100
   }
 
   initializeFromSerialization(serialization) {
@@ -50,9 +51,14 @@ export class NutritionModel {
     // by comparing to the Ingredient's _servingAmount.
   }
 
+  setSuggestedServingAmount(amount) {
+    this._suggestedServingAmount = amount
+  }
+
   getScaledCompositeIngredient() {
     var compositeIngredient = new Ingredient()
     compositeIngredient.initializeComposite(this._ingredients)
+    compositeIngredient.setServingAmount(this._suggestedServingAmount)
     return compositeIngredient
   }
 }
@@ -112,7 +118,10 @@ export class Ingredient {
     this.decimalPlaces = 2
 
     this._ndbno = -1
-    this.scaleGettersTo = 1.0
+    this._scaleGettersTo = 1.0
+
+    this._suggestedServingAmount = 0
+
     //
     //   Generic measures/Unit:
     this._servingAmount = 0
@@ -207,6 +216,8 @@ export class Ingredient {
     //
     //   National Database Number
     this._ndbno = parseInt(dataForKey['NDB'])
+
+    this.setServingAmount(100)
   }
 
   initializeComposite(ingredientTuples) {
@@ -262,7 +273,7 @@ export class Ingredient {
 
   initializeFromSerialization(serializedData) {
     let ingredientData = serializedData.Ingredient
-    
+
     this._key = ""
     this._tag = ""
 
@@ -309,6 +320,9 @@ export class Ingredient {
     //
     //   National Database Number
     this._ndbno = ingredientData._ndbno
+
+    // sets member var and also scale factor
+    this.setServingAmount(ingredientData._suggestedServingAmount)
   }
 
   serialize() {
@@ -317,13 +331,15 @@ export class Ingredient {
     return JSON.stringify(typeToInstance)
   }
 
-  setServingAmount() {
+  setServingAmount(suggestedServingAmount) {
     // TODO: get the current serving amount and scale all the numbers appropriately
     // for the getter functions.
+    this._suggestedServingAmount = suggestedServingAmount
+    this._scaleGettersTo = suggestedServingAmount / this._servingAmount
   }
 
   getServingAmount() {
-    return (this._servingAmount * this.scaleGettersTo).toFixed(this.decimalPlaces)
+    return (this._servingAmount * this._scaleGettersTo).toFixed(this.decimalPlaces)
   }
 
   getServingUnit() {
@@ -331,15 +347,15 @@ export class Ingredient {
   }
 
   getCalories() {
-    return (this._calories * this.scaleGettersTo).toFixed(this.decimalPlaces)
+    return (this._calories * this._scaleGettersTo).toFixed(this.decimalPlaces)
   }
 
   getCaloriesFromFat() {
-    return (this._caloriesFromFat * this.scaleGettersTo).toFixed(this.decimalPlaces)
+    return (this._caloriesFromFat * this._scaleGettersTo).toFixed(this.decimalPlaces)
   }
 
   getTotalFatPerServing() {
-    return (this._totalFatPerServing * this.scaleGettersTo).toFixed(this.decimalPlaces)
+    return (this._totalFatPerServing * this._scaleGettersTo).toFixed(this.decimalPlaces)
   }
 
   getTotalFatUnit() {
@@ -347,11 +363,11 @@ export class Ingredient {
   }
 
   getTotalFatRDA() {
-    return (this._totalFatRDA * this.scaleGettersTo).toFixed(this.decimalPlaces)
+    return (this._totalFatRDA * this._scaleGettersTo).toFixed(this.decimalPlaces)
   }
 
   getSaturatedFatPerServing() {
-    return (this._saturatedFatPerServing * this.scaleGettersTo).toFixed(this.decimalPlaces)
+    return (this._saturatedFatPerServing * this._scaleGettersTo).toFixed(this.decimalPlaces)
   }
 
   getSaturatedFatUnit() {
@@ -359,11 +375,11 @@ export class Ingredient {
   }
 
   getSaturatedFatRDA() {
-    return this._saturatedFatRDA.toFixed(this.decimalPlaces)
+    return (this._saturatedFatRDA * this._scaleGettersTo).toFixed(this.decimalPlaces)
   }
 
   getTransFatPerServing() {
-    return (this._transFatPerServing * this.scaleGettersTo).toFixed(this.decimalPlaces)
+    return (this._transFatPerServing * this._scaleGettersTo).toFixed(this.decimalPlaces)
   }
 
   getTransFatUnit() {
@@ -371,7 +387,7 @@ export class Ingredient {
   }
 
   getCholestorol() {
-    return (this._cholesterol * this.scaleGettersTo).toFixed(this.decimalPlaces)
+    return (this._cholesterol * this._scaleGettersTo).toFixed(this.decimalPlaces)
   }
 
   getCholestorolUnit() {
@@ -379,11 +395,11 @@ export class Ingredient {
   }
 
   getCholestorolRDA() {
-    return this._cholesterolRDA.toFixed(this.decimalPlaces)
+    return (this._cholesterolRDA * this._scaleGettersTo).toFixed(this.decimalPlaces)
   }
 
   getSodium() {
-    return this._sodium.toFixed(this.decimalPlaces)
+    return (this._sodium * this._scaleGettersTo).toFixed(this.decimalPlaces)
   }
 
   getSodumUnit() {
@@ -391,11 +407,11 @@ export class Ingredient {
   }
 
   getSodiumRDA() {
-    return this._sodiumRDA.toFixed(this.decimalPlaces)
+    return (this._sodiumRDA * this._scaleGettersTo).toFixed(this.decimalPlaces)
   }
 
   getTotalCarbohydratePerServing() {
-    return this._totalCarbohydratePerServing.toFixed(this.decimalPlaces)
+    return (this._totalCarbohydratePerServing * this._scaleGettersTo).toFixed(this.decimalPlaces)
   }
 
   getTotalCarbohydrateUnit() {
@@ -403,11 +419,11 @@ export class Ingredient {
   }
 
   getTotalCarbohydrateRDA() {
-    return this._totalCarbohydrateRDA.toFixed(this.decimalPlaces)
+    return (this._totalCarbohydrateRDA * this._scaleGettersTo).toFixed(this.decimalPlaces)
   }
 
   getDietaryFiber() {
-    return this._dietaryFiber.toFixed(this.decimalPlaces)
+    return (this._dietaryFiber * this._scaleGettersTo).toFixed(this.decimalPlaces)
   }
 
   getDietaryFiberUnit() {
@@ -415,11 +431,11 @@ export class Ingredient {
   }
 
   getDietaryFiberRDA() {
-    return this._dietaryFiberRDA.toFixed(this.decimalPlaces)
+    return (this._dietaryFiberRDA * this._scaleGettersTo).toFixed(this.decimalPlaces)
   }
 
   getSugars() {
-    return this._sugars.toFixed(this.decimalPlaces)
+    return (this._sugars  * this._scaleGettersTo).toFixed(this.decimalPlaces)
   }
 
   getSugarsUnit() {
@@ -427,7 +443,7 @@ export class Ingredient {
   }
 
   getTotalProteinPerServing() {
-    return this._totalProteinPerServing.toFixed(this.decimalPlaces)
+    return (this._totalProteinPerServing  * this._scaleGettersTo).toFixed(this.decimalPlaces)
   }
 
   getTotalProteinUnit() {

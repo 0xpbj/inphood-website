@@ -28,7 +28,7 @@ export default class Nutrition extends React.Component {
       showUrlModal: false,
       parChips: [],
       updChips: [],
-      servingValue: 0
+      servingValue: 100
     }
   }
   componentWillMount() {
@@ -110,8 +110,11 @@ export default class Nutrition extends React.Component {
     return result
   }
   handleServingValuesChange(servingValue) {
+    var nutritionModel = this.state.nutritionModel
+    nutritionModel.setSuggestedServingAmount(servingValue)
     this.setState({
-      servingValue
+      servingValue: servingValue,
+      nutritionModel: nutritionModel
     })
   }
   handleSliderValuesChange(sliderId, value) {
@@ -155,9 +158,9 @@ export default class Nutrition extends React.Component {
             value={this.state.sliderValueDict[key]}
             onChange={this.handleSliderValuesChange.bind(this, key)}
             min={0}
-            max={100}
+            max={400}
             editable/>
-          <br/><br/>
+          <br/>
         </div>)
     }
     if (notFound != "") {
@@ -194,13 +197,14 @@ export default class Nutrition extends React.Component {
             </div>
           </Col>
           <Col xs={8} md={8}>
-            <text>Servings Size</text>
+            <br/>
+            <text>Serving Size</text>
             <Slider
               value={this.state.servingValue}
               onChange={this.handleServingValuesChange.bind(this)}
               min={0}
-              max={100}
-              editable/>
+              max={400}
+              editable/><br/><br/>
             {sliders}
           </Col>
         </Row>

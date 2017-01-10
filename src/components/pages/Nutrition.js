@@ -31,10 +31,12 @@ export default class Nutrition extends React.Component {
     }
   }
   componentWillMount() {
+    const tagString = this.generateChips().trim()
+
     // Process the caption for matches in the FDA database:
     //
     // const tagString = this.props.nutrition.caption
-    const tagString = "#tomato #cucumber #onion #lettuce #olive #feta"
+    // Test tags: const tagString = "#tomato #cucumber #onion #lettuce #olive #feta"
     // TODO: AC! **************** regexp errors here for / characters
     this.state.nutAlg.processTags(tagString)
     // Create the slider values dictionary state and initialize each one to 100:
@@ -57,7 +59,6 @@ export default class Nutrition extends React.Component {
       sliderValueDict: sliderValueDict,
       nutritionModel: nutritionModel
     })
-    this.generateChips()
   }
   parseCaption(caption) {
     if (caption !== '') {
@@ -75,7 +76,7 @@ export default class Nutrition extends React.Component {
   generateChips() {
     const {caption, updatedCaption} = this.props.nutrition
     let regex = /\w+/g
-    debugger
+    let result = ''
     if (updatedCaption === '') {
       let originalWords = this.parseCaption(caption)
       let updChips = []
@@ -83,6 +84,7 @@ export default class Nutrition extends React.Component {
         updChips.push(
           <Chip>{word}</Chip>
         )
+        result += word + ' '
       }
       this.setState({parChips: [], updChips})
     }
@@ -101,9 +103,11 @@ export default class Nutrition extends React.Component {
         updChips.push(
           <Chip>{word}</Chip>
         )
+        result += word + ' '
       }
       this.setState({parChips, updChips})
     }
+    return result
   }
   handleSliderValuesChange(sliderId, value) {
     var sliderValueDict = this.state.sliderValueDict

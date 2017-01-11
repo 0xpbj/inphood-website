@@ -120,7 +120,7 @@ function* postLabelData() {
     var options = {
       url: url,
       method: 'post',
-      headers: {'Access-Control-Allow-Origin': 'http://www.inphood.com'},
+      headers: {'Access-Control-Allow-Origin': 'http://127.0.0.1:3000'},
       // 'Access-Control-Allow-Origin': 'http://127.0.0.1:3000',
       form: {
         access_token: token, 
@@ -154,7 +154,7 @@ function* postLabelData() {
 }
 
 export default function* root() {
-  yield fork(postLabelData)
+  // yield fork(postLabelData)
   yield fork(takeLatest, SEND_SERIALIZED_DATA, loadSerializedData)
   yield fork(takeLatest, IG_UPLOAD_PHOTO, loadAWSPut)
 }

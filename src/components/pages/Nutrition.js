@@ -172,8 +172,8 @@ export default class Nutrition extends React.Component {
     const menuItems = this.props.nutrition.anonymous === false
     ? (
         <DropdownButton bsStyle="success" title="Share Label" key={1} id={`split-button-basic`}>
-        <MenuItem eventKey="1" onClick={this.transitionToLabelPage.bind(this, true, composite, full)}>Post to Instagram</MenuItem>
-        <MenuItem divider />
+        {/*<MenuItem eventKey="1" onClick={this.transitionToLabelPage.bind(this, true, composite, full)}>Post to Instagram</MenuItem>
+        <MenuItem divider />*/}
         <MenuItem eventKey="2" onClick={this.transitionToLabelPage.bind(this, false, composite, full)}>Share URL</MenuItem>
         </DropdownButton>
     )

@@ -185,17 +185,6 @@ export default class Nutrition extends React.Component {
     return (
       <Grid>
         <Row className="show-grid">
-          <Col xs={4} md={4}>
-            <Label nutritionModel={this.state.nutritionModel}/>
-            <div>
-              <section>
-                {this.state.updChips}
-              </section>
-              <section>
-                {this.state.parChips}
-              </section>
-            </div>
-          </Col>
           <Col xs={8} md={8}>
             <br/>
             <text>Serving Size</text>
@@ -206,6 +195,17 @@ export default class Nutrition extends React.Component {
               max={400}
               editable/><br/><br/>
             {sliders}
+          </Col>
+          <Col xs={4} md={4}>
+            <Label nutritionModel={this.state.nutritionModel}/>
+            <div>
+              <section>
+                {this.state.updChips}
+              </section>
+              <section>
+                {this.state.parChips}
+              </section>
+            </div>
           </Col>
         </Row>
         <div>

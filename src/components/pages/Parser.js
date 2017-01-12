@@ -16,13 +16,73 @@ export default class Parser extends React.Component {
       ingredients: ''
     }
   }
+  switchSpecial(s) {
+    switch(s) {
+      case "½":
+        return "1/2"
+      case "⅓":
+        return "1/3"
+      case "⅔":
+        return "2/3"
+      case "¼":
+        return "1/4"
+      case "¾":
+        return "3/4"
+      case "⅕":
+        return "1/5"
+      case "⅖":
+        return "2/5"
+      case "⅗":
+        return "3/5"
+      case "⅘":
+        return "4/5"
+      case "⅙":
+        return "1/6"
+      case "⅚":
+        return "5/6"
+      case "⅛":
+        return "1/8"
+      case "⅜":
+        return "3/8"
+      case "⅝":
+        return "5/8"
+      case "⅞":
+        return "7/8"
+      default:
+        return s
+    }
+  }
+  removeSpecialChars(str) {
+    const regex = /(½|⅓|⅔|¼|¾|⅕|⅖|⅗|⅘|⅙|⅚|⅛|⅜|⅝|⅞)/g
+    if (str.match(regex) === null)
+      return str
+    let clean = ''
+    let index = []
+    let match
+    while ((match = regex.exec(str)) != null) {
+      index.push(match.index)
+    }
+    let m = 0
+    for (let i = 0; i < str.length; i++) {
+      if (index.length > 0 && i === index[m]) {
+        clean += this.switchSpecial(str[i])
+        m++
+      }
+      else {
+        clean += str[i]
+      }
+    }
+    return clean
+  }
   parseData() {
     let regex = /[^\r\n]+/g
     let phrases = this.state.ingredients.match(regex)
-    console.log(phrases)
     var ingp = require('../../algorithms/parser/ingredientparser')
     for (let i of phrases) {
-      console.log(ingp.parse(i))
+      console.log('\n\nInput string: ', i)
+      let clean = this.removeSpecialChars(i)
+      console.log('Cleaned string: ', clean)    
+      console.log('Output object: ', ingp.parse(clean))
     }
     this.setState({tags: this.state.result})
   }

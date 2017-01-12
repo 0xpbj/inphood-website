@@ -3,8 +3,8 @@ module.exports = {};
 var reOptional = module.exports.reOptional = /^(optional|\(\W*optional\W*\)$)/i;
 
 var unitsOfMeasure = module.exports.unitsOfMeasure = {
-  tablespoon: ['T', 'Tbs', 'tbs'],
-  teaspoon: ['t', 'Tsp', 'tsp'],
+  tablespoon: ['T', 'Tbs', 'tbs', 'tbsp.', 'Tbsp.', 'Tbsp', 'tbsp', 'TB', 'TBS', 'TBSP'],
+  teaspoon: ['t', 'Tsp', 'tsp', 'tsp.', 'Tsp.', 'TS', 'TSP'],
   cup: ['C', 'c'],
   pint: ['pt', 'PT', 'Pt'],
   quart: ['QT', 'Qt', 'qt'],
@@ -12,7 +12,7 @@ var unitsOfMeasure = module.exports.unitsOfMeasure = {
   little: [],
   dash: [],
   gallon: ['Gal', 'GAL', 'gal'],
-  ounce: ['oz', 'Oz', 'OZ'],
+  ounce: ['oz', 'Oz', 'OZ', 'oz.', 'Oz.', 'OZ.'],
   milliliter: ['ml'],
   liter: ['L', 'l'],
   inch: ['"', 'in', 'In', 'IN'],
@@ -24,7 +24,9 @@ var unitsOfMeasure = module.exports.unitsOfMeasure = {
   bottle: [],
   large: ['lg', 'LG', 'Lg'],
   'package': ['pkg', 'Pkg', 'PKG'],
-  pound: ['lb', 'Lb', 'LB']
+  pound: ['lb', 'Lb', 'LB', 'lb.', 'Lb.', 'LB.'],
+  bunch: ['bunch', 'Bunch'],
+  piece: ['piece', 'Piece']
 };
 
 var fluidicWords = module.exports.fluidicWords = [

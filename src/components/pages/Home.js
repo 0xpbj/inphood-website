@@ -83,7 +83,6 @@ export default class Home extends React.Component {
     const containerStyle = {
       marginTop: "30px"
     }
-    return <Parser />
     if (!this.state.nutritionView) {
       if (this.props.user.profile !== null) {
         if (this.props.user.photos.length === 0 || this.props.user.photos.data.length === 0) {

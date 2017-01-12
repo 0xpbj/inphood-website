@@ -163,6 +163,24 @@ export class Ingredient {
     //
     //   National Database Number
     this._ndbno = -1
+    //
+    //   Measures & conversions:
+    //
+    //     The format of _measureString:
+    //        <quantity> <unit> [<meta>]
+    //     Examples:
+    //        "0.25 cup"
+    //        "0.33 package (10 oz)"
+    //        "1.0 NLEA serving"
+    //
+    //     _measureQuantity = <quantity>
+    //     _measureUnit = <unit>
+    //     _measureMeta = <meta>
+    this._measureWeight_g = 0
+    this._measureString = ''
+    this._measureQuantity = 0
+    this._measureUnit = ''
+    this._measureMeta = ''
   }
 
   // This constructor initializes a NutritionItem from the DB/JSON which
@@ -216,6 +234,11 @@ export class Ingredient {
     //
     //   National Database Number
     this._ndbno = parseInt(dataForKey['NDB'])
+    //
+    //   Measures & conversions: (see more documentation above in constructor)
+    this._measureWeight_g = parseFloat(dataForKey['Weight(g)'])
+    this._measureString = dataForKey['Measure']
+    this.setMeasurePropsFromString(this._measureString)
 
     this.setServingAmount(100)
   }
@@ -320,6 +343,13 @@ export class Ingredient {
     //
     //   National Database Number
     this._ndbno = ingredientData._ndbno
+    //
+    //   Measures & conversions: (see more documentation above in constructor)
+    this._measureWeight_g = ingredientData._measureWeight_g
+    this._measureString = ingredientData._measureString
+    this._measureQuantity = ingredientData._measureQuantity
+    this._measureUnit = ingredientData._measureUnit
+    this._measureMeta = ingredientData._measureMeta
 
     // sets member var and also scale factor
     this.setServingAmount(ingredientData._suggestedServingAmount)
@@ -336,6 +366,29 @@ export class Ingredient {
     // for the getter functions.
     this._suggestedServingAmount = suggestedServingAmount
     this._scaleGettersTo = suggestedServingAmount / this._servingAmount
+  }
+
+  setMeasurePropsFromString(aMeasureString) {
+    if (aMeasureString === undefined || aMeasureString === "") {
+      return
+    }
+
+    textArr = aMeasureString.split(' ')
+    if (textArr.length >= 1) {
+        this._measureQuantity = parseFloat(textArr[0])
+    }
+    if (textArr.length >= 2) {
+        this._measureUnit += textArr[1]
+    }
+    if (textArr.length >= 3) {
+    	let meta = ""
+    	for (let token = 2; token < textArr.length; token++) {
+        	meta += textArr[token]
+            meta += " "
+        }
+        this._measureMeta = meta.trim()
+    }
+    return
   }
 
   getServingAmount() {

@@ -14,6 +14,7 @@ import Glyphicon from 'react-bootstrap/lib/Glyphicon'
 import ControlLabel from 'react-bootstrap/lib/ControlLabel'
 import Hello from 'hellojs'
 import Gallery from './Gallery'
+import Parser from './Parser'
 import Anon from './Anon'
 import Nutrition from "../../containers/NutritionContainer"
 import UploadModal from '../layout/UploadModal'
@@ -82,6 +83,7 @@ export default class Home extends React.Component {
     const containerStyle = {
       marginTop: "30px"
     }
+    return <Parser />
     if (!this.state.nutritionView) {
       if (this.props.user.profile !== null) {
         if (this.props.user.photos.length === 0 || this.props.user.photos.data.length === 0) {

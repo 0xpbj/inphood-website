@@ -373,7 +373,7 @@ export class Ingredient {
       return
     }
 
-    textArr = aMeasureString.split(' ')
+    let textArr = aMeasureString.split(' ')
     if (textArr.length >= 1) {
         this._measureQuantity = parseFloat(textArr[0])
     }

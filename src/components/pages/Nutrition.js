@@ -17,6 +17,8 @@ import DropdownButton from 'react-bootstrap/lib/DropdownButton'
 import FormControl from 'react-bootstrap/lib/FormControl'
 import ControlLabel from 'react-bootstrap/lib/ControlLabel'
 
+import Dropdownlist from 'react-widgets/lib/Dropdownlist'
+
 export default class Nutrition extends React.Component {
   constructor(props) {
     super(props)
@@ -133,6 +135,20 @@ export default class Nutrition extends React.Component {
       this.props.postLabelId(this.props.nutrition.key, this.props.resultUrl)
     this.props.sendSerializedData(composite, full)
     this.props.router.push('/'+this.props.nutrition.key)
+  }
+  getIngredientController() {
+    // Proposed layout:
+    //  Text: Tag,  Pulldown: Matches (could double as search bar if combobox)
+    //  EditboxSlider: Quanity, Pulldown: Units, Text: meta for units
+    //
+    //  Example:
+    //
+    //      Egg: [Eggs, scrambled, frozen mixture]^v
+    //      <-----*---------------> [   1]  [egg]^v
+    //
+    // Changing the unit takes the quanity and converts it to g for use with our model.
+    // We might store these in userQuantity, userUnit.
+    //
   }
   render() {
     var sliders = []

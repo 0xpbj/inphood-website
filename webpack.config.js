@@ -39,6 +39,7 @@ loaders.push({
 //   ]
 // });
 loaders.push({ test: /\.css$/, loader: "style-loader!css-loader" });
+loaders.push({ test: /\.less$/, loader: "style-loader!css-loader!less-loader"});
 
 module.exports = {
 	entry: [

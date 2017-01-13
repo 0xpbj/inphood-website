@@ -17,6 +17,7 @@ import DropdownButton from 'react-bootstrap/lib/DropdownButton'
 import FormControl from 'react-bootstrap/lib/FormControl'
 import ControlLabel from 'react-bootstrap/lib/ControlLabel'
 
+import 'react-widgets/lib/less/react-widgets.less'
 import Dropdownlist from 'react-widgets/lib/Dropdownlist'
 
 export default class Nutrition extends React.Component {
@@ -24,6 +25,8 @@ export default class Nutrition extends React.Component {
     super(props)
     this.state = {
       sliderValueDict: {},
+      matchDropdownValueDict: {},
+      unitDropdownValueDict: {},
       nutritionModel: new NutritionModel(),
       matches: [],
       nutAlg: new NutritionAlg(),
@@ -44,7 +47,9 @@ export default class Nutrition extends React.Component {
     // Create the slider values dictionary state and initialize each one to 100:
     //
     const sliderInitValue = 100.0
-    var sliderValueDict = {}
+    let sliderValueDict = {}
+    let matchDropdownValueDict = {}
+    let unitDropdownValueDict = {}
     for (var tag in this.state.nutAlg.getMatches()) {
       const key = this.state.nutAlg.getBestMatchForTag(tag)
       const dataForKey = this.state.nutAlg.getDataForKey(key)
@@ -53,12 +58,17 @@ export default class Nutrition extends React.Component {
       var ingredient = new Ingredient()
       ingredient.initializeSingle(key, tag, dataForKey)
 
+      matchDropdownValueDict[tag] = key
+      unitDropdownValueDict[tag] = 'grams'
+
       var nutritionModel = this.state.nutritionModel
       nutritionModel.addIngredient(key, ingredient, sliderInitValue)
     }
     this.setState({
       matches: this.state.nutAlg.getMatches(),
       sliderValueDict: sliderValueDict,
+      matchDropdownValueDict: matchDropdownValueDict,
+      unitDropdownValueDict: unitDropdownValueDict,
       nutritionModel: nutritionModel
     })
   }
@@ -136,7 +146,24 @@ export default class Nutrition extends React.Component {
     this.props.sendSerializedData(composite, full)
     this.props.router.push('/'+this.props.nutrition.key)
   }
-  getIngredientController() {
+  getMatchListFromMatches(tag,) {
+    let matchList = []
+    for (let i = 0; i <= this.state.matches[tag].length; i++) {
+      matchList.push(this.state.matches[tag][i])
+    }
+    return matchList
+  }
+  handleMatchDropdownChange(dropdownId, value) {
+    console.log('handleMatchDropdownChange ----------------------------------------')
+    console.log('dropdownId = ' + dropdownId)
+    console.log('value = ' + value)
+  }
+  handleUnitDropdownChange(dropdownId, value) {
+    console.log('handleUnitDropdownChange ----------------------------------------')
+    console.log('dropdownId = ' + dropdownId)
+    console.log('value = ' + value)
+  }
+  getIngredientController(tag) {
     // Proposed layout:
     //  Text: Tag,  Pulldown: Matches (could double as search bar if combobox)
     //  EditboxSlider: Quanity, Pulldown: Units, Text: meta for units
@@ -149,6 +176,38 @@ export default class Nutrition extends React.Component {
     // Changing the unit takes the quanity and converts it to g for use with our model.
     // We might store these in userQuantity, userUnit.
     //
+    // Going forward we'll need code in here to preset the slider and unit from
+    // the recipe
+
+    // TODO: move getMatchListFromMatches to NutritionAlg
+    const key = this.state.nutAlg.getBestMatchForTag(tag)
+    const dataForKey = this.state.nutAlg.getDataForKey(key)
+    const matchData = this.getMatchListFromMatches(tag)
+    const unitData = ['TODO', 'grams', 'cups', 'tablespoons', 'teaspoons']
+    const meta = 'TODO'
+
+    return(
+      <div key={tag}>
+        {/* row 1 from above: */}
+        <text>{tag}</text>
+        <Dropdownlist
+          data={matchData}
+          value={this.state.matchDropdownValueDict[tag]}
+          onChange={this.handleMatchDropdownChange.bind(this, tag)}/>
+        {/* row 2 from above: */}
+        <Slider
+          value={this.state.sliderValueDict[key]}
+          onChange={this.handleSliderValuesChange.bind(this, key)}
+          min={0}
+          max={400}
+          editable/>
+        <Dropdownlist
+          data={unitData}
+          value={this.state.unitDropdownValueDict[tag]}
+          onChange={this.handleUnitDropdownChange.bind(this, tag)}/>
+        <text>{meta}</text>
+      </div>
+    )
   }
   render() {
     var sliders = []
@@ -162,22 +221,18 @@ export default class Nutrition extends React.Component {
         notFound = notFound + tag + " "
         continue
       }
-      const dataForKey = this.state.nutAlg.getDataForKey(key)
-      // TODO: need a big number (non float limited version to do real math here)
-      // fat += parseFloat(dataForKey['Fat'] * this.state.sliderValueDict[tag] / 100)
-      // carbs += parseFloat(dataForKey['Carbohydrate'] * this.state.sliderValueDict[tag] / 100)
-      // protein += parseFloat(dataForKey['Protein'] * this.state.sliderValueDict[tag] / 100)
-      sliders.push(
-        <div key={key}>
-          <text>{key} (grams)</text>
-          <Slider
-            value={this.state.sliderValueDict[key]}
-            onChange={this.handleSliderValuesChange.bind(this, key)}
-            min={0}
-            max={400}
-            editable/>
-          <br/>
-        </div>)
+      sliders.push(this.getIngredientController(tag))
+      // sliders.push(
+      //   <div key={key}>
+      //     <text>{key} (grams)</text>
+      //     <Slider
+      //       value={this.state.sliderValueDict[key]}
+      //       onChange={this.handleSliderValuesChange.bind(this, key)}
+      //       min={0}
+      //       max={400}
+      //       editable/>
+      //     <br/>
+      //   </div>)
     }
     if (notFound != "") {
       notFound = "(No data for: " + notFound + ")"

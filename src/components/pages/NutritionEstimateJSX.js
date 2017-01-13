@@ -22,7 +22,7 @@ export default class NutritionEstimateJSX extends React.Component {
     if (ingredientComposite === undefined) {
       const nutritionModel = this.props.nutritionModel
       if (nutritionModel != undefined) {
-        ingredientComposite = nutritionModel.getScaledCompositeIngredient()
+        ingredientComposite = nutritionModel.getScaledCompositeIngredientModel()
       } // else TODO: error / reload something
     }
 

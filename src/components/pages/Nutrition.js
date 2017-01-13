@@ -1,7 +1,8 @@
 var React = require('react')
 import Label from './NutritionEstimateJSX'
 import NutritionAlg from '../../algorithms/NutritionAlg'
-import {Ingredient, NutritionModel} from '../models/NutritionModel'
+import {IngredientModel} from '../models/IngredientModel'
+import {NutritionModel} from '../models/NutritionModel'
 
 // import { VictoryPie } from 'victory'
 import Chip from 'react-toolbox/lib/chip'
@@ -21,6 +22,9 @@ import 'react-widgets/lib/less/react-widgets.less'
 import Dropdownlist from 'react-widgets/lib/Dropdownlist'
 
 export default class Nutrition extends React.Component {
+  //////////////////////////////////////////////////////////////////////////////
+  // React / Component API:
+  //////////////////////////////////////////////////////////////////////////////
   constructor(props) {
     super(props)
     this.state = {
@@ -55,7 +59,7 @@ export default class Nutrition extends React.Component {
       const dataForKey = this.state.nutAlg.getDataForKey(key)
 
       sliderValueDict[key] = sliderInitValue
-      var ingredient = new Ingredient()
+      var ingredient = new IngredientModel()
       ingredient.initializeSingle(key, tag, dataForKey)
 
       matchDropdownValueDict[tag] = key
@@ -72,6 +76,51 @@ export default class Nutrition extends React.Component {
       nutritionModel: nutritionModel
     })
   }
+  //////////////////////////////////////////////////////////////////////////////
+  // Action Handlers:
+  //////////////////////////////////////////////////////////////////////////////
+  transitionToLabelPage(flag, composite, full) {
+    if (flag)
+      this.props.postLabelId(this.props.nutrition.key, this.props.resultUrl)
+    this.props.sendSerializedData(composite, full)
+    this.props.router.push('/'+this.props.nutrition.key)
+  }
+  //
+  handleServingValuesChange(servingValue) {
+    var nutritionModel = this.state.nutritionModel
+    nutritionModel.setSuggestedServingAmount(servingValue)
+    this.setState({
+      servingValue: servingValue,
+      nutritionModel: nutritionModel
+    })
+  }
+  //
+  handleSliderValuesChange(sliderId, value) {
+    var sliderValueDict = this.state.sliderValueDict
+    sliderValueDict[sliderId] = value
+    const key = sliderId
+    var nutritionModel = this.state.nutritionModel
+    nutritionModel.scaleIngredientToPercent(key, value)
+    this.setState({
+      sliderValueDict: sliderValueDict,
+      nutritionModel: nutritionModel
+    })
+  }
+  //
+  handleMatchDropdownChange(dropdownId, value) {
+    console.log('handleMatchDropdownChange ----------------------------------------')
+    console.log('dropdownId = ' + dropdownId)
+    console.log('value = ' + value)
+  }
+  //
+  handleUnitDropdownChange(dropdownId, value) {
+    console.log('handleUnitDropdownChange ----------------------------------------')
+    console.log('dropdownId = ' + dropdownId)
+    console.log('value = ' + value)
+  }
+  //////////////////////////////////////////////////////////////////////////////
+  // Miscellany:
+  //////////////////////////////////////////////////////////////////////////////
   parseCaption(caption) {
     if (caption !== '') {
       let regex = /\w+/g
@@ -121,48 +170,9 @@ export default class Nutrition extends React.Component {
     }
     return result
   }
-  handleServingValuesChange(servingValue) {
-    var nutritionModel = this.state.nutritionModel
-    nutritionModel.setSuggestedServingAmount(servingValue)
-    this.setState({
-      servingValue: servingValue,
-      nutritionModel: nutritionModel
-    })
-  }
-  handleSliderValuesChange(sliderId, value) {
-    var sliderValueDict = this.state.sliderValueDict
-    sliderValueDict[sliderId] = value
-    const key = sliderId
-    var nutritionModel = this.state.nutritionModel
-    nutritionModel.scaleIngredientToPercent(key, value)
-    this.setState({
-      sliderValueDict: sliderValueDict,
-      nutritionModel: nutritionModel
-    })
-  }
-  transitionToLabelPage(flag, composite, full) {
-    if (flag)
-      this.props.postLabelId(this.props.nutrition.key, this.props.resultUrl)
-    this.props.sendSerializedData(composite, full)
-    this.props.router.push('/'+this.props.nutrition.key)
-  }
-  getMatchListFromMatches(tag,) {
-    let matchList = []
-    for (let i = 0; i <= this.state.matches[tag].length; i++) {
-      matchList.push(this.state.matches[tag][i])
-    }
-    return matchList
-  }
-  handleMatchDropdownChange(dropdownId, value) {
-    console.log('handleMatchDropdownChange ----------------------------------------')
-    console.log('dropdownId = ' + dropdownId)
-    console.log('value = ' + value)
-  }
-  handleUnitDropdownChange(dropdownId, value) {
-    console.log('handleUnitDropdownChange ----------------------------------------')
-    console.log('dropdownId = ' + dropdownId)
-    console.log('value = ' + value)
-  }
+  //////////////////////////////////////////////////////////////////////////////
+  // UI Element Generation:
+  //////////////////////////////////////////////////////////////////////////////
   getIngredientController(tag) {
     // Proposed layout:
     //  Text: Tag,  Pulldown: Matches (could double as search bar if combobox)
@@ -179,10 +189,9 @@ export default class Nutrition extends React.Component {
     // Going forward we'll need code in here to preset the slider and unit from
     // the recipe
 
-    // TODO: move getMatchListFromMatches to NutritionAlg
     const key = this.state.nutAlg.getBestMatchForTag(tag)
     const dataForKey = this.state.nutAlg.getDataForKey(key)
-    const matchData = this.getMatchListFromMatches(tag)
+    const matchData = this.state.nutAlg.getMatchList(tag)
     const unitData = ['TODO', 'grams', 'cups', 'tablespoons', 'teaspoons']
     const meta = 'TODO'
 
@@ -210,49 +219,24 @@ export default class Nutrition extends React.Component {
     )
   }
   render() {
-    var sliders = []
-    var notFound = ""
-    var fat = 0.0
-    var carbs = 0.0
-    var protein = 0.0
-    for (var tag in this.state.matches) {
+    let sliders = []
+    let notFound = ""
+    for (let tag in this.state.matches) {
       const key = this.state.nutAlg.getBestMatchForTag(tag)
-      if (key == "") {
+      if (key === "") {
         notFound = notFound + tag + " "
         continue
       }
       sliders.push(this.getIngredientController(tag))
-      // sliders.push(
-      //   <div key={key}>
-      //     <text>{key} (grams)</text>
-      //     <Slider
-      //       value={this.state.sliderValueDict[key]}
-      //       onChange={this.handleSliderValuesChange.bind(this, key)}
-      //       min={0}
-      //       max={400}
-      //       editable/>
-      //     <br/>
-      //   </div>)
     }
     if (notFound != "") {
       notFound = "(No data for: " + notFound + ")"
     }
     const full = this.state.nutritionModel.serialize()
-    const composite = this.state.nutritionModel.getScaledCompositeIngredient().serialize()
+    const composite = this.state.nutritionModel.getScaledCompositeIngredientModel().serialize()
+    // TODO: PBJ, what does the next line do? Is it needed here?
     let hideUrlModal = () => this.setState({ showUrlModal: false })
-    const menuItems = this.props.nutrition.anonymous === false
-    ? (
-        <DropdownButton bsStyle="success" title="Share Label" key={1} id={`split-button-basic`}>
-        {/*<MenuItem eventKey="1" onClick={this.transitionToLabelPage.bind(this, true, composite, full)}>Post to Instagram</MenuItem>
-        <MenuItem divider />*/}
-        <MenuItem eventKey="2" onClick={this.transitionToLabelPage.bind(this, false, composite, full)}>Share URL</MenuItem>
-        </DropdownButton>
-    )
-    : (
-        <DropdownButton bsStyle="success" title="Share Label" key={1} id={`split-button-basic`}>
-        <MenuItem eventKey="1" onClick={this.transitionToLabelPage.bind(this, false, composite, full)}>Share URL</MenuItem>
-        </DropdownButton>
-    )
+    const eventKey = this.props.nutrition.anonymous === false ? "2" : "1"
     return (
       <Grid>
         <Row className="show-grid">
@@ -281,7 +265,9 @@ export default class Nutrition extends React.Component {
         </Row>
         <div>
           <Button className="btn-primary-spacing" bsStyle="info" onClick={() => this.props.goToGallery()}>Gallery</Button>
-            {menuItems}
+          <DropdownButton bsStyle="success" title="Share Label" key={1} id={`split-button-basic`}>
+          <MenuItem eventKey={eventKey} onClick={this.transitionToLabelPage.bind(this, false, composite, full)}>Share URL</MenuItem>
+          </DropdownButton>
         </div>
       </Grid>
     )

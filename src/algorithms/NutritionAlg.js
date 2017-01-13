@@ -110,11 +110,14 @@ export default class NutritionAlg {
         //       that change (it's probably and issue today too with current algorithm).
         if (key.search(tagRegExps[i]) !== -1) {
           //
-          // To access nutritiond data in the match:
+          // We build an array for each tag that contains the key and a coefficient
+          // of similarity. The coefficient of similarity is based on levenshtein's
+          // algorithm but is tweaked to prioritize whole word matches (i.e. to
+          // prevent the best match for 'egg' from being 'eggnog' instead of
+          // 'eggs, <some adjective>'):
           //
-          // const keyData = Nutrition.data[key]
-          // console.log('Protein: ', keyData['Protein'], ', Carbohydrate: ', keyData['Carbohydrate'], ', Fat: ', keyData['Fat'])
-          //
+          let similarityCoef = levenshtein(splitTags[i], key)
+
           this.matches[splitTags[i]].push([key, levenshtein(splitTags[i], key)])
         }
       }
@@ -139,10 +142,19 @@ export default class NutritionAlg {
     }
   }
 
+  // Returns the matches which are a dictionary formated as follows:
+  //
+  //    egg:
+  //      'eggs, whipped', 77
+  //      'eggs, burnt', 89
+  //    ...:
+  //
   getMatches() {
     return this.matches
   }
 
+  // Returns the matched key with the best ranking
+  //
   getBestMatchForTag(tag) {
     if (this.matches[tag].length != 0) {
       return this.matches[tag][0][0]
@@ -151,19 +163,26 @@ export default class NutritionAlg {
     }
   }
 
+  // Returns a simple list of the matches (instead of pairs of matches , ranking)
+  //
+  getMatchList(tag) {
+    let matchList = []
+    for (let i = 0; i < this.matches[tag].length; i++) {
+      matchList.push(this.matches[tag][i][0])
+    }
+    return matchList
+  }
+
   getDataForKey(key) {
     return NutritionAlg.data[key]
   }
 }
 
-
 // Static variable shared by all instances.
-// The extra data is here for possible 2-level optimizations etc.
+// Do not move this line above the class declaration for NutritionAlg (it requires
+// NutritionAlg to be defined).
 //
-// var fs = require('fs')
-// NutritionAlg.data = JSON.parse(fs.readFileSync('../data/complete-001.opt.json', 'utf8'))
 NutritionAlg.data = require('../data/complete-001.opt.json')
-
 
 // Levenshtein algorithm for computing edit distance
 //

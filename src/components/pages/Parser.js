@@ -11,7 +11,6 @@ export default class Parser extends React.Component {
   constructor() {
     super()
     this.state = {
-      tags: '',
       parse: false,
       ingredients: ''
     }
@@ -79,12 +78,11 @@ export default class Parser extends React.Component {
     let phrases = this.state.ingredients.match(regex)
     var ingp = require('../../algorithms/parser/ingredientparser')
     for (let i of phrases) {
-      console.log('\n\nInput string: ', i)
       let clean = this.removeSpecialChars(i)
-      console.log('Cleaned string: ', clean)    
-      console.log('Output object: ', ingp.parse(clean))
+      let parsed = ingp.parse(clean)
+      console.log('Parsed: ', parsed)
     }
-    this.setState({tags: this.state.result})
+    // this.setState({amounts, units, names})
   }
   getData(e) {
     let ingredients = e.target.value
@@ -106,7 +104,6 @@ export default class Parser extends React.Component {
             <FormGroup controlId="formControlsTextarea">
               <ControlLabel>Parsed Contents</ControlLabel>
               <FormControl.Static>
-                {this.state.tags}
               </FormControl.Static>
             </FormGroup>
           </Col>

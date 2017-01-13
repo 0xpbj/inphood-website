@@ -40,6 +40,8 @@ loaders.push({
 // });
 loaders.push({ test: /\.css$/, loader: "style-loader!css-loader" });
 loaders.push({ test: /\.less$/, loader: "style-loader!css-loader!less-loader"});
+loaders.push({ test: /\.woff(2)?(\?v=[0-9].[0-9].[0-9])?$/, loader: "url-loader?mimetype=application/font-woff" });
+loaders.push({ test: /\.(ttf|eot|svg)(\?v=[0-9].[0-9].[0-9])?$/, loader: "file-loader?name=[name].[ext]" });
 
 module.exports = {
 	entry: [

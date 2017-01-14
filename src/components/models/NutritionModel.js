@@ -66,11 +66,12 @@ export class NutritionModel {
   // Scale the ingredient figures to scale percentage.
   //
   //   0.0 <= scale <= 100.0
-  scaleIngredientToPercent(key, scale) {
-    if (key in this._ingredients) {
-      this._ingredients[key].setScale(scale)
-    } else {
-      // TODO: Error
+  scaleIngredientToPercent(tag, scale) {
+    for (let key in this._ingredients) {
+      let ingredientModel = this._ingredients[key].getIngredientModel()
+      if (tag === ingredientModel._tag) {
+        this._ingredients[key].setScale(scale)
+      }
     }
   }
 

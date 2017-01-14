@@ -54,18 +54,17 @@ export default class Nutrition extends React.Component {
     let sliderValueDict = {}
     let matchDropdownValueDict = {}
     let unitDropdownValueDict = {}
-    for (var tag in this.state.nutAlg.getMatches()) {
+    let nutritionModel = this.state.nutritionModel
+    for (let tag in this.state.nutAlg.getMatches()) {
       const key = this.state.nutAlg.getBestMatchForTag(tag)
       const dataForKey = this.state.nutAlg.getDataForKey(key)
 
-      sliderValueDict[key] = sliderInitValue
-      var ingredient = new IngredientModel()
-      ingredient.initializeSingle(key, tag, dataForKey)
-
+      sliderValueDict[tag] = sliderInitValue
       matchDropdownValueDict[tag] = key
       unitDropdownValueDict[tag] = 'grams'
 
-      var nutritionModel = this.state.nutritionModel
+      let ingredient = new IngredientModel()
+      ingredient.initializeSingle(key, tag, dataForKey)
       nutritionModel.addIngredient(key, ingredient, sliderInitValue)
     }
     this.setState({
@@ -87,7 +86,7 @@ export default class Nutrition extends React.Component {
   }
   //
   handleServingValuesChange(servingValue) {
-    var nutritionModel = this.state.nutritionModel
+    let nutritionModel = this.state.nutritionModel
     nutritionModel.setSuggestedServingAmount(servingValue)
     this.setState({
       servingValue: servingValue,
@@ -96,11 +95,11 @@ export default class Nutrition extends React.Component {
   }
   //
   handleSliderValuesChange(sliderId, value) {
-    var sliderValueDict = this.state.sliderValueDict
+    let sliderValueDict = this.state.sliderValueDict
     sliderValueDict[sliderId] = value
-    const key = sliderId
-    var nutritionModel = this.state.nutritionModel
-    nutritionModel.scaleIngredientToPercent(key, value)
+
+    let nutritionModel = this.state.nutritionModel
+    nutritionModel.scaleIngredientToPercent(sliderId, value)
     this.setState({
       sliderValueDict: sliderValueDict,
       nutritionModel: nutritionModel
@@ -111,6 +110,9 @@ export default class Nutrition extends React.Component {
     console.log('handleMatchDropdownChange ----------------------------------------')
     console.log('dropdownId = ' + dropdownId)
     console.log('value = ' + value)
+    // Need to remove the current Ingredient from the NutritionModel and add the new one
+    // let nutritionModel = this.state.nutritionModel
+    // nutritionModel.addIngredient()
   }
   //
   handleUnitDropdownChange(dropdownId, value) {
@@ -205,8 +207,8 @@ export default class Nutrition extends React.Component {
           onChange={this.handleMatchDropdownChange.bind(this, tag)}/>
         {/* row 2 from above: */}
         <Slider
-          value={this.state.sliderValueDict[key]}
-          onChange={this.handleSliderValuesChange.bind(this, key)}
+          value={this.state.sliderValueDict[tag]}
+          onChange={this.handleSliderValuesChange.bind(this, tag)}
           min={0}
           max={400}
           editable/>

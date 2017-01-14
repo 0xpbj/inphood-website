@@ -110,9 +110,25 @@ export default class Nutrition extends React.Component {
     console.log('handleMatchDropdownChange ----------------------------------------')
     console.log('dropdownId = ' + dropdownId)
     console.log('value = ' + value)
+
+    let matchDropdownValueDict = this.state.matchDropdownValueDict
+
     // Need to remove the current Ingredient from the NutritionModel and add the new one
-    // let nutritionModel = this.state.nutritionModel
-    // nutritionModel.addIngredient()
+    let nutritionModel = this.state.nutritionModel
+    nutritionModel.removeIngredient(matchDropdownValueDict[dropdownId])
+    //
+    const dataForKey = this.state.nutAlg.getDataForKey(value)
+    let ingredient = new IngredientModel()
+    ingredient.initializeSingle(value, dropdownId, dataForKey)
+    nutritionModel.addIngredient(value, ingredient, this.state.sliderValueDict[dropdownId])
+
+    // Update the state value for the dropdown
+    matchDropdownValueDict[dropdownId] = value
+
+    this.setState({
+      matchDropdownValueDict: matchDropdownValueDict,
+      nutritionModel: nutritionModel
+    })
   }
   //
   handleUnitDropdownChange(dropdownId, value) {

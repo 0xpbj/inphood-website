@@ -91,24 +91,47 @@ export default class NutritionAlg {
   matchTagsToNutritionData(tags) {
     const splitTags = this.getCleanedTags(tags.split(" "))
     const numTags = splitTags.length
-    var i = 0
-    var tagRegExps = []
+    let tagRegExps = []
+    // Regexps to look for the exact word (i.e. tag=egg, match on eggs, egg, but not Eggnog)
+    let tagExactWordRegExps = []
+    let tagStartsWordRegExps = []
+
+    // DO NOT MAKE THE REGEX FLAGS GLOBAL FOR THESE REGEX'S -- THE
+    // REGEX WILL CONTINUE MATCHING THE LAST OBJECT IF THERE ARE MORE MATCHES IN IT!!!!!
+    // SEE: http://stackoverflow.com/questions/11477415/why-does-javascripts-regex-exec-not-always-return-the-same-value
+    let regexFlags = "i"
 
     // Pre-create regular expressions for the tags being searched for.
-    for (i = 0; i < numTags; i++) {
+    for (let i = 0; i < numTags; i++) {
       this.matches[splitTags[i]] = []
-      tagRegExps.push(new RegExp(splitTags[i], "i"))
+      tagRegExps.push(new RegExp(splitTags[i], regexFlags))
+
+      // This pattern matches the exact word in splitTags or a plural version of
+      // it case insensitively. Explanations for each part of the regex are:
+      //  ^:   match the start of a line
+      //  (?:$|\\s|,|s|S): match the end of a line, a whitespace character, a
+      //                   comma, or an 's'
+      //                   (the ? means do not remember the match--prob.
+      //                    irrelevant for the test() method)
+      //
+      let pattern = "^" + splitTags[i] + "(?:,|s|\\s|$)"
+      tagExactWordRegExps.push(new RegExp(pattern, regexFlags))
+
+      let pattern2 = "^" + splitTags[i] + ".*"
+      tagStartsWordRegExps.push(new RegExp(pattern2, regexFlags))
     }
 
-    for (var key in NutritionAlg.data) {
+    for (let key in NutritionAlg.data) {
       // Aparently Array.forEach is slow so use regular for loop ...
       // (https://coderwall.com/p/kvzbpa/don-t-use-array-foreach-use-for-instead)
       //
-      for (i = 0; i < numTags; i++) {
+      for (let i = 0; i < numTags; i++) {
         // TODO: Consider changing this from key contains tag to key starts with tag.
         //       Problems include tag "Ground Beef" in key "Beef, ground" if we make
         //       that change (it's probably and issue today too with current algorithm).
-        if (key.search(tagRegExps[i]) !== -1) {
+        if (tagRegExps[i].test(key)) {
+        // Eeeek! WTF was I doing here:
+        // if (key.search(tagRegExps[i]) !== -1)
           //
           // We build an array for each tag that contains the key and a coefficient
           // of similarity. The coefficient of similarity is based on levenshtein's
@@ -117,8 +140,37 @@ export default class NutritionAlg {
           // 'eggs, <some adjective>'):
           //
           let similarityCoef = levenshtein(splitTags[i], key)
+          if (! tagExactWordRegExps[i].test(key)) {
+            similarityCoef += 50
 
-          this.matches[splitTags[i]].push([key, levenshtein(splitTags[i], key)])
+            if (! tagStartsWordRegExps[i].test(key)) {
+              similarityCoef += 50
+            }
+          }
+          // let reResult = tagExactWordRegExps[i].exec(key)
+          // if (reResult === null) {
+          //   similarityCoef += 50
+          //
+          //   let reResult2 = tagStartsWordRegExps[i].exec(key)
+          //   if (reResult2 === null) {
+          //     similarityCoef += 50
+          //   }
+          // }
+
+          // DEBUG help:
+          // let execResultLen = 0
+          // if (reResult != null) {
+          //   execResultLen = reResult.length
+          // }
+          // console.log('******************************************************')
+          // console.log('   similarityCoef: ' + similarityCoef)
+          // console.log('   tag =         \"' + splitTags[i] + '\"')
+          // console.log('   key =           ' + key)
+          // console.log('   exec =          ' + reResult)
+          // console.log('   exec length =   ' + execResultLen)
+          // console.log('   test =          ' + tagExactWordRegExps[i].test(key))
+
+          this.matches[splitTags[i]].push([key, similarityCoef])
         }
       }
     }
@@ -131,7 +183,7 @@ export default class NutritionAlg {
   }
 
   rankTagMatches() {
-    for (var tag in this.matches) {
+    for (let tag in this.matches) {
       this.matches[tag].sort(function(a, b) { return a[1] - b[1]})
     }
 

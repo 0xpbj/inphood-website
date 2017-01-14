@@ -69,17 +69,33 @@ export default class NutritionAlg {
   // Return: My, Mine, More
   //
   getCleanedTags(tags) {
-    var newTags = []
+    let newTags = []
 
-    for (var i = 0, numTags = tags.length; i < numTags; i++) {
+    for (let i = 0, numTags = tags.length; i < numTags; i++) {
       const tag = tags[i]
+      let tagLength = tag.length
 
+      let depluralizedTag = tag
+      if (tagLength >= 2) {
+        // This check prevents messing with words like 'Watercress', but modifies
+        // something like Eggs to be Egg
+        //
+        if ((tag.charAt(tagLength-1) == 's') && (tag.charAt(tagLength-2) != 's')) {
+          depluralizedTag = tag.slice(0, tagLength-1)
+          tagLength = depluralizedTag.length
+        }
+      }
+
+      if (tagLength < 2) {
+        continue
+      }    
       // Remove leading hashtag and make first alpha char uppercase for best
       // compatibility with FDA DB:
+      let cleanedTag = ""
       if (tag.charAt(0) == "#") {
-        var cleanedTag = tag.slice(1).charAt(0).toUpperCase() + tag.slice(2)
+        cleanedTag = depluralizedTag.slice(1).charAt(0).toUpperCase() + depluralizedTag.slice(2)
       } else {
-        var cleanedTag = tag.charAt(0).toUpperCase() + tag.slice(1)
+        cleanedTag = depluralizedTag.charAt(0).toUpperCase() + depluralizedTag.slice(1)
       }
 
       newTags.push(cleanedTag.trim())
@@ -147,15 +163,6 @@ export default class NutritionAlg {
               similarityCoef += 50
             }
           }
-          // let reResult = tagExactWordRegExps[i].exec(key)
-          // if (reResult === null) {
-          //   similarityCoef += 50
-          //
-          //   let reResult2 = tagStartsWordRegExps[i].exec(key)
-          //   if (reResult2 === null) {
-          //     similarityCoef += 50
-          //   }
-          // }
 
           // DEBUG help:
           // let execResultLen = 0
@@ -251,7 +258,7 @@ const levenshtein = (a, b) => {
     b = tmp
   }
 
-  var row = Array(a.length + 1)
+  let row = Array(a.length + 1)
   // init the row
   for (i = 0; i <= a.length; i++) {
     row[i] = i

@@ -65,36 +65,8 @@ export default class NutritionAlg {
     this.rankTagMatches()
   }
 
-  // Given an array of tags: #my, #mine, #more
-  // Return: My, Mine, More
-  //
-  getCleanedTags(tags) {
-    let newTags = []
-
-    for (let i = 0, numTags = tags.length; i < numTags; i++) {
-      const tag = tags[i]
-      let tagLength = tag.length
-
-      if (tagLength < 2) {
-        continue
-      }
-      // Remove leading hashtag and make first alpha char uppercase for best
-      // compatibility with FDA DB:
-      let cleanedTag = ""
-      if (tag.charAt(0) == "#") {
-        cleanedTag = tag.slice(1).charAt(0).toUpperCase() + tag.slice(2)
-      } else {
-        cleanedTag = tag.charAt(0).toUpperCase() + tag.slice(1)
-      }
-
-      newTags.push(cleanedTag.trim())
-    }
-
-    return newTags
-  }
-
   matchTagsToNutritionData(tags) {
-    const splitTags = this.getCleanedTags(tags.split(" "))
+    const splitTags = tags.split(' ')
     const numTags = splitTags.length
     let tagRegExps = []
     // Regexps to look for the exact word (i.e. tag=egg, match on eggs, egg, but not Eggnog)
@@ -111,6 +83,7 @@ export default class NutritionAlg {
       this.matches[splitTags[i]] = []
 
       let tag = splitTags[i]
+
 
       // The Raspberry / Blueberry fix. The FDA database contains 'Blueberries'
       // so when you search for 'Blueberry' you won't get the desired result. The
@@ -130,6 +103,18 @@ export default class NutritionAlg {
       if (pluralRe.test(tag)) {
         tag = tag.replace(pluralRe, '$1')
       }
+
+      if (tag.length >= 2) {
+        // Remove leading hashtag and make first alpha char uppercase for best
+        // compatibility with FDA DB:
+        if (tag.charAt(0) == "#") {
+          tag = tag.slice(1).charAt(0).toUpperCase() + tag.slice(2)
+        } else {
+          tag = tag.charAt(0).toUpperCase() + tag.slice(1)
+        }
+      }
+
+      tag = tag.trim()
 
       tagRegExps.push(new RegExp(tag, regexFlags))
 

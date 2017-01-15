@@ -37,15 +37,15 @@ export default class Nutrition extends React.Component {
       matches: {},
       nutAlg: new NutritionAlg(),
       showUrlModal: false,
-      parChips: [],
-      updChips: [],
+      selectedTags: [],
+      deletedTags: [],
       servingValue: 100
     }
   }
   componentWillMount() {
     // Process the caption for matches in the FDA database:
     //
-    const tagString = this.generateChips().trim()
+    const tagString = this.generateSelectedTags().trim()
     // const tagString = "#tomato #cucumber #onion #lettuce #olive #feta"
     // TODO: AC! **************** regexp errors here for / characters
     this.state.nutAlg.processTags(tagString)
@@ -141,11 +141,10 @@ export default class Nutrition extends React.Component {
   handleChipDelete(tag) {
     console.log('handleChipDelete ------------------------------------------------')
     console.log('tag = ' + tag)
-    console.log('updChips = ')
-    console.log(this.state.updChips)
-    console.log('parChips = ')
-    console.log(this.state.parChips)
-
+    console.log('selectedTags = ')
+    console.log(this.state.selectedTags)
+    console.log('deletedTags = ')
+    console.log(this.state.deletedTags)
 
     // Delete this tag from:
     //    this.state.matches
@@ -154,13 +153,14 @@ export default class Nutrition extends React.Component {
     //    matchDropDownValueDict
     //    unitDropdownValueDict
     //
-    // TODO: Add this tag to the deleted tag list
     //
     let matches = this.state.matches
     let nutritionModel = this.state.nutritionModel
     let sliderValueDict = this.state.sliderValueDict
     let matchDropdownValueDict = this.state.matchDropdownValueDict
     let unitDropdownValueDict = this.state.unitDropdownValueDict
+    let selectedTags = this.state.selectedTags
+    let deletedTags = this.state.deletedTags
     //
     delete matches[tag]
     nutritionModel.removeIngredient(matchDropdownValueDict[tag])
@@ -168,18 +168,33 @@ export default class Nutrition extends React.Component {
     delete matchDropdownValueDict[tag]
     delete unitDropdownValueDict[tag]
     //
+    // Remove the tag from selectedTags (use splice--delete just makes the element undefined)
+    for (let i = 0; i < selectedTags.length; i++) {
+      if (tag === selectedTags[i]) {
+        selectedTags = selectedTags.splice(i, 1)
+        break
+      }
+    }
+    deletedTags.push(tag)
+    //
     this.setState({
       matches: matches,
       nutritionModel: nutritionModel,
       sliderValueDict: sliderValueDict,
       matchDropdownValueDict: matchDropdownValueDict,
-      unitDropdownValueDict: unitDropdownValueDict
+      unitDropdownValueDict: unitDropdownValueDict,
+      selectedTags: selectedTags,
+      deletedTags: deletedTags
     })
   }
   //////////////////////////////////////////////////////////////////////////////
   // Miscellany:
   //////////////////////////////////////////////////////////////////////////////
-  parseCaption(caption) {
+  //
+  // This method filters out words in the caption that do not match a list of the
+  // unique words in our current DB
+  //
+  filterCaptionWords(caption) {
     if (caption !== '') {
       let regex = /\w+/g
       let words = caption.match(regex)
@@ -192,49 +207,57 @@ export default class Nutrition extends React.Component {
       return fileIntersection
     }
   }
-  generateChips() {
+  // Given the original catpion string (caption) and one with selections by a user (updatedCaption),
+  // this method generates two arrays, selectedTagArr and deletedTagArr, as well as returning a
+  // space delimited string containing selected tags.
+  //
+  generateSelectedTags() {
     let {caption, updatedCaption} = this.props.nutrition
+
     if (Config.fastDevelopNutritionPage) {
       caption = "seasoning breakfast eggs spinach butter"
       updatedCaption = "eggs spinach butter"
     }
-    let regex = /\w+/g
-    let result = ''
+
+    let deletedTagArr = []
+    let selectedTagArr = []
+    let originalWordSet = this.filterCaptionWords(caption)
+
     if (updatedCaption === '') {
-      let originalWords = this.parseCaption(caption)
-      let updChips = []
-      for (let word of originalWords) {
-        updChips.push(
-          <Chip>{word}</Chip>
-        )
-        result += word + ' '
-      }
-      this.setState({parChips: [], updChips})
+      selectedTagArr = [...originalWordSet]
+    } else {
+      const regex = /\w+/g
+      let updatedWordSet = new Set(updatedCaption.match(regex))
+      let cancelledWordSet = new Set([...originalWordSet].filter(x => !updatedWordSet.has(x)))
+
+      selectedTagArr = [...updatedWordSet]
+      deletedTagArr = [...cancelledWordSet]
     }
-    else {
-      let originalCaption = this.parseCaption(caption)
-      let updatedWords= new Set(updatedCaption.match(regex))
-      let cancelledWords = new Set([...originalCaption].filter(x => !updatedWords.has(x)))
-      let parChips = []
-      let updChips = []
-      for (let word of cancelledWords) {
-        parChips.push(
-          <Chip><span style={{textDecoration: 'line-through'}}>{word}</span></Chip>
-        )
-      }
-      for (let word of updatedWords) {
-        updChips.push(
-          <Chip>{word}</Chip>
-        )
-        result += word + ' '
-      }
-      this.setState({parChips, updChips})
-    }
+
+    this.setState({
+      selectedTags: selectedTagArr,
+      deletedTags: deletedTagArr
+    })
+
+    const result = selectedTagArr.toString().replace(/,/g, ' ')
     return result
   }
   //////////////////////////////////////////////////////////////////////////////
   // UI Element Generation:
   //////////////////////////////////////////////////////////////////////////////
+  getChipsFromArray(anArray) {
+    let htmlResult = []
+    for (let i = 0; i < anArray.length; i++) {
+      htmlResult.push(
+        <Chip><span style={{textDecoration: 'line-through'}}>
+          {anArray[i]}
+        </span></Chip>)
+    }
+    return (
+      <div>{htmlResult}</div>
+    )
+  }
+  //
   getIngredientController(tag) {
     // Proposed layout:
     //  Text: Tag,  Pulldown: Matches (could double as search bar if combobox)
@@ -362,7 +385,7 @@ export default class Nutrition extends React.Component {
                          borderRadius: 5,
                          padding: 10,
                          margin: 10}}>
-              {this.state.parChips}
+              {this.getChipsFromArray(this.state.deletedTags)}
             </div>
           </Col>
         </Row>

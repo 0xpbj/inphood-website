@@ -357,7 +357,7 @@ export default class Nutrition extends React.Component {
     return (
       <Grid>
 
-        <Row className='show-grid'>
+        <Row>
           <Col xs={8} md={8}>
             <text style={{fontWeight: 'bold'}}>Serving Size</text>
             <div style={{borderWidth: 1,
@@ -389,9 +389,7 @@ export default class Nutrition extends React.Component {
             </div>
           </Col>
         </Row>
-
-        {/*TODO: what is 'show-grid' about?*/}
-        <Row className="show-grid">
+        <Row>
           <Col xs={8} md={8}>
             {sliders}
           </Col>

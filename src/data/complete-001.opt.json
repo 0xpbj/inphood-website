@@ -1302,7 +1302,7 @@
     "Cholesterol": "0.0", 
     "Sodium": "242.0", 
     "Weight(g)": "124.0", 
-    "Measure": "1.0 cup (1/2 pieces)\""
+    "Measure": "1.0 cup (1/2 inches pieces)"
   }, 
   "Balsam-pear (bitter gourd), pods, cooked, boiled, drained, without salt": {
     "NDB": "11025", 
@@ -1317,7 +1317,7 @@
     "Cholesterol": "0.0", 
     "Sodium": "6.0", 
     "Weight(g)": "124.0", 
-    "Measure": "1.0 cup (1/2 pieces)\""
+    "Measure": "1.0 cup (1/2 inches pieces)"
   }, 
   "Balsam-pear (bitter gourd), pods, raw": {
     "NDB": "11024", 
@@ -1332,7 +1332,7 @@
     "Cholesterol": "0.0", 
     "Sodium": "5.0", 
     "Weight(g)": "93.0", 
-    "Measure": "1.0 cup (1/2 pieces)\""
+    "Measure": "1.0 cup (1/2 inches pieces)"
   }, 
   "Bamboo shoots, canned, drained solids": {
     "NDB": "11028", 
@@ -1347,7 +1347,7 @@
     "Cholesterol": "0.0", 
     "Sodium": "7.0", 
     "Weight(g)": "131.0", 
-    "Measure": "1.0 cup (1/8 slices)\""
+    "Measure": "1.0 cup (1/8 inches slices)"
   }, 
   "Bamboo shoots, cooked, boiled, drained, with salt": {
     "NDB": "11712", 
@@ -1362,7 +1362,7 @@
     "Cholesterol": "0.0", 
     "Sodium": "240.0", 
     "Weight(g)": "120.0", 
-    "Measure": "1.0 cup (1/2 slices)\""
+    "Measure": "1.0 cup (1/2 inches slices)"
   }, 
   "Bamboo shoots, cooked, boiled, drained, without salt": {
     "NDB": "11027", 
@@ -1377,7 +1377,7 @@
     "Cholesterol": "0.0", 
     "Sodium": "4.0", 
     "Weight(g)": "120.0", 
-    "Measure": "1.0 cup (1/2 slices)\""
+    "Measure": "1.0 cup (1/2 inches slices)"
   }, 
   "Bamboo shoots, raw": {
     "NDB": "11026", 
@@ -1392,7 +1392,7 @@
     "Cholesterol": "0.0", 
     "Sodium": "4.0", 
     "Weight(g)": "151.0", 
-    "Measure": "1.0 cup (1/2 slices)\""
+    "Measure": "1.0 cup (1/2 inches slices)"
   }, 
   "Bananas, dehydrated, or banana powder": {
     "NDB": "09041", 
@@ -2817,7 +2817,7 @@
     "Cholesterol": "0.0", 
     "Sodium": "3.0", 
     "Weight(g)": "116.0", 
-    "Measure": "1.0 cup 1/2 pieces\""
+    "Measure": "1.0 cup 1/2 inches pieces"
   }, 
   "Beans, snap, green, raw": {
     "NDB": "11052", 
@@ -2832,7 +2832,7 @@
     "Cholesterol": "0.0", 
     "Sodium": "6.0", 
     "Weight(g)": "100.0", 
-    "Measure": "1.0 cup 1/2 pieces\""
+    "Measure": "1.0 cup 1/2 inches pieces"
   }, 
   "Beans, snap, yellow, canned, no salt added, drained solids": {
     "NDB": "11933", 
@@ -2982,7 +2982,7 @@
     "Cholesterol": "0.0", 
     "Sodium": "6.0", 
     "Weight(g)": "100.0", 
-    "Measure": "1.0 cup 1/2 pieces\""
+    "Measure": "1.0 cup 1/2 inches pieces"
   }, 
   "Beans, white, mature seeds, canned": {
     "NDB": "16051", 
@@ -17367,7 +17367,7 @@
     "Cholesterol": "0.0", 
     "Sodium": "477.0", 
     "Weight(g)": "144.0", 
-    "Measure": "1.0 cup (1 pieces)\""
+    "Measure": "1.0 cup (1 inches pieces)"
   }, 
   "Beet greens, cooked, boiled, drained, without salt": {
     "NDB": "11087", 
@@ -17382,7 +17382,7 @@
     "Cholesterol": "0.0", 
     "Sodium": "241.0", 
     "Weight(g)": "144.0", 
-    "Measure": "1.0 cup (1 pieces)\""
+    "Measure": "1.0 cup (1 inches pieces)"
   }, 
   "Beet greens, raw": {
     "NDB": "11086", 
@@ -17757,7 +17757,7 @@
     "Cholesterol": "0.0", 
     "Sodium": "80.0", 
     "Weight(g)": "89.0", 
-    "Measure": "1.0 cup (1 pieces)\""
+    "Measure": "1.0 cup (1 inches pieces)"
   }, 
   "Boysenberries, canned, heavy syrup": {
     "NDB": "09056", 
@@ -18282,7 +18282,7 @@
     "Cholesterol": "0.0", 
     "Sodium": "240.0", 
     "Weight(g)": "125.0", 
-    "Measure": "1.0 cup (1 pieces)\""
+    "Measure": "1.0 cup (1 inches pieces)"
   }, 
   "Burdock root, cooked, boiled, drained, without salt": {
     "NDB": "11105", 
@@ -18297,7 +18297,7 @@
     "Cholesterol": "0.0", 
     "Sodium": "4.0", 
     "Weight(g)": "125.0", 
-    "Measure": "1.0 cup (1 pieces)\""
+    "Measure": "1.0 cup (1 inches pieces)"
   }, 
   "Burdock root, raw": {
     "NDB": "11104", 
@@ -18312,7 +18312,7 @@
     "Cholesterol": "0.0", 
     "Sodium": "5.0", 
     "Weight(g)": "118.0", 
-    "Measure": "1.0 cup (1 pieces)\""
+    "Measure": "1.0 cup (1 inches pieces)"
   }, 
   "Butter oil, anhydrous": {
     "NDB": "01003", 
@@ -18342,8 +18342,7 @@
     "Cholesterol": "215.0", 
     "Sodium": "643.0", 
     "Weight(g)": "5.0", 
-    "Measure": "1.0 pat (1 sq", 
-    "": " 1/3\" high)\""
+    "Measure": "1.0 pat (1 inches sq, 1/3 inches high)"
   }, 
   "Butter, whipped, with salt": {
     "NDB": "01002", 
@@ -18358,8 +18357,7 @@
     "Cholesterol": "225.0", 
     "Sodium": "583.0", 
     "Weight(g)": "3.8", 
-    "Measure": "1.0 pat (1 sq", 
-    "": " 1/3\" high)\""
+    "Measure": "1.0 pat (1 inches sq, 1/3 inches high)"
   }, 
   "Butter, without salt": {
     "NDB": "01145", 
@@ -18374,8 +18372,7 @@
     "Cholesterol": "215.0", 
     "Sodium": "11.0", 
     "Weight(g)": "5.0", 
-    "Measure": "1.0 pat (1 sq", 
-    "": " 1/3\" high)\""
+    "Measure": "1.0 pat (1 inches sq, 1/3 inches high)"
   }, 
   "Butterbur, (fuki), raw": {
     "NDB": "11106", 
@@ -19290,7 +19287,7 @@
     "Cholesterol": "0.0", 
     "Sodium": "242.0", 
     "Weight(g)": "62.0", 
-    "Measure": "0.5 cup (1 pieces)\""
+    "Measure": "0.5 cup (1 inches pieces)"
   }, 
   "Cauliflower, cooked, boiled, drained, without salt": {
     "NDB": "11136", 
@@ -19305,7 +19302,7 @@
     "Cholesterol": "0.0", 
     "Sodium": "15.0", 
     "Weight(g)": "62.0", 
-    "Measure": "0.5 cup (1 pieces)\""
+    "Measure": "0.5 cup (1 inches pieces)"
   }, 
   "Cauliflower, frozen, cooked, boiled, drained, with salt": {
     "NDB": "11762", 
@@ -19320,7 +19317,7 @@
     "Cholesterol": "0.0", 
     "Sodium": "254.0", 
     "Weight(g)": "180.0", 
-    "Measure": "1.0 cup (1 pieces)\""
+    "Measure": "1.0 cup (1 inches pieces)"
   }, 
   "Cauliflower, frozen, cooked, boiled, drained, without salt": {
     "NDB": "11138", 
@@ -19335,7 +19332,7 @@
     "Cholesterol": "0.0", 
     "Sodium": "18.0", 
     "Weight(g)": "180.0", 
-    "Measure": "1.0 cup (1 pieces)\""
+    "Measure": "1.0 cup (1 inches pieces)"
   }, 
   "Cauliflower, frozen, unprepared": {
     "NDB": "11137", 
@@ -19350,7 +19347,7 @@
     "Cholesterol": "0.0", 
     "Sodium": "24.0", 
     "Weight(g)": "66.0", 
-    "Measure": "0.5 cup (1 pieces)\""
+    "Measure": "0.5 cup (1 inches pieces)"
   }, 
   "Cauliflower, green, cooked, no salt added": {
     "NDB": "11967", 
@@ -19380,7 +19377,7 @@
     "Cholesterol": "0.0", 
     "Sodium": "259.0", 
     "Weight(g)": "62.0", 
-    "Measure": "0.5 cup (1 pieces)\""
+    "Measure": "0.5 cup (1 inches pieces)"
   }, 
   "Cauliflower, green, raw": {
     "NDB": "11965", 
@@ -19410,7 +19407,7 @@
     "Cholesterol": "0.0", 
     "Sodium": "30.0", 
     "Weight(g)": "107.0", 
-    "Measure": "1.0 cup chopped (1/2 pieces)\""
+    "Measure": "1.0 cup chopped (1/2 inches pieces)"
   }, 
   "Celeriac, cooked, boiled, drained, with salt": {
     "NDB": "11763", 
@@ -19575,7 +19572,7 @@
     "Cholesterol": "0.0", 
     "Sodium": "237.0", 
     "Weight(g)": "160.0", 
-    "Measure": "1.0 cup (1 pieces)\""
+    "Measure": "1.0 cup (1 inches pieces)"
   }, 
   "Chayote, fruit, cooked, boiled, drained, without salt": {
     "NDB": "11150", 
@@ -19590,7 +19587,7 @@
     "Cholesterol": "0.0", 
     "Sodium": "1.0", 
     "Weight(g)": "160.0", 
-    "Measure": "1.0 cup (1 pieces)\""
+    "Measure": "1.0 cup (1 inches pieces)"
   }, 
   "Chayote, fruit, raw": {
     "NDB": "11149", 
@@ -19605,7 +19602,7 @@
     "Cholesterol": "0.0", 
     "Sodium": "2.0", 
     "Weight(g)": "132.0", 
-    "Measure": "1.0 cup (1 pieces)\""
+    "Measure": "1.0 cup (1 inches pieces)"
   }, 
   "Cheese food, cold pack, American": {
     "NDB": "01045", 
@@ -24615,7 +24612,7 @@
     "Cholesterol": "0.0", 
     "Sodium": "289.0", 
     "Weight(g)": "100.0", 
-    "Measure": "1.0 cup (1 pieces)\""
+    "Measure": "1.0 cup (1 inches pieces)"
   }, 
   "Chrysanthemum, garland, cooked, boiled, drained, without salt": {
     "NDB": "11158", 
@@ -24630,7 +24627,7 @@
     "Cholesterol": "0.0", 
     "Sodium": "53.0", 
     "Weight(g)": "100.0", 
-    "Measure": "1.0 cup (1 pieces)\""
+    "Measure": "1.0 cup (1 inches pieces)"
   }, 
   "Chrysanthemum, garland, raw": {
     "NDB": "11157", 
@@ -24645,7 +24642,7 @@
     "Cholesterol": "0.0", 
     "Sodium": "118.0", 
     "Weight(g)": "25.0", 
-    "Measure": "1.0 cup (1 pieces)\""
+    "Measure": "1.0 cup (1 inches pieces)"
   }, 
   "Clementines, raw": {
     "NDB": "09433", 
@@ -25065,7 +25062,7 @@
     "Cholesterol": "0.0", 
     "Sodium": "253.0", 
     "Weight(g)": "89.0", 
-    "Measure": "1.0 ear, small (5-1/2 to 6-1/2\" long)\""
+    "Measure": "1.0 ear, small (5-1/2 inches to 6-1/2 inches long)"
   }, 
   "Corn, sweet, white, cooked, boiled, drained, without salt": {
     "NDB": "11901", 
@@ -25080,7 +25077,7 @@
     "Cholesterol": "0.0", 
     "Sodium": "3.0", 
     "Weight(g)": "89.0", 
-    "Measure": "1.0 ear, small (5-1/2 to 6-1/2\" long)\""
+    "Measure": "1.0 ear, small (5-1/2 inches to 6-1/2 inches long)"
   }, 
   "Corn, sweet, white, frozen, kernels cut off cob, boiled, drained, with salt": {
     "NDB": "11912", 
@@ -25185,7 +25182,7 @@
     "Cholesterol": "0.0", 
     "Sodium": "15.0", 
     "Weight(g)": "73.0", 
-    "Measure": "1.0 ear, small (5-1/2 to 6-1/2\" long)\""
+    "Measure": "1.0 ear, small (5-1/2 inches to 6-1/2 inches long)"
   }, 
   "Corn, sweet, yellow, canned, brine pack, regular pack, solids and liquids": {
     "NDB": "11170", 
@@ -25320,7 +25317,7 @@
     "Cholesterol": "0.0", 
     "Sodium": "253.0", 
     "Weight(g)": "89.0", 
-    "Measure": "1.0 ear small (5-1/2 to 6-1/2\" long)\""
+    "Measure": "1.0 ear small (5-1/2 inches to 6-1/2 inches long)"
   }, 
   "Corn, sweet, yellow, cooked, boiled, drained, without salt": {
     "NDB": "11168", 
@@ -25335,7 +25332,7 @@
     "Cholesterol": "0.0", 
     "Sodium": "1.0", 
     "Weight(g)": "89.0", 
-    "Measure": "1.0 ear small (5-1/2 to 6-1/2\" long)\""
+    "Measure": "1.0 ear small (5-1/2 inches to 6-1/2 inches long)"
   }, 
   "Corn, sweet, yellow, frozen, kernels cut off cob, boiled, drained, without salt": {
     "NDB": "11179", 
@@ -27795,7 +27792,7 @@
     "Cholesterol": "0.0", 
     "Sodium": "239.0", 
     "Weight(g)": "99.0", 
-    "Measure": "1.0 cup (1 cubes)\""
+    "Measure": "1.0 cup (1 inches cubes)"
   }, 
   "Eggplant, cooked, boiled, drained, without salt": {
     "NDB": "11210", 
@@ -27810,7 +27807,7 @@
     "Cholesterol": "0.0", 
     "Sodium": "1.0", 
     "Weight(g)": "99.0", 
-    "Measure": "1.0 cup (1 cubes)\""
+    "Measure": "1.0 cup (1 inches cubes)"
   }, 
   "Eggplant, pickled": {
     "NDB": "43146", 
@@ -28125,7 +28122,7 @@
     "Cholesterol": "0.0", 
     "Sodium": "294.0", 
     "Weight(g)": "17.0", 
-    "Measure": "1.0 patty (approx 2-1/4 dia)\""
+    "Measure": "1.0 patty (approx 2-1/4 inches dia)"
   }, 
   "Fat free ice cream, no sugar added, flavors other than chocolate": {
     "NDB": "01243", 
@@ -28275,7 +28272,7 @@
     "Cholesterol": "0.0", 
     "Sodium": "1.0", 
     "Weight(g)": "64.0", 
-    "Measure": "1.0 large (2-1/2 dia)\""
+    "Measure": "1.0 large (2-1/2 inches dia)"
   }, 
   "Fireweed, leaves, raw": {
     "NDB": "11985", 
@@ -28875,7 +28872,7 @@
     "Cholesterol": "28.0", 
     "Sodium": "402.0", 
     "Weight(g)": "57.0", 
-    "Measure": "1.0 piece (4 x 2\" x 1/2\")\""
+    "Measure": "1.0 piece (4 inches x 2 inches x 1/2 inches)"
   }, 
   "Fish, flatfish (flounder and sole species), cooked, dry heat": {
     "NDB": "15029", 
@@ -29325,7 +29322,7 @@
     "Cholesterol": "95.0", 
     "Sodium": "4450.0", 
     "Weight(g)": "80.0", 
-    "Measure": "1.0 piece (5-1/2 x 1-1/2\" x 1/2\")\""
+    "Measure": "1.0 piece (5-1/2 inches x 1-1/2 inches x 1/2 inches)"
   }, 
   "Fish, mackerel, spanish, cooked, dry heat": {
     "NDB": "15052", 
@@ -31950,7 +31947,7 @@
     "Cholesterol": "0.0", 
     "Sodium": "257.0", 
     "Weight(g)": "178.0", 
-    "Measure": "1.0 cup (1 pieces)\""
+    "Measure": "1.0 cup (1 inches pieces)"
   }, 
   "Gourd, dishcloth (towelgourd), cooked, boiled, drained, without salt": {
     "NDB": "11221", 
@@ -31965,7 +31962,7 @@
     "Cholesterol": "0.0", 
     "Sodium": "21.0", 
     "Weight(g)": "178.0", 
-    "Measure": "1.0 cup (1 pieces)\""
+    "Measure": "1.0 cup (1 inches pieces)"
   }, 
   "Gourd, dishcloth (towelgourd), raw": {
     "NDB": "11220", 
@@ -31980,7 +31977,7 @@
     "Cholesterol": "0.0", 
     "Sodium": "3.0", 
     "Weight(g)": "95.0", 
-    "Measure": "1.0 cup (1 pieces)\""
+    "Measure": "1.0 cup (1 inches pieces)"
   }, 
   "Gourd, white-flowered (calabash), cooked, boiled, drained, with salt": {
     "NDB": "11784", 
@@ -31995,7 +31992,7 @@
     "Cholesterol": "0.0", 
     "Sodium": "238.0", 
     "Weight(g)": "146.0", 
-    "Measure": "1.0 cup (1 cubes)\""
+    "Measure": "1.0 cup (1 inches cubes)"
   }, 
   "Gourd, white-flowered (calabash), cooked, boiled, drained, without salt": {
     "NDB": "11219", 
@@ -32010,7 +32007,7 @@
     "Cholesterol": "0.0", 
     "Sodium": "2.0", 
     "Weight(g)": "146.0", 
-    "Measure": "1.0 cup (1 cubes)\""
+    "Measure": "1.0 cup (1 inches cubes)"
   }, 
   "Gourd, white-flowered (calabash), raw": {
     "NDB": "11218", 
@@ -32025,7 +32022,7 @@
     "Cholesterol": "0.0", 
     "Sodium": "2.0", 
     "Weight(g)": "58.0", 
-    "Measure": "0.5 cup (1 pieces)\""
+    "Measure": "0.5 cup (1 inches pieces)"
   }, 
   "Grape juice, canned or bottled, unsweetened, with added ascorbic acid": {
     "NDB": "09130", 
@@ -33480,8 +33477,7 @@
     "Cholesterol": "0.0", 
     "Sodium": "38.0", 
     "Weight(g)": "16.0", 
-    "Measure": "1.0 cup 1 pieces", 
-    "": " loosely packed\""
+    "Measure": "1.0 cup 1 inches pieces, loosely packed"
   }, 
   "Kale, scotch, cooked, boiled, drained, with salt": {
     "NDB": "11792", 
@@ -34411,7 +34407,7 @@
     "Cholesterol": "0.0", 
     "Sodium": "2.0", 
     "Weight(g)": "67.0", 
-    "Measure": "1.0 fruit (2 dia)\""
+    "Measure": "1.0 fruit (2 inches dia)"
   }, 
   "Litchis, dried": {
     "NDB": "09165", 
@@ -34531,8 +34527,22 @@
     "Cholesterol": "0.0", 
     "Sodium": "508.0", 
     "Weight(g)": "85.0", 
-    "Measure": "1.0 slice , 5/8\",\n16505,LOMA LINDA Swiss Stake with Gravy", 
-    "": " canned"
+    "Measure": "1.0 slice , 5/8 inches"
+  }, 
+  "LOMA LINDA Swiss Stake with Gravy, canned, unprepared": {
+    "NDB": "16505", 
+    "Carbohydrate": "10.4", 
+    "SatFat": "0.8", 
+    "Fiber": "3.2", 
+    "TransFat": "0.0", 
+    "Sugar": "0.9", 
+    "kcal": "138.0", 
+    "Fat": "6.2", 
+    "Protein": "10.2", 
+    "Cholesterol": "1.0", 
+    "Sodium": "471.0", 
+    "Weight(g)": "92.0", 
+    "Measure": "1.0 piece"
   }, 
   "LOMA LINDA Tender Bits, canned, unprepared": {
     "NDB": "16508", 
@@ -34667,7 +34677,7 @@
     "Cholesterol": "0.0", 
     "Sodium": "40.0", 
     "Weight(g)": "81.0", 
-    "Measure": "10.0 slices (2-1/2 dia)\""
+    "Measure": "10.0 slices (2-1/2 inches dia)"
   }, 
   "Luncheon slices, meatless": {
     "NDB": "43131", 
@@ -40532,7 +40542,7 @@
     "Cholesterol": "0.0", 
     "Sodium": "8.0", 
     "Weight(g)": "145.0", 
-    "Measure": "1.0 cup 1 pieces\""
+    "Measure": "1.0 cup 1 inches pieces"
   }, 
   "Parmesan cheese topping, fat free": {
     "NDB": "01185", 
@@ -41747,7 +41757,7 @@
     "Cholesterol": "0.0", 
     "Sodium": "0.0", 
     "Weight(g)": "122.0", 
-    "Measure": "1.0 fruit 2-1/4 high x 2-1/2\" dia\""
+    "Measure": "1.0 fruit 2-1/4 inches high x 2-1/2 inches dia"
   }, 
   "Pears, canned, extra heavy syrup pack, solids and liquids": {
     "NDB": "09258", 
@@ -42932,8 +42942,7 @@
     "Cholesterol": "0.0", 
     "Sodium": "2.0", 
     "Weight(g)": "186.0", 
-    "Measure": "1.0 pepper, large (3-3/4 long", 
-    "": " 3\" dia)\""
+    "Measure": "1.0 pepper, large (3-3/4 inches long, 3 inches dia)"
   }, 
   "Persimmons, japanese, dried": {
     "NDB": "09264", 
@@ -42963,7 +42972,7 @@
     "Cholesterol": "0.0", 
     "Sodium": "1.0", 
     "Weight(g)": "168.0", 
-    "Measure": "1.0 fruit (2-1/2 dia)\""
+    "Measure": "1.0 fruit (2-1/2 inches dia)"
   }, 
   "Persimmons, native, raw": {
     "NDB": "09265", 
@@ -49683,7 +49692,7 @@
     "Cholesterol": "0.0", 
     "Sodium": "8.0", 
     "Weight(g)": "202.0", 
-    "Measure": "1.0 potato (2-3/4 dia by 4-3/4\" long)\""
+    "Measure": "1.0 potato (2-3/4 inches dia by 4-3/4 inches long)"
   }, 
   "Potatoes, microwaved, cooked in skin, flesh, with salt": {
     "NDB": "11835", 
@@ -49743,7 +49752,7 @@
     "Cholesterol": "0.0", 
     "Sodium": "244.0", 
     "Weight(g)": "202.0", 
-    "Measure": "1.0 potato (2-1/3 x 4-3/4\")\""
+    "Measure": "1.0 potato (2-1/3 inches x 4-3/4 inches)"
   }, 
   "Potatoes, microwaved, cooked, in skin, skin with salt": {
     "NDB": "11836", 
@@ -49803,7 +49812,7 @@
     "Cholesterol": "0.0", 
     "Sodium": "12.0", 
     "Weight(g)": "299.0", 
-    "Measure": "1.0 potato large (3 to 4-1/4\" dia.\""
+    "Measure": "1.0 potato large (3 inches to 4-1/4 inches dia."
   }, 
   "Potatoes, red, flesh and skin, raw": {
     "NDB": "11355", 
@@ -49848,7 +49857,7 @@
     "Cholesterol": "0.0", 
     "Sodium": "14.0", 
     "Weight(g)": "299.0", 
-    "Measure": "1.0 potato large (3 to 4-1/4\" dia.\""
+    "Measure": "1.0 potato large (3 inches to 4-1/4 inches dia."
   }, 
   "Potatoes, russet, flesh and skin, raw": {
     "NDB": "11353", 
@@ -49938,7 +49947,7 @@
     "Cholesterol": "0.0", 
     "Sodium": "7.0", 
     "Weight(g)": "299.0", 
-    "Measure": "1.0 potato large (3 to 4-1/4\" dia)\""
+    "Measure": "1.0 potato large (3 inches to 4-1/4 inches dia)"
   }, 
   "Potatoes, white, flesh and skin, raw": {
     "NDB": "11354", 
@@ -50358,7 +50367,7 @@
     "Cholesterol": "0.0", 
     "Sodium": "0.0", 
     "Weight(g)": "116.0", 
-    "Measure": "1.0 cup (1 cubes)\""
+    "Measure": "1.0 cup (1 inches cubes)"
   }, 
   "Purslane, cooked, boiled, drained, with salt": {
     "NDB": "11849", 
@@ -51678,7 +51687,7 @@
     "Cholesterol": "0.0", 
     "Sodium": "7.0", 
     "Weight(g)": "175.0", 
-    "Measure": "1.0 cup 1 pieces\""
+    "Measure": "1.0 cup 1 inches pieces"
   }, 
   "Sauerkraut, canned, solids and liquids": {
     "NDB": "11439", 
@@ -55098,8 +55107,7 @@
     "Cholesterol": "0.0", 
     "Sodium": "246.0", 
     "Weight(g)": "114.0", 
-    "Measure": "1.0 medium (2 dia", 
-    "": " 5\" long"
+    "Measure": "1.0 medium (2 inches dia, 5 inches long, raw)"
   }, 
   "Sweet potato, cooked, baked in skin, flesh, without salt": {
     "NDB": "11508", 
@@ -55159,7 +55167,7 @@
     "Cholesterol": "9.0", 
     "Sodium": "119.0", 
     "Weight(g)": "105.0", 
-    "Measure": "1.0 piece (2-1/2 x 2\" dia)\""
+    "Measure": "1.0 piece (2-1/2 inches x 2 inches dia)"
   }, 
   "Sweet potato, frozen, cooked, baked, with salt": {
     "NDB": "11877", 
@@ -55804,7 +55812,7 @@
     "Cholesterol": "0.0", 
     "Sodium": "8.0", 
     "Weight(g)": "120.0", 
-    "Measure": "1.0 piece (2-1/2 x 2-3/4\" x 1\")\""
+    "Measure": "1.0 piece (2-1/2 inches x 2-3/4 inches x 1 inches)"
   }, 
   "Tomatillos, raw": {
     "NDB": "11954", 
@@ -56254,7 +56262,7 @@
     "Cholesterol": "0.0", 
     "Sodium": "241.0", 
     "Weight(g)": "31.0", 
-    "Measure": "1.0 frond (6-1/2 long)\""
+    "Measure": "1.0 frond (6-1/2 inches long)"
   }, 
   "Tree fern, cooked, without salt": {
     "NDB": "11563", 
@@ -57094,7 +57102,7 @@
     "Cholesterol": "76.0", 
     "Sodium": "996.0", 
     "Weight(g)": "28.0", 
-    "Measure": "1.0 medium slice (approx 3 x 2\" x 1/4\")\""
+    "Measure": "1.0 medium slice (approx 3 inches x 2 inches x 1/4 inches)"
   }, 
   "Turkey, light or dark meat, smoked, cooked, with skin, bone removed": {
     "NDB": "43390", 
@@ -59539,7 +59547,7 @@
     "Cholesterol": "0.0", 
     "Sodium": "642.0", 
     "Weight(g)": "55.0", 
-    "Measure": "2.0 slices (3/8 thick)\""
+    "Measure": "2.0 slices (3/8 inches thick)"
   }, 
   "WORTHINGTON Chili, canned, unprepared": {
     "NDB": "16510", 
@@ -59599,8 +59607,22 @@
     "Cholesterol": "1.0", 
     "Sodium": "671.0", 
     "Weight(g)": "85.0", 
-    "Measure": "1.0 slice , 3/4\",\n16513,WORTHINGTON FriChik Original", 
-    "": " canned"
+    "Measure": "1.0 slice , 3/4 inches"
+  }, 
+  "WORTHINGTON FriChik Original, canned, unprepared": {
+    "NDB": "16513", 
+    "Carbohydrate": "3.4", 
+    "SatFat": "1.4", 
+    "Fiber": "1.5", 
+    "TransFat": "0.06", 
+    "Sugar": "0.1", 
+    "kcal": "160.0", 
+    "Fat": "10.3", 
+    "Protein": "13.4", 
+    "Cholesterol": "1.0", 
+    "Sodium": "401.0", 
+    "Weight(g)": "90.0", 
+    "Measure": "2.0 pieces"
   }, 
   "WORTHINGTON FriPats, frozen, unprepared": {
     "NDB": "16529", 
@@ -59675,8 +59697,37 @@
     "Cholesterol": "1.0", 
     "Sodium": "452.0", 
     "Weight(g)": "55.0", 
-    "Measure": "1.0 slices , 3/8\",\n16527,WORTHINGTON Meatless Corned Beef Roll", 
-    "": " frozen"
+    "Measure": "1.0 slices , 3/8 inches"
+  }, 
+  "WORTHINGTON Meatless Corned Beef Roll, frozen, unprepared": {
+    "NDB": "16527", 
+    "Carbohydrate": "9.9", 
+    "SatFat": "2.3", 
+    "Fiber": "0.0", 
+    "TransFat": "0.0", 
+    "Sugar": "2.1", 
+    "kcal": "245.0", 
+    "Fat": "14.5", 
+    "Protein": "18.6", 
+    "Cholesterol": "1.0", 
+    "Sodium": "758.0", 
+    "Weight(g)": "55.0", 
+    "Measure": "2.0 slices , 3/8 inches"
+  }, 
+  "WORTHINGTON Multigrain Cutlets, canned, unprepared": {
+    "NDB": "16516", 
+    "Carbohydrate": "7.3", 
+    "SatFat": "0.3", 
+    "Fiber": "4.5", 
+    "TransFat": "0.0", 
+    "Sugar": "0.2", 
+    "kcal": "117.0", 
+    "Fat": "1.5", 
+    "Protein": "23.29", 
+    "Cholesterol": "0.0", 
+    "Sodium": "371.0", 
+    "Weight(g)": "92.0", 
+    "Measure": "2.0 slices"
   }, 
   "WORTHINGTON Prime Stakes, canned, unprepared": {
     "NDB": "16517", 
@@ -59721,8 +59772,22 @@
     "Cholesterol": "2.0", 
     "Sodium": "667.0", 
     "Weight(g)": "55.0", 
-    "Measure": "1.0 slice , 5/8\",\n16518,WORTHINGTON Saucettes", 
-    "": " canned"
+    "Measure": "1.0 slice , 5/8 inches"
+  }, 
+  "WORTHINGTON Saucettes, canned, unprepared": {
+    "NDB": "16518", 
+    "Carbohydrate": "5.6", 
+    "SatFat": "0.0", 
+    "Fiber": "2.8", 
+    "TransFat": "0.0", 
+    "Sugar": "0.2", 
+    "kcal": "219.0", 
+    "Fat": "15.2", 
+    "Protein": "15.0", 
+    "Cholesterol": "2.0", 
+    "Sodium": "532.0", 
+    "Weight(g)": "38.0", 
+    "Measure": "1.0 link"
   }, 
   "WORTHINGTON Smoked Turkey Roll, frozen, unprepared": {
     "NDB": "16533", 
@@ -59737,8 +59802,22 @@
     "Cholesterol": "0.0", 
     "Sodium": "859.0", 
     "Weight(g)": "55.0", 
-    "Measure": "1.0 slice , 3/8\",\n16534,WORTHINGTON Stakelets", 
-    "": " frozen"
+    "Measure": "1.0 slice , 3/8 inches"
+  }, 
+  "WORTHINGTON Stakelets, frozen, unprepared": {
+    "NDB": "16534", 
+    "Carbohydrate": "9.6", 
+    "SatFat": "1.8", 
+    "Fiber": "2.8", 
+    "TransFat": "0.0", 
+    "Sugar": "1.2", 
+    "kcal": "211.0", 
+    "Fat": "10.4", 
+    "Protein": "19.7", 
+    "Cholesterol": "1.0", 
+    "Sodium": "651.0", 
+    "Weight(g)": "71.0", 
+    "Measure": "1.0 piece"
   }, 
   "WORTHINGTON Stripples, frozen, unprepared": {
     "NDB": "16535", 
@@ -59843,8 +59922,22 @@
     "Cholesterol": "0.0", 
     "Sodium": "717.0", 
     "Weight(g)": "55.0", 
-    "Measure": "1.0 slice , 3/8\",\n11897,Yam", 
-    "": " cooked"
+    "Measure": "1.0 slice , 3/8 inches"
+  }, 
+  "Yam, cooked, boiled, drained, or baked, with salt": {
+    "NDB": "11897", 
+    "Carbohydrate": "26.99", 
+    "SatFat": "0.029", 
+    "Fiber": "3.9", 
+    "TransFat": "0.0", 
+    "Sugar": "0.49", 
+    "kcal": "114.0", 
+    "Fat": "0.14", 
+    "Protein": "1.49", 
+    "Cholesterol": "0.0", 
+    "Sodium": "244.0", 
+    "Weight(g)": "136.0", 
+    "Measure": "1.0 cup, cubes"
   }, 
   "Yam, cooked, boiled, drained, or baked, without salt": {
     "NDB": "11602", 

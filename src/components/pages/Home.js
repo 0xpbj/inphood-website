@@ -19,12 +19,14 @@ import Anon from './Anon'
 import Nutrition from "../../containers/NutritionContainer"
 import UploadModal from '../layout/UploadModal'
 
+const Config = require('Config')
+
 export default class Home extends React.Component {
   constructor() {
     super()
     this.state = {
       // TODO: AC for dev set this to true to go direct to Nutrition.js scene
-      nutritionView: false,
+      nutritionView: Config.fastDevelopNutritionPage,
       showUploadModal: false
     }
   }
@@ -160,10 +162,10 @@ export default class Home extends React.Component {
                       <Button bsStyle="default" onClick={()=>this.setState({ showUploadModal: true })}>
                         <Glyphicon glyph="glyphicon glyphicon-open" />
                       </Button>
-                      <UploadModal 
+                      <UploadModal
                         onDrop={(acceptedFiles, rejectedFiles) => this.onDrop.bind(this)}
-                        show={this.state.showUploadModal} 
-                        onHide={hideUploadModal} 
+                        show={this.state.showUploadModal}
+                        onHide={hideUploadModal}
                       />
                     </Col>
                     <Col xs={5} md={5}>

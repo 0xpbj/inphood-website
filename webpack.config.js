@@ -83,7 +83,8 @@ module.exports = {
       FIREBASE_DATABASE_URL:'https://inphooddb-e0dfd.firebaseio.com',
       FIREBASE_STORAGE_BUCKET:'inphooddb-e0dfd.appspot.com',
       AWS_ACCESS_ID: 'AKIAI25XHNISG4KDDM3Q',
-      AWS_SECRET_KEY: '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'
+      AWS_SECRET_KEY: 'v5m0WbHnJVkpN4RB9fzgofrbcc4n4MNT05nGp7nf',
+      fastDevelopNutritionPage: false
     }),
     'react': 'React',
     'react-dom': 'ReactDOM',

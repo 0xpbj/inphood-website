@@ -21,6 +21,8 @@ import ControlLabel from 'react-bootstrap/lib/ControlLabel'
 import 'react-widgets/lib/less/react-widgets.less'
 import Dropdownlist from 'react-widgets/lib/Dropdownlist'
 
+const Config = require('Config')
+
 export default class Nutrition extends React.Component {
   //////////////////////////////////////////////////////////////////////////////
   // React / Component API:
@@ -94,36 +96,36 @@ export default class Nutrition extends React.Component {
     })
   }
   //
-  handleSliderValuesChange(sliderId, value) {
+  handleSliderValuesChange(tag, value) {
     let sliderValueDict = this.state.sliderValueDict
-    sliderValueDict[sliderId] = value
+    sliderValueDict[tag] = value
 
     let nutritionModel = this.state.nutritionModel
-    nutritionModel.scaleIngredientToPercent(sliderId, value)
+    nutritionModel.scaleIngredientToPercent(tag, value)
     this.setState({
       sliderValueDict: sliderValueDict,
       nutritionModel: nutritionModel
     })
   }
   //
-  handleMatchDropdownChange(dropdownId, value) {
+  handleMatchDropdownChange(tag, value) {
     console.log('handleMatchDropdownChange ----------------------------------------')
-    console.log('dropdownId = ' + dropdownId)
+    console.log('tag = ' + tag)
     console.log('value = ' + value)
 
     let matchDropdownValueDict = this.state.matchDropdownValueDict
 
     // Need to remove the current Ingredient from the NutritionModel and add the new one
     let nutritionModel = this.state.nutritionModel
-    nutritionModel.removeIngredient(matchDropdownValueDict[dropdownId])
+    nutritionModel.removeIngredient(matchDropdownValueDict[tag])
     //
     const dataForKey = this.state.nutAlg.getDataForKey(value)
     let ingredient = new IngredientModel()
-    ingredient.initializeSingle(value, dropdownId, dataForKey)
-    nutritionModel.addIngredient(value, ingredient, this.state.sliderValueDict[dropdownId])
+    ingredient.initializeSingle(value, tag, dataForKey)
+    nutritionModel.addIngredient(value, ingredient, this.state.sliderValueDict[tag])
 
     // Update the state value for the dropdown
-    matchDropdownValueDict[dropdownId] = value
+    matchDropdownValueDict[tag] = value
 
     this.setState({
       matchDropdownValueDict: matchDropdownValueDict,
@@ -131,9 +133,9 @@ export default class Nutrition extends React.Component {
     })
   }
   //
-  handleUnitDropdownChange(dropdownId, value) {
+  handleUnitDropdownChange(tag, value) {
     console.log('handleUnitDropdownChange ----------------------------------------')
-    console.log('dropdownId = ' + dropdownId)
+    console.log('tag = ' + tag)
     console.log('value = ' + value)
   }
   //////////////////////////////////////////////////////////////////////////////
@@ -153,7 +155,11 @@ export default class Nutrition extends React.Component {
     }
   }
   generateChips() {
-    const {caption, updatedCaption} = this.props.nutrition
+    let {caption, updatedCaption} = this.props.nutrition
+    if (Config.fastDevelopNutritionPage) {
+      const caption = "seasoning breakfast eggs spinach butter"
+      const updatedCaption = "eggs spinach butter"
+    }
     let regex = /\w+/g
     let result = ''
     if (updatedCaption === '') {
@@ -198,8 +204,9 @@ export default class Nutrition extends React.Component {
     //
     //  Example:
     //
-    //      Egg: [Eggs, scrambled, frozen mixture]^v
-    //      <-----*---------------> [   1]  [egg]^v
+    //      Egg:
+    //      <--------*-------------------------> [   1]
+    //      [Eggs, scrambled, frozen mixture]^v [egg]^v
     //
     // Changing the unit takes the quanity and converts it to g for use with our model.
     // We might store these in userQuantity, userUnit.
@@ -211,28 +218,56 @@ export default class Nutrition extends React.Component {
     const dataForKey = this.state.nutAlg.getDataForKey(key)
     const matchData = this.state.nutAlg.getMatchList(tag)
     const unitData = ['TODO', 'grams', 'cups', 'tablespoons', 'teaspoons']
-    const meta = 'TODO'
+    // This is additional unit information (probably make it a little info
+    // button next to the units that pops up)
+    const meta = ' (TODO - meta)'
 
-    return(
-      <div key={tag}>
-        {/* row 1 from above: */}
-        <text>{tag}</text>
-        <Dropdownlist
-          data={matchData}
-          value={this.state.matchDropdownValueDict[tag]}
-          onChange={this.handleMatchDropdownChange.bind(this, tag)}/>
-        {/* row 2 from above: */}
-        <Slider
-          value={this.state.sliderValueDict[tag]}
-          onChange={this.handleSliderValuesChange.bind(this, tag)}
-          min={0}
-          max={400}
-          editable/>
-        <Dropdownlist
-          data={unitData}
-          value={this.state.unitDropdownValueDict[tag]}
-          onChange={this.handleUnitDropdownChange.bind(this, tag)}/>
-        <text>{meta}</text>
+    return (
+      <div>
+          {/* row 1 from above: */}
+          <Row
+            style={{marginTop: 20}}>
+            <Col xs={12} md={12}>
+              <text style={{fontWeight: 'bold'}}>
+                {tag}
+              </text>
+            </Col>
+          </Row>
+          <div style={{borderWidth: 1,
+                       borderColor: 'black',
+                       borderStyle: 'solid',
+                       borderRadius: 5,
+                       padding: 10,
+                       margin: 10}}>
+            {/* row 2 from above: */}
+            <Row>
+              <Col xs={10} md={10} style={{paddingLeft: 5, paddingRight: 5}}>
+                <Slider
+                  value={this.state.sliderValueDict[tag]}
+                  onChange={this.handleSliderValuesChange.bind(this, tag)}
+                  min={0}
+                  max={400}
+                  step={10}
+                  editable pinned snaps/>
+              </Col>
+              <Col xs={2} md={2} style={{paddingLeft: 0}}>
+                <Dropdownlist
+                  data={unitData}
+                  value={this.state.unitDropdownValueDict[tag]}
+                  onChange={this.handleUnitDropdownChange.bind(this, tag)}/>
+              </Col>
+            </Row>
+            {/* row 3 from above: */}
+            <Row
+              style={{marginTop: 10}}>
+              <Col xs={12} md={12}>
+              <Dropdownlist
+                data={matchData}
+                value={this.state.matchDropdownValueDict[tag]}
+                onChange={this.handleMatchDropdownChange.bind(this, tag)}/>
+              </Col>
+            </Row>
+          </div>
       </div>
     )
   }
@@ -257,21 +292,35 @@ export default class Nutrition extends React.Component {
     const eventKey = this.props.nutrition.anonymous === false ? "2" : "1"
     return (
       <Grid>
-        <Row className="show-grid">
+
+        <Row className='show-grid'>
           <Col xs={8} md={8}>
-            <br/>
-            <text>Serving Size</text>
-            <Slider
-              value={this.state.servingValue}
-              onChange={this.handleServingValuesChange.bind(this)}
-              min={0}
-              max={400}
-              editable/><br/><br/>
-            {sliders}
+            <text style={{fontWeight: 'bold'}}>Serving Size</text>
+            <div style={{borderWidth: 1,
+                         borderColor: 'black',
+                         borderStyle: 'solid',
+                         borderRadius: 5,
+                         padding: 10,
+                         margin: 10}}>
+              <Slider
+                value={this.state.servingValue}
+                onChange={this.handleServingValuesChange.bind(this)}
+                min={0}
+                max={400}
+                step={10}
+                editable pinned snaps/>
+            </div>
           </Col>
           <Col xs={4} md={4}>
-            <Label nutritionModel={this.state.nutritionModel}/>
-            <div>
+            <text style={{fontWeight: 'bold'}}>Tags:</text>
+            {/* The section elements here separate the updated tags from the
+                eliminated ones */}
+            <div style={{borderWidth: 1,
+                         borderColor: 'black',
+                         borderStyle: 'solid',
+                         borderRadius: 5,
+                         padding: 10,
+                         margin: 10}}>
               <section>
                 {this.state.updChips}
               </section>
@@ -281,12 +330,26 @@ export default class Nutrition extends React.Component {
             </div>
           </Col>
         </Row>
-        <div>
-          <Button className="btn-primary-spacing" bsStyle="info" onClick={() => this.props.goToGallery()}>Gallery</Button>
-          <DropdownButton bsStyle="success" title="Share Label" key={1} id={`split-button-basic`}>
-          <MenuItem eventKey={eventKey} onClick={this.transitionToLabelPage.bind(this, false, composite, full)}>Share URL</MenuItem>
-          </DropdownButton>
-        </div>
+
+        {/*TODO: what is 'show-grid' about?*/}
+        <Row className="show-grid">
+          <Col xs={8} md={8}>
+            {sliders}
+          </Col>
+          <Col xs={4} md={4}>
+            {/* To align with sliders need margin of 10+20 and then text placeholder */}
+            <div style={{marginTop: 30}}>
+              <text>&nbsp;</text>
+              <Label nutritionModel={this.state.nutritionModel}/>
+            </div>
+            <div>
+              <Button className="btn-primary-spacing" bsStyle="info" onClick={() => this.props.goToGallery()}>Gallery</Button>
+              <DropdownButton bsStyle="success" title="Share Label" key={1} id={`split-button-basic`}>
+                <MenuItem eventKey={eventKey} onClick={this.transitionToLabelPage.bind(this, false, composite, full)}>Share URL</MenuItem>
+              </DropdownButton>
+            </div>
+          </Col>
+        </Row>
       </Grid>
     )
   }

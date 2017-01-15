@@ -88,7 +88,7 @@ export default class NutritionAlg {
 
       if (tagLength < 2) {
         continue
-      }    
+      }
       // Remove leading hashtag and make first alpha char uppercase for best
       // compatibility with FDA DB:
       let cleanedTag = ""
@@ -120,7 +120,22 @@ export default class NutritionAlg {
     // Pre-create regular expressions for the tags being searched for.
     for (let i = 0; i < numTags; i++) {
       this.matches[splitTags[i]] = []
-      tagRegExps.push(new RegExp(splitTags[i], regexFlags))
+
+      let tag = splitTags[i]
+
+      // The Raspberry / Blueberry fix. The FDA database contains 'Blueberries'
+      // so when you search for 'Blueberry' you won't get the desired result. The
+      // following code will search the tag for the word 'berry' and reduce it to
+      // 'berr' permitting all results to be found:
+      let berryTag = false
+      const berryPattern = "(.*)(berry|berries)"
+      const berryRe = new RegExp(berryPattern, regexFlags)
+      if (berryRe.test(tag)) {
+        tag = tag.replace(berryRe, '$1berr')
+        berryTag = true
+      }
+
+      tagRegExps.push(new RegExp(tag, regexFlags))
 
       // This pattern matches the exact word in splitTags or a plural version of
       // it case insensitively. Explanations for each part of the regex are:
@@ -130,7 +145,10 @@ export default class NutritionAlg {
       //                   (the ? means do not remember the match--prob.
       //                    irrelevant for the test() method)
       //
-      let pattern = "^" + splitTags[i] + "(?:,|s|\\s|$)"
+      // TODO: permute pattern to include 'y' & 'ies' for berry case
+      let pattern = berryTag
+        ? "^" + tag + "(?:,|s|y|ies|\\s|$)"
+        : "^" + tag + "(?:,|s|\\s|$)"
       tagExactWordRegExps.push(new RegExp(pattern, regexFlags))
 
       let pattern2 = "^" + splitTags[i] + ".*"

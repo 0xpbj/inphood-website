@@ -57,6 +57,10 @@ export class NutritionModel {
     this._ingredients[key] = new IngredientTuple(anIngredient, scale)
   }
 
+  getIngredientModel(key) {
+    return this._ingredients[key].getIngredientModel()
+  }
+
   removeIngredient(key) {
     if (key in this._ingredients) {
       delete this._ingredients[key]

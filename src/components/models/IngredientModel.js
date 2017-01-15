@@ -292,7 +292,7 @@ export class IngredientModel {
         this._measureQuantity = parseFloat(textArr[0])
     }
     if (textArr.length >= 2) {
-        this._measureUnit += textArr[1]
+        this._measureUnit += textArr[1].replace(/(,|\s)/g, '')
     }
     if (textArr.length >= 3) {
     	let meta = ""

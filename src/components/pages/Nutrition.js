@@ -22,6 +22,7 @@ import 'react-widgets/lib/less/react-widgets.less'
 import Dropdownlist from 'react-widgets/lib/Dropdownlist'
 
 const Config = require('Config')
+const Convert = require('convert-units')
 
 export default class Nutrition extends React.Component {
   //////////////////////////////////////////////////////////////////////////////
@@ -32,6 +33,7 @@ export default class Nutrition extends React.Component {
     this.state = {
       sliderValueDict: {},
       matchDropdownValueDict: {},
+      unitDropdownDataDict: {},
       unitDropdownValueDict: {},
       nutritionModel: new NutritionModel(),
       matches: {},
@@ -55,24 +57,46 @@ export default class Nutrition extends React.Component {
     const sliderInitValue = 100.0
     let sliderValueDict = {}
     let matchDropdownValueDict = {}
+    let unitDropdownDataDict = {}
     let unitDropdownValueDict = {}
     let nutritionModel = this.state.nutritionModel
+    const excludedUnits = ['mm3', 'cm3', 'm3', 'km3', 'in3', 'gal', 'ft3', 'yd3']
     for (let tag in this.state.nutAlg.getMatches()) {
       const key = this.state.nutAlg.getBestMatchForTag(tag)
       const dataForKey = this.state.nutAlg.getDataForKey(key)
 
       sliderValueDict[tag] = sliderInitValue
       matchDropdownValueDict[tag] = key
-      unitDropdownValueDict[tag] = 'grams'
 
-      let ingredient = new IngredientModel()
-      ingredient.initializeSingle(key, tag, dataForKey)
-      nutritionModel.addIngredient(key, ingredient, sliderInitValue)
+      let ingredientModel = new IngredientModel()
+      ingredientModel.initializeSingle(key, tag, dataForKey)
+      nutritionModel.addIngredient(key, ingredientModel, sliderInitValue)
+
+      // Get the Unit data
+      let measureUnit = ingredientModel._measureUnit
+      console.log('Measure unit ------------------------------------------------')
+      let unitData = []
+      if (Convert().possibilities().includes(measureUnit)) {
+        const possibleUnits = Convert().from(measureUnit).possibilities()
+
+        // From: http://stackoverflow.com/questions/1723168/what-is-the-fastest-or-most-elegant-way-to-compute-a-set-difference-using-javasc
+        const difference = possibleUnits.filter(x => excludedUnits.indexOf(x) < 0)
+        unitData = difference
+      } else {
+        console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+        console.log("Unsupported measureUnit = " + measureUnit)
+        unitData.push(measureUnit)
+      }
+      unitDropdownDataDict[tag] = unitData
+      unitDropdownValueDict[tag] = measureUnit
+
     }
+
     this.setState({
       matches: this.state.nutAlg.getMatches(),
       sliderValueDict: sliderValueDict,
       matchDropdownValueDict: matchDropdownValueDict,
+      unitDropdownDataDict: unitDropdownDataDict,
       unitDropdownValueDict: unitDropdownValueDict,
       nutritionModel: nutritionModel
     })
@@ -127,6 +151,9 @@ export default class Nutrition extends React.Component {
     // Update the state value for the dropdown
     matchDropdownValueDict[tag] = value
 
+    // TODO:
+    // Update the unitDropdownValueDict, unitDropdownDataDict
+
     this.setState({
       matchDropdownValueDict: matchDropdownValueDict,
       nutritionModel: nutritionModel
@@ -137,6 +164,9 @@ export default class Nutrition extends React.Component {
     console.log('handleUnitDropdownChange ----------------------------------------')
     console.log('tag = ' + tag)
     console.log('value = ' + value)
+
+    // TODO:
+    // Update the unitDropdownValueDict, updateTheSliders (min, max, setting)
   }
   handleChipDelete(tag) {
     console.log('handleChipDelete ------------------------------------------------')
@@ -158,6 +188,7 @@ export default class Nutrition extends React.Component {
     let nutritionModel = this.state.nutritionModel
     let sliderValueDict = this.state.sliderValueDict
     let matchDropdownValueDict = this.state.matchDropdownValueDict
+    let unitDropdownDataDict = this.state.unitDropdownDataDict
     let unitDropdownValueDict = this.state.unitDropdownValueDict
     let selectedTags = this.state.selectedTags
     let deletedTags = this.state.deletedTags
@@ -166,6 +197,7 @@ export default class Nutrition extends React.Component {
     nutritionModel.removeIngredient(matchDropdownValueDict[tag])
     delete sliderValueDict[tag]
     delete matchDropdownValueDict[tag]
+    delete unitDropdownDataDict[tag]
     delete unitDropdownValueDict[tag]
     //
     // Remove the tag from selectedTags (use splice--delete just makes the element undefined)
@@ -182,6 +214,7 @@ export default class Nutrition extends React.Component {
       nutritionModel: nutritionModel,
       sliderValueDict: sliderValueDict,
       matchDropdownValueDict: matchDropdownValueDict,
+      unitDropdownDataDict: unitDropdownDataDict,
       unitDropdownValueDict: unitDropdownValueDict,
       selectedTags: selectedTags,
       deletedTags: deletedTags
@@ -279,9 +312,8 @@ export default class Nutrition extends React.Component {
     // const dataForKey = this.state.nutAlg.getDataForKey(key)
     const key = this.state.matchDropdownValueDict[tag]
     const matchData = this.state.nutAlg.getMatchList(tag)
-    const unitData = ['TODO', 'grams', 'cups', 'tablespoons', 'teaspoons']
-    // const ingredientModel = this.state.nutritionModel.getIngredientModel(key)
-    // const unitData =
+
+
     // This is additional unit information (probably make it a little info
     // button next to the units that pops up)
     const meta = ' (TODO - meta)'
@@ -319,7 +351,7 @@ export default class Nutrition extends React.Component {
               </Col>
               <Col xs={2} md={2} style={{paddingLeft: 0}}>
                 <Dropdownlist
-                  data={unitData}
+                  data={this.state.unitDropdownDataDict[tag]}
                   value={this.state.unitDropdownValueDict[tag]}
                   onChange={this.handleUnitDropdownChange.bind(this, tag)}/>
               </Col>

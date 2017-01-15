@@ -8,7 +8,7 @@ import Button from 'react-bootstrap/lib/Button'
 import Tooltip from 'react-bootstrap/lib/Tooltip'
 import ControlLabel from 'react-bootstrap/lib/ControlLabel'
 import Label from './NutritionEstimateJSX'
-import {Ingredient} from '../models/NutritionModel'
+import {IngredientModel} from '../models/IngredientModel'
 
 export default class Results extends React.Component {
   constructor() {
@@ -55,7 +55,7 @@ export default class Results extends React.Component {
       let nutritionLabel = <text> Loading ...</text>
       if (this.hasProp(this.props.results.data, 'composite')) {
         let ingredientData = JSON.parse(this.props.results.data.composite)
-        let ingredient = new Ingredient()
+        let ingredient = new IngredientModel()
         ingredient.initializeFromSerialization(ingredientData)
         nutritionLabel = <Label ingredientComposite={ingredient}/>
       }

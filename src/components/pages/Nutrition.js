@@ -275,10 +275,13 @@ export default class Nutrition extends React.Component {
     // Going forward we'll need code in here to preset the slider and unit from
     // the recipe
 
-    const key = this.state.nutAlg.getBestMatchForTag(tag)
-    const dataForKey = this.state.nutAlg.getDataForKey(key)
+    // const key = this.state.nutAlg.getBestMatchForTag(tag)
+    // const dataForKey = this.state.nutAlg.getDataForKey(key)
+    const key = this.state.matchDropdownValueDict[tag]
     const matchData = this.state.nutAlg.getMatchList(tag)
     const unitData = ['TODO', 'grams', 'cups', 'tablespoons', 'teaspoons']
+    // const ingredientModel = this.state.nutritionModel.getIngredientModel(key)
+    // const unitData =
     // This is additional unit information (probably make it a little info
     // button next to the units that pops up)
     const meta = ' (TODO - meta)'
@@ -339,7 +342,8 @@ export default class Nutrition extends React.Component {
     let sliders = []
     let notFound = ""
     for (let tag in this.state.matches) {
-      const key = this.state.nutAlg.getBestMatchForTag(tag)
+      // const key = this.state.nutAlg.getBestMatchForTag(tag)
+      const key = this.state.matchDropdownValueDict[tag]
       if (key === "") {
         notFound = notFound + tag + " "
         continue

@@ -52,7 +52,7 @@ export default class NutritionEstimateJSX extends React.Component {
                   <b>Calories </b>
                   {ingredientComposite.getCalories()}
                 </th>
-                <td style={myStyles.performanceFactsTableElementTd}>
+                <td style={myStyles.performanceFactsTableElementTdLastChild}>
                   Calories from Fat&nbsp;
                   {ingredientComposite.getCaloriesFromFat()}
                 </td>

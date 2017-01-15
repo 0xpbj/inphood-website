@@ -34,7 +34,7 @@ export default class Nutrition extends React.Component {
       matchDropdownValueDict: {},
       unitDropdownValueDict: {},
       nutritionModel: new NutritionModel(),
-      matches: [],
+      matches: {},
       nutAlg: new NutritionAlg(),
       showUrlModal: false,
       parChips: [],
@@ -138,6 +138,44 @@ export default class Nutrition extends React.Component {
     console.log('tag = ' + tag)
     console.log('value = ' + value)
   }
+  handleChipDelete(tag) {
+    console.log('handleChipDelete ------------------------------------------------')
+    console.log('tag = ' + tag)
+    console.log('updChips = ')
+    console.log(this.state.updChips)
+    console.log('parChips = ')
+    console.log(this.state.parChips)
+
+
+    // Delete this tag from:
+    //    this.state.matches
+    //    this.state.nutritionModel
+    //    sliderValueDict
+    //    matchDropDownValueDict
+    //    unitDropdownValueDict
+    //
+    // TODO: Add this tag to the deleted tag list
+    //
+    let matches = this.state.matches
+    let nutritionModel = this.state.nutritionModel
+    let sliderValueDict = this.state.sliderValueDict
+    let matchDropdownValueDict = this.state.matchDropdownValueDict
+    let unitDropdownValueDict = this.state.unitDropdownValueDict
+    //
+    delete matches[tag]
+    nutritionModel.removeIngredient(matchDropdownValueDict[tag])
+    delete sliderValueDict[tag]
+    delete matchDropdownValueDict[tag]
+    delete unitDropdownValueDict[tag]
+    //
+    this.setState({
+      matches: matches,
+      nutritionModel: nutritionModel,
+      sliderValueDict: sliderValueDict,
+      matchDropdownValueDict: matchDropdownValueDict,
+      unitDropdownValueDict: unitDropdownValueDict
+    })
+  }
   //////////////////////////////////////////////////////////////////////////////
   // Miscellany:
   //////////////////////////////////////////////////////////////////////////////
@@ -228,9 +266,11 @@ export default class Nutrition extends React.Component {
           <Row
             style={{marginTop: 20}}>
             <Col xs={12} md={12}>
-              <text style={{fontWeight: 'bold'}}>
+              <Chip
+                onDeleteClick={this.handleChipDelete.bind(this, tag)}
+                deletable>
                 {tag}
-              </text>
+              </Chip>
             </Col>
           </Row>
           <div style={{borderWidth: 1,
@@ -238,7 +278,8 @@ export default class Nutrition extends React.Component {
                        borderStyle: 'solid',
                        borderRadius: 5,
                        padding: 10,
-                       margin: 10}}>
+                       marginRight: 10,
+                       marginLeft: 10}}>
             {/* row 2 from above: */}
             <Row>
               <Col xs={10} md={10} style={{paddingLeft: 5, paddingRight: 5}}>
@@ -312,7 +353,7 @@ export default class Nutrition extends React.Component {
             </div>
           </Col>
           <Col xs={4} md={4}>
-            <text style={{fontWeight: 'bold'}}>Tags:</text>
+            <text style={{fontWeight: 'bold'}}>Discarded Tags:</text>
             {/* The section elements here separate the updated tags from the
                 eliminated ones */}
             <div style={{borderWidth: 1,
@@ -321,12 +362,7 @@ export default class Nutrition extends React.Component {
                          borderRadius: 5,
                          padding: 10,
                          margin: 10}}>
-              <section>
-                {this.state.updChips}
-              </section>
-              <section>
-                {this.state.parChips}
-              </section>
+              {this.state.parChips}
             </div>
           </Col>
         </Row>
@@ -337,8 +373,8 @@ export default class Nutrition extends React.Component {
             {sliders}
           </Col>
           <Col xs={4} md={4}>
-            {/* To align with sliders need margin of 10+20 and then text placeholder */}
-            <div style={{marginTop: 30}}>
+            {/* To align with sliders need margin of 37 and then text placeholder */}
+            <div style={{marginTop: 37}}>
               <text>&nbsp;</text>
               <Label nutritionModel={this.state.nutritionModel}/>
             </div>

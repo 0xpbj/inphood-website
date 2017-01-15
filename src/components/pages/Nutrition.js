@@ -157,8 +157,8 @@ export default class Nutrition extends React.Component {
   generateChips() {
     let {caption, updatedCaption} = this.props.nutrition
     if (Config.fastDevelopNutritionPage) {
-      const caption = "seasoning breakfast eggs spinach butter"
-      const updatedCaption = "eggs spinach butter"
+      caption = "seasoning breakfast eggs spinach butter"
+      updatedCaption = "eggs spinach butter"
     }
     let regex = /\w+/g
     let result = ''

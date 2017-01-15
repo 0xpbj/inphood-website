@@ -75,17 +75,6 @@ export default class NutritionAlg {
       const tag = tags[i]
       let tagLength = tag.length
 
-      let depluralizedTag = tag
-      if (tagLength >= 2) {
-        // This check prevents messing with words like 'Watercress', but modifies
-        // something like Eggs to be Egg
-        //
-        if ((tag.charAt(tagLength-1) == 's') && (tag.charAt(tagLength-2) != 's')) {
-          depluralizedTag = tag.slice(0, tagLength-1)
-          tagLength = depluralizedTag.length
-        }
-      }
-
       if (tagLength < 2) {
         continue
       }
@@ -93,9 +82,9 @@ export default class NutritionAlg {
       // compatibility with FDA DB:
       let cleanedTag = ""
       if (tag.charAt(0) == "#") {
-        cleanedTag = depluralizedTag.slice(1).charAt(0).toUpperCase() + depluralizedTag.slice(2)
+        cleanedTag = tag.slice(1).charAt(0).toUpperCase() + tag.slice(2)
       } else {
-        cleanedTag = depluralizedTag.charAt(0).toUpperCase() + depluralizedTag.slice(1)
+        cleanedTag = tag.charAt(0).toUpperCase() + tag.slice(1)
       }
 
       newTags.push(cleanedTag.trim())
@@ -133,6 +122,13 @@ export default class NutritionAlg {
       if (berryRe.test(tag)) {
         tag = tag.replace(berryRe, '$1berr')
         berryTag = true
+      }
+
+      // The plural fix--match eggs to things like egg etc...
+      const pluralPattern = "^([^s]+)s$"
+      const pluralRe = new RegExp(pluralPattern, regexFlags)
+      if (pluralRe.test(tag)) {
+        tag = tag.replace(pluralRe, '$1')
       }
 
       tagRegExps.push(new RegExp(tag, regexFlags))

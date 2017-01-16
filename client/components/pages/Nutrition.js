@@ -4,6 +4,7 @@ import NutritionAlg from '../../algorithms/NutritionAlg'
 import {IngredientModel} from '../models/IngredientModel'
 import {NutritionModel} from '../models/NutritionModel'
 import {IngredientControlModel} from '../models/IngredientControlModel'
+import {Redirect} from 'react-router'
 
 // import { VictoryPie } from 'victory'
 import Chip from 'react-toolbox/lib/chip'
@@ -39,7 +40,8 @@ export default class Nutrition extends React.Component {
       showUrlModal: false,
       selectedTags: [],
       deletedTags: [],
-      servingValue: 100
+      servingValue: 100,
+      transition: false
     }
   }
   componentWillMount() {
@@ -91,7 +93,8 @@ export default class Nutrition extends React.Component {
     if (flag)
       this.props.postLabelId(this.props.nutrition.key, this.props.resultUrl)
     this.props.sendSerializedData(composite, full)
-    this.props.router.push('/'+this.props.nutrition.key)
+    this.setState({transition: true})
+    // this.props.router.push('/'+this.props.nutrition.key)
   }
   //
   handleServingValuesChange(servingValue) {
@@ -393,6 +396,11 @@ export default class Nutrition extends React.Component {
   }
   //
   render() {
+    if (this.state.transition) {
+      const path = '/label/' + this.props.nutrition.key
+      return <Redirect to={path} />
+    }
+
     //
     // 1. Generate a list of tags not found in our DB and build the array of
     //    sliders:

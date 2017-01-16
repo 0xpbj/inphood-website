@@ -9,13 +9,17 @@ import Tooltip from 'react-bootstrap/lib/Tooltip'
 import ControlLabel from 'react-bootstrap/lib/ControlLabel'
 import Label from './NutritionEstimateJSX'
 import {IngredientModel} from '../models/IngredientModel'
+import {Redirect} from 'react-router'
 
 export default class Results extends React.Component {
   constructor() {
     super()
+    this.state = {
+      goHome: false
+    }
   }
   componentWillMount() {
-    this.props.getLabelId(this.props.params.labelId)
+    this.props.getLabelId(this.props.params.userId, this.props.params.labelId)
   }
   // From https://toddmotto.com/methods-to-determine-if-an-object-has-a-given-property/
   //  - addresses limitations of IE and other issues related to checking if an object
@@ -28,12 +32,15 @@ export default class Results extends React.Component {
     const containerStyle = {
       marginTop: "60px"
     }
-    if (this.props.results.data === null) {
+    if (this.state.goHome) {
+      return <Redirect to="/" />
+    }
+    else if (this.props.results.data === null) {
       return (
-        <Alert bsStyle="danger" onDismiss={() => this.props.router.push('/')}>
+        <Alert bsStyle="danger" onDismiss={() => this.setState({goHome: true})}>
           <h4>Oh snap! Label not found!</h4>
           <p>
-            <Button bsStyle="danger" onClick={() => this.props.router.push('/')}>Go Home</Button>
+            <Button bsStyle="danger" onClick={() => this.setState({goHome: true})}>Go Home</Button>
           </p>
         </Alert>
       )

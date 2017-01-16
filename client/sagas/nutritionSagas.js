@@ -31,7 +31,7 @@ const uploadImageToS3 = (uri, key, username, thumbnail) => {
   request(options, function(error, response, body) {
     if (error || response.statusCode !== 200) {
       console.log("failed to get image", error)
-      firebase.database().ref('/global/nutritionLabel/'+key).update({ 
+      firebase.database().ref('/global/nutritionLabel/'+username+'/'+key).update({ 
         key,
         user: username,
         oUrl: uri,
@@ -49,7 +49,7 @@ const uploadImageToS3 = (uri, key, username, thumbnail) => {
       }, function(error, data) {
         if (error) {
           console.log("error downloading image to s3", error)
-          firebase.database().ref('/global/nutritionLabel/'+key).update({ 
+          firebase.database().ref('/global/nutritionLabel/'+username+'/'+key).update({ 
             key,
             user: username,
             oUrl: uri,
@@ -61,7 +61,7 @@ const uploadImageToS3 = (uri, key, username, thumbnail) => {
         }
       })
       console.log('Thumbnail: ', thumbnail)
-      firebase.database().ref('/global/nutritionLabel/'+key).update({
+      firebase.database().ref('/global/nutritionLabel/'+username+'/'+key).update({
         key,
         user: username,
         oUrl: uri,
@@ -95,14 +95,14 @@ function* loadAWSPut() {
 }
 
 function* loadSerializedData() {
-  const {composite, full, key, anonymous} = yield select(state => state.nutritionReducer)
+  const {composite, full, key, anonymous,username} = yield select(state => state.nutritionReducer)
   if (anonymous)
-    firebase.database().ref('/global/nutritionLabel/anonymous/' + key).update({
+    firebase.database().ref('/global/nutritionLabel/anonymous/'+key).update({
       composite,
       full
     })
   else
-    firebase.database().ref('/global/nutritionLabel/' + key).update({
+    firebase.database().ref('/global/nutritionLabel/'+username+'/'+key).update({
       composite,
       full
     })

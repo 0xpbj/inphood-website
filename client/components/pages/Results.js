@@ -19,7 +19,7 @@ export default class Results extends React.Component {
     }
   }
   componentWillMount() {
-    this.props.getLabelId(this.props.params.labelId)
+    this.props.getLabelId(this.props.params.userId, this.props.params.labelId)
   }
   // From https://toddmotto.com/methods-to-determine-if-an-object-has-a-given-property/
   //  - addresses limitations of IE and other issues related to checking if an object

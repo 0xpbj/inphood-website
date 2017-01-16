@@ -3,6 +3,7 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import {
   Link,
+  Miss,
   Match,
   Route,
   Router,
@@ -15,6 +16,7 @@ import {
 import Home from './containers/HomeContainer';
 import Layout from './components/pages/Layout';
 import About from './components/pages/About';
+import NoMatch from './components/pages/NoMatch';
 import Results from './containers/ResultsContainer';
 
 export default class App extends React.Component {
@@ -24,7 +26,8 @@ export default class App extends React.Component {
       <Layout>
         <Match pattern="/" exactly component={Home} />
         <Match pattern="/about" component={About} />
-        <Match pattern="/label/:labelId" component={Results} />
+        <Match pattern="/label/:userId/:labelId" component={Results} />
+        <Miss component={NoMatch}/>
       </Layout>
     );
     return (

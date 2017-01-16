@@ -71,9 +71,10 @@ export function anClearData() {
   }
 }
 
-export function getLabelId(labelId) {
+export function getLabelId(userId, labelId) {
   return {
     type: GET_LABEL_ID,
+    userId,
     labelId
   }
 }

@@ -8,8 +8,8 @@ import * as db from './firebaseCommands'
 
 function* getLabelData() {
   while (true) {
-    const {labelId} = yield take (GET_LABEL_ID)
-    const path = '/global/nutritionLabel/' + labelId
+    const {userId, labelId} = yield take (GET_LABEL_ID)
+    const path = '/global/nutritionLabel/' + userId + '/' + labelId
     const data = (yield call(db.getPath, path)).val()
     yield put({type: LABEL_DATA, data})
   }

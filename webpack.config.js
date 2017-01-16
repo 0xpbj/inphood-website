@@ -98,5 +98,5 @@ module.exports = {
     net: 'empty',
     tls: 'empty'
   },
-  devtool: 'eval',
+  devtool: process.env.WEBPACK_DEVTOOL || 'eval-source-map',
 };

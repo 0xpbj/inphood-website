@@ -417,6 +417,22 @@ export class IngredientModel {
     return this._totalProteinUnit
   }
 
+  getMeasureWeightGrams() {
+    return this._measureWeight_g
+  }
+
+  getMeasureQuantity() {
+    return this._measureQuantity
+  }
+
+  getMeasureUnit() {
+    return this._measureUnit
+  }
+
+  getMeasureMeta() {
+    return this._measureMeta
+  }
+
   throwIfUnitMismatch(category, mainUnit, otherUnit, otherTag, otherKey) {
     if (mainUnit != undefined) {
       if (mainUnit != otherUnit) {

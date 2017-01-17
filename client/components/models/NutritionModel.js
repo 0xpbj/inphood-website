@@ -57,8 +57,24 @@ export class NutritionModel {
     this._ingredients[key] = new IngredientTuple(anIngredient, scale)
   }
 
-  getIngredientModel(key) {
-    return this._ingredients[key].getIngredientModel()
+  getIngredientTuple(tag) {
+    for (let key in this._ingredients) {
+      let ingredientTuple = this._ingredients[key]
+      if (tag === ingredientTuple.getIngredientModel()._tag) {
+        return ingredientTuple
+      }
+    }
+
+    return null
+  }
+
+  getIngredientModel(tag) {
+    let ingredientTuple = this.getIngredientTuple(tag)
+    if (ingredientTuple !== null) {
+      return ingredientTuple.getIngredientModel()
+    }
+
+    return null
   }
 
   removeIngredient(key) {
@@ -71,12 +87,11 @@ export class NutritionModel {
   //
   //   0.0 <= scale <= 100.0
   scaleIngredientToPercent(tag, scale) {
-    for (let key in this._ingredients) {
-      let ingredientModel = this._ingredients[key].getIngredientModel()
-      if (tag === ingredientModel._tag) {
-        this._ingredients[key].setScale(scale)
-      }
+    let ingredientTuple = this.getIngredientTuple(tag)
+    if (ingredientTuple !== null) {
+      ingredientTuple.setScale(scale)
     }
+    
   }
 
   // Scale the ingredient figures to the amount in the specified unit.

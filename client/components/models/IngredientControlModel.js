@@ -60,7 +60,7 @@ const UnitSliderMap = {
     step: 0.25,
   },
   other: {
-    min: 1,
+    min: 0,
     max: 20,
     step: 0.25
   }
@@ -90,6 +90,8 @@ export class IngredientControlModel {
   }
 
   configureSlidersForUnit(aUnit) {
+    // TODO: need to modify configureSlidersForUnit to handle out of range values
+
     // Handle situations like 'pat' of butter or 'filet' of fish by using
     // the setting 'other':
     //
@@ -139,6 +141,7 @@ export class IngredientControlModel {
   }
 
   setDropdownUnitValue(aValue) {
+    // TODO: need to modify configureSlidersForUnit to handle out of range values
     this.configureSlidersForUnit(aValue)
     this._dropdownUnitValue = aValue
   }

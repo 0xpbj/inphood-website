@@ -90,26 +90,10 @@ export default class Parser extends React.Component {
   }
   render() {
     return (
-      <Grid>
-        <div className="text-center">
-        <Row className="show-grid">
-          <Col xs={6} md={6}>
-            <FormGroup controlId="formControlsTextarea">
-              <ControlLabel>Ingredients</ControlLabel>
-              <FormControl componentClass="textarea" rows="10" placeholder="Write ingredients here..." onChange={this.getData.bind(this)}/>
-            </FormGroup>
-            <Button onClick={() => this.parseData()}>Parse Ingredients</Button>
-          </Col>
-          <Col xs={6} md={6}>
-            <FormGroup controlId="formControlsTextarea">
-              <ControlLabel>Parsed Contents</ControlLabel>
-              <FormControl.Static>
-              </FormControl.Static>
-            </FormGroup>
-          </Col>
-        </Row>
-        </div>
-      </Grid>
+      <FormGroup controlId="formControlsTextarea">
+        <ControlLabel>Recipe</ControlLabel>
+        <FormControl componentClass="textarea" rows="10" placeholder="Write recipe here..." onChange={this.getData.bind(this)}/>
+      </FormGroup>
     )
   }
 }

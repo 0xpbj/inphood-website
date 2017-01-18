@@ -30,7 +30,7 @@ export default class Results extends React.Component {
     }
     if (this.props.results.data === null) {
       return (
-        <Alert bsStyle="danger"  onDismiss={() => this.props.router.push('/')}>
+        <Alert bsStyle="danger" onDismiss={() => this.props.router.push('/')}>
           <h4>Oh snap! Label not found!</h4>
           <p>
             <Button bsStyle="danger" onClick={() => this.props.router.push('/')}>Go Home</Button>
@@ -39,15 +39,30 @@ export default class Results extends React.Component {
       )
     }
     else {
-      const image = this.props.results.data.user === 'anonymous'
+      const containerStyle = {
+        marginTop: "20px",
+        border: "2px solid black",
+        padding: "5px",
+        margin: "10px",
+      }
+      const image = this.props.params.userId === 'anonymous'
       ? <Image src={this.props.results.data.oUrl} responsive rounded/>
       : (
           <a href={'http://www.instagram.com/p/' + this.props.results.data.key}>
             <Tooltip placement="top" className="in" id="tooltip-top">
-              @{this.props.results.data.user}
+              @{this.props.params.userId}
             </Tooltip>
             <Image src={this.props.results.data.oUrl} responsive rounded/>
           </a>
+      )
+      const credit = this.props.params.userId === 'anaonymous' ? (
+        <div style={containerStyle}>
+          inPhood Credit: Anonymous
+        </div>
+      ) : ( 
+        <div style={containerStyle}>
+          inPhood Credit: <a href={'http://www.instagram.com/' + this.props.params.userId}>{this.props.params.userId}</a>
+        </div>
       )
       // If we've received the data for the Nutrition label, deserialize it for
       // rendering, otherwise display a loading message.
@@ -59,13 +74,15 @@ export default class Results extends React.Component {
         ingredient.initializeFromSerialization(ingredientData)
         nutritionLabel = <Label ingredientComposite={ingredient}/>
       }
-      return (
+      var Base64 = require('js-base64').Base64
+      const label = (
         <Grid>
           <div className="text-center">
           <Row className="show-grid">
             <Col xs={6} md={4}>
               <Row className="show-grid">
                 {image}
+                {credit}
               </Row>
             </Col>
             <Col xs={6} md={4}>
@@ -75,6 +92,7 @@ export default class Results extends React.Component {
           </div>
         </Grid>
       )
+      return label
     }
   }
 }

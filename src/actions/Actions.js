@@ -4,7 +4,7 @@ import {
   IG_LOGIN_REQUEST,
   IG_LOGOUT_REQUEST,
   IG_REFRESH_REQUEST,
-  AN_ADD_CAPTION,
+  ADD_CAPTION,
   AN_UPLOAD_PHOTO,
   AN_SELECTED_PHOTO,
   AN_CLEAR_DATA,
@@ -45,9 +45,9 @@ export function igRefreshRequest() {
   }
 }
 
-export function anAddCaption(caption) {
+export function addCaption(caption) {
   return {
-    type: AN_ADD_CAPTION,
+    type: ADD_CAPTION,
     caption
   }
 }

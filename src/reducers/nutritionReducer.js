@@ -1,6 +1,6 @@
 import { 
   AN_CLEAR_DATA,
-  AN_ADD_CAPTION,
+  ADD_CAPTION,
   AN_SELECTED_PHOTO,
   IG_SELECTED_PHOTO,
   IG_UPDATED_CAPTION,
@@ -26,7 +26,7 @@ export default function nutrition(state = initialState, action) {
       return {
         ...initialState
       }
-    case AN_ADD_CAPTION:
+    case ADD_CAPTION:
       return {
         ...state,
         caption: action.caption

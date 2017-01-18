@@ -20,7 +20,7 @@ export const IG_UPDATED_CAPTION = 'IG_UPDATED_CAPTION'
 
 // Anonymous Flow Actions
 export const AN_CLEAR_DATA = 'AN_CLEAR_DATA'
-export const AN_ADD_CAPTION = 'AN_ADD_CAPTION'
+export const ADD_CAPTION = 'ADD_CAPTION'
 export const AN_UPLOAD_PHOTO = 'AN_UPLOAD_PHOTO'
 export const AN_SELECTED_PHOTO = 'AN_SELECTED_PHOTO'
 

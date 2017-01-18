@@ -7,6 +7,7 @@ import browserHistory from 'react-router/lib/browserHistory'
 import Home from "../containers/HomeContainer"
 import Layout from "./pages/Layout"
 import About from "./pages/About"
+import NoMatch from "./pages/NoMatch"
 import Results from "../containers/ResultsContainer"
 import './styles/App.css'
 import './styles/custom-styles.css'
@@ -19,6 +20,7 @@ export default class App extends React.Component {
           <IndexRoute component={Home}></IndexRoute>
           <Route path="about" name="about" component={About}></Route>
           <Route path="/label/:userId/:labelId" name="label" component={Results}></Route>
+          <Route path="*" component={NoMatch}/>
         </Route>
       </Router>
     )

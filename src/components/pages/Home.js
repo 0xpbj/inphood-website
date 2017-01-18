@@ -123,7 +123,7 @@ export default class Home extends React.Component {
               <Anon
                 nutrition={this.props.nutrition}
                 goToNutrition={(flag) => this.goToNutrition(flag)}
-                anAddCaption={(data) => this.props.anAddCaption(data)}
+                addCaption={(data) => this.props.addCaption(data)}
                 anSelectedPhoto={(data) => this.props.anSelectedPhoto(data)}
                 anClearData={() => this.props.anClearData()}
               />
@@ -141,8 +141,8 @@ export default class Home extends React.Component {
             <div>
               <Grid>
                 <Row>
-                  <div className="text-center" style={containerStyle}>
-                    <Col xs={6} md={6}>
+                  <div className="text-center">
+                    {/*<Col xs={6} md={6}>
                       <form>
                         <FormGroup
                           controlId="formBasicText"
@@ -170,7 +170,8 @@ export default class Home extends React.Component {
                     </Col>
                     <Col xs={5} md={5}>
                       <Button onClick={this.handleClick.bind(this)}>Sign in with Instagram</Button>
-                    </Col>
+                    </Col>*/}
+                    <Button onClick={this.handleClick.bind(this)}>Sign in with Instagram</Button>
                   </div>
                 </Row>
               </Grid>

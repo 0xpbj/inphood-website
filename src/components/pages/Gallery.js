@@ -7,10 +7,13 @@ import Grid from 'react-bootstrap/lib/Grid'
 import Image from 'react-bootstrap/lib/Image'
 import Button from 'react-bootstrap/lib/Button'
 import MenuItem from 'react-bootstrap/lib/MenuItem'
+import FormGroup from 'react-bootstrap/lib/FormGroup'
+import FormControl from 'react-bootstrap/lib/FormControl'
 import ControlLabel from 'react-bootstrap/lib/ControlLabel'
 import DropdownButton from 'react-bootstrap/lib/DropdownButton'
 import ImageGallery from 'react-image-gallery'
 import Chip from 'react-toolbox/lib/chip'
+import Parser from './Parser'
 
 import "react-image-gallery/styles/css/image-gallery.css"
 
@@ -21,8 +24,13 @@ export default class GalleryGrid extends React.Component {
       grid: false,
       index: 0,
       chips: [],
-      chipData: []
+      chipData: [],
+      recipe: ''
     }
+  }
+  getRecipe(e) {
+    let recipe = e.target.value
+    this.setState({recipe})
   }
   selectPhoto() {
     this.setState({grid: !this.state.grid, index: this._imageGallery.getCurrentIndex()})
@@ -118,9 +126,8 @@ export default class GalleryGrid extends React.Component {
                 items={images}
                 slideInterval={2000}
                 showFullscreenButton={false}
-                showNav={false}
+                showNav={true}
                 showPlayButton={false}
-                onClick={this.selectPhoto.bind(this)}
               />
             </Col>
             <Col md={2} />
@@ -137,14 +144,19 @@ export default class GalleryGrid extends React.Component {
               <Image src={this.props.data[this.state.index].picture} responsive rounded/>
             </Col>
             <Col xs={6} md={4}>
-              <ControlLabel>Ingredients</ControlLabel>
-              <div>
+              <ControlLabel>Parsed Ingredients</ControlLabel>
+              <div style={{marginBottom: "30px"}}>
               <section>
                 {this.state.chips}
               </section>
               </div>
-              <Button className="btn-primary-spacing" bsStyle="success" onClick={this.backToGrid.bind(this)}>Done</Button>
-              <Button className="btn-primary-spacing" bsStyle="info" onClick={() => this.props.goToNutrition()}>Get Nutrition</Button>
+              <div>
+              <section>
+                <Parser />
+              </section>
+              </div>
+              <Button className="btn-primary-spacing" bsStyle="info" onClick={this.backToGrid.bind(this)}>Gallery</Button>
+              <Button className="btn-primary-spacing" bsStyle="success" onClick={() => this.props.goToNutrition()}>Get Nutrition</Button>
             </Col>
           </Row>
         </Grid>

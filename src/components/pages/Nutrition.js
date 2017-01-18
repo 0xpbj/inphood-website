@@ -505,7 +505,7 @@ export default class Nutrition extends React.Component {
               <Label nutritionModel={this.state.nutritionModel}/>
             </div>
             <div>
-              <Button className="btn-primary-spacing" bsStyle="info" onClick={() => this.props.goToGallery()}>Gallery</Button>
+              <Button className="btn-primary-spacing" bsStyle="info" onClick={() => this.props.goToImage()}>Image</Button>
               <DropdownButton bsStyle="success" title="Share Label" key={1} id={`split-button-basic`}>
                 <MenuItem eventKey={eventKey} onClick={this.transitionToLabelPage.bind(this, false, composite, full)}>Share URL</MenuItem>
               </DropdownButton>

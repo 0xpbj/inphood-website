@@ -97,3 +97,6 @@ export default class Parser extends React.Component {
     )
   }
 }
+
+      {/*<Button onClick={() => this.parseData()}>Parse Ingredients</Button>*/}
+

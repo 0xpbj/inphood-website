@@ -14,6 +14,7 @@ import Glyphicon from 'react-bootstrap/lib/Glyphicon'
 import ControlLabel from 'react-bootstrap/lib/ControlLabel'
 import Hello from 'hellojs'
 import Gallery from './Gallery'
+import SelectedImage from './SelectedImage'
 import Parser from './Parser'
 import Anon from './Anon'
 import Nutrition from "../../containers/NutritionContainer"
@@ -26,7 +27,9 @@ export default class Home extends React.Component {
     super()
     this.state = {
       // TODO: AC for dev set this to true to go direct to Nutrition.js scene
-      nutritionView: Config.fastDevelopNutritionPage,
+      galleryView: true,
+      selectedView: false,
+      nutritionView: false,
       showUploadModal: false
     }
   }
@@ -39,8 +42,24 @@ export default class Home extends React.Component {
       nonInteraction: false
     });
   }
+  goToGallery() {
+    this.setState({galleryView: true, selectedImageView: false, nutritionView: false})
+    ReactGA.event({
+      category: 'User',
+      action: 'Go to gallery page',
+      nonInteraction: false
+    });
+  }
+  goToImage() {
+    this.setState({galleryView: false, selectedImageView: true, nutritionView: false})
+    ReactGA.event({
+      category: 'User',
+      action: 'Go to image page',
+      nonInteraction: false
+    });
+  }
   goToNutrition() {
-    this.setState({nutritionView: true})
+    this.setState({galleryView: false, selectedImageView: false, nutritionView: true})
     ReactGA.event({
       category: 'User',
       action: 'Get nutrition information for image',
@@ -51,14 +70,6 @@ export default class Home extends React.Component {
       category: 'User',
       action: 'Uploading image to AWS',
       nonInteraction: true
-    });
-  }
-  goToGallery() {
-    this.setState({nutritionView: false})
-    ReactGA.event({
-      category: 'User',
-      action: 'Go back to gallery page',
-      nonInteraction: false
     });
   }
   handleUrl(e) {
@@ -85,7 +96,7 @@ export default class Home extends React.Component {
     const containerStyle = {
       marginTop: "30px"
     }
-    if (!this.state.nutritionView) {
+    if (this.state.galleryView) {
       if (this.props.user.profile !== null) {
         if (this.props.user.photos.length === 0 || this.props.user.photos.data.length === 0) {
           return (
@@ -101,10 +112,8 @@ export default class Home extends React.Component {
               profile={this.props.user.profile}
               refresh={this.props.igRefreshRequest}
               logout={this.props.igLogoutRequest}
-              igSelectedPhoto={(data) => this.props.igSelectedPhoto(data)}
-              goToNutrition={(flag) => this.goToNutrition(flag)}
-              igUpdatedCaption={(caption) => this.props.igUpdatedCaption(caption)}
-              anClearData={() => this.props.anClearData()}
+              igSelectedPhoto={(index, photo) => this.props.igSelectedPhoto(index, photo)}
+              goToImage={() => this.goToImage()}
             />
           )
         }
@@ -180,8 +189,29 @@ export default class Home extends React.Component {
         )
       }
     }
+    else if (this.state.selectedImageView) {
+      return (
+        <SelectedImage 
+          data={this.props.user.photos.data}
+          index={this.props.nutrition.index}
+          goToGallery={this.goToGallery.bind(this)}
+          goToNutrition={this.goToNutrition.bind(this)}
+          igUpdatedCaption={(caption) => this.props.igUpdatedCaption(caption)}
+          anClearData={() => this.props.anClearData()}
+        />
+      )
+    }
+    else if (this.state.nutritionView) {
+      return (
+        <Nutrition 
+          router={this.props.router} 
+          goToImage={this.goToImage.bind(this)} 
+          resultUrl={this.props.nutrition.resultUrl}
+        />
+      )
+    }
     else {
-      return <Nutrition router={this.props.router} goToGallery={this.goToGallery.bind(this)} resultUrl={this.props.nutrition.resultUrl}/>
+      return null
     }
   }
 }

@@ -1,6 +1,6 @@
 import {
   IG_UPLOAD_PHOTO,
-  IG_SELECTED_PHOTO,
+  SELECTED_PHOTO,
   IG_LOGIN_REQUEST,
   IG_LOGOUT_REQUEST,
   IG_REFRESH_REQUEST,
@@ -20,9 +20,10 @@ export function igUploadPhoto() {
   }
 }
 
-export function igSelectedPhoto(photo) {
+export function igSelectedPhoto(index, photo) {
   return {
-    type: IG_SELECTED_PHOTO,
+    type: SELECTED_PHOTO,
+    index,
     photo
   }
 }

@@ -1,13 +1,4 @@
 {
-  "presets": [
-    "es2015",
-    "es2016",
-    "react",
-    "stage-0"
-  ],
-  "plugins": [
-    "react-hot-loader/babel",
-    "transform-decorators-legacy",
-    "transform-function-bind"
-  ]
+  "presets": ["es2015", "stage-0", "react"],
+  "plugins": ['transform-runtime', 'transform-decorators-legacy', 'transform-class-properties', 'react-hot-loader/babel']
 }

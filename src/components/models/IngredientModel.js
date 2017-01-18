@@ -158,9 +158,10 @@ export class IngredientModel {
   }
 
   initializeComposite(scaledIngredients) {
+    console.log('initializeComposite ------------------------------------------')
     for (var key in scaledIngredients) {
       var scaledIngredient = scaledIngredients[key]
-      const scaleFactor = scaledIngredient.getScale() / 100.0
+      const scaleFactor = scaledIngredient.getScale()
       const ingredient = scaledIngredient.getIngredientModel()
 
       // TODO add remaining checks for serving unit compatibility or appropriate
@@ -205,6 +206,12 @@ export class IngredientModel {
       //
       //   Protein measures/metrics:
       this._totalProteinPerServing += ingredient._totalProteinPerServing * scaleFactor
+
+      // console.log('   ' + key)
+      // console.log('   scaleFactor:          ' + scaleFactor)
+      // console.log('   ingredient._calories: ' + ingredient._calories)
+      // console.log('   total calories:       ' + this._calories)
+      // console.log('   total mass(g):        ' + this._servingAmount + this._servingUnit)
     }
   }
 

@@ -145,7 +145,7 @@ export default class Nutrition extends React.Component {
     //
     //    a. Get the list of new measurement units that are possible:
     //
-    let newMeasureUnit = ingredientModel.getMeasureUnit()
+    let newMeasureUnit = mapToSupportedUnits(ingredientModel.getMeasureUnit())
     let newUnits = this.getPossibleUnits(newMeasureUnit)
     ingredientControlModels[tag].setDropdownUnits(newUnits)
     //
@@ -153,9 +153,14 @@ export default class Nutrition extends React.Component {
     //       then set to the FDA measure defaults
     //
     const currentValue = ingredientControlModels[tag].getSliderValue()
-    let newValue = currentValue
     const currentUnit = ingredientControlModels[tag].getDropdownUnitValue()
-    if (!newUnits.includes(currentUnit)) {
+
+    let newValue = undefined
+    let newUnit = undefined
+    if (newUnits.includes(currentUnit)) {
+      newValue = currentValue
+      newUnit = currentUnit
+    } else {
       console.log('Ingredient change conversion--using grams to convert:')
       console.log('   ' + currentValue + currentUnit + ' to ' + newMeasureUnit)
 
@@ -163,15 +168,17 @@ export default class Nutrition extends React.Component {
       // for new ingredient
       let valueInGrams = getValueInUnits(
         currentValue, currentUnit, 'g', ingredientModelToDelete)
-      let newValue = getValueInUnits(
-                       valueInGrams, 'g', newMeasureUnit, ingredientModel)
+      newValue = getValueInUnits(
+        valueInGrams, 'g', newMeasureUnit, ingredientModel)
+      newUnit = newMeasureUnit
 
       ingredientControlModels[tag].setSliderValue(newValue)
-      ingredientControlModels[tag].setDropdownUnitValue(newMeasureUnit)
+      ingredientControlModels[tag].setDropdownUnitValue(newUnit)
       // TODO: possibly an alert to tell the user we've converted their number
       //       to a new amount due to unit change and the old units are not
       //       available.
     }
+    //
     // 5. Remove the current IngredientModel from the NutritionModel:
     //
     nutritionModel.removeIngredient(ingredientKeyToDelete)
@@ -180,7 +187,7 @@ export default class Nutrition extends React.Component {
     nutritionModel.addIngredient(value,
                                  ingredientModel,
                                  newValue,
-                                 newMeasureUnit)
+                                 newUnit)
     this.setState({
       nutritionModel: nutritionModel,
       ingredientControlModels: ingredientControlModels

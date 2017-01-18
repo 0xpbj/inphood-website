@@ -1,5 +1,17 @@
+To run server:
+
+npm start
+
+   or
+
+npm run dev
+
+
+Ancient History
+********************************************************************************
+
 Yarn installation:
-------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 1. brew update
         // usr/local not writeable: https://github.com/Homebrew/brew/issues/385
 2. brew install yarn

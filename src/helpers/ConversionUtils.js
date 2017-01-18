@@ -2,7 +2,7 @@ const Convert = require('convert-units')
 
 
 const UnitTranslationMap = {
-  Tbs: ['T', 'Tbs', 'tbs', 'tbsp.', 'Tbsp.', 'Tbsp', 'tbsp', 'TB', 'TBS', 'TBSP'],
+  Tbs: ['T', 'Tbs', 'tbs', 'tbsp.', 'Tbsp.', 'Tbsp', 'tbsp', 'TB', 'TBS', 'TBSP', 'tablespoon'],
   tsp: ['t', 'Tsp', 'tsp', 'tsp.', 'Tsp.', 'TS', 'TSP'],
   cup: ['C', 'c'],
   pnt: ['pt', 'PT', 'Pt'],

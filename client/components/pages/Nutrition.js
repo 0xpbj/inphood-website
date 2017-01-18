@@ -5,7 +5,7 @@ import {IngredientModel} from '../models/IngredientModel'
 import {NutritionModel} from '../models/NutritionModel'
 import {IngredientControlModel} from '../models/IngredientControlModel'
 import {Redirect} from 'react-router'
-import {getValueInUnits, getIngredientValueInUnits} from '../../helpers/ConversionUtils'
+import {getValueInUnits, getIngredientValueInUnits, mapToSupportedUnits} from '../../helpers/ConversionUtils'
 
 // import { VictoryPie } from 'victory'
 import Chip from 'react-toolbox/lib/chip'
@@ -311,24 +311,35 @@ export default class Nutrition extends React.Component {
     return result
   }
   //
+  // TODO: probably move this to ConversionUtils.js
   getPossibleUnits(measureUnit) {
     const excludedUnits = [
       'mm3', 'cm3', 'm3', 'km3', 'in3', 'ft3', 'yd3',
       'mcg', 'mg']
+
+    let sanitizedMeasureUnit = mapToSupportedUnits(measureUnit)
 
     // We can also convert anything to grams so include those measures since
     // our data is in grams (mass):
     const massUnits = Convert().from('g').possibilities()
 
     let unitData = []
-    if (Convert().possibilities().includes(measureUnit)) {
-      unitData = massUnits.concat(Convert().from(measureUnit).possibilities())
+
+    const allUnits = Convert().possibilities()
+    if (allUnits.includes(sanitizedMeasureUnit)) {
+    // if (Convert().possibilities().includes(measureUnit)) {
+      // Cryptic one-liner for set-union (3rd result on following SO):
+      // http://stackoverflow.com/questions/3629817/getting-a-union-of-two-arrays-in-javascript
+      unitData = [...new Set([...massUnits,...Convert().from(sanitizedMeasureUnit).possibilities()])]
+      // unitData = massUnits.concat(Convert().from(measureUnit).possibilities())
+
+      // One-liner for set difference
       // From: http://stackoverflow.com/questions/1723168/what-is-the-fastest-or-most-elegant-way-to-compute-a-set-difference-using-javasc
       unitData = unitData.filter(x => excludedUnits.indexOf(x) < 0)
     } else {
       console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-      console.log("Unsupported measureUnit = " + measureUnit)
-      unitData = massUnits.concat([measureUnit])
+      console.log("Unsupported measureUnit = " + sanitizedMeasureUnit)
+      unitData = massUnits.concat([sanitizedMeasureUnit])
       unitData = unitData.filter(x => excludedUnits.indexOf(x) < 0)
     }
     return unitData

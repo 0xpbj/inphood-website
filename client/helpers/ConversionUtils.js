@@ -2,7 +2,7 @@ const Convert = require('convert-units')
 
 
 const UnitTranslationMap = {
-  tbsp: ['T', 'Tbs', 'tbs', 'tbsp.', 'Tbsp.', 'Tbsp', 'tbsp', 'TB', 'TBS', 'TBSP'],
+  Tbs: ['T', 'Tbs', 'tbs', 'tbsp.', 'Tbsp.', 'Tbsp', 'tbsp', 'TB', 'TBS', 'TBSP'],
   tsp: ['t', 'Tsp', 'tsp', 'tsp.', 'Tsp.', 'TS', 'TSP'],
   cup: ['C', 'c'],
   pnt: ['pt', 'PT', 'Pt'],
@@ -22,7 +22,7 @@ const UnitTranslationMap = {
 // like 'pat' of butter are not in our default supported units, but we still
 // handle some conversions to them.)
 //
-function mapToSupportedUnits(aUnit) {
+export function mapToSupportedUnits(aUnit) {
   for (let supportedUnit in UnitTranslationMap) {
     if ((aUnit === supportedUnit)
         || (UnitTranslationMap[supportedUnit].includes(aUnit))) {

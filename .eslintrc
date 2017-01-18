@@ -1,28 +1,21 @@
 {
+  "ecmaFeatures": {
+    "jsx": true,
+    "modules": true
+  },
   "env": {
     "browser": true,
     "node": true
   },
   "parser": "babel-eslint",
-  "extends": [
-  ],
-  "settings": {
-    "import/resolver": "webpack"
-  },
-  "parserOptions": {
-    "ecmaVersion": 7,
-    "sourceType": "module",
-    "ecmaFeatures": {
-      "jsx": true,
-      "classes": true,
-      "experimentalObjectRestSpread": true
-    }
-  },
-  "globals": {
-    "React": true,
-    "ReactDOM": true
-  },
   "rules": {
-    "global-require": 0
-  }
+    "quotes": [2, "single"],
+    "strict": [2, "never"],
+    "react/jsx-uses-react": 2,
+    "react/jsx-uses-vars": 2,
+    "react/react-in-jsx-scope": 2
+  },
+  "plugins": [
+    "react"
+  ]
 }

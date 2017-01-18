@@ -33,7 +33,6 @@ export default class Nav extends React.Component {
                   to="/"
                   onClick={this.toggleCollapse.bind(this)}
                   className="home-link"
-                  activeOnlyWhenExact
                   activeClassName="active"
                 >
                   Home
@@ -44,7 +43,6 @@ export default class Nav extends React.Component {
                   to="/about"
                   onClick={this.toggleCollapse.bind(this)}
                   className="about-link"
-                  activeOnlyWhenExact
                   activeClassName="active"
                 >
                   About

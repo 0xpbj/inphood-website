@@ -5,6 +5,7 @@ import {IngredientModel} from '../models/IngredientModel'
 import {NutritionModel} from '../models/NutritionModel'
 import {IngredientControlModel} from '../models/IngredientControlModel'
 import {Redirect} from 'react-router'
+import {getValueInUnits, getIngredientValueInUnits} from '../../helpers/ConversionUtils'
 
 // import { VictoryPie } from 'victory'
 import Chip from 'react-toolbox/lib/chip'
@@ -25,22 +26,6 @@ import Dropdownlist from 'react-widgets/lib/Dropdownlist'
 
 const Config = require('Config')
 const Convert = require('convert-units')
-
-// TODO: Move this somewhere appropriate (i.e. utils/dataUtils etc.)
-const UnitTranslationMap = {
-  tbsp: ['T', 'Tbs', 'tbs', 'tbsp.', 'Tbsp.', 'Tbsp', 'tbsp', 'TB', 'TBS', 'TBSP'],
-  tsp: ['t', 'Tsp', 'tsp', 'tsp.', 'Tsp.', 'TS', 'TSP'],
-  cup: ['C', 'c'],
-  pnt: ['pt', 'PT', 'Pt'],
-  qt: ['QT', 'Qt', 'qt'],
-  gal: ['Gal', 'GAL', 'gal'],
-  'fl-oz': ['oz', 'Oz', 'OZ', 'oz.', 'Oz.', 'OZ.'],
-  ml: ['ml'],
-  l: ['L', 'l'],
-  lb: ['lb', 'Lb', 'LB', 'lb.', 'Lb.', 'LB.'],
-  g: ['g', 'gram'],
-  kg: ['kg', 'Kg', 'kilogram', 'Kilogram']
-}
 
 export default class Nutrition extends React.Component {
   //////////////////////////////////////////////////////////////////////////////
@@ -67,10 +52,7 @@ export default class Nutrition extends React.Component {
     // const tagString = "#tomato #cucumber #onion #lettuce #olive #feta"
     // TODO: AC! **************** regexp errors here for / characters
     this.state.nutAlg.processTags(tagString)
-    //
-    // Create the slider values dictionary state and initialize each one to 100:
-    //
-    const sliderInitValue = -1
+
     let nutritionModel = this.state.nutritionModel
     let ingredientControlModels = this.state.ingredientControlModels
 
@@ -80,14 +62,17 @@ export default class Nutrition extends React.Component {
 
       let ingredientModel = new IngredientModel()
       ingredientModel.initializeSingle(key, tag, dataForKey)
-      nutritionModel.addIngredient(key, ingredientModel, sliderInitValue)
 
       // Get the Unit data
+      let measureQuantity = ingredientModel.getMeasureQuantity()
       let measureUnit = ingredientModel.getMeasureUnit()
+
+      nutritionModel.addIngredient(
+        key, ingredientModel, measureQuantity, measureUnit)
 
       let ingredientControlModel =
         new IngredientControlModel(
-              sliderInitValue,
+              measureQuantity,
               this.getPossibleUnits(measureUnit),
               measureUnit,
               this.state.nutAlg.getMatchList(tag),
@@ -127,7 +112,7 @@ export default class Nutrition extends React.Component {
     ingredientControlModels[tag].setSliderValue(value)
 
     let nutritionModel = this.state.nutritionModel
-    nutritionModel.scaleIngredientToPercent(tag, value)
+    nutritionModel.scaleIngredientToUnit(tag, value, ingredientControlModels[tag].getDropdownUnitValue())
 
     this.setState({
       nutritionModel: nutritionModel,
@@ -141,27 +126,24 @@ export default class Nutrition extends React.Component {
     console.log('value = ' + value)
 
     let ingredientControlModels = this.state.ingredientControlModels
-
-    // 1. Remove the current IngredientModel from the NutritionModel:
-    //
     let nutritionModel = this.state.nutritionModel
-    nutritionModel.removeIngredient(
-      ingredientControlModels[tag].getDropdownMatchValue())
+
+    // 1. Save the current ingredient key for deletion at the end of this
+    //    process:
+    let ingredientKeyToDelete = ingredientControlModels[tag].getDropdownMatchValue()
+    let ingredientModelToDelete = nutritionModel.getIngredientModel(tag)
     //
-    // 2. Create a new IngredientModel and add it to the NutritionModel:
+    // 2. Create a new IngredientModel:
     //
     const dataForKey = this.state.nutAlg.getDataForKey(value)
     let ingredientModel = new IngredientModel()
     ingredientModel.initializeSingle(value, tag, dataForKey)
-    nutritionModel.addIngredient(value,
-                                 ingredientModel,
-                                 ingredientControlModels[tag].getSliderValue())
     //
     // 3. Update the match value state for the dropdown:
     //
     ingredientControlModels[tag].setDropdownMatchValue(value)
     //
-    // 4. Update the Units and Unit Value:
+    // 4. Update the dropdown units and unit value:
     //
     //    a. Get the list of new measurement units that are possible:
     //
@@ -169,23 +151,38 @@ export default class Nutrition extends React.Component {
     let newUnits = this.getPossibleUnits(newMeasureUnit)
     ingredientControlModels[tag].setDropdownUnits(newUnits)
     //
-    //    b. See if the current unit is within the new possibilies (if not
-    //       perform a conversion)
+    //    b. See if the current unit is within the new possibilies, if not
+    //       then set to the FDA measure defaults
     //
-    let currentUnit = ingredientControlModels[tag].getDropdownUnitValue()
+    const currentValue = ingredientControlModels[tag].getSliderValue()
+    let newValue = currentValue
+    const currentUnit = ingredientControlModels[tag].getDropdownUnitValue()
     if (!newUnits.includes(currentUnit)) {
-      console.log('TODO -----------------------------------------------------------')
-      console.log('Need to convert unit ' + currentUnit + ' to one of:')
-      console.log(newUnits.toString())
-      //
-      // TODO: remove this temporary hack
-      ingredientControlModels[tag].setDropdownUnitValue(newMeasureUnit)
-      //
-      // TODO: conversion to next best thing
-      //         - choose a unit
-      //         - perform a numerical conversion
-    }
+      console.log('Ingredient change conversion--using grams to convert:')
+      console.log('   ' + currentValue + currentUnit + ' to ' + newMeasureUnit)
 
+      // Convert current unit to grams, then convert grams to new measure unit
+      // for new ingredient
+      let valueInGrams = getValueInUnits(
+        currentValue, currentUnit, 'g', ingredientModelToDelete)
+      let newValue = getValueInUnits(
+                       valueInGrams, 'g', newMeasureUnit, ingredientModel)
+
+      ingredientControlModels[tag].setSliderValue(newValue)
+      ingredientControlModels[tag].setDropdownUnitValue(newMeasureUnit)
+      // TODO: possibly an alert to tell the user we've converted their number
+      //       to a new amount due to unit change and the old units are not
+      //       available.
+    }
+    // 5. Remove the current IngredientModel from the NutritionModel:
+    //
+    nutritionModel.removeIngredient(ingredientKeyToDelete)
+    //
+    // 6. Add the new IngredientModel to the NutritionModel:
+    nutritionModel.addIngredient(value,
+                                 ingredientModel,
+                                 newValue,
+                                 newMeasureUnit)
     this.setState({
       nutritionModel: nutritionModel,
       ingredientControlModels: ingredientControlModels
@@ -201,7 +198,11 @@ export default class Nutrition extends React.Component {
     let ingredientControlModels = this.state.ingredientControlModels
     let ingredientControlModel = ingredientControlModels[tag]
     let ingredientModel = this.state.nutritionModel.getIngredientModel(tag)
-    let newValue = this.getConvertedValue(newUnit, ingredientModel, ingredientControlModel)
+
+    // TODO: catch the exception from here and mention that their current value
+    // will be lost if we change to those units.
+    let newValue = getIngredientValueInUnits(
+      newUnit, ingredientModel, ingredientControlModel)
 
     ingredientControlModels[tag].setSliderValue(newValue)
     ingredientControlModels[tag].setDropdownUnitValue(newUnit)
@@ -331,119 +332,6 @@ export default class Nutrition extends React.Component {
       unitData = unitData.filter(x => excludedUnits.indexOf(x) < 0)
     }
     return unitData
-  }
-  //
-  mapToSupportedUnits(aUnit) {
-    for (let supportedUnit in UnitTranslationMap) {
-      if ((aUnit === supportedUnit)
-          || (UnitTranslationMap[supportedUnit].includes(aUnit))) {
-        return supportedUnit
-      }
-    }
-
-    // TODO Throw an error!!!!
-    return undefined
-  }
-  //
-  isVolumeUnit(aUnit) {
-    if (Convert().possibilities().includes(aUnit)) {
-      return (Convert().describe(aUnit)['measure'] === 'volume')
-    }
-    // If it's not a supported unit, return false
-    return false
-  }
-  //
-  getConvertedValue(newUnit, ingredientModel, ingredientControlModel) {
-    // 1. Determine the type of measure for the current and proposed units:
-    //
-    const currentUnit = ingredientControlModel.getDropdownUnitValue()
-    const currentValue = ingredientControlModel.getSliderValue()
-
-    let currentUnitType = 'other'
-    if (Convert().possibilities().includes(currentUnit)) {
-      currentUnitType = Convert().describe(currentUnit)['measure']
-    }
-
-    let newUnitType = 'other'
-    if (Convert().possibilities().includes(newUnit)) {
-      newUnitType = Convert().describe(newUnit)['measure']
-    }
-
-    // TODO: consider a second call here to do custom mappings (i.e. 1 pat butter
-    //       to 1/2 tablespoon)
-    const fdaMeasureUnit =
-      this.mapToSupportedUnits(ingredientModel.getMeasureUnit())
-    const fdaMeasureQuantity = ingredientModel.getMeasureQuantity()
-    const fdaMeasureInGrams = ingredientModel.getMeasureWeightGrams()
-
-    let newValue = 0
-    // 2. Perform the required conversion:
-    //
-    //   a) from unit type 'mass' to 'mass' or unit type 'volume' to 'volume':
-    if ((newUnitType === currentUnitType) && (newUnitType !== 'other')) {
-      newValue = Convert(currentValue).from(currentUnit).to(newUnit)
-    }
-    //   b) from unit type 'mass' to 'volume':
-    else if ((currentUnitType === 'mass') && (newUnitType === 'volume')) {
-      // - get the current unit into grams
-      let gramValue = Convert(currentValue).from(currentUnit).to('g')
-      // - see if the FDA 'measure' is a volume unit
-      if (! this.isVolumeUnit(fdaMeasureUnit)) {
-        // TODO: MVP2 error for some measures
-        // TODO: MVP3 / MVP2 alternate conversion (i.e. butter 'pat' -> 1/2 Tbsp)
-      }
-      // - if so use the FDA 'measure' data to convert 'grams' to 'measures'
-      let fdaMeasureVolumeValue = gramValue * fdaMeasureQuantity / fdaMeasureInGrams
-      // - convert the measure to the new unit
-      newValue = Convert(fdaMeasureVolumeValue).from(fdaMeasureUnit).to(newUnit)
-    }
-    //   c) from unit type 'volume' to 'mass':
-    else if ((currentUnitType === 'volume') && (newUnitType === 'mass')) {
-      // - see if the FDA 'measure' is a volume unit
-      if (! this.isVolumeUnit(fdaMeasureUnit)) {
-        // TODO: MVP2 error for some measures
-        // TODO: MVP3 / MVP2 alternate conversion (i.e. butter 'pat' -> 1/2 Tbsp)
-      }
-      // - if so, get the current unit into the fda measure units
-      let fdaMeasureValue = Convert(currentValue).from(currentUnit).to(fdaMeasureUnit)
-      // - use the fda 'measure' data to convert 'measures' to 'grams'
-      let gramValue = fdaMeasureValue * fdaMeasureInGrams / fdaMeasureQuantity
-      // convert 'grams' to the new mass unit
-      newValue = Convert(gramValue).from('g').to(newUnit)
-    }
-    //   d) from unit type 'other' (unsupported volume) to 'mass':
-    else if ((currentUnitType === 'other') && (newUnitType === 'mass')) {
-      // - presumably currentUnit (other) is an FDA unit, check:
-      if (! currentUnit === fdaMeasureUnit) {
-        // TODO: MVP2 error for some measures (this should probably never happen)
-      }
-      // - Convert the FDA unit to grams using the fda 'measure' data
-      let gramValue = currentValue * fdaMeasureInGrams / fdaMeasureQuantity
-      // - Convert 'grams' to the new mass unit
-      newValue = Convert(gramValue).from('g').to(newUnit)
-    }
-    //   e) from unit type 'mass' to 'other' (unsupported volume):
-    else if ((currentUnitType === 'mass') && (newUnitType === 'other')) {
-      // - presumably newUnitType (other) is an FDA unit, check:
-      if (! newUnitType === fdaMeasureUnit) {
-        // TODO: MVP2 error for some measures (this should probably never happen)
-      }
-      // - Conver the current unit to grams
-      let gramValue = Convert(currentValue).from(currentUnit).to('g')
-      // - Use the fda 'measure' data to convert grams to newUnitType
-      newValue = gramValue * fdaMeasureQuantity / fdaMeasureInGrams
-    }
-    //   f) error:
-    else {
-      // TODO:
-      // This probably shouldn't happen
-      newValue = 0
-    }
-
-    console.log('Converted ' + currentValue + currentUnit
-                + " to " + newValue + newUnit + " ---------")
-
-    return newValue
   }
   //////////////////////////////////////////////////////////////////////////////
   // UI Element Generation:

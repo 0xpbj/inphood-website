@@ -157,11 +157,11 @@ export class IngredientModel {
     this.setServingAmount(100)
   }
 
-  initializeComposite(ingredientTuples) {
-    for (var key in ingredientTuples) {
-      var ingredientTuple = ingredientTuples[key]
-      const scaleFactor = ingredientTuple.getScale() / 100.0
-      const ingredient = ingredientTuple.getIngredientModel()
+  initializeComposite(scaledIngredients) {
+    for (var key in scaledIngredients) {
+      var scaledIngredient = scaledIngredients[key]
+      const scaleFactor = scaledIngredient.getScale() / 100.0
+      const ingredient = scaledIngredient.getIngredientModel()
 
       // TODO add remaining checks for serving unit compatibility or appropriate
       // conversions:
@@ -303,6 +303,10 @@ export class IngredientModel {
         this._measureMeta = meta.trim()
     }
     return
+  }
+
+  getKey() {
+    return this._key
   }
 
   getServingAmount() {

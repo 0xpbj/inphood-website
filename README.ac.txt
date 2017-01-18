@@ -7,4 +7,4 @@ Yarn installation:
 
 Yarn start:
 --------------------------------------------------------------------------------
-1. yarn run server
+1. yarn run start

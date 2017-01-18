@@ -1,21 +1,33 @@
 import {IngredientModel} from './IngredientModel'
+import {getValueInUnits} from '../../helpers/ConversionUtils'
 
-// IngredientModel - Scale pair.
-//
-class IngredientTuple {
-  constructor(ingredient, scale) {
+// Holds an IngredientModel and the scale information, one or both of the following:
+//  - _scale (percentage to modify the 100g FDA data)
+//  - _recipeQuantity & _recipeUnit (the units used to manipulate the ingredient scale)
+class ScaledIngredient {
+  constructor(ingredient) {
     // TODO: ensure 0 <= scale <= 100
     //
     this._ingredient = ingredient
-    this._scale = scale
-  }
-
-  setScale(scale) {
-    this._scale = scale
+    this._scale = 1.0
+    this._recipeQuantity = undefined
+    this._recipeUnit = undefined
   }
 
   getScale() {
     return this._scale
+  }
+
+  setRecipeAmount(recipeQuantity, recipeUnit) {
+    this._recipeQuantity = recipeQuantity
+    this._recipeUnit = recipeUnit
+
+    // Convert the provided amount and unit to grams. Then knowing that the FDA
+    // data is based on 100g servings, calculate a scale factor (percentage) to
+    // modify the ingredientModel figures by:
+    //
+    const valueInGrams = getValueInUnits(recipeQuantity, recipeUnit, 'g', this._ingredient)
+    this._scale = valueInGrams / 100.0
   }
 
   getIngredientModel() {
@@ -33,7 +45,7 @@ class IngredientTuple {
 //
 export class NutritionModel {
   constructor() {
-    this._ingredients = {}
+    this._scaledIngredients = {}
     this._suggestedServingAmount = 100
   }
 
@@ -53,15 +65,16 @@ export class NutritionModel {
     return JSON.stringify(typeToInstance)
   }
 
-  addIngredient(key, anIngredient, scale) {
-    this._ingredients[key] = new IngredientTuple(anIngredient, scale)
+  addIngredient(key, anIngredient, quantity, unit) {
+    this._scaledIngredients[key] = new ScaledIngredient(anIngredient)
+    this._scaledIngredients[key].setRecipeAmount(quantity, unit)
   }
 
-  getIngredientTuple(tag) {
-    for (let key in this._ingredients) {
-      let ingredientTuple = this._ingredients[key]
-      if (tag === ingredientTuple.getIngredientModel()._tag) {
-        return ingredientTuple
+  getScaledIngredient(tag) {
+    for (let key in this._scaledIngredients) {
+      let scaledIngredient = this._scaledIngredients[key]
+      if (tag === scaledIngredient.getIngredientModel()._tag) {
+        return scaledIngredient
       }
     }
 
@@ -69,38 +82,27 @@ export class NutritionModel {
   }
 
   getIngredientModel(tag) {
-    let ingredientTuple = this.getIngredientTuple(tag)
-    if (ingredientTuple !== null) {
-      return ingredientTuple.getIngredientModel()
+    let scaledIngredient = this.getScaledIngredient(tag)
+    if (scaledIngredient !== null) {
+      return scaledIngredient.getIngredientModel()
     }
 
     return null
   }
 
   removeIngredient(key) {
-    if (key in this._ingredients) {
-      delete this._ingredients[key]
+    if (key in this._scaledIngredients) {
+      delete this._scaledIngredients[key]
     }
-  }
-
-  // Scale the ingredient figures to scale percentage.
-  //
-  //   0.0 <= scale <= 100.0
-  scaleIngredientToPercent(tag, scale) {
-    let ingredientTuple = this.getIngredientTuple(tag)
-    if (ingredientTuple !== null) {
-      ingredientTuple.setScale(scale)
-    }
-    
   }
 
   // Scale the ingredient figures to the amount in the specified unit.
   //
-  scaleIngredientToUnit(key, amount, unit) {
-    // TODO:
-    //  - determine the scale factor (percent) by converting the given amount
-    // and unit to the Ingredient's _servingUnit and then determining the factor
-    // by comparing to the Ingredient's _servingAmount.
+  scaleIngredientToUnit(tag, amount, unit) {
+    let scaledIngredient = this.getScaledIngredient(tag)
+    if (scaledIngredient !== null) {
+      scaledIngredient.setRecipeAmount(amount, unit)
+    }
   }
 
   setSuggestedServingAmount(amount) {
@@ -109,7 +111,7 @@ export class NutritionModel {
 
   getScaledCompositeIngredientModel() {
     var compositeIngredient = new IngredientModel()
-    compositeIngredient.initializeComposite(this._ingredients)
+    compositeIngredient.initializeComposite(this._scaledIngredients)
     compositeIngredient.setServingAmount(this._suggestedServingAmount)
     return compositeIngredient
   }

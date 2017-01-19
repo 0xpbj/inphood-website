@@ -23,7 +23,8 @@ export default class SelectedImage extends React.Component {
     this.state = {
       chips: [],
       chipData: [],
-      recipe: ''
+      recipe: '',
+      parse: false
     }
   }
   componentWillMount() {
@@ -98,11 +99,15 @@ export default class SelectedImage extends React.Component {
             </div>
             <div>
             <section>
-              <Parser />
+              <Parser 
+                parse={this.state.parse}
+                storeParsedData={this.props.storeParsedData}
+                goToNutrition={this.props.goToNutrition}
+              />
             </section>
             </div>
             <Button className="btn-primary-spacing" bsStyle="info" onClick={this.backToGrid.bind(this)}>Gallery</Button>
-            <Button className="btn-primary-spacing" bsStyle="success" onClick={() => this.props.goToNutrition()}>Get Nutrition</Button>
+            <Button className="btn-primary-spacing" bsStyle="success" onClick={() => this.setState({parse: true})}>Get Nutrition</Button>
           </Col>
         </Row>
       </Grid>

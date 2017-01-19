@@ -6,6 +6,7 @@ import {
   IG_UPDATED_CAPTION,
   RESULT_URL,
   SEND_SERIALIZED_DATA,
+  STORE_PARSED_DATA
 } from '../constants/ActionTypes'
 
 const initialState = {
@@ -20,6 +21,7 @@ const initialState = {
   composite: '',
   full: '',
   index: 0,
+  parsedData: []
 }
 export default function nutrition(state = initialState, action) {
   switch (action.type) {
@@ -66,6 +68,11 @@ export default function nutrition(state = initialState, action) {
         ...state,
         composite: action.composite,
         full: action.full
+      }
+    case STORE_PARSED_DATA:
+      return {
+        ...state,
+        parsedData: action.parsedData
       }
     default:
       return state

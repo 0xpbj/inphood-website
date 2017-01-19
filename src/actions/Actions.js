@@ -11,7 +11,8 @@ import {
   GET_LABEL_ID,
   IG_UPDATED_CAPTION,
   POST_LABEL_ID,
-  SEND_SERIALIZED_DATA
+  SEND_SERIALIZED_DATA,
+  STORE_PARSED_DATA
 } from '../constants/ActionTypes'
 
 export function igUploadPhoto() {
@@ -100,5 +101,12 @@ export function sendSerializedData(composite, full) {
     type: SEND_SERIALIZED_DATA,
     composite,
     full
+  }
+}
+
+export function storeParsedData(parsedData) {
+  return {
+    type: STORE_PARSED_DATA,
+    parsedData
   }
 }

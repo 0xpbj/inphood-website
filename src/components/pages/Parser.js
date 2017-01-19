@@ -11,7 +11,6 @@ export default class Parser extends React.Component {
   constructor() {
     super()
     this.state = {
-      parse: false,
       ingredients: ''
     }
   }
@@ -77,18 +76,23 @@ export default class Parser extends React.Component {
     let regex = /[^\r\n]+/g
     let phrases = this.state.ingredients.match(regex)
     var ingp = require('../../algorithms/parser/ingredientparser')
+    let parsedData = []
     for (let i of phrases) {
       let clean = this.removeSpecialChars(i)
       let parsed = ingp.parse(clean)
-      console.log('Parsed: ', parsed)
+      parsedData.push(parsed)
     }
     // this.setState({amounts, units, names})
+    this.props.storeParsedData(parsedData)
+    this.props.goToNutrition()
   }
   getData(e) {
     let ingredients = e.target.value
     this.setState({ingredients})
   }
   render() {
+    if (this.props.parse)
+      this.parseData()
     return (
       <FormGroup controlId="formControlsTextarea">
         <ControlLabel>Recipe</ControlLabel>
@@ -98,5 +102,4 @@ export default class Parser extends React.Component {
   }
 }
 
-      {/*<Button onClick={() => this.parseData()}>Parse Ingredients</Button>*/}
 

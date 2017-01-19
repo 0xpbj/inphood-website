@@ -106,6 +106,7 @@ export default class Home extends React.Component {
           )
         }
         else {
+          ReactGA.set({ userId: this.props.user.profile.name })
           return (
             <Gallery
               data={this.props.user.photos.data}

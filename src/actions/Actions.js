@@ -1,10 +1,10 @@
 import {
   IG_UPLOAD_PHOTO,
-  IG_SELECTED_PHOTO,
+  SELECTED_PHOTO,
   IG_LOGIN_REQUEST,
   IG_LOGOUT_REQUEST,
   IG_REFRESH_REQUEST,
-  AN_ADD_CAPTION,
+  ADD_CAPTION,
   AN_UPLOAD_PHOTO,
   AN_SELECTED_PHOTO,
   AN_CLEAR_DATA,
@@ -20,9 +20,10 @@ export function igUploadPhoto() {
   }
 }
 
-export function igSelectedPhoto(photo) {
+export function igSelectedPhoto(index, photo) {
   return {
-    type: IG_SELECTED_PHOTO,
+    type: SELECTED_PHOTO,
+    index,
     photo
   }
 }
@@ -45,9 +46,9 @@ export function igRefreshRequest() {
   }
 }
 
-export function anAddCaption(caption) {
+export function addCaption(caption) {
   return {
-    type: AN_ADD_CAPTION,
+    type: ADD_CAPTION,
     caption
   }
 }

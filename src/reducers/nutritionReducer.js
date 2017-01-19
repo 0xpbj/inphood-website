@@ -1,8 +1,8 @@
 import { 
   AN_CLEAR_DATA,
-  AN_ADD_CAPTION,
+  ADD_CAPTION,
   AN_SELECTED_PHOTO,
-  IG_SELECTED_PHOTO,
+  SELECTED_PHOTO,
   IG_UPDATED_CAPTION,
   RESULT_URL,
   SEND_SERIALIZED_DATA,
@@ -18,7 +18,8 @@ const initialState = {
   resultUrl: '',
   key: '',
   composite: '',
-  full: ''
+  full: '',
+  index: 0,
 }
 export default function nutrition(state = initialState, action) {
   switch (action.type) {
@@ -26,7 +27,7 @@ export default function nutrition(state = initialState, action) {
       return {
         ...initialState
       }
-    case AN_ADD_CAPTION:
+    case ADD_CAPTION:
       return {
         ...state,
         caption: action.caption
@@ -39,9 +40,10 @@ export default function nutrition(state = initialState, action) {
         link: '',
         username: 'anonymous',
       }
-    case IG_SELECTED_PHOTO:
+    case SELECTED_PHOTO:
       return {
         ...state,
+        index: action.index,
         link: action.photo.link,
         picture: action.photo.picture,
         caption: action.photo.caption.text,

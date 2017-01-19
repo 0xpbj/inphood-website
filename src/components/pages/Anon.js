@@ -15,7 +15,7 @@ export default class Anonymous extends React.Component {
     this.props.anSelectedPhoto(e.target.value)
   }
   captionChange(e) {
-    this.props.anAddCaption(e.target.value)
+    this.props.addCaption(e.target.value)
   }
   render() {
     const containerStyle = {

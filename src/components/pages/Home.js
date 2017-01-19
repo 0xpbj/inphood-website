@@ -28,7 +28,7 @@ export default class Home extends React.Component {
     this.state = {
       // TODO: AC for dev set this to true to go direct to Nutrition.js scene
       galleryView: !Config.fastDevelopNutritionPage,
-      selectedView: false,
+      selectedImageView: false,
       nutritionView: Config.fastDevelopNutritionPage,
       showUploadModal: false
     }
@@ -106,6 +106,7 @@ export default class Home extends React.Component {
           )
         }
         else {
+          ReactGA.set({ userId: this.props.user.profile.name })
           return (
             <Gallery
               data={this.props.user.photos.data}
@@ -196,6 +197,7 @@ export default class Home extends React.Component {
           index={this.props.nutrition.index}
           goToGallery={this.goToGallery.bind(this)}
           goToNutrition={this.goToNutrition.bind(this)}
+          storeParsedData={(parsedData) => this.props.storeParsedData(parsedData)}
           igUpdatedCaption={(caption) => this.props.igUpdatedCaption(caption)}
           anClearData={() => this.props.anClearData()}
         />

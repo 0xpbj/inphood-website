@@ -99,7 +99,7 @@ export default class Nutrition extends React.Component {
     if (flag)
       this.props.postLabelId(this.props.nutrition.key, this.props.resultUrl)
     this.props.sendSerializedData(composite, full)
-    this.props.router.push('/label/'+this.props.nutrition.username + '/' + this.props.nutrition.key)
+    this.props.router.push('/result/'+this.props.nutrition.username + '/' + this.props.nutrition.key)
   }
   //
   handleServingValuesChange(servingValue) {
@@ -611,6 +611,7 @@ export default class Nutrition extends React.Component {
     )
   }
   render() {
+    console.log('\n\n\n\nParsed data incoming: ', this.props.nutrition.parsedData)
     //
     // 1. Generate a list of tags not found in our DB and build the array of
     //    sliders:

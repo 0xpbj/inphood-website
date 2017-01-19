@@ -19,7 +19,7 @@ export default class App extends React.Component {
         <Route path="/" component={Layout}>
           <IndexRoute component={Home}></IndexRoute>
           <Route path="about" name="about" component={About}></Route>
-          <Route path="/label/:userId/:labelId" name="label" component={Results}></Route>
+          <Route path="/result/:userId/:labelId" name="label" component={Results}></Route>
           <Route path="*" component={NoMatch}/>
         </Route>
       </Router>

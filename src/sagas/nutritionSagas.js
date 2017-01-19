@@ -44,7 +44,7 @@ const uploadImageToS3 = (uri, key, username, thumbnail) => {
         Body: body,
         Key: username + '/' + key + '.jpg',
         ACL: "public-read",
-        Bucket: "inphoodlabels",
+        Bucket: "inphoodlabelimagescdn",
         ContentType: "image/jpeg"
       }, function(error, data) {
         if (error) {

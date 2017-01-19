@@ -46,7 +46,8 @@ class ScaledIngredient {
 export class NutritionModel {
   constructor() {
     this._scaledIngredients = {}
-    this._suggestedServingAmount = 100
+    this._suggestedServingValue = 100
+    this._suggestedServingUnit = 'g'
   }
 
   initializeFromSerialization(serialization) {
@@ -105,14 +106,15 @@ export class NutritionModel {
     }
   }
 
-  setSuggestedServingAmount(amount) {
-    this._suggestedServingAmount = amount
+  setSuggestedServingAmount(value, unit) {
+    this._suggestedServingValue = value
+    this._suggestedServingUnit = unit
   }
 
   getScaledCompositeIngredientModel() {
     var compositeIngredient = new IngredientModel()
     compositeIngredient.initializeComposite(this._scaledIngredients)
-    compositeIngredient.setServingAmount(this._suggestedServingAmount)
+    compositeIngredient.setServingAmount(this._suggestedServingValue, this._suggestedServingUnit)
     return compositeIngredient
   }
 }

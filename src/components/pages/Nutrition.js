@@ -41,7 +41,13 @@ export default class Nutrition extends React.Component {
       showUrlModal: false,
       selectedTags: [],
       deletedTags: [],
-      servingValue: 100,
+      servingControls: {
+        value: 2,
+        unit: 'people',
+        min: 1,
+        max: 12,
+        step: 1
+      }
     }
   }
   componentWillMount() {
@@ -97,11 +103,40 @@ export default class Nutrition extends React.Component {
   }
   //
   handleServingValuesChange(servingValue) {
+    let servingControls = this.state.servingControls
     let nutritionModel = this.state.nutritionModel
-    nutritionModel.setSuggestedServingAmount(servingValue)
+
+    servingControls['value'] = servingValue
+    nutritionModel.setSuggestedServingAmount(servingValue, servingControls['unit'])
+
     this.setState({
-      servingValue: servingValue,
-      nutritionModel: nutritionModel
+      nutritionModel: nutritionModel,
+      servingControls: servingControls
+    })
+  }
+  //
+  handleServingDropDownChange(servingUnit) {
+    let servingControls = this.state.servingControls
+    let nutritionModel = this.state.nutritionModel
+
+    if (servingUnit === 'people') {
+      servingControls['min'] = 1
+      servingControls['max'] = 12
+      servingControls['step'] = 1
+      servingControls['value'] = 2
+    } else {
+      servingControls['min'] = 0
+      servingControls['max'] = 100
+      servingControls['step'] = 10
+      servingControls['value'] = 50
+    }
+    servingControls['unit'] = servingUnit
+
+    nutritionModel.setSuggestedServingAmount(servingControls['value'], servingUnit)
+
+    this.setState({
+      nutritionModel: nutritionModel,
+      servingControls: servingControls
     })
   }
   //
@@ -445,6 +480,71 @@ export default class Nutrition extends React.Component {
     )
   }
   //
+  getServingsController() {
+    return (
+      <div>
+        <Row>
+          <Col xs={12} md={12}>
+            <text style={{fontWeight: 'bold'}}>Servings</text>
+          </Col>
+        </Row>
+        <div style={{borderWidth: 1,
+                     borderColor: 'black',
+                     borderStyle: 'solid',
+                     borderRadius: 5,
+                     padding: 10,
+                     marginRight: 10,
+                     marginLeft: 10}}>
+          <Row>
+            <Col xs={10} md={10}>
+              <Slider
+                value={this.state.servingControls['value']}
+                onChange={this.handleServingValuesChange.bind(this)}
+                min={this.state.servingControls['min']}
+                max={this.state.servingControls['max']}
+                step={this.state.servingControls['step']}
+                editable pinned snaps/>
+            </Col>
+            <Col xs={2} md={2}>
+                {/* TODO */}
+                <Dropdownlist
+                  data={['people', 'g']}
+                  value={this.state.servingControls['unit']}
+                  onChange={this.handleServingDropDownChange.bind(this)}/>
+            </Col>
+          </Row>
+        </div>
+      </div>
+    )
+  }
+  //
+  getDiscardedTagPanel() {
+    return (
+      <div>
+        <Row>
+          <Col xs={12} md={12}>
+            <text style={{fontWeight: 'bold'}}>Discarded Tags:</text>
+          </Col>
+        </Row>
+        <div style={{borderWidth: 1,
+                     borderColor: 'black',
+                     borderStyle: 'solid',
+                     borderRadius: 5,
+                     padding: 10,
+                     marginRight: 10,
+                     marginLeft: 10}}>
+          <Row>
+            <Col xs={12} md={12}>
+              {/* The section elements here separate the updated tags from the
+                  eliminated ones */}
+              {this.getChipsFromArray(this.state.deletedTags)}
+            </Col>
+          </Row>
+        </div>
+      </div>
+    )
+  }
+  //
   getIngredientController(tag) {
     // Layout:
     //
@@ -534,7 +634,8 @@ export default class Nutrition extends React.Component {
     // 2. Serialize the nutrition model and composite ingreident model:
     //
     const full = this.state.nutritionModel.serialize()
-    const composite = this.state.nutritionModel.getScaledCompositeIngredientModel().serialize()
+    const compositeModel = this.state.nutritionModel.getScaledCompositeIngredientModel()
+    const composite = compositeModel.serialize()
 
     // TODO: PBJ, what does the next line do? Is it needed here?
     let hideUrlModal = () => this.setState({ showUrlModal: false })
@@ -552,36 +653,15 @@ export default class Nutrition extends React.Component {
             </div>
           </Col>
         </Row>
-        <Row>
+        {/*Serving size below: TODO refactor*/}
+        <Row style={{marginTop: 20}}>
           <Col xs={8} md={8}>
-            <text style={{fontWeight: 'bold'}}>Serving Size</text>
-            <div style={{borderWidth: 1,
-                         borderColor: 'black',
-                         borderStyle: 'solid',
-                         borderRadius: 5,
-                         padding: 10,
-                         margin: 10}}>
-              <Slider
-                value={this.state.servingValue}
-                onChange={this.handleServingValuesChange.bind(this)}
-                min={0}
-                max={400}
-                step={10}
-                editable pinned snaps/>
-            </div>
+            {this.getServingsController()}
           </Col>
-          <Col xs={4} md={4} style={{paddingLeft: 5, paddingRight: 5}}>
-            <text style={{fontWeight: 'bold'}}>Discarded Tags:</text>
-            {/* The section elements here separate the updated tags from the
-                eliminated ones */}
-            <div style={{borderWidth: 1,
-                         borderColor: 'black',
-                         borderStyle: 'solid',
-                         borderRadius: 5,
-                         padding: 10,
-                         margin: 10}}>
-              {this.getChipsFromArray(this.state.deletedTags)}
-            </div>
+          {/* The padding L/R = 5 is to get the nutrition label to align
+              with the discarded tags widget in most situations. */}
+          <Col xs={4} md={4} style={{paddingRight: 5, paddingLeft: 5}}>
+              {this.getDiscardedTagPanel()}
           </Col>
         </Row>
         <Row>
@@ -592,7 +672,7 @@ export default class Nutrition extends React.Component {
             {/* To align with sliders need margin of 37 and then text placeholder */}
             <div style={{marginTop: 37}}>
               <text>&nbsp;</text>
-              <Label nutritionModel={this.state.nutritionModel}/>
+              <Label ingredientComposite={compositeModel}/>
             </div>
           </Col>
         </Row>

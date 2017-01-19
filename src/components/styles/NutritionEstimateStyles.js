@@ -3,9 +3,7 @@ export default class NutritionEstimateStyles {
     borderWidth: '1px',
     borderStyle: 'solid',
     borderColor: 'black',
-    // margin: '20px',
     float: 'left',
-    // width: '320px',
     padding: '0.5rem',
     borderCollapse: 'collapse'
   }
@@ -26,7 +24,8 @@ export default class NutritionEstimateStyles {
   performanceFactsTitle = {
     fontWeight: 'bold',
     fontSize: '2.25rem',
-    marginBottom: '0.25rem'
+    marginBottom: '0.25rem',
+    marginTop: '10px'
   }
 
   performanceFactsTable = {

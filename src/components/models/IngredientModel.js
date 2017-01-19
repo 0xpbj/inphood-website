@@ -35,6 +35,7 @@ export class IngredientModel {
     this._scaleGettersTo = 1.0
 
     this._suggestedServingAmount = 0
+    this._suggestedServingUnit = 'g'
 
     //
     //   Generic measures/Unit:
@@ -154,7 +155,7 @@ export class IngredientModel {
     this._measureString = dataForKey['Measure']
     this.setMeasurePropsFromString(this._measureString)
 
-    this.setServingAmount(100)
+    this.setServingAmount(100, 'g')
   }
 
   initializeComposite(scaledIngredients) {
@@ -273,7 +274,8 @@ export class IngredientModel {
     this._measureMeta = ingredientData._measureMeta
 
     // sets member var and also scale factor
-    this.setServingAmount(ingredientData._suggestedServingAmount)
+    this.setServingAmount(ingredientData._suggestedServingAmount,
+                          ingredientData._suggestedServingUnit)
   }
 
   serialize() {
@@ -282,11 +284,16 @@ export class IngredientModel {
     return JSON.stringify(typeToInstance)
   }
 
-  setServingAmount(suggestedServingAmount) {
-    // TODO: get the current serving amount and scale all the numbers appropriately
-    // for the getter functions.
+  setServingAmount(suggestedServingAmount, suggestedServingUnit) {
     this._suggestedServingAmount = suggestedServingAmount
-    this._scaleGettersTo = suggestedServingAmount / this._servingAmount
+    this._suggestedServingUnit = suggestedServingUnit
+
+    // TODO:
+    if (suggestedServingUnit === 'people') {
+      this._scaleGettersTo = 1 / suggestedServingAmount
+    } else {
+      this._scaleGettersTo = suggestedServingAmount / this._servingAmount
+    }
   }
 
   setMeasurePropsFromString(aMeasureString) {
@@ -318,6 +325,10 @@ export class IngredientModel {
 
   getServingAmount() {
     return (this._servingAmount * this._scaleGettersTo).toFixed(this.decimalPlaces)
+  }
+
+  getUnscaledServingAmount() {
+    return this._servingAmount.toFixed(this.decimalPlaces)
   }
 
   getServingUnit() {

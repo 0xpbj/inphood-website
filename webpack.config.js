@@ -84,6 +84,7 @@ module.exports = {
       FIREBASE_STORAGE_BUCKET:'inphooddb-e0dfd.appspot.com',
       AWS_ACCESS_ID: 'AKIAI25XHNISG4KDDM3Q',
       AWS_SECRET_KEY: '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',
+      DEBUG: true,
       fastDevelopNutritionPage: false
     }),
     'react': 'React',

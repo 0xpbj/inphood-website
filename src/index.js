@@ -23,8 +23,8 @@ const fbConfig = {
 }
 
 import ReactGA from 'react-ga'
-ReactGA.initialize('UA-88850545-1', {
-  debug: true,
+ReactGA.initialize('UA-88850545-2', {
+  debug: (Config.DEBUG !== true),
   titleCase: false,
   gaOptions: {
     userId: 'websiteTester'

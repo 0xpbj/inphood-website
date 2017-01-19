@@ -226,7 +226,8 @@ export default class Nutrition extends React.Component {
     console.log(this.state.deletedTags)
 
     // 1. Delete this tag from:
-    //    this.state.matches
+    //    this.state..
+
     //    this.state.nutritionModel
     //    ingredientControlModels
     //
@@ -254,6 +255,80 @@ export default class Nutrition extends React.Component {
     //
     this.setState({
       matches: matches,
+      nutritionModel: nutritionModel,
+      ingredientControlModels: ingredientControlModels,
+      selectedTags: selectedTags,
+      deletedTags: deletedTags
+    })
+  }
+  //
+  handleChipAdd(tag) {
+    console.log('handleChipAdd    ------------------------------------------------')
+    console.log('tag = ' + tag)
+    console.log('selectedTags = ')
+    console.log(this.state.selectedTags)
+    console.log('deletedTags = ')
+    console.log(this.state.deletedTags)
+
+    let matches = this.state.matches
+    let nutAlg = this.state.nutAlg
+    let nutritionModel = this.state.nutritionModel
+    let ingredientControlModels = this.state.ingredientControlModels
+
+    let selectedTags = this.state.selectedTags
+    let deletedTags = this.state.deletedTags
+
+    if (tag in matches) {
+      console.log('   Unable to add ' + tag + ' back; already found in matches.')
+      return
+    }
+
+    // TODO: A lot of this is common to componentWillMount. Refactor
+
+    // 1. Add this tag to:
+    //    - this.state.matches
+    //    - this.state.nutAlg.matches
+    //    - this.state.nutritionModel
+    //    - ingredientControlModels
+    //
+    let localNutAlg = new NutritionAlg()
+    localNutAlg.processTags(tag)
+    matches[tag] = localNutAlg.getMatches()[tag]
+
+    nutAlg.addMatches(tag, matches[tag])
+
+    const key = nutAlg.getBestMatchForTag(tag)
+    const dataForKey = nutAlg.getDataForKey(key)
+    let ingredientModel = new IngredientModel()
+    ingredientModel.initializeSingle(key, tag, dataForKey)
+
+    const measureQuantity = ingredientModel.getMeasureQuantity()
+    const measureUnit = ingredientModel.getMeasureUnit()
+    nutritionModel.addIngredient(
+      key, ingredientModel, measureQuantity, measureUnit)
+
+    let ingredientControlModel =
+      new IngredientControlModel(
+            measureQuantity,
+            this.getPossibleUnits(measureUnit),
+            measureUnit,
+            nutAlg.getMatchList(tag),
+            key)
+    ingredientControlModels[tag] = ingredientControlModel
+
+    // 2. Add the tag to selectedTags and remove it from deleted tags ...
+    //
+    for (let i = 0; i < deletedTags.length; i++) {
+      if (tag === deletedTags[i]) {
+        deletedTags = deletedTags.splice(i, 1)
+        break
+      }
+    }
+    selectedTags.push(tag)
+
+    this.setState({
+      matches: matches,
+      nutAlg: nutAlg,
       nutritionModel: nutritionModel,
       ingredientControlModels: ingredientControlModels,
       selectedTags: selectedTags,
@@ -355,10 +430,15 @@ export default class Nutrition extends React.Component {
   getChipsFromArray(anArray) {
     let htmlResult = []
     for (let i = 0; i < anArray.length; i++) {
+      let tag = anArray[i]
       htmlResult.push(
-        <Chip><span style={{textDecoration: 'line-through'}}>
-          {anArray[i]}
-        </span></Chip>)
+        <Chip
+          onDeleteClick={this.handleChipAdd.bind(this, tag)}
+          deletable>
+          <span style={{textDecoration: 'line-through'}}>
+            {tag}
+          </span>
+        </Chip>)
     }
     return (
       <div>{htmlResult}</div>
@@ -463,6 +543,16 @@ export default class Nutrition extends React.Component {
     return (
       <Grid>
         <Row>
+          <Col xs={12} md={12}>
+            <div>
+              <Button className="btn-primary-spacing" bsStyle="info" onClick={() => this.props.goToGallery()}>Gallery</Button>
+              <DropdownButton bsStyle="success" title="Share Label" key={1} id={`split-button-basic`}>
+                <MenuItem eventKey={eventKey} onClick={this.transitionToLabelPage.bind(this, false, composite, full)}>Share URL</MenuItem>
+              </DropdownButton>
+            </div>
+          </Col>
+        </Row>
+        <Row>
           <Col xs={8} md={8}>
             <text style={{fontWeight: 'bold'}}>Serving Size</text>
             <div style={{borderWidth: 1,
@@ -480,7 +570,7 @@ export default class Nutrition extends React.Component {
                 editable pinned snaps/>
             </div>
           </Col>
-          <Col xs={4} md={4}>
+          <Col xs={4} md={4} style={{paddingLeft: 5, paddingRight: 5}}>
             <text style={{fontWeight: 'bold'}}>Discarded Tags:</text>
             {/* The section elements here separate the updated tags from the
                 eliminated ones */}
@@ -503,12 +593,6 @@ export default class Nutrition extends React.Component {
             <div style={{marginTop: 37}}>
               <text>&nbsp;</text>
               <Label nutritionModel={this.state.nutritionModel}/>
-            </div>
-            <div>
-              <Button className="btn-primary-spacing" bsStyle="info" onClick={() => this.props.goToGallery()}>Gallery</Button>
-              <DropdownButton bsStyle="success" title="Share Label" key={1} id={`split-button-basic`}>
-                <MenuItem eventKey={eventKey} onClick={this.transitionToLabelPage.bind(this, false, composite, full)}>Share URL</MenuItem>
-              </DropdownButton>
             </div>
           </Col>
         </Row>

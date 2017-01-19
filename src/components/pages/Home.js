@@ -27,9 +27,9 @@ export default class Home extends React.Component {
     super()
     this.state = {
       // TODO: AC for dev set this to true to go direct to Nutrition.js scene
-      galleryView: true,
+      galleryView: !Config.fastDevelopNutritionPage,
       selectedView: false,
-      nutritionView: false,
+      nutritionView: Config.fastDevelopNutritionPage,
       showUploadModal: false
     }
   }
@@ -191,7 +191,7 @@ export default class Home extends React.Component {
     }
     else if (this.state.selectedImageView) {
       return (
-        <SelectedImage 
+        <SelectedImage
           data={this.props.user.photos.data}
           index={this.props.nutrition.index}
           goToGallery={this.goToGallery.bind(this)}
@@ -203,9 +203,9 @@ export default class Home extends React.Component {
     }
     else if (this.state.nutritionView) {
       return (
-        <Nutrition 
-          router={this.props.router} 
-          goToImage={this.goToImage.bind(this)} 
+        <Nutrition
+          router={this.props.router}
+          goToImage={this.goToImage.bind(this)}
           resultUrl={this.props.nutrition.resultUrl}
         />
       )

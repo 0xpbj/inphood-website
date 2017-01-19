@@ -211,6 +211,12 @@ export default class NutritionAlg {
     return this.matches
   }
 
+  addMatches(tag, matches) {
+    if (! tag in this.matches) {
+      this.matches[tag] = matches
+    }
+  }
+
   // Returns the matched key with the best ranking
   //
   getBestMatchForTag(tag) {

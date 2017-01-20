@@ -41,6 +41,7 @@ export default class Nutrition extends React.Component {
       showUrlModal: false,
       selectedTags: [],
       deletedTags: [],
+      unmatchedTags: [],
       servingControls: {
         value: 2,
         unit: 'people',
@@ -61,10 +62,13 @@ export default class Nutrition extends React.Component {
     let nutritionModel = this.state.nutritionModel
     let ingredientControlModels = this.state.ingredientControlModels
 
+    let unmatchedTags = []
+
     for (let tag in this.state.nutAlg.getMatches()) {
       const tagMatches = this.state.nutAlg.getMatchList(tag)
       if (tagMatches.length === 0) {
         console.log('No matches found in database for tag: ' + tag)
+        unmatchedTags.push(tag)
         continue
       }
       const key = this.state.nutAlg.getBestMatchForTag(tag)
@@ -93,6 +97,7 @@ export default class Nutrition extends React.Component {
 
     this.setState({
       matches: this.state.nutAlg.getMatches(),
+      unmatchedTags: unmatchedTags,
       nutritionModel: nutritionModel,
       ingredientControlModels: ingredientControlModels
     })
@@ -469,18 +474,28 @@ export default class Nutrition extends React.Component {
   //////////////////////////////////////////////////////////////////////////////
   // UI Element Generation:
   //////////////////////////////////////////////////////////////////////////////
-  getChipsFromArray(anArray) {
+  getChipsFromArray(anArray, deletable) {
     let htmlResult = []
     for (let i = 0; i < anArray.length; i++) {
       let tag = anArray[i]
-      htmlResult.push(
-        <Chip
-          onDeleteClick={this.handleChipAdd.bind(this, tag)}
-          deletable>
-          <span style={{textDecoration: 'line-through'}}>
-            {tag}
-          </span>
-        </Chip>)
+      if (deletable) {
+        htmlResult.push(
+          <Chip
+            onDeleteClick={this.handleChipAdd.bind(this, tag)}
+            deletable>
+            <span style={{textDecoration: 'line-through'}}>
+              {tag}
+            </span>
+          </Chip>)
+      } else {
+        htmlResult.push(
+          <Chip
+            onDeleteClick={this.handleChipAdd.bind(this, tag)}>
+            <span style={{textDecoration: 'line-through'}}>
+              {tag}
+            </span>
+          </Chip>)
+        }
     }
     return (
       <div>{htmlResult}</div>
@@ -544,7 +559,33 @@ export default class Nutrition extends React.Component {
             <Col xs={12} md={12}>
               {/* The section elements here separate the updated tags from the
                   eliminated ones */}
-              {this.getChipsFromArray(this.state.deletedTags)}
+              {this.getChipsFromArray(this.state.deletedTags, true)}
+            </Col>
+          </Row>
+        </div>
+      </div>
+    )
+  }
+  getUnmatchedTagPanel() {
+    return (
+      <div style={{marginTop: 54}}>
+        <Row>
+          <Col xs={12} md={12} style={{paddingRight: 5, paddingLeft: 5}}>
+            <text style={{fontWeight: 'bold'}}>No match found for these tags:</text>
+          </Col>
+        </Row>
+        <div style={{borderWidth: 1,
+                     borderColor: 'black',
+                     borderStyle: 'solid',
+                     borderRadius: 5,
+                     padding: 10,
+                     marginRight: 10,
+                     marginLeft: 10}}>
+          <Row>
+            <Col xs={12} md={12} style={{paddingRight: 5, paddingLeft: 5}}>
+              {/* The section elements here separate the updated tags from the
+                  eliminated ones */}
+              {this.getChipsFromArray(this.state.unmatchedTags, false)}
             </Col>
           </Row>
         </div>
@@ -677,11 +718,14 @@ export default class Nutrition extends React.Component {
             {sliders}
           </Col>
           <Col xs={4} md={4}>
-            {/* To align with sliders need margin of 37 and then text placeholder */}
-            <div style={{marginTop: 37}}>
-              <text>&nbsp;</text>
-              <Label ingredientComposite={compositeModel}/>
-            </div>
+            <Row>
+              {/* To align with sliders need margin of 37 and then text placeholder */}
+              <div style={{marginTop: 37}}>
+                <text>&nbsp;</text>
+                <Label ingredientComposite={compositeModel}/>
+              </div>
+            </Row>
+            {this.getUnmatchedTagPanel()}
           </Col>
         </Row>
       </Grid>

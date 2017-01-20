@@ -57,7 +57,7 @@ export default class SelectedImage extends React.Component {
   parseCaption(caption) {
     let regex = /\w+/g
     let words = caption.match(regex)
-    var file = require("raw-loader!../../data/complete-001.unique-words.txt")
+    var file = require("raw-loader!../../data/complete.unique-words.txt")
     let fileWords = new Set(file.match(regex))
     let fileIntersection = new Set([...words].filter(x => fileWords.has(x)))
     // var food = require("raw-loader!../../data/ingredients.txt")
@@ -99,7 +99,7 @@ export default class SelectedImage extends React.Component {
             </div>
             <div>
             <section>
-              <Parser 
+              <Parser
                 parse={this.state.parse}
                 storeParsedData={this.props.storeParsedData}
                 goToNutrition={this.props.goToNutrition}

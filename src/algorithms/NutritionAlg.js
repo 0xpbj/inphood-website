@@ -246,7 +246,7 @@ export default class NutritionAlg {
 // Do not move this line above the class declaration for NutritionAlg (it requires
 // NutritionAlg to be defined).
 //
-NutritionAlg.data = require('../data/complete-001.opt.json')
+NutritionAlg.data = require('../data/complete.opt.json')
 
 // Levenshtein algorithm for computing edit distance
 //

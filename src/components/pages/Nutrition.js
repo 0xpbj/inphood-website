@@ -62,8 +62,8 @@ export default class Nutrition extends React.Component {
     let ingredientControlModels = this.state.ingredientControlModels
 
     for (let tag in this.state.nutAlg.getMatches()) {
-      const matches = this.state.nutAlg.getMatchList(tag)
-      if (matches.length === 0) {
+      const tagMatches = this.state.nutAlg.getMatchList(tag)
+      if (tagMatches.length === 0) {
         console.log('No matches found in database for tag: ' + tag)
         continue
       }
@@ -85,7 +85,7 @@ export default class Nutrition extends React.Component {
               measureQuantity,
               this.getPossibleUnits(measureUnit),
               measureUnit,
-              this.state.nutAlg.getMatchList(tag),
+              tagMatches,
               key)
 
       ingredientControlModels[tag] = ingredientControlModel

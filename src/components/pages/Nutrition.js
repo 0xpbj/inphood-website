@@ -62,6 +62,11 @@ export default class Nutrition extends React.Component {
     let ingredientControlModels = this.state.ingredientControlModels
 
     for (let tag in this.state.nutAlg.getMatches()) {
+      const matches = this.state.nutAlg.getMatchList(tag)
+      if (matches.length === 0) {
+        console.log('No matches found in database for tag: ' + tag)
+        continue
+      }
       const key = this.state.nutAlg.getBestMatchForTag(tag)
       const dataForKey = this.state.nutAlg.getDataForKey(key)
 
@@ -398,8 +403,10 @@ export default class Nutrition extends React.Component {
     let {caption, updatedCaption} = this.props.nutrition
 
     if (Config.fastDevelopNutritionPage) {
-      caption = "seasoning breakfast eggs spinach butter"
-      updatedCaption = "eggs spinach butter"
+      // caption = "seasoning breakfast eggs spinach butter"
+      // updatedCaption = "eggs spinach butter"
+      caption = "Wild Salmon baked with lemongrass and chili flakes over a bed of ginger veggies, including bok choy, broccolini, mushrooms, peppers, and onions"
+      updatedCaption = "Wild Salmon lemongrass chili flakes ginger veggies bok choy broccolini mushrooms peppers onions"
     }
 
     let deletedTagArr = []

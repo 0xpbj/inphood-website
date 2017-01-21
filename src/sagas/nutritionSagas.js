@@ -65,7 +65,7 @@ const uploadImageToS3 = (uri, key, username, thumbnail) => {
         key,
         user: username,
         oUrl: uri,
-        iUrl: 'http://label.inphood.com/' + username + '/' + key + '.jpg',
+        iUrl: 'http://www.image.inphood.com/' + username + '/' + key + '.jpg',
         thumbnail
       })
     }

@@ -1,4 +1,5 @@
 var React = require('react')
+import ReactGA from 'react-ga'
 import Label from './NutritionEstimateJSX'
 import NutritionAlg from '../../algorithms/NutritionAlg'
 import {IngredientModel} from '../models/IngredientModel'
@@ -17,7 +18,6 @@ import Modal from 'react-bootstrap/lib/Modal'
 import Slider from 'react-toolbox/lib/slider'
 import Button from 'react-bootstrap/lib/Button'
 import MenuItem from 'react-bootstrap/lib/MenuItem'
-import DropdownButton from 'react-bootstrap/lib/DropdownButton'
 import FormControl from 'react-bootstrap/lib/FormControl'
 import ControlLabel from 'react-bootstrap/lib/ControlLabel'
 
@@ -52,6 +52,17 @@ export default class Nutrition extends React.Component {
     }
   }
   componentWillMount() {
+    ReactGA.event({
+      category: 'User',
+      action: 'Get nutrition information for image',
+      nonInteraction: false
+    });
+    this.props.igUploadPhoto()
+    ReactGA.event({
+      category: 'User',
+      action: 'Uploading image to AWS',
+      nonInteraction: true
+    });
     // Process the caption for matches in the FDA database:
     //
     const tagString = this.generateSelectedTags().trim()
@@ -107,9 +118,9 @@ export default class Nutrition extends React.Component {
   //////////////////////////////////////////////////////////////////////////////
   transitionToLabelPage(flag, composite, full) {
     if (flag)
-      this.props.postLabelId(this.props.nutrition.key, this.props.resultUrl)
+      this.props.postLabelId(this.props.nutrition.key, this.props.nutrition.resultUrl)
     this.props.sendSerializedData(composite, full)
-    this.props.router.push('/result/'+this.props.nutrition.username + '/' + this.props.nutrition.key)
+    this.props.router.push('result/'+this.props.nutrition.username + '/' + this.props.nutrition.key)
   }
   //
   handleServingValuesChange(servingValue) {
@@ -695,10 +706,12 @@ export default class Nutrition extends React.Component {
         <Row>
           <Col xs={12} md={12}>
             <div>
-              <Button className="btn-primary-spacing" bsStyle="info" onClick={() => this.props.goToImage()}>Image</Button>
-              <DropdownButton bsStyle="success" title="Share Label" key={1} id={`split-button-basic`}>
-                <MenuItem eventKey={eventKey} onClick={this.transitionToLabelPage.bind(this, false, composite, full)}>Share URL</MenuItem>
-              </DropdownButton>
+              <Button 
+                className="btn-primary-spacing" 
+                bsStyle="success" 
+                onClick={() => this.transitionToLabelPage(false, composite, full)}>
+                  Share URL
+              </Button>
             </div>
           </Col>
         </Row>

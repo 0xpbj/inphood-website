@@ -77,6 +77,8 @@ export default class Parser extends React.Component {
     let phrases = this.state.ingredients.match(regex)
     var ingp = require('../../algorithms/parser/ingredientparser')
     let parsedData = []
+    if (!phrases)
+      return
     for (let i of phrases) {
       let clean = this.removeSpecialChars(i)
       let parsed = ingp.parse(clean)

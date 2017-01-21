@@ -28,7 +28,15 @@ export default class SelectedImage extends React.Component {
     }
   }
   componentWillMount() {
+    ReactGA.event({
+      category: 'User',
+      action: 'Go to image page',
+      nonInteraction: false
+    });
     this.generateChips()
+  }
+  goToNutrition() {
+    this.props.router.push('nutrition')
   }
   getRecipe(e) {
     let recipe = e.target.value
@@ -66,7 +74,7 @@ export default class SelectedImage extends React.Component {
     return fileIntersection
   }
   generateChips() {
-    let chipData = this.parseCaption(this.props.data[this.props.index].caption.text)
+    let chipData = this.parseCaption(this.props.user.photos.data[this.props.nutrition.index].caption.text)
     let chips = []
     for (let word of chipData) {
       chips.push(
@@ -88,7 +96,7 @@ export default class SelectedImage extends React.Component {
         <Row className="show-grid">
           <Col xs={12} md={8}>
             <ControlLabel>Food Image</ControlLabel>
-            <Image src={this.props.data[this.props.index].picture} responsive rounded/>
+            <Image src={this.props.user.photos.data[this.props.nutrition.index].picture} responsive rounded/>
           </Col>
           <Col xs={6} md={4}>
             <ControlLabel>Parsed Ingredients</ControlLabel>
@@ -98,16 +106,15 @@ export default class SelectedImage extends React.Component {
             </section>
             </div>
             <div>
-            <section>
+            {/*<section>
               <Parser
                 parse={this.state.parse}
-                storeParsedData={this.props.storeParsedData}
-                goToNutrition={this.props.goToNutrition}
+                storeParsedData={(parsedData) => this.props.storeParsedData(parsedData)}
+                goToNutrition={this.goToNutrition.bind(this)}
               />
-            </section>
+            </section>*/}
             </div>
-            <Button className="btn-primary-spacing" bsStyle="info" onClick={this.backToGrid.bind(this)}>Gallery</Button>
-            <Button className="btn-primary-spacing" bsStyle="success" onClick={() => this.setState({parse: true})}>Get Nutrition</Button>
+            <Button className="btn-primary-spacing" bsStyle="success" onClick={() => this.goToNutrition()}>Get Nutrition</Button>
           </Col>
         </Row>
       </Grid>

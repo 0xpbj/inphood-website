@@ -5,6 +5,9 @@ import IndexRoute from 'react-router/lib/IndexRoute'
 import browserHistory from 'react-router/lib/browserHistory'
 
 import Home from "../containers/HomeContainer"
+import SelectedImage from "../containers/SelectedImageContainer"
+import Gallery from "../containers/GalleryContainer"
+import Nutrition from "../containers/NutritionContainer"
 import Layout from "./pages/Layout"
 import About from "./pages/About"
 import NoMatch from "./pages/NoMatch"
@@ -19,7 +22,10 @@ export default class App extends React.Component {
         <Route path="/" component={Layout}>
           <IndexRoute component={Home}></IndexRoute>
           <Route path="about" name="about" component={About}></Route>
-          <Route path="/result/:userId/:labelId" name="label" component={Results}></Route>
+          <Route path="gallery" name="gallery" component={Gallery}></Route>
+          <Route path="image" name="image" component={SelectedImage}></Route>
+          <Route path="nutrition" name="nutrition" component={Nutrition}></Route>
+          <Route path="result/:userId/:labelId" name="label" component={Results}></Route>
           <Route path="*" component={NoMatch}/>
         </Route>
       </Router>

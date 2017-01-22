@@ -29,6 +29,10 @@ export default class Home extends React.Component {
       showUploadModal: false
     }
   }
+  componentWillMount() {
+    if (this.props.user.profile !== null)
+      this.props.router.push('gallery')
+  }
   handleClick() {
     this.props.igLoginRequest()
     ReactGA.event({

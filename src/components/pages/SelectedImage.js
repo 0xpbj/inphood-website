@@ -88,6 +88,16 @@ export default class SelectedImage extends React.Component {
     this.props.goToGallery()
   }
   render() {
+    if (!this.props.user.profile) {
+      return (
+        <Alert bsStyle="danger" onDismiss={() => this.props.router.push('/')}>
+          <h4>Oh snap! Login Error!</h4>
+          <p>
+            <Button bsStyle="danger" onClick={() => this.props.router.push('/')}>Go Home</Button>
+          </p>
+        </Alert>
+      )
+    }
     const containerStyle = {
       marginTop: "60px"
     }

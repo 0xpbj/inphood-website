@@ -5,7 +5,7 @@ import NutritionAlg from '../../algorithms/NutritionAlg'
 import {IngredientModel} from '../models/IngredientModel'
 import {NutritionModel} from '../models/NutritionModel'
 import {IngredientControlModel} from '../models/IngredientControlModel'
-import {Redirect} from 'react-router'
+import {Link} from 'react-router'
 import {getValueInUnits, getIngredientValueInUnits, mapToSupportedUnits} from '../../helpers/ConversionUtils'
 
 // import { VictoryPie } from 'victory'
@@ -14,10 +14,11 @@ import Row from 'react-bootstrap/lib/Row'
 import Col from 'react-bootstrap/lib/Col'
 import Well from 'react-bootstrap/lib/Well'
 import Grid from 'react-bootstrap/lib/Grid'
+import Alert from 'react-bootstrap/lib/Alert'
 import Modal from 'react-bootstrap/lib/Modal'
 import Slider from 'react-toolbox/lib/slider'
-import Button from 'react-bootstrap/lib/Button'
 import MenuItem from 'react-bootstrap/lib/MenuItem'
+import Button from 'react-bootstrap/lib/Button'
 import FormControl from 'react-bootstrap/lib/FormControl'
 import ControlLabel from 'react-bootstrap/lib/ControlLabel'
 
@@ -36,6 +37,7 @@ export default class Nutrition extends React.Component {
     this.state = {
       ingredientControlModels: {},
       nutritionModel: new NutritionModel(),
+      labelRedirect: false,
       matches: {},
       nutAlg: new NutritionAlg(),
       showUrlModal: false,
@@ -52,75 +54,78 @@ export default class Nutrition extends React.Component {
     }
   }
   componentWillMount() {
-    ReactGA.event({
-      category: 'User',
-      action: 'Get nutrition information for image',
-      nonInteraction: false
-    });
-    this.props.igUploadPhoto()
-    ReactGA.event({
-      category: 'User',
-      action: 'Uploading image to AWS',
-      nonInteraction: true
-    });
-    // Process the caption for matches in the FDA database:
-    //
-    const tagString = this.generateSelectedTags().trim()
-    // const tagString = "#tomato #cucumber #onion #lettuce #olive #feta"
-    // TODO: AC! **************** regexp errors here for / characters
-    this.state.nutAlg.processTags(tagString)
+    if (this.props.user.profile) {
+      ReactGA.event({
+        category: 'User',
+        action: 'Get nutrition information for image',
+        nonInteraction: false
+      });
+      this.props.igUploadPhoto()
+      ReactGA.event({
+        category: 'User',
+        action: 'Uploading image to AWS',
+        nonInteraction: true
+      });
+      // Process the caption for matches in the FDA database:
+      //
+      const tagString = this.generateSelectedTags().trim()
+      // const tagString = "#tomato #cucumber #onion #lettuce #olive #feta"
+      // TODO: AC! **************** regexp errors here for / characters
+      this.state.nutAlg.processTags(tagString)
 
-    let nutritionModel = this.state.nutritionModel
-    let ingredientControlModels = this.state.ingredientControlModels
+      let nutritionModel = this.state.nutritionModel
+      let ingredientControlModels = this.state.ingredientControlModels
 
-    let unmatchedTags = []
+      let unmatchedTags = []
 
-    for (let tag in this.state.nutAlg.getMatches()) {
-      const tagMatches = this.state.nutAlg.getMatchList(tag)
-      if (tagMatches.length === 0) {
-        console.log('No matches found in database for tag: ' + tag)
-        unmatchedTags.push(tag)
-        continue
+      for (let tag in this.state.nutAlg.getMatches()) {
+        const tagMatches = this.state.nutAlg.getMatchList(tag)
+        if (tagMatches.length === 0) {
+          console.log('No matches found in database for tag: ' + tag)
+          unmatchedTags.push(tag)
+          continue
+        }
+        const key = this.state.nutAlg.getBestMatchForTag(tag)
+        const dataForKey = this.state.nutAlg.getDataForKey(key)
+
+        let ingredientModel = new IngredientModel()
+        ingredientModel.initializeSingle(key, tag, dataForKey)
+
+        // Get the Unit data
+        let measureQuantity = ingredientModel.getMeasureQuantity()
+        let measureUnit = ingredientModel.getMeasureUnit()
+
+        nutritionModel.addIngredient(
+          key, ingredientModel, measureQuantity, measureUnit)
+
+        let ingredientControlModel =
+          new IngredientControlModel(
+                measureQuantity,
+                this.getPossibleUnits(measureUnit),
+                measureUnit,
+                tagMatches,
+                key)
+
+        ingredientControlModels[tag] = ingredientControlModel
       }
-      const key = this.state.nutAlg.getBestMatchForTag(tag)
-      const dataForKey = this.state.nutAlg.getDataForKey(key)
 
-      let ingredientModel = new IngredientModel()
-      ingredientModel.initializeSingle(key, tag, dataForKey)
-
-      // Get the Unit data
-      let measureQuantity = ingredientModel.getMeasureQuantity()
-      let measureUnit = ingredientModel.getMeasureUnit()
-
-      nutritionModel.addIngredient(
-        key, ingredientModel, measureQuantity, measureUnit)
-
-      let ingredientControlModel =
-        new IngredientControlModel(
-              measureQuantity,
-              this.getPossibleUnits(measureUnit),
-              measureUnit,
-              tagMatches,
-              key)
-
-      ingredientControlModels[tag] = ingredientControlModel
+      this.setState({
+        matches: this.state.nutAlg.getMatches(),
+        unmatchedTags: unmatchedTags,
+        nutritionModel: nutritionModel,
+        ingredientControlModels: ingredientControlModels
+      })
     }
-
-    this.setState({
-      matches: this.state.nutAlg.getMatches(),
-      unmatchedTags: unmatchedTags,
-      nutritionModel: nutritionModel,
-      ingredientControlModels: ingredientControlModels
-    })
   }
   //////////////////////////////////////////////////////////////////////////////
   // Action Handlers:
   //////////////////////////////////////////////////////////////////////////////
-  transitionToLabelPage(flag, composite, full) {
+  transitionToLabelPage(flag, composite, full, labelOnly) {
     if (flag)
       this.props.postLabelId(this.props.nutrition.key, this.props.nutrition.resultUrl)
     this.props.sendSerializedData(composite, full)
-    this.props.router.push('result/'+this.props.nutrition.username + '/' + this.props.nutrition.key)
+    if (!labelOnly)
+      this.props.router.push('result/'+this.props.nutrition.username + '/' + this.props.nutrition.key)
   }
   //
   handleServingValuesChange(servingValue) {
@@ -670,6 +675,16 @@ export default class Nutrition extends React.Component {
     )
   }
   render() {
+    if (!this.props.user.profile) {
+      return (
+        <Alert bsStyle="danger" onDismiss={() => this.props.router.push('/')}>
+          <h4>Oh snap! Login Error!</h4>
+          <p>
+            <Button bsStyle="danger" onClick={() => this.props.router.push('/')}>Go Home</Button>
+          </p>
+        </Alert>
+      )
+    }
     console.log('\n\n\n\nParsed data incoming: ', this.props.nutrition.parsedData)
     //
     // 1. Generate a list of tags not found in our DB and build the array of
@@ -700,18 +715,14 @@ export default class Nutrition extends React.Component {
     // TODO: PBJ, what does the next line do? Is it needed here?
     let hideUrlModal = () => this.setState({ showUrlModal: false })
     const eventKey = this.props.nutrition.anonymous === false ? "2" : "1"
-
+    const path = 'http://www.label.inphood.com/?user=' + this.props.nutrition.username + '&label=' + this.props.nutrition.key
     return (
       <Grid>
         <Row>
           <Col xs={12} md={12}>
             <div>
-              <Button 
-                className="btn-primary-spacing" 
-                bsStyle="success" 
-                onClick={() => this.transitionToLabelPage(false, composite, full)}>
-                  Share URL
-              </Button>
+              <Button bsStyle="success" onClick={this.transitionToLabelPage.bind(this, false, composite, full, false)}>Share Image + Label</Button>
+              <Button bsStyle="success" onClick={this.transitionToLabelPage.bind(this, false, composite, full, true)}><Link to={path} target="_blank">Share Label</Link></Button>
             </div>
           </Col>
         </Row>

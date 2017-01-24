@@ -36,6 +36,60 @@ export function mapToSupportedUnits(aUnit) {
   return aUnit
 }
 
+// Sufficient for now--if needed later, consider something more
+// heavyweight.
+function almostEqual(value1, value2, epsilon) {
+  return (Math.abs(value1 - value2) < epsilon)
+}
+
+// Need to handle the following cases:
+//   - 1 1/2
+//   - 1/2
+//   - 1.5
+export function rationalToFloat(rational) {
+  let trimmedRational = rational.trim()
+  let floatValue = 0.0
+
+  if (trimmedRational.includes('/')) {
+    if (trimmedRational.includes(' ')) {
+      // Handle the '1' in something like '1 3/5' first:
+      //
+      //  TODO: Regex to combine spaces (i.e. '1   3/5' ---> '1 3/5')
+      let spaceSplit = trimmedRational.replace(/ +/, ' ').split(' ')
+
+      if (spaceSplit.length != 2) {
+        const errorStr = "Unable to convert " + rational + " to a number. "
+                         + "Supported formats include: 1.5, 1 1/2, and 1/2."
+        throw new Error(errorStr)
+      }
+
+      floatValue = parseFloat(spaceSplit[0])
+
+      // modify trimmedRational for next phase of processing
+      trimmedRational = spaceSplit[1].trim()
+    }
+
+    // Now handle the '3/5':
+    //
+    let slashSplit = trimmedRational.split('/')
+    if (slashSplit.length != 2) {
+      const errorStr = "Unable to convert " + rational + " to a number. "
+                       + "Supported formats include: 1.5, 1 1/2, and 1/2."
+      throw new Error(errorStr)
+    }
+    else if (almostEqual(slashSplit[1], 0.0, 0.000001)) {
+      const errorStr = "Unable to convert " + rational + " to a number. "
+                       + "Denominator is too close to zero for evaluation."
+      throw new Error(errorStr)
+    }
+
+    floatValue += (parseFloat(slashSplit[0]) / parseFloat(slashSplit[1]))
+  } else {
+    floatValue = parseFloat(rational)
+  }
+
+  return floatValue
+}
 
 function isVolumeUnit(aUnit) {
   if (Convert().possibilities().includes(aUnit)) {

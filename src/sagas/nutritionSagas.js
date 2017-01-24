@@ -30,7 +30,7 @@ const uploadImageToS3 = (uri, key, username, thumbnail) => {
   }
   request(options, function(error, response, body) {
     if (error || response.statusCode !== 200) {
-      console.log("failed to get image", error)
+      console.log("failed to get image", error);
       firebase.database().ref('/global/nutritionLabel/'+username+'/'+key).update({ 
         key,
         user: username,
@@ -48,7 +48,7 @@ const uploadImageToS3 = (uri, key, username, thumbnail) => {
         ContentType: "image/jpeg"
       }, function(error, data) {
         if (error) {
-          console.log("error downloading image to s3", error)
+          console.log("error downloading image to s3", error);
           firebase.database().ref('/global/nutritionLabel/'+username+'/'+key).update({ 
             key,
             user: username,
@@ -60,7 +60,7 @@ const uploadImageToS3 = (uri, key, username, thumbnail) => {
           console.log("success uploading to s3", data)
         }
       })
-      console.log('Thumbnail: ', thumbnail)
+      console.log('Thumbnail: ', thumbnail);
       firebase.database().ref('/global/nutritionLabel/'+username+'/'+key).update({
         key,
         user: username,
@@ -113,10 +113,10 @@ function* postLabelData() {
     const {labelId, comment} = yield take (POST_LABEL_ID)
     const token = Hello('instagram').getAuthResponse().access_token
     const url = 'https://api.instagram.com/v1/media/' + labelId + '/comments'
-    console.log('LabelId: ', labelId)
-    console.log('Comment: ', comment)
-    console.log('Token: ', token)
-    console.log('URL: ', url)
+    console.log('LabelId: ', labelId);
+    console.log('Comment: ', comment);
+    console.log('Token: ', token);
+    console.log('URL: ', url);
     var options = {
       url: url,
       method: 'post',
@@ -128,18 +128,18 @@ function* postLabelData() {
       }
     }
     request(options, function(error, response, body) { 
-      console.log('Error: ', error)
-      console.log('Response: ', response)
-      console.log('Body: ', body)
+      console.log('Error: ', error);
+      console.log('Response: ', response);
+      console.log('Body: ', body);
     })
     // fetch(url, {
     //   mode: 'no-cors',
     //   method: 'post',
     //   form: {access_token: token, text: 'www.inphood.com/BPCIqRoDtV4'}
     // }).then(function(response) {
-    //   console.log(response.status)
+    //   console.log(response.status);
     //   console.log("response");
-    //   console.log(response)
+    //   console.log(response);
     // })
     // Hello( 'instagram' ).api( 'me/comments', 'post', {
     //   id: labelId,
@@ -147,7 +147,7 @@ function* postLabelData() {
     // })
     // .then(function(r) {
     //   if (r.meta.code === 200) {
-    //     console.log('Comment Added')
+    //     console.log('Comment Added');
     //   }
     // }, console.error.bind(console))
   }

@@ -74,7 +74,6 @@ export default class Results extends React.Component {
         ingredient.initializeFromSerialization(ingredientData)
         nutritionLabel = <Label ingredientComposite={ingredient}/>
       }
-      var Base64 = require('js-base64').Base64
       const label = (
         <Grid>
           <div className="text-center">

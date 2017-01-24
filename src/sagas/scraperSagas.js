@@ -9,7 +9,7 @@ const Config = require('Config')
 
 function* scrapeUrl() {
   const {url} = yield select(state => state.nutritionReducer)
-  console.log('URL: ', url)
+  console.log('URL: ', url);
   request('http://www.imdb.com/title/tt1229340/', function(error, response, html){
     if (!error) {
       var $ = cheerio.load(html);
@@ -24,11 +24,11 @@ function* scrapeUrl() {
         title = data.children().first().text();
         // Once we have our title, we'll store it to the our json object.
         json.title = title;
-        console.log('Title found: ', title)
+        console.log('Title found: ', title);
       })
     }
     else {
-      console.log('Error: ', error)
+      console.log('Error: ', error);
     }
   })
 }

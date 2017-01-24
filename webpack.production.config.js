@@ -5,7 +5,13 @@ var loaders = require('./webpack.loaders');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var WebpackCleanupPlugin = require('webpack-cleanup-plugin');
+var WebpackStripLoader = require('strip-loader')
 
+loaders.push({
+  test: /\.js$/,
+  exclude: /(node_modules)/,
+  loader: 'babel'
+});
 // local css modules
 loaders.push({
 	test: /[\/\\]src[\/\\].*\.css/,
@@ -26,6 +32,7 @@ loaders.push({
 loaders.push({ test: /\.less$/, loader: "style-loader!css-loader!less-loader"});
 loaders.push({ test: /\.woff(2)?(\?v=[0-9].[0-9].[0-9])?$/, loader: "url-loader?mimetype=application/font-woff" });
 loaders.push({ test: /\.(ttf|eot|svg)(\?v=[0-9].[0-9].[0-9])?$/, loader: "file-loader?name=[name].[ext]" });
+loaders.push({ test: /\.js$/, exclude: /(node_modules)/, loader: WebpackStripLoader.loader('debug', 'console.log', 'console.error') });
 
 module.exports = {
 	entry: [

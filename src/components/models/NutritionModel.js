@@ -55,8 +55,8 @@ export class NutritionModel {
     // let ingredients = serialization.NutritionModel.ingredients
     // for (let key in ingredients) {
     //   let ingredient = ingredients[key]
-    //   console.log("Key: " + key)
-    //   console.log(ingredient)
+    //   console.log("Key: " + key);
+    //   console.log(ingredient);
     // }
   }
 

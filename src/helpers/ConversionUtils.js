@@ -158,8 +158,7 @@ export function getValueInUnits(currentValue, currentUnit, newUnit, ingredientMo
     newValue = 0
   }
 
-  console.log('Converted ' + currentValue + currentUnit
-              + " to " + newValue + newUnit + " ---------")
+  console.log('Converted ' + currentValue + currentUnit + " to " + newValue + newUnit + " ---------");
 
   return newValue
 }

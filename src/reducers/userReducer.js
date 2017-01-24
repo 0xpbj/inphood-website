@@ -2,6 +2,7 @@ import {
   IG_PHOTOS_SUCCESS,
   IG_LOGOUT_SUCCESS,
   IG_PROFILE_SUCCESS,
+  IG_LOGIN_SUCCESS,
   IG_LOGIN_ERROR,
   IG_LOGOUT_ERROR,
   IG_PROFILE_ERROR,
@@ -12,9 +13,15 @@ const initialState = {
   profile: null,
   error: '',
   textFlow: null,
+  login: false
 }
 export default function igUser(state = initialState, action) {
   switch (action.type) {
+    case IG_LOGIN_SUCCESS: 
+      return {
+        ...state,
+        login: true
+      }
     case IG_PHOTOS_SUCCESS:
       return {
         ...state,
@@ -28,7 +35,8 @@ export default function igUser(state = initialState, action) {
       }
     case IG_LOGOUT_SUCCESS:
       return {
-        ...initialState
+        ...initialState,
+        login: false
       }
     case IG_LOGIN_ERROR:
     case IG_LOGOUT_ERROR:

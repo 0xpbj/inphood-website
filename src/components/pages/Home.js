@@ -1,6 +1,5 @@
 var React = require('react')
 import ReactGA from 'react-ga'
-
 import Row from 'react-bootstrap/lib/Row'
 import Col from 'react-bootstrap/lib/Col'
 import Grid from 'react-bootstrap/lib/Grid'
@@ -30,7 +29,7 @@ export default class Home extends React.Component {
     }
   }
   componentWillMount() {
-    if (this.props.user.profile !== null)
+    if (this.props.user.profile !== null) 
       this.props.router.push('gallery')
   }
   handleClick() {

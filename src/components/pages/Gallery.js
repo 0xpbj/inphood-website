@@ -30,7 +30,6 @@ export default class GalleryGrid extends React.Component {
     });
     const caption =  this.props.user.photos.data[index].caption.text
     const parsedData = parseRecipe(caption)
-    console.log('Parsed data: ', parsedData)
     this.props.storeParsedData(parsedData)
     this.props.router.push('nutrition')
     // this.props.router.push('image')

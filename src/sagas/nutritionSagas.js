@@ -3,8 +3,10 @@ import {
   POST_LABEL_ID,
   RESULT_URL,
   SEND_SERIALIZED_DATA,
+  STORE_PARSED_DATA
 } from '../constants/ActionTypes'
 
+import * as db from './firebaseCommands'
 import { call, fork, put, select, take, takeLatest } from 'redux-saga/effects'
 import firebase from 'firebase'
 import request from 'request'
@@ -22,7 +24,7 @@ const uploadImageToS3 = (uri, key, username, thumbnail) => {
   var s3 = new AWS.S3({
     accessKeyId:     Config.AWS_ACCESS_ID,
     secretAccessKey: Config.AWS_SECRET_KEY,
-    region: 'us-west-2', 
+    region: 'us-west-2',
   })
   var options = {
     uri: uri,
@@ -31,7 +33,7 @@ const uploadImageToS3 = (uri, key, username, thumbnail) => {
   request(options, function(error, response, body) {
     if (error || response.statusCode !== 200) {
       console.log("failed to get image", error);
-      firebase.database().ref('/global/nutritionLabel/'+username+'/'+key).update({ 
+      firebase.database().ref('/global/nutritionLabel/'+username+'/'+key).update({
         key,
         user: username,
         oUrl: uri,
@@ -49,7 +51,7 @@ const uploadImageToS3 = (uri, key, username, thumbnail) => {
       }, function(error, data) {
         if (error) {
           console.log("error downloading image to s3", error);
-          firebase.database().ref('/global/nutritionLabel/'+username+'/'+key).update({ 
+          firebase.database().ref('/global/nutritionLabel/'+username+'/'+key).update({
             key,
             user: username,
             oUrl: uri,
@@ -123,11 +125,11 @@ function* postLabelData() {
       headers: {'Access-Control-Allow-Origin': 'http://127.0.0.1:3000'},
       // 'Access-Control-Allow-Origin': 'http://127.0.0.1:3000',
       form: {
-        access_token: token, 
+        access_token: token,
         text: comment
       }
     }
-    request(options, function(error, response, body) { 
+    request(options, function(error, response, body) {
       console.log('Error: ', error);
       console.log('Response: ', response);
       console.log('Body: ', body);
@@ -153,8 +155,153 @@ function* postLabelData() {
   }
 }
 
+// function* callElasticSearch(ingredient) {
+//   // This is a bypass that should only be used for development when the lambda server
+//   // is down. It is not publically accessible.
+//
+//   // Call elastic search, essentially this curl command:
+//   //
+//   //   curl -XPOST '35.167.212.47:9200/firebase/_search' -d '
+//   //     {
+//   //       "query": { "match": { "Description": "kale" } },
+//   //       "size": 1
+//   //     }'
+//   //
+//   const nonPublicUrl = '35.167.212.47:9200/firebase/_search'
+//   const data = {
+//     'query': {'match': {'Description': ingredient}},
+//     'size': 20
+//   }
+//   let myHeaders = new Headers()
+//   myHeaders.append('Content-Type', 'application/json')
+//
+//   let request = new Request(url, {
+//     method: 'POST',
+//     body: JSON.stringify(data),
+//     headers: myHeaders,
+//     mode: 'cors',
+//     cache: 'default'
+//   })
+//
+//   fetch(request)
+//   .then(function)
+// }
+
+function* getDataFromFireBase(key) {
+  // call firebase:
+  // const {userId, labelId} = yield take (GET_LABEL_ID)
+  // const path = '/global/nutritionLabel/' + userId + '/' + labelId
+  // const data = (yield call(db.getPath, path)).val()
+  // yield put({type: LABEL_DATA, data})
+
+  console.log('Trying to get data from Firebase: ------------------------');
+  const path = 'global/nutritionInfo/' + key
+  const data = (yield call(db.getPath, path)).val()
+  console.log('Firebase data: -------------------------------------------');
+  console.log('   from ' + path);
+  console.log(data)
+}
+
+function* callElasticSearchLambda(ingredient) {
+  console.log('--------------------------------------------------------------')
+  console.log('callElasticSearch on: ' + ingredient)
+
+  // Call elastic search (effectively this curl request):
+  //
+  // curl https://da0wffelhb.execute-api.us-west-2.amazonaws.com/prod/ingredients
+  //      -X POST
+  //      -d '{"query": {"match": {"Description": "nutritional yeast"}}, "size": 10}'
+  //      --header 'content-type: application/json'
+  //
+  //  TODO: fetch not supported in Safari; PBJ install this https://github.com/github/fetch
+  //
+  const productionUrl = 'https://da0wffelhb.execute-api.us-west-2.amazonaws.com/prod/ingredients'
+  const debugUrl = 'https://tah21v2noa.execute-api.us-west-2.amazonaws.com/prod/ingredients'
+  const url = debugUrl
+
+  const data = {
+    'query': {'match' : {'Description': 'kale'}},
+    'size': 20
+  }
+
+  let myHeaders = new Headers()
+  myHeaders.append('Content-Type', 'application/json')
+
+  // From MDN and here: https://github.com/matthew-andrews/isomorphic-fetch/issues/34
+  let request = new Request(url, {
+    method: 'POST',
+    body: JSON.stringify(data),
+    headers: myHeaders,
+    mode: 'cors',
+    cache: 'default'
+  })
+  fetch(request)
+  .then(function(response) {
+    console.log('response for callElasticSearch ---------------------');
+    console.log(response);
+
+    var contentType = response.headers.get("content-type");
+    if(contentType && contentType.indexOf("application/json") !== -1) {
+      return response.json().then(function(json) {
+        console.log('JSON: -----------');
+        console.log(json);
+
+        let fakeResultForDevSpeed = 'Yeast extract spread'
+        let fakeIdForDevSpeed = 43406
+        // TODO: PRABHAAV HELP HERE!
+        // console.log('Calling getDataFromFireBase: ------------------------');
+        // yield call(getDataFromFireBase, fakeIdForDevSpeed)
+      });
+    } else {
+      console.log("Unexpected server response (non-JSON object returned)");
+    }
+  })
+}
+
+function filterOutNonFoodWords(foodPhrase) {
+  const regex = /\w+/g
+  let words = foodPhrase.match(regex)
+
+  // TODO: look into best way to do this (i.e. if we're bombing memory with this
+  //       list being allocated every time this is called, then restructure).
+  const listOfFoods = require("raw-loader!../data/ingredients.txt")
+  const foodWords = new Set(listOfFoods.match(regex))
+
+  const foodIntersection = new Set([...words].filter(x => foodWords.has(x)))
+  return [...foodIntersection]
+}
+
+function* processParseForLabel() {
+  // Get the parse data out of the nutrition reducer and call elastic search on
+  // it to build the following structure:
+  //   [
+  //     'Green Onion' : ['dbKey1', 'dbKey2' ...],
+  //     'red bean' : ['dbKey1', ...],
+  //     'yakisoba' : []
+  //   ]
+  const {parsedData} = yield select(state => state.nutritionReducer)
+  // for (let i = 0; i < parsedData.length; i++) {
+  for (let i = 0; i < 1; i++) {
+    const parseObj = parsedData[i]
+    const foodName = parseObj['name']
+
+    let searchTerm = foodName
+    const foodWords = filterOutNonFoodWords(searchTerm)
+    if (foodWords.length > 0) {
+      searchTerm = foodWords.toString().replace(',', ' ')
+    }
+
+    // TODO: (uncomment when PBJ server works)
+    yield fork(callElasticSearchLambda, searchTerm)
+    // let fakeIdForDevSpeed = 43406
+    // yield fork(getDataFromFireBase, fakeIdForDevSpeed)
+  }
+
+}
+
 export default function* root() {
   // yield fork(postLabelData)
   yield fork(takeLatest, SEND_SERIALIZED_DATA, loadSerializedData)
   yield fork(takeLatest, IG_UPLOAD_PHOTO, loadAWSPut)
+  yield fork(takeLatest, STORE_PARSED_DATA, processParseForLabel)
 }

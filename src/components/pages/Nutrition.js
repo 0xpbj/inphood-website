@@ -55,18 +55,17 @@ export default class Nutrition extends React.Component {
     }
   }
 
-  getBestFoodTags(foodName) {
-    let regex = /\w+/g
-    let words = foodName.match(regex)
-
-    const food = require("raw-loader!../../data/ingredients.txt")
-    const foodWords = new Set(food.match(regex))
-
-    const foodIntersection = new Set([...words].filter(x => foodWords.has(x)))
-
-    return [...foodIntersection]
-  }
-
+  // getBestFoodTags(foodName) {
+  //   let regex = /\w+/g
+  //   let words = foodName.match(regex)
+  //
+  //   const food = require("raw-loader!../../data/ingredients.txt")
+  //   const foodWords = new Set(food.match(regex))
+  //
+  //   const foodIntersection = new Set([...words].filter(x => foodWords.has(x)))
+  //
+  //   return [...foodIntersection]
+  // }
 
   componentWillMount() {
     if (this.props.user.profile) {
@@ -81,36 +80,39 @@ export default class Nutrition extends React.Component {
         action: 'Uploading image to AWS',
         nonInteraction: true
       });
-      // New flow based on parsed recipe data:
+
+      // // Grab the parsed data from a recipe and for each object,
       //
-      //  MVP2:
-      //    1. Matching parsedData name fields
-      //    2. Convert parsedData amount fields to floats to use for initial values
-      //    3. Construct an ingredientModel with the match, value, and unit
+      // const parseData = this.props.nutrition.parsedData
+      // console.log('ParseData ========= ========= =========')
+      // console.log(parseData)
       //
-      const parseSpoof = [
-        {name: 'sprouted lentils, cooked', amount: '1/2', unit: 'cup'},
-        {name: 'olive oil', amount: '1 1/2', unit: 'tbsp'},
-        {name: 'nutritional yeast', amount: '2   1/4', unit: 'tbsp'},
-        {name: 'green onion, chopped', amount: '3', unit: 'tbsp'}
-      ]
+      // for (let i = 0; i < parseData.length; i++) {
+      //   const parseObj = parseData[i]
+      //
+      //   const name = parseObj['name']
+      //   let foodTag = name
+      //   const foodTagArr = this.getBestFoodTags(name)
+      //   if (foodTagArr.length > 0) {
+      //     foodTag = foodTagArr.toString().replace(',', ' ')
+      //   }
+      //
+      //   const amount = rationalToFloat(parseObj['amount'])
+      //
+      //   const unit = mapToSupportedUnits(parseObj['unit'])
+      //
+      //   console.log('Results for ' + name + ' ---------')
+      //   console.log('  foodTag = ')
+      //   console.log(foodTags)
+      //   console.log('  amount = ' + amount)
+      //   console.log('  unit = ' + unit)
+      //   console.log(parseObj)
+      //
+      //   // See if we can pull a list of matches from our elasticsearch on lambda:
+      //   //
+      //
+      // }
 
-      for (let i = 0; i < parseSpoof.length; i++) {
-      //for (let parseObj in this.props.nutrition.parsedData) {
-        const parseObj = parseSpoof[i]
-        const name = parseObj['name']
-        const foodTags = this.getBestFoodTags(name)
-        const amount = rationalToFloat(parseObj['amount'])
-        const unit = mapToSupportedUnits(parseObj['unit'])
-
-        console.log('Results for ' + name + ' ----------------------------------')
-        console.log('  foodTag = ')
-        console.log(foodTags)
-        console.log('  amount = ' + amount)
-        console.log('  unit = ' + unit)
-        console.log(parseObj)
-
-      }
       // Process the caption for matches in the FDA database:
       //
       //
@@ -163,6 +165,12 @@ export default class Nutrition extends React.Component {
       })
     }
   }
+
+  
+  componentWillReceiveProps(nextProps) {
+    // Can call this.setState
+  }
+
   //////////////////////////////////////////////////////////////////////////////
   // Action Handlers:
   //////////////////////////////////////////////////////////////////////////////

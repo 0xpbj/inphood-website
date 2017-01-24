@@ -1,7 +1,7 @@
 var React = require('react')
 var ReactDOM = require('react-dom')
 import { Provider } from 'react-redux'
-import App from './containers/AppContainer'
+import App from './components/App'
 
 import { createStore, applyMiddleware } from 'redux'
 import createSagaMiddleware from 'redux-saga'

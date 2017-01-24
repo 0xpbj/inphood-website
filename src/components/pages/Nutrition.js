@@ -69,7 +69,10 @@ export default class Nutrition extends React.Component {
 
 
   componentWillMount() {
-    if (this.props.user.profile) {
+    if (!this.props.user.login) {
+      this.props.router.push('/')
+    }
+    else if (this.props.user.profile) {
       ReactGA.event({
         category: 'User',
         action: 'Get nutrition information for image',

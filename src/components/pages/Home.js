@@ -6,20 +6,24 @@ import Grid from 'react-bootstrap/lib/Grid'
 import Alert from 'react-bootstrap/lib/Alert'
 import Image from 'react-bootstrap/lib/Image'
 import Button from 'react-bootstrap/lib/Button'
+import MenuItem from 'react-bootstrap/lib/MenuItem'
 import Jumbotron from 'react-bootstrap/lib/Jumbotron'
 import FormGroup from 'react-bootstrap/lib/FormGroup'
 import FormControl from 'react-bootstrap/lib/FormControl'
 import Glyphicon from 'react-bootstrap/lib/Glyphicon'
 import ControlLabel from 'react-bootstrap/lib/ControlLabel'
+import DropdownButton from 'react-bootstrap/lib/DropdownButton'
+import ImageGallery from 'react-image-gallery'
+import {Redirect} from 'react-router' 
+import {parseRecipe} from '../../helpers/parseRecipe'
 import Hello from 'hellojs'
-import Gallery from './Gallery'
-import SelectedImage from './SelectedImage'
 import Parser from './Parser'
 import Anon from './Anon'
-import Nutrition from "../../containers/NutritionContainer"
 import UploadModal from '../layout/UploadModal'
 
 const Config = require('Config')
+
+import "react-image-gallery/styles/css/image-gallery.css"
 
 export default class Home extends React.Component {
   constructor() {
@@ -27,10 +31,6 @@ export default class Home extends React.Component {
     this.state = {
       showUploadModal: false
     }
-  }
-  componentWillMount() {
-    if (this.props.user.profile !== null) 
-      this.props.router.push('gallery')
   }
   handleClick() {
     this.props.igLoginRequest()
@@ -40,7 +40,7 @@ export default class Home extends React.Component {
       label: 'Social Flow',
       nonInteraction: false
     });
-    this.props.router.push('gallery')
+    // this.props.router.push('gallery')
   }
   handleUrl(e) {
     this.props.anSelectedPhoto(e.target.value)
@@ -62,10 +62,26 @@ export default class Home extends React.Component {
       this.props.anSelectedPhoto(acceptedFiles[0].preview)
     }
   }
+  selectPhoto() {
+    const index = this._imageGallery.getCurrentIndex()
+    const photo =  this.props.user.photos.data[index]
+    this.props.igSelectedPhoto(index, photo)
+    ReactGA.event({
+      category: 'User',
+      action: 'Image selected for nutrition information',
+      nonInteraction: false,
+      label: 'Social Flow'
+    });
+    const caption =  this.props.user.photos.data[index].caption.text
+    const parsedData = parseRecipe(caption)
+    this.props.storeParsedData(parsedData)
+    this.props.router.push('nutrition')
+    // this.props.router.push('image')
+  }
   render() {
-    // const containerStyle = {
-    //   marginTop: "30px"
-    // }
+    const containerStyle = {
+      marginTop: "30px"
+    }
     // if (this.props.nutrition.anonymous) {
     //   return (
     //     <div style={containerStyle}>
@@ -83,6 +99,7 @@ export default class Home extends React.Component {
     // }
     // else {
       // let hideUploadModal = () => this.setState({ showUploadModal: false });
+    if (!this.props.user.login) {
       return (
         <div>
         <Jumbotron>
@@ -128,6 +145,69 @@ export default class Home extends React.Component {
           </div>
         </div>
       )
-    // }
+    }
+    else if (this.props.user.error !== '') {
+      return (
+        <Alert bsStyle="danger">
+          <strong>Error: {this.props.user.error}</strong>
+        </Alert>
+      )
+    }
+    else if (this.props.user.photos.length === 0 || this.props.user.photos.data.length === 0) {
+      return (
+        <Alert bsStyle="info">
+          <strong>Photos loading...</strong>
+        </Alert>
+      )
+    }
+    else {
+      ReactGA.set({ userId: this.props.user.profile.name })
+      ReactGA.event({
+        category: 'User',
+        action: 'Go to gallery page',
+        nonInteraction: false
+      });
+      var images = []
+      for (let img of this.props.user.photos.data) {
+        let image = {
+          original: img.picture,
+          thumbnail: img.thumbnail,
+        }
+        images.push(image)
+      }
+      return (
+        <Grid>
+          <Row className="show-grid">
+            <Col md={12}>
+              <Col xs={4} md={4} xsOffset={4}>
+                <Image src={this.props.user.profile.thumbnail} rounded />
+              </Col>
+              <Col xs={6} md={4}>
+                <DropdownButton bsStyle="info" title="Options" id={`dropdown-basic`}>
+                  <MenuItem key="1" onClick={() => this.props.igRefreshRequest()}>Refresh</MenuItem>
+                  <MenuItem key="2" onClick={() => this.props.igLogoutRequest()}>Logout</MenuItem>
+                </DropdownButton>
+              </Col>
+            </Col>
+          </Row>
+          <Row className="show-grid">
+            <div className="text-center" style={containerStyle}/>
+            <Col md={2} />
+            <Col md={8}>
+              <Button className="btn-primary-spacing" bsStyle="success" onClick={this.selectPhoto.bind(this)}>Select Image</Button>
+              <ImageGallery
+                ref={i => this._imageGallery = i}
+                items={images}
+                slideInterval={2000}
+                showFullscreenButton={false}
+                showNav={true}
+                showPlayButton={false}
+              />
+            </Col>
+            <Col md={2} />
+          </Row>
+        </Grid>
+      )
+    }
   }
 }

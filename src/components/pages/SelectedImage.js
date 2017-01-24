@@ -11,11 +11,8 @@ import FormGroup from 'react-bootstrap/lib/FormGroup'
 import FormControl from 'react-bootstrap/lib/FormControl'
 import ControlLabel from 'react-bootstrap/lib/ControlLabel'
 import DropdownButton from 'react-bootstrap/lib/DropdownButton'
-import ImageGallery from 'react-image-gallery'
 import Chip from 'react-toolbox/lib/chip'
 import Parser from './Parser'
-
-import "react-image-gallery/styles/css/image-gallery.css"
 
 export default class SelectedImage extends React.Component {
   constructor() {
@@ -28,12 +25,17 @@ export default class SelectedImage extends React.Component {
     }
   }
   componentWillMount() {
-    ReactGA.event({
-      category: 'User',
-      action: 'Go to image page',
-      nonInteraction: false
-    });
-    this.generateChips()
+    if (!this.props.user.login) {
+      this.props.router.push('/')
+    }
+    else {
+      ReactGA.event({
+        category: 'User',
+        action: 'Go to image page',
+        nonInteraction: false
+      });
+      this.generateChips()
+    }
   }
   goToNutrition() {
     this.props.router.push('nutrition')

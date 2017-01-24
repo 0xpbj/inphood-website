@@ -6,7 +6,8 @@ import {
   IG_UPDATED_CAPTION,
   RESULT_URL,
   SEND_SERIALIZED_DATA,
-  STORE_PARSED_DATA
+  STORE_PARSED_DATA,
+  INGREDIENT_FIREBASE_DATA
 } from '../constants/ActionTypes'
 
 const initialState = {
@@ -21,7 +22,8 @@ const initialState = {
   composite: '',
   full: '',
   index: 0,
-  parsedData: []
+  parsedData: [],
+  firebaseData: {}
 }
 export default function nutrition(state = initialState, action) {
   switch (action.type) {
@@ -73,6 +75,17 @@ export default function nutrition(state = initialState, action) {
       return {
         ...state,
         parsedData: action.parsedData
+      }
+    case INGREDIENT_FIREBASE_DATA:
+      //TODO: AC organize data
+      return {
+        ...state,
+        firebaseData: {
+          ...state.firebaseData,
+          ingredient: {
+            ...action.data
+          }
+        }
       }
     default:
       return state

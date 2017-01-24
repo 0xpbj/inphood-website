@@ -3,7 +3,8 @@ import {
   POST_LABEL_ID,
   RESULT_URL,
   SEND_SERIALIZED_DATA,
-  STORE_PARSED_DATA
+  STORE_PARSED_DATA,
+  INGREDIENT_FIREBASE_DATA
 } from '../constants/ActionTypes'
 
 import * as db from './firebaseCommands'
@@ -187,7 +188,7 @@ function* postLabelData() {
 //   .then(function)
 // }
 
-function* getDataFromFireBase(key) {
+function* getDataFromFireBase(ingredient, key) {
   // call firebase:
   // const {userId, labelId} = yield take (GET_LABEL_ID)
   // const path = '/global/nutritionLabel/' + userId + '/' + labelId
@@ -200,6 +201,21 @@ function* getDataFromFireBase(key) {
   console.log('Firebase data: -------------------------------------------');
   console.log('   from ' + path);
   console.log(data)
+  yield put ({type: INGREDIENT_FIREBASE_DATA, ingredient, data})
+}
+
+const elasticSearchFetch = (request) => {
+  return fetch(request)
+  .then(function(response) {
+    var contentType = response.headers.get("content-type");
+    if(contentType && contentType.indexOf("application/json") !== -1) {
+      return response.json().then(function(json) {
+        return json
+      });
+    } else {
+      console.log("Unexpected server response (non-JSON object returned)");
+    }
+  })
 }
 
 function* callElasticSearchLambda(ingredient) {
@@ -235,27 +251,12 @@ function* callElasticSearchLambda(ingredient) {
     mode: 'cors',
     cache: 'default'
   })
-  fetch(request)
-  .then(function(response) {
-    console.log('response for callElasticSearch ---------------------');
-    console.log(response);
-
-    var contentType = response.headers.get("content-type");
-    if(contentType && contentType.indexOf("application/json") !== -1) {
-      return response.json().then(function(json) {
-        console.log('JSON: -----------');
-        console.log(json);
-
-        let fakeResultForDevSpeed = 'Yeast extract spread'
-        let fakeIdForDevSpeed = 43406
-        // TODO: PRABHAAV HELP HERE!
-        // console.log('Calling getDataFromFireBase: ------------------------');
-        // yield call(getDataFromFireBase, fakeIdForDevSpeed)
-      });
-    } else {
-      console.log("Unexpected server response (non-JSON object returned)");
-    }
-  })
+  const json = yield call (elasticSearchFetch, request)
+  for (let index of json.data) {
+    yield fork(getDataFromFireBase, ingredient, index._id)
+  }
+  // console.log('Calling getDataFromFireBase: ------------------------');
+  // yield call(getDataFromFireBase, fakeIdForDevSpeed)
 }
 
 function filterOutNonFoodWords(foodPhrase) {

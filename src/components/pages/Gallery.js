@@ -9,7 +9,8 @@ import Button from 'react-bootstrap/lib/Button'
 import MenuItem from 'react-bootstrap/lib/MenuItem'
 import DropdownButton from 'react-bootstrap/lib/DropdownButton'
 import ImageGallery from 'react-image-gallery'
-import {Redirect} from 'react-router'
+import {Redirect} from 'react-router' 
+import {parseRecipe} from '../../helpers/parseRecipe'
 
 import "react-image-gallery/styles/css/image-gallery.css"
 
@@ -27,7 +28,12 @@ export default class GalleryGrid extends React.Component {
       nonInteraction: false,
       label: 'Social Flow'
     });
-    this.props.router.push('image')
+    const caption =  this.props.user.photos.data[index].caption.text
+    const parsedData = parseRecipe(caption)
+    console.log('Parsed data: ', parsedData)
+    this.props.storeParsedData(parsedData)
+    this.props.router.push('nutrition')
+    // this.props.router.push('image')
   }
   render() {
     const containerStyle = {

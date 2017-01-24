@@ -56,9 +56,9 @@ export default class NutritionAlg {
 
   processTags(tags) {
     if (this.debug) {
-      console.log('Processing Tags')
-      console.log('-----------------------------------------------------')
-      console.log(tags)
+      console.log('Processing Tags');
+      console.log('-----------------------------------------------------');
+      console.log(tags);
     }
 
     this.matchTagsToNutritionData(tags)
@@ -168,13 +168,13 @@ export default class NutritionAlg {
           // if (reResult != null) {
           //   execResultLen = reResult.length
           // }
-          // console.log('******************************************************')
-          // console.log('   similarityCoef: ' + similarityCoef)
-          // console.log('   tag =         \"' + splitTags[i] + '\"')
-          // console.log('   key =           ' + key)
-          // console.log('   exec =          ' + reResult)
-          // console.log('   exec length =   ' + execResultLen)
-          // console.log('   test =          ' + tagExactWordRegExps[i].test(key))
+          // console.log('******************************************************');
+          // console.log('   similarityCoef: ' + similarityCoef);
+          // console.log('   tag =         \"' + splitTags[i] + '\"');
+          // console.log('   key =           ' + key);
+          // console.log('   exec =          ' + reResult);
+          // console.log('   exec length =   ' + execResultLen);
+          // console.log('   test =          ' + tagExactWordRegExps[i].test(key));
 
           this.matches[splitTags[i]].push([key, similarityCoef])
         }
@@ -182,9 +182,9 @@ export default class NutritionAlg {
     }
 
     if (this.debug) {
-      console.log('Dump data structure')
-      console.log('---------------------------------------------------')
-      console.log(this.matches)
+      console.log('Dump data structure');
+      console.log('---------------------------------------------------');
+      console.log(this.matches);
     }
   }
 
@@ -194,9 +194,9 @@ export default class NutritionAlg {
     }
 
     if (this.debug) {
-      console.log('Dump ranked data structure')
-      console.log('---------------------------------------------------')
-      console.log(this.matches)
+      console.log('Dump ranked data structure');
+      console.log('---------------------------------------------------');
+      console.log(this.matches);
     }
   }
 

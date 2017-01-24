@@ -10,10 +10,6 @@ import {getValueInUnits,
         getIngredientValueInUnits,
         mapToSupportedUnits,
         rationalToFloat} from '../../helpers/ConversionUtils'
-
-
-
-// import { VictoryPie } from 'victory'
 import Chip from 'react-toolbox/lib/chip'
 import Row from 'react-bootstrap/lib/Row'
 import Col from 'react-bootstrap/lib/Col'
@@ -131,7 +127,7 @@ export default class Nutrition extends React.Component {
       for (let tag in this.state.nutAlg.getMatches()) {
         const tagMatches = this.state.nutAlg.getMatchList(tag)
         if (tagMatches.length === 0) {
-          console.log('No matches found in database for tag: ' + tag)
+          console.log('No matches found in database for tag: ' + tag);
           unmatchedTags.push(tag)
           continue
         }
@@ -230,9 +226,9 @@ export default class Nutrition extends React.Component {
   }
   //
   handleMatchDropdownChange(tag, value) {
-    console.log('handleMatchDropdownChange ----------------------------------------')
-    console.log('tag = ' + tag)
-    console.log('value = ' + value)
+    console.log('handleMatchDropdownChange ----------------------------------------');
+    console.log('tag = ' + tag);
+    console.log('value = ' + value);
 
     let ingredientControlModels = this.state.ingredientControlModels
     let nutritionModel = this.state.nutritionModel
@@ -272,8 +268,8 @@ export default class Nutrition extends React.Component {
       newValue = currentValue
       newUnit = currentUnit
     } else {
-      console.log('Ingredient change conversion--using grams to convert:')
-      console.log('   ' + currentValue + currentUnit + ' to ' + newMeasureUnit)
+      console.log('Ingredient change conversion--using grams to convert:');
+      console.log('   ' + currentValue + currentUnit + ' to ' + newMeasureUnit);
 
       // Convert current unit to grams, then convert grams to new measure unit
       // for new ingredient
@@ -306,9 +302,9 @@ export default class Nutrition extends React.Component {
   }
   //
   handleUnitDropdownChange(tag, value) {
-    console.log('handleUnitDropdownChange ----------------------------------------')
-    console.log('tag = ' + tag)
-    console.log('value = ' + value)
+    console.log('handleUnitDropdownChange ----------------------------------------');
+    console.log('tag = ' + tag);
+    console.log('value = ' + value);
 
     let newUnit = value
     let ingredientControlModels = this.state.ingredientControlModels
@@ -329,12 +325,12 @@ export default class Nutrition extends React.Component {
   }
   //
   handleChipDelete(tag) {
-    console.log('handleChipDelete ------------------------------------------------')
-    console.log('tag = ' + tag)
-    console.log('selectedTags = ')
-    console.log(this.state.selectedTags)
-    console.log('deletedTags = ')
-    console.log(this.state.deletedTags)
+    console.log('handleChipDelete ------------------------------------------------');
+    console.log('tag = ' + tag);
+    console.log('selectedTags = ');
+    console.log(this.state.selectedTags);
+    console.log('deletedTags = ');
+    console.log(this.state.deletedTags);
 
     // 1. Delete this tag from:
     //    this.state..
@@ -374,12 +370,12 @@ export default class Nutrition extends React.Component {
   }
   //
   handleChipAdd(tag) {
-    console.log('handleChipAdd    ------------------------------------------------')
-    console.log('tag = ' + tag)
-    console.log('selectedTags = ')
-    console.log(this.state.selectedTags)
-    console.log('deletedTags = ')
-    console.log(this.state.deletedTags)
+    console.log('handleChipAdd    ------------------------------------------------');
+    console.log('tag = ' + tag);
+    console.log('selectedTags = ');
+    console.log(this.state.selectedTags);
+    console.log('deletedTags = ');
+    console.log(this.state.deletedTags);
 
     let matches = this.state.matches
     let nutAlg = this.state.nutAlg
@@ -390,7 +386,7 @@ export default class Nutrition extends React.Component {
     let deletedTags = this.state.deletedTags
 
     if (tag in matches) {
-      console.log('   Unable to add ' + tag + ' back; already found in matches.')
+      console.log('   Unable to add ' + tag + ' back; already found in matches.');
       return
     }
 
@@ -530,8 +526,8 @@ export default class Nutrition extends React.Component {
       // From: http://stackoverflow.com/questions/1723168/what-is-the-fastest-or-most-elegant-way-to-compute-a-set-difference-using-javasc
       unitData = unitData.filter(x => excludedUnits.indexOf(x) < 0)
     } else {
-      console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-      console.log("Unsupported measureUnit = " + sanitizedMeasureUnit)
+      console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+      console.log("Unsupported measureUnit = " + sanitizedMeasureUnit);
       unitData = massUnits.concat([sanitizedMeasureUnit])
       unitData = unitData.filter(x => excludedUnits.indexOf(x) < 0)
     }

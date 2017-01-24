@@ -98,10 +98,8 @@ export default class Parser extends React.Component {
     return (
       <FormGroup controlId="formControlsTextarea">
         <ControlLabel>Recipe</ControlLabel>
-        <FormControl componentClass="textarea" rows="10" placeholder="Write recipe here..." onChange={this.getData.bind(this)}/>
+        <FormControl componentClass="textarea" rows="10" placeholder="Write or paste recipe here..." onChange={this.getData.bind(this)}/>
       </FormGroup>
     )
   }
 }
-
-

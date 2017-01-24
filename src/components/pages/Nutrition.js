@@ -7,8 +7,6 @@ import {NutritionModel} from '../models/NutritionModel'
 import {IngredientControlModel} from '../models/IngredientControlModel'
 import {Link} from 'react-router'
 import {getValueInUnits, getIngredientValueInUnits, mapToSupportedUnits} from '../../helpers/ConversionUtils'
-
-// import { VictoryPie } from 'victory'
 import Chip from 'react-toolbox/lib/chip'
 import Row from 'react-bootstrap/lib/Row'
 import Col from 'react-bootstrap/lib/Col'

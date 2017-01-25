@@ -80,7 +80,8 @@ export default class Home extends React.Component {
   }
   render() {
     const containerStyle = {
-      marginTop: "30px"
+      marginTop: "30px", 
+      width: "500px",
     }
     // if (this.props.nutrition.anonymous) {
     //   return (
@@ -178,23 +179,20 @@ export default class Home extends React.Component {
       return (
         <Grid>
           <Row className="show-grid">
-            <Col md={12}>
-              <Col xs={4} md={4} xsOffset={4}>
-                <Image src={this.props.user.profile.thumbnail} rounded />
-              </Col>
-              <Col xs={6} md={4}>
-                <DropdownButton bsStyle="info" title="Options" id={`dropdown-basic`}>
-                  <MenuItem key="1" onClick={() => this.props.igRefreshRequest()}>Refresh</MenuItem>
-                  <MenuItem key="2" onClick={() => this.props.igLogoutRequest()}>Logout</MenuItem>
-                </DropdownButton>
-              </Col>
-            </Col>
-          </Row>
-          <Row className="show-grid">
             <div className="text-center" style={containerStyle}/>
             <Col md={2} />
             <Col md={8}>
-              <Button className="btn-primary-spacing" bsStyle="success" onClick={this.selectPhoto.bind(this)}>Select Image</Button>
+              <div className='row, text-center'>
+                <div className='text-left'>
+                  <DropdownButton bsStyle="info" title="Options" id={`dropdown-basic`}>
+                    <MenuItem key="1" onClick={() => this.props.igRefreshRequest()}>Refresh</MenuItem>
+                    <MenuItem key="2" onClick={() => this.props.igLogoutRequest()}>Logout</MenuItem>
+                  </DropdownButton>
+                </div>
+                <div className='text-right'>
+                  <Button className="btn-primary-spacing" bsStyle="success" onClick={this.selectPhoto.bind(this)}>Select Image</Button>
+                </div>
+              </div>
               <ImageGallery
                 ref={i => this._imageGallery = i}
                 items={images}

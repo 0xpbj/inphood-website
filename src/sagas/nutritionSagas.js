@@ -4,6 +4,7 @@ import {
   RESULT_URL,
   SEND_SERIALIZED_DATA,
   STORE_PARSED_DATA,
+  INITIALIZE_FIREBASE_DATA,
   INGREDIENT_FIREBASE_DATA
 } from '../constants/ActionTypes'
 
@@ -207,6 +208,11 @@ function* callElasticSearchLambda(searchTerm) {
     cache: 'default'
   })
   const json = yield call (elasticSearchFetch, request)
+  // TODO: possibly need to preserve the order of the results (the parallel get and
+  // object construction in nutritionReducer destroys this.)
+
+  yield put ({type: INITIALIZE_FIREBASE_DATA, searchTerm, json})
+
   for (let index of json.data) {
     yield fork(getDataFromFireBase, searchTerm, index._source.Description, index._id)
   }

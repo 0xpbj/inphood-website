@@ -1,7 +1,8 @@
 var React = require('react')
 import ReactGA from 'react-ga'
 import Label from './NutritionEstimateJSX'
-import NutritionAlg from '../../algorithms/NutritionAlg'
+// TODO: remove when es/fb db works:
+// import NutritionAlg from '../../algorithms/NutritionAlg'
 import {IngredientModel} from '../models/IngredientModel'
 import {NutritionModel} from '../models/NutritionModel'
 import {IngredientControlModel} from '../models/IngredientControlModel'
@@ -30,6 +31,26 @@ import Dropdownlist from 'react-widgets/lib/Dropdownlist'
 const Config = require('Config')
 const Convert = require('convert-units')
 
+// TODO: put this somewhere sensible:
+//
+//  Takes a list of [[a, b, c], [d, e, f] ...] and returns a new list containing
+//  elements of the specified tuple offset--i.e. given offset 1, it would return
+//  [b, e] for the example given above.
+//
+function getListOfTupleOffset(listOfTuples, offset) {
+  if ((listOfTuples.length <= 0) ||
+      (listOfTuples[0].length <= offset)) {
+    return []
+  }
+
+  let listOfTupleOffset = []
+  for (let idx = 0; idx < listOfTuples.length; idx++) {
+    listOfTupleOffset.push(listOfTuples[idx][offset])
+  }
+
+  return listOfTupleOffset
+}
+
 export default class Nutrition extends React.Component {
   //////////////////////////////////////////////////////////////////////////////
   // React / Component API:
@@ -40,8 +61,8 @@ export default class Nutrition extends React.Component {
       ingredientControlModels: {},
       nutritionModel: new NutritionModel(),
       labelRedirect: false,
-      matches: {},
-      nutAlg: new NutritionAlg(),
+      matches: {},  // TODO: delete this
+      matchData: {},
       showUrlModal: false,
       selectedTags: [],
       deletedTags: [],
@@ -55,18 +76,6 @@ export default class Nutrition extends React.Component {
       }
     }
   }
-
-  // getBestFoodTags(foodName) {
-  //   let regex = /\w+/g
-  //   let words = foodName.match(regex)
-  //
-  //   const food = require("raw-loader!../../data/ingredients.txt")
-  //   const foodWords = new Set(food.match(regex))
-  //
-  //   const foodIntersection = new Set([...words].filter(x => foodWords.has(x)))
-  //
-  //   return [...foodIntersection]
-  // }
 
   componentWillMount() {
     if (!this.props.user.login) {
@@ -85,97 +94,177 @@ export default class Nutrition extends React.Component {
         nonInteraction: true
       });
 
-      // // Grab the parsed data from a recipe and for each object,
       //
-      // const parseData = this.props.nutrition.parsedData
-      // console.log('ParseData ========= ========= =========')
-      // console.log(parseData)
+      // // // Grab the parsed data from a recipe and for each object,
+      // //
+      // // const parseData = this.props.nutrition.parsedData
+      // // console.log('ParseData ========= ========= =========')
+      // // console.log(parseData)
+      // //
+      // // for (let i = 0; i < parseData.length; i++) {
+      // //   const parseObj = parseData[i]
+      // //
+      // //   const name = parseObj['name']
+      // //   let foodTag = name
+      // //   const foodTagArr = this.getBestFoodTags(name)
+      // //   if (foodTagArr.length > 0) {
+      // //     foodTag = foodTagArr.toString().replace(',', ' ')
+      // //   }
+      // //
+      // //   const amount = rationalToFloat(parseObj['amount'])
+      // //
+      // //   const unit = mapToSupportedUnits(parseObj['unit'])
+      // //
+      // //   console.log('Results for ' + name + ' ---------')
+      // //   console.log('  foodTag = ')
+      // //   console.log(foodTags)
+      // //   console.log('  amount = ' + amount)
+      // //   console.log('  unit = ' + unit)
+      // //   console.log(parseObj)
+      // //
+      // //   // See if we can pull a list of matches from our elasticsearch on lambda:
+      // //   //
+      // //
+      // // }
       //
-      // for (let i = 0; i < parseData.length; i++) {
-      //   const parseObj = parseData[i]
+      // // Process the caption for matches in the FDA database:
+      // //
+      // //
+      // const tagString = this.generateSelectedTags().trim()
+      // // const tagString = "#tomato #cucumber #onion #lettuce #olive #feta"
+      // // TODO: AC! **************** regexp errors here for / characters
+      // this.state.nutAlg.processTags(tagString)
       //
-      //   const name = parseObj['name']
-      //   let foodTag = name
-      //   const foodTagArr = this.getBestFoodTags(name)
-      //   if (foodTagArr.length > 0) {
-      //     foodTag = foodTagArr.toString().replace(',', ' ')
+      // let nutritionModel = this.state.nutritionModel
+      // let ingredientControlModels = this.state.ingredientControlModels
+      //
+      // let unmatchedTags = []
+      //
+      // for (let tag in this.state.nutAlg.getMatches()) {
+      //   const tagMatches = this.state.nutAlg.getMatchList(tag)
+      //   if (tagMatches.length === 0) {
+      //     console.log('No matches found in database for tag: ' + tag);
+      //     unmatchedTags.push(tag)
+      //     continue
       //   }
+      //   const key = this.state.nutAlg.getBestMatchForTag(tag)
+      //   const dataForKey = this.state.nutAlg.getDataForKey(key)
       //
-      //   const amount = rationalToFloat(parseObj['amount'])
+      //   let ingredientModel = new IngredientModel()
+      //   ingredientModel.initializeSingle(key, tag, dataForKey)
       //
-      //   const unit = mapToSupportedUnits(parseObj['unit'])
+      //   // Get the Unit data
+      //   let measureQuantity = ingredientModel.getMeasureQuantity()
+      //   let measureUnit = ingredientModel.getMeasureUnit()
       //
-      //   console.log('Results for ' + name + ' ---------')
-      //   console.log('  foodTag = ')
-      //   console.log(foodTags)
-      //   console.log('  amount = ' + amount)
-      //   console.log('  unit = ' + unit)
-      //   console.log(parseObj)
+      //   nutritionModel.addIngredient(
+      //     key, ingredientModel, measureQuantity, measureUnit)
       //
-      //   // See if we can pull a list of matches from our elasticsearch on lambda:
-      //   //
+      //   let ingredientControlModel =
+      //     new IngredientControlModel(
+      //           measureQuantity,
+      //           this.getPossibleUnits(measureUnit),
+      //           measureUnit,
+      //           tagMatches,
+      //           key)
       //
+      //   ingredientControlModels[tag] = ingredientControlModel
       // }
-
-      // Process the caption for matches in the FDA database:
       //
-      //
-      const tagString = this.generateSelectedTags().trim()
-      // const tagString = "#tomato #cucumber #onion #lettuce #olive #feta"
-      // TODO: AC! **************** regexp errors here for / characters
-      this.state.nutAlg.processTags(tagString)
-
-      let nutritionModel = this.state.nutritionModel
-      let ingredientControlModels = this.state.ingredientControlModels
-
-      let unmatchedTags = []
-
-      for (let tag in this.state.nutAlg.getMatches()) {
-        const tagMatches = this.state.nutAlg.getMatchList(tag)
-        if (tagMatches.length === 0) {
-          console.log('No matches found in database for tag: ' + tag);
-          unmatchedTags.push(tag)
-          continue
-        }
-        const key = this.state.nutAlg.getBestMatchForTag(tag)
-        const dataForKey = this.state.nutAlg.getDataForKey(key)
-
-        let ingredientModel = new IngredientModel()
-        ingredientModel.initializeSingle(key, tag, dataForKey)
-
-        // Get the Unit data
-        let measureQuantity = ingredientModel.getMeasureQuantity()
-        let measureUnit = ingredientModel.getMeasureUnit()
-
-        nutritionModel.addIngredient(
-          key, ingredientModel, measureQuantity, measureUnit)
-
-        let ingredientControlModel =
-          new IngredientControlModel(
-                measureQuantity,
-                this.getPossibleUnits(measureUnit),
-                measureUnit,
-                tagMatches,
-                key)
-
-        ingredientControlModels[tag] = ingredientControlModel
-      }
-
-      this.setState({
-        matches: this.state.nutAlg.getMatches(),
-        unmatchedTags: unmatchedTags,
-        nutritionModel: nutritionModel,
-        ingredientControlModels: ingredientControlModels
-      })
+      // this.setState({
+      //   matches: this.state.nutAlg.getMatches(),
+      //   unmatchedTags: unmatchedTags,
+      //   nutritionModel: nutritionModel,
+      //   ingredientControlModels: ingredientControlModels
+      // })
     }
   }
 
-
   componentWillReceiveProps(nextProps) {
-    // Can call this.setState
     console.log('componentWillReceiveProps -----------------------------------');
+
+    // Tuple offsets for firebase data in nutrition reducer:
+    const descriptionOffset = 0
+    const keyOffset = 1
+    const dataObjOffset = 2
+
+    const matchData = nextProps.nutrition.matchData
+
+    // Examine to ensure we have got the complete data from firebase, then commence construction
+    // and creation of objects for rendering purposes (otherwise we run into problems with things
+    // not being defined):
+    //
+    // There are other things we can do to alleviate this.
+    //
+    // TODO: uncomment when finished dev
+    // if (Object.keys(nextProps.nutrition.matchData).length === nextProps.parseData.length) {
+    if (Object.keys(matchData).length !== 2) {
+      // TODO: PBJ||AC render spinner
+      return
+    }
+    for (let tag in matchData) {
+      const tagMatches = matchData[tag]
+      for (let idx = 0; idx < matchData[tag].length; idx++) {
+        if (matchData[tag][idx][dataObjOffset] === undefined) {
+          return
+        }
+      }
+    }
+
+    console.log('% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %');
+    console.log(' % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %');
+    console.log('% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %');
+    console.log('')
+    console.log('Complete data received from firebase');
+
     console.log(nextProps.nutrition);
 
+    let nutritionModel = this.state.nutritionModel
+    let ingredientControlModels = this.state.ingredientControlModels
+    let unmatchedTags = []
+
+    for (let tag in matchData) {
+      const tagMatches = matchData[tag]
+      if (tagMatches.length === 0) {
+        unmatchedTags.push(tag)
+        continue
+      }
+
+      // We use the first value in the list (assumes elastic search returns results
+      // in closest match order)
+      //const key = tagMatches[0][keyOffset]
+      const description = tagMatches[0][descriptionOffset]
+      const dataForKey = tagMatches[0][dataObjOffset]
+
+      let ingredientModel = new IngredientModel()
+      ingredientModel.initializeSingle(description, tag, dataForKey)
+      let measureQuantity = ingredientModel.getMeasureQuantity()
+      let measureUnit = ingredientModel.getMeasureUnit()
+
+      // TODO: measureQuantity and measureUnit should actually come from parseData
+      // TODO TODO TODO TODO MVP2
+      //  - check to see if measureQuantity/measureUnit specified in parseData and
+      //    permissible for ingredient known conversions--if so use it, otherewise
+      //    message:
+      nutritionModel.addIngredient(
+        description, ingredientModel, measureQuantity, measureUnit)
+
+      let ingredientControlModel = new IngredientControlModel(
+        measureQuantity,
+        this.getPossibleUnits(measureUnit),
+        measureUnit,
+        getListOfTupleOffset(tagMatches, descriptionOffset),
+        description)
+
+      ingredientControlModels[tag] = ingredientControlModel
+    }
+
+    this.setState({
+      matchData: matchData,
+      unmatchedTags: unmatchedTags,
+      nutritionModel: nutritionModel,
+      ingredientControlModels: ingredientControlModels
+    })
   }
 
   //////////////////////////////////////////////////////////////////////////////
@@ -244,76 +333,76 @@ export default class Nutrition extends React.Component {
     console.log('handleMatchDropdownChange ----------------------------------------');
     console.log('tag = ' + tag);
     console.log('value = ' + value);
-
-    let ingredientControlModels = this.state.ingredientControlModels
-    let nutritionModel = this.state.nutritionModel
-
-    // 1. Save the current ingredient key for deletion at the end of this
-    //    process:
-    let ingredientKeyToDelete = ingredientControlModels[tag].getDropdownMatchValue()
-    let ingredientModelToDelete = nutritionModel.getIngredientModel(tag)
     //
-    // 2. Create a new IngredientModel:
+    // let ingredientControlModels = this.state.ingredientControlModels
+    // let nutritionModel = this.state.nutritionModel
     //
-    const dataForKey = this.state.nutAlg.getDataForKey(value)
-    let ingredientModel = new IngredientModel()
-    ingredientModel.initializeSingle(value, tag, dataForKey)
+    // // 1. Save the current ingredient key for deletion at the end of this
+    // //    process:
+    // let ingredientKeyToDelete = ingredientControlModels[tag].getDropdownMatchValue()
+    // let ingredientModelToDelete = nutritionModel.getIngredientModel(tag)
+    // //
+    // // 2. Create a new IngredientModel:
+    // //
+    // const dataForKey = this.state.nutAlg.getDataForKey(value)
+    // let ingredientModel = new IngredientModel()
+    // ingredientModel.initializeSingle(value, tag, dataForKey)
+    // //
+    // // 3. Update the match value state for the dropdown:
+    // //
+    // ingredientControlModels[tag].setDropdownMatchValue(value)
+    // //
+    // // 4. Update the dropdown units and unit value:
+    // //
+    // //    a. Get the list of new measurement units that are possible:
+    // //
+    // let newMeasureUnit = mapToSupportedUnits(ingredientModel.getMeasureUnit())
+    // let newUnits = this.getPossibleUnits(newMeasureUnit)
+    // ingredientControlModels[tag].setDropdownUnits(newUnits)
+    // //
+    // //    b. See if the current unit is within the new possibilies, if not
+    // //       then set to the FDA measure defaults
+    // //
+    // const currentValue = ingredientControlModels[tag].getSliderValue()
+    // const currentUnit = ingredientControlModels[tag].getDropdownUnitValue()
     //
-    // 3. Update the match value state for the dropdown:
+    // let newValue = undefined
+    // let newUnit = undefined
+    // if (newUnits.includes(currentUnit)) {
+    //   newValue = currentValue
+    //   newUnit = currentUnit
+    // } else {
+    //   console.log('Ingredient change conversion--using grams to convert:');
+    //   console.log('   ' + currentValue + currentUnit + ' to ' + newMeasureUnit);
     //
-    ingredientControlModels[tag].setDropdownMatchValue(value)
+    //   // Convert current unit to grams, then convert grams to new measure unit
+    //   // for new ingredient
+    //   let valueInGrams = getValueInUnits(
+    //     currentValue, currentUnit, 'g', ingredientModelToDelete)
+    //   newValue = getValueInUnits(
+    //     valueInGrams, 'g', newMeasureUnit, ingredientModel)
+    //   newUnit = newMeasureUnit
     //
-    // 4. Update the dropdown units and unit value:
-    //
-    //    a. Get the list of new measurement units that are possible:
-    //
-    let newMeasureUnit = mapToSupportedUnits(ingredientModel.getMeasureUnit())
-    let newUnits = this.getPossibleUnits(newMeasureUnit)
-    ingredientControlModels[tag].setDropdownUnits(newUnits)
-    //
-    //    b. See if the current unit is within the new possibilies, if not
-    //       then set to the FDA measure defaults
-    //
-    const currentValue = ingredientControlModels[tag].getSliderValue()
-    const currentUnit = ingredientControlModels[tag].getDropdownUnitValue()
-
-    let newValue = undefined
-    let newUnit = undefined
-    if (newUnits.includes(currentUnit)) {
-      newValue = currentValue
-      newUnit = currentUnit
-    } else {
-      console.log('Ingredient change conversion--using grams to convert:');
-      console.log('   ' + currentValue + currentUnit + ' to ' + newMeasureUnit);
-
-      // Convert current unit to grams, then convert grams to new measure unit
-      // for new ingredient
-      let valueInGrams = getValueInUnits(
-        currentValue, currentUnit, 'g', ingredientModelToDelete)
-      newValue = getValueInUnits(
-        valueInGrams, 'g', newMeasureUnit, ingredientModel)
-      newUnit = newMeasureUnit
-
-      ingredientControlModels[tag].setSliderValue(newValue)
-      ingredientControlModels[tag].setDropdownUnitValue(newUnit)
-      // TODO: possibly an alert to tell the user we've converted their number
-      //       to a new amount due to unit change and the old units are not
-      //       available.
-    }
-    //
-    // 5. Remove the current IngredientModel from the NutritionModel:
-    //
-    nutritionModel.removeIngredient(ingredientKeyToDelete)
-    //
-    // 6. Add the new IngredientModel to the NutritionModel:
-    nutritionModel.addIngredient(value,
-                                 ingredientModel,
-                                 newValue,
-                                 newUnit)
-    this.setState({
-      nutritionModel: nutritionModel,
-      ingredientControlModels: ingredientControlModels
-    })
+    //   ingredientControlModels[tag].setSliderValue(newValue)
+    //   ingredientControlModels[tag].setDropdownUnitValue(newUnit)
+    //   // TODO: possibly an alert to tell the user we've converted their number
+    //   //       to a new amount due to unit change and the old units are not
+    //   //       available.
+    // }
+    // //
+    // // 5. Remove the current IngredientModel from the NutritionModel:
+    // //
+    // nutritionModel.removeIngredient(ingredientKeyToDelete)
+    // //
+    // // 6. Add the new IngredientModel to the NutritionModel:
+    // nutritionModel.addIngredient(value,
+    //                              ingredientModel,
+    //                              newValue,
+    //                              newUnit)
+    // this.setState({
+    //   nutritionModel: nutritionModel,
+    //   ingredientControlModels: ingredientControlModels
+    // })
   }
   //
   handleUnitDropdownChange(tag, value) {
@@ -391,71 +480,73 @@ export default class Nutrition extends React.Component {
     console.log(this.state.selectedTags);
     console.log('deletedTags = ');
     console.log(this.state.deletedTags);
-
-    let matches = this.state.matches
-    let nutAlg = this.state.nutAlg
-    let nutritionModel = this.state.nutritionModel
-    let ingredientControlModels = this.state.ingredientControlModels
-
-    let selectedTags = this.state.selectedTags
-    let deletedTags = this.state.deletedTags
-
-    if (tag in matches) {
-      console.log('   Unable to add ' + tag + ' back; already found in matches.');
-      return
-    }
-
-    // TODO: A lot of this is common to componentWillMount. Refactor
-
-    // 1. Add this tag to:
-    //    - this.state.matches
-    //    - this.state.nutAlg.matches
-    //    - this.state.nutritionModel
-    //    - ingredientControlModels
     //
-    let localNutAlg = new NutritionAlg()
-    localNutAlg.processTags(tag)
-    matches[tag] = localNutAlg.getMatches()[tag]
-
-    nutAlg.addMatches(tag, matches[tag])
-
-    const key = nutAlg.getBestMatchForTag(tag)
-    const dataForKey = nutAlg.getDataForKey(key)
-    let ingredientModel = new IngredientModel()
-    ingredientModel.initializeSingle(key, tag, dataForKey)
-
-    const measureQuantity = ingredientModel.getMeasureQuantity()
-    const measureUnit = ingredientModel.getMeasureUnit()
-    nutritionModel.addIngredient(
-      key, ingredientModel, measureQuantity, measureUnit)
-
-    let ingredientControlModel =
-      new IngredientControlModel(
-            measureQuantity,
-            this.getPossibleUnits(measureUnit),
-            measureUnit,
-            nutAlg.getMatchList(tag),
-            key)
-    ingredientControlModels[tag] = ingredientControlModel
-
-    // 2. Add the tag to selectedTags and remove it from deleted tags ...
+    // // TODO:
     //
-    for (let i = 0; i < deletedTags.length; i++) {
-      if (tag === deletedTags[i]) {
-        deletedTags = deletedTags.splice(i, 1)
-        break
-      }
-    }
-    selectedTags.push(tag)
-
-    this.setState({
-      matches: matches,
-      nutAlg: nutAlg,
-      nutritionModel: nutritionModel,
-      ingredientControlModels: ingredientControlModels,
-      selectedTags: selectedTags,
-      deletedTags: deletedTags
-    })
+    // let matches = this.state.matches
+    // let nutAlg = this.state.nutAlg
+    // let nutritionModel = this.state.nutritionModel
+    // let ingredientControlModels = this.state.ingredientControlModels
+    //
+    // let selectedTags = this.state.selectedTags
+    // let deletedTags = this.state.deletedTags
+    //
+    // if (tag in matches) {
+    //   console.log('   Unable to add ' + tag + ' back; already found in matches.');
+    //   return
+    // }
+    //
+    // // TODO: A lot of this is common to componentWillMount. Refactor
+    //
+    // // 1. Add this tag to:
+    // //    - this.state.matches
+    // //    - this.state.nutAlg.matches
+    // //    - this.state.nutritionModel
+    // //    - ingredientControlModels
+    // //
+    // let localNutAlg = new NutritionAlg()
+    // localNutAlg.processTags(tag)
+    // matches[tag] = localNutAlg.getMatches()[tag]
+    //
+    // nutAlg.addMatches(tag, matches[tag])
+    //
+    // const key = nutAlg.getBestMatchForTag(tag)
+    // const dataForKey = nutAlg.getDataForKey(key)
+    // let ingredientModel = new IngredientModel()
+    // ingredientModel.initializeSingle(key, tag, dataForKey)
+    //
+    // const measureQuantity = ingredientModel.getMeasureQuantity()
+    // const measureUnit = ingredientModel.getMeasureUnit()
+    // nutritionModel.addIngredient(
+    //   key, ingredientModel, measureQuantity, measureUnit)
+    //
+    // let ingredientControlModel =
+    //   new IngredientControlModel(
+    //         measureQuantity,
+    //         this.getPossibleUnits(measureUnit),
+    //         measureUnit,
+    //         nutAlg.getMatchList(tag),
+    //         key)
+    // ingredientControlModels[tag] = ingredientControlModel
+    //
+    // // 2. Add the tag to selectedTags and remove it from deleted tags ...
+    // //
+    // for (let i = 0; i < deletedTags.length; i++) {
+    //   if (tag === deletedTags[i]) {
+    //     deletedTags = deletedTags.splice(i, 1)
+    //     break
+    //   }
+    // }
+    // selectedTags.push(tag)
+    //
+    // this.setState({
+    //   matches: matches,
+    //   nutAlg: nutAlg,
+    //   nutritionModel: nutritionModel,
+    //   ingredientControlModels: ingredientControlModels,
+    //   selectedTags: selectedTags,
+    //   deletedTags: deletedTags
+    // })
   }
   //////////////////////////////////////////////////////////////////////////////
   // Miscellany:
@@ -753,7 +844,8 @@ export default class Nutrition extends React.Component {
     let sliders = []
     let notFound = ""
     let ingredientControlModels = this.state.ingredientControlModels
-    for (let tag in this.state.matches) {
+    for (let tag in this.state.matchData) {
+    // for (let tag in this.state.matches) {
       if (! (tag in ingredientControlModels)) {
         notFound = notFound + tag + " "
         continue

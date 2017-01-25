@@ -87,9 +87,9 @@ export default class Nutrition extends React.Component {
 
       // // Grab the parsed data from a recipe and for each object,
       //
-      // const parseData = this.props.nutrition.parsedData
-      // console.log('ParseData ========= ========= =========')
-      // console.log(parseData)
+      const parseData = this.props.nutrition.parsedData
+      console.log('ParseData ========= ========= =========')
+      console.log(parseData)
       //
       // for (let i = 0; i < parseData.length; i++) {
       //   const parseObj = parseData[i]

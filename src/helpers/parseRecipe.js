@@ -58,6 +58,31 @@ function removeSpecialChars(str) {
   return clean
 }
 
+export function parseCaption(caption) {
+  let regex = /\w+/g
+  let words = caption.match(regex)
+  var file = require("raw-loader!../data/ingredients.txt")
+  // var file = require("raw-loader!../../data/complete.unique-words.txt")
+  let fileWords = new Set(file.match(regex))
+  let fileIntersection = new Set([...words].filter(x => fileWords.has(x)))
+  // var food = require("raw-loader!../../data/ingredients.txt")
+  // let foodWords = new Set(food.match(regex))
+  // let foodIntersection = new Set([...fileIntersection].filter(x => foodWords.has(x)))
+  // return fileIntersection
+  if (!fileIntersection)
+    return
+  let parsedData = []
+  for (let index of fileIntersection) {
+    let data = {
+      amount: "",
+      name: index,
+      unit: ""
+    }
+    parsedData.push(data)
+  }
+  return parsedData
+}
+
 export function parseRecipe(data) {
   let regex = /[^\r\n]+/g
   let phrases = data.match(regex)
@@ -65,21 +90,10 @@ export function parseRecipe(data) {
   let parsedData = []
   if (!phrases)
     return
-  let flag1 = false
-  let flag2 = false
-  let flag3 = false
   for (let i of phrases) {
     let clean = removeSpecialChars(i)
     let parsed = ingp.parse(clean)
-    console.log('Parsed: ', parsed)
-    if (!flag3 && flag2 && flag1)
-      flag3 = true
-    if (!flag1 && parsed.name === 'inPhood:')
-      flag1 = true
-    if (!flag2 && flag1 && parsed.name === '---------')
-      flag2 = true
-    if (flag3)
-      parsedData.push(parsed)
+    parsedData.push(parsed)
   }
   return parsedData
 }

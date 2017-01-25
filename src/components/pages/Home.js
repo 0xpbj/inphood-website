@@ -17,7 +17,6 @@ import ImageGallery from 'react-image-gallery'
 import {Redirect} from 'react-router' 
 import {parseRecipe} from '../../helpers/parseRecipe'
 import Hello from 'hellojs'
-import Parser from './Parser'
 import Anon from './Anon'
 import UploadModal from '../layout/UploadModal'
 
@@ -72,9 +71,9 @@ export default class Home extends React.Component {
       nonInteraction: false,
       label: 'Social Flow'
     });
-    const caption =  this.props.user.photos.data[index].caption.text
-    const parsedData = parseRecipe(caption)
-    this.props.storeParsedData(parsedData)
+    // const caption =  this.props.user.photos.data[index].caption.text
+    // const parsedData = parseRecipe(caption)
+    // this.props.storeParsedData(parsedData)
     // this.props.router.push('nutrition')
     this.props.router.push('image')
   }

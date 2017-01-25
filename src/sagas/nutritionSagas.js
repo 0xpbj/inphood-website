@@ -4,6 +4,7 @@ import {
   RESULT_URL,
   SEND_SERIALIZED_DATA,
   STORE_PARSED_DATA,
+  CLEAR_FIREBASE_DATA,
   INITIALIZE_FIREBASE_DATA,
   INGREDIENT_FIREBASE_DATA
 } from '../constants/ActionTypes'
@@ -157,10 +158,10 @@ function* postLabelData() {
   }
 }
 
-function* getDataFromFireBase(searchTerm, ingredient, key) {
+function* getDataFromFireBase(searchTerm, foodName, ingredient, key) {
   const path = 'global/nutritionInfo/' + key
   const data = (yield call(db.getPath, path)).val()
-  yield put ({type: INGREDIENT_FIREBASE_DATA, searchTerm, ingredient, data})
+  yield put ({type: INGREDIENT_FIREBASE_DATA, foodName, ingredient, data})
 }
 
 const elasticSearchFetch = (request) => {
@@ -177,7 +178,7 @@ const elasticSearchFetch = (request) => {
   })
 }
 
-function* callElasticSearchLambda(searchTerm) {
+function* callElasticSearchLambda(searchTerm, foodName) {
   // Call elastic search (effectively this curl request):
   //
   // curl https://da0wffelhb.execute-api.us-west-2.amazonaws.com/prod/ingredients
@@ -193,7 +194,7 @@ function* callElasticSearchLambda(searchTerm) {
 
   const data = {
     'query': {'match' : {'Description': searchTerm}},
-    'size': 20
+    'size': 7
   }
 
   let myHeaders = new Headers()
@@ -211,10 +212,10 @@ function* callElasticSearchLambda(searchTerm) {
   // TODO: possibly need to preserve the order of the results (the parallel get and
   // object construction in nutritionReducer destroys this.)
 
-  yield put ({type: INITIALIZE_FIREBASE_DATA, searchTerm, json})
+  yield put ({type: INITIALIZE_FIREBASE_DATA, foodName, json})
 
   for (let index of json.data) {
-    yield fork(getDataFromFireBase, searchTerm, index._source.Description, index._id)
+    yield fork(getDataFromFireBase, searchTerm, foodName, index._source.Description, index._id)
   }
 }
 
@@ -240,8 +241,8 @@ function* processParseForLabel() {
   //     'yakisoba' : []
   //   ]
   const {parsedData} = yield select(state => state.nutritionReducer)
-  // for (let i = 0; i < parsedData.length; i++) {
-  for (let i = 0; i < 2; i++) {
+  for (let i = 0; i < parsedData.length; i++) {
+  // for (let i = 0; i < 2; i++) {
     const parseObj = parsedData[i]
     const foodName = parseObj['name']
 
@@ -251,7 +252,8 @@ function* processParseForLabel() {
       searchTerm = foodWords.toString().replace(',', ' ')
     }
 
-    yield fork(callElasticSearchLambda, searchTerm)
+    yield put({type: CLEAR_FIREBASE_DATA})
+    yield fork(callElasticSearchLambda, searchTerm, foodName)
   }
 
 }

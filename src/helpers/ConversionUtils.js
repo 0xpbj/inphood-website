@@ -2,9 +2,9 @@ const Convert = require('convert-units')
 
 
 const UnitTranslationMap = {
-  Tbs: ['T', 'Tbs', 'tbs', 'tbsp.', 'Tbsp.', 'Tbsp', 'tbsp', 'TB', 'TBS', 'TBSP', 'tablespoon'],
-  tsp: ['t', 'Tsp', 'tsp', 'tsp.', 'Tsp.', 'TS', 'TSP'],
-  cup: ['C', 'c'],
+  Tbs: ['T', 'Tbs', 'tbs', 'tbsp.', 'Tbsp.', 'Tbsp', 'tbsp', 'TB', 'TBS', 'TBSP', 'tablespoon', 'Tablespoon'],
+  tsp: ['t', 'Tsp', 'tsp', 'tsp.', 'Tsp.', 'TS', 'TSP', 'teaspoon', 'Teaspoon'],
+  cup: ['C', 'c', 'Cup', 'cups', 'Cups'],
   pnt: ['pt', 'PT', 'Pt'],
   qt: ['QT', 'Qt', 'qt'],
   gal: ['Gal', 'GAL', 'gal'],
@@ -17,12 +17,8 @@ const UnitTranslationMap = {
 }
 
 
-// Converts the provided unit, aUnit, to the abbreviation/unit-name used in
-// this SW if possible. Otherwise return the given unit (i.e. custom things
-// like 'pat' of butter are not in our default supported units, but we still
-// handle some conversions to them.)
-//
-export function mapToSupportedUnits(aUnit) {
+// Like below, but returns undefined if a mapping cannot be made ...
+export function mapToSupportedUnitsStrict(aUnit) {
   for (let supportedUnit in UnitTranslationMap) {
     if ((aUnit === supportedUnit)
         || (UnitTranslationMap[supportedUnit].includes(aUnit))) {
@@ -30,8 +26,19 @@ export function mapToSupportedUnits(aUnit) {
     }
   }
 
-  // const errorStr = "Unsupported unit: " + aUnit
-  // throw new Error(errorStr)
+  return undefined
+}
+
+// Converts the provided unit, aUnit, to the abbreviation/unit-name used in
+// this SW if possible. Otherwise return the given unit (i.e. custom things
+// like 'pat' of butter are not in our default supported units, but we still
+// handle some conversions to them.)
+//
+export function mapToSupportedUnits(aUnit) {
+  const result = mapToSupportedUnitsStrict(aUnit)
+  if (result !== undefined) {
+    return result
+  }
 
   return aUnit
 }

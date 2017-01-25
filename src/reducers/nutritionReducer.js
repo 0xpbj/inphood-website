@@ -7,6 +7,7 @@ import {
   RESULT_URL,
   SEND_SERIALIZED_DATA,
   STORE_PARSED_DATA,
+  CLEAR_FIREBASE_DATA,
   INITIALIZE_FIREBASE_DATA,
   INGREDIENT_FIREBASE_DATA
 } from '../constants/ActionTypes'
@@ -95,26 +96,36 @@ export default function nutrition(state = initialState, action) {
     //    ],
     //    ...
     //  }
+    case CLEAR_FIREBASE_DATA:
+      {
+        let localMatchData = {}
+
+        return {
+          ...state,
+          matchData: localMatchData
+        }
+      }
+    //
     case INITIALIZE_FIREBASE_DATA:
       {
-        console.log('nutritionReducer: INITIALIZE_FIREBASE_DATA --------------')
-        console.log(action.searchTerm)
-        console.log(action.json)
+        console.log('nutritionReducer: INITIALIZE_FIREBASE_DATA --------------');
+        console.log(action.foodName);
+        console.log(action.json);
 
         // Initializes our dictionary of match data with ordered arrays of tuples
         // containing the description, ndbNo and undefined:
 
         // Clear the match data to prevent populating it twice on 'back' button actions etc.
         let localMatchData = state.matchData
-        if (action.seachTerm in localMatchData) {
+        if (action.foodName in localMatchData) {
           return
         }
 
-        localMatchData[action.searchTerm] = []
+        localMatchData[action.foodName] = []
 
         for (let obj of action.json.data) {
           let dataEntry = [obj._source.Description, obj._id, undefined]
-          localMatchData[action.searchTerm].push(dataEntry)
+          localMatchData[action.foodName].push(dataEntry)
         }
 
         return {
@@ -125,9 +136,9 @@ export default function nutrition(state = initialState, action) {
     //
     case INGREDIENT_FIREBASE_DATA:
       {
-        // console.log('nutritionReducer: INGREDIENT_FIREBASE_DATA --------------')
-        // console.log(action.searchTerm)
-        // console.log(action.json)
+        // console.log('nutritionReducer: INGREDIENT_FIREBASE_DATA --------------');
+        // console.log(action.foodName);
+        // console.log(action.json);
 
         // Performs an ordered insertion of the data returned by firebase for the
         // key (ndbNo) returned from elastic search:
@@ -136,18 +147,18 @@ export default function nutrition(state = initialState, action) {
         const dataObjOffset = 2
 
         let localMatchData = state.matchData
-        if (action.searchTerm in localMatchData) {
-          let searchTermArr = localMatchData[action.searchTerm]
+        if (action.foodName in localMatchData) {
+          let foodNameArr = localMatchData[action.foodName]
 
-          for (let tupleIdx = 0; tupleIdx < searchTermArr.length; tupleIdx++) {
-            if (action.ingredient === searchTermArr[tupleIdx][descriptionOffset]) {
-              searchTermArr[tupleIdx][dataObjOffset] = action.data
+          for (let tupleIdx = 0; tupleIdx < foodNameArr.length; tupleIdx++) {
+            if (action.ingredient === foodNameArr[tupleIdx][descriptionOffset]) {
+              foodNameArr[tupleIdx][dataObjOffset] = action.data
               break
             }
           }
         } else {
           console.log('nutritionReducer - error in INGREDIENT_FIREBASE_DATA');
-          console.log(action.searchTerm);
+          console.log(action.foodName);
           console.log(localMatchData.length);
         }
 

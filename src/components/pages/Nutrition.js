@@ -1,8 +1,6 @@
 var React = require('react')
 import ReactGA from 'react-ga'
 import Label from './NutritionEstimateJSX'
-// TODO: remove when es/fb db works:
-// import NutritionAlg from '../../algorithms/NutritionAlg'
 import {IngredientModel} from '../models/IngredientModel'
 import {NutritionModel} from '../models/NutritionModel'
 import {IngredientControlModel} from '../models/IngredientControlModel'
@@ -10,6 +8,7 @@ import {Link} from 'react-router'
 import {getValueInUnits,
         getIngredientValueInUnits,
         mapToSupportedUnits,
+        mapToSupportedUnitsStrict,
         rationalToFloat} from '../../helpers/ConversionUtils'
 import Chip from 'react-toolbox/lib/chip'
 import Row from 'react-bootstrap/lib/Row'
@@ -109,102 +108,21 @@ export default class Nutrition extends React.Component {
         action: 'Uploading image to AWS',
         nonInteraction: true
       });
-
-      //
-      // // // Grab the parsed data from a recipe and for each object,
-      // //
-      // // const parseData = this.props.nutrition.parsedData
-      // // console.log('ParseData ========= ========= =========')
-      // // console.log(parseData)
-      // //
-      // // for (let i = 0; i < parseData.length; i++) {
-      // //   const parseObj = parseData[i]
-      // //
-      // //   const name = parseObj['name']
-      // //   let foodTag = name
-      // //   const foodTagArr = this.getBestFoodTags(name)
-      // //   if (foodTagArr.length > 0) {
-      // //     foodTag = foodTagArr.toString().replace(',', ' ')
-      // //   }
-      // //
-      // //   const amount = rationalToFloat(parseObj['amount'])
-      // //
-      // //   const unit = mapToSupportedUnits(parseObj['unit'])
-      // //
-      // //   console.log('Results for ' + name + ' ---------')
-      // //   console.log('  foodTag = ')
-      // //   console.log(foodTags)
-      // //   console.log('  amount = ' + amount)
-      // //   console.log('  unit = ' + unit)
-      // //   console.log(parseObj)
-      // //
-      // //   // See if we can pull a list of matches from our elasticsearch on lambda:
-      // //   //
-      // //
-      // // }
-      //
-      // // Process the caption for matches in the FDA database:
-      // //
-      // //
-      // const tagString = this.generateSelectedTags().trim()
-      // // const tagString = "#tomato #cucumber #onion #lettuce #olive #feta"
-      // // TODO: AC! **************** regexp errors here for / characters
-      // this.state.nutAlg.processTags(tagString)
-      //
-      // let nutritionModel = this.state.nutritionModel
-      // let ingredientControlModels = this.state.ingredientControlModels
-      //
-      // let unmatchedTags = []
-      //
-      // for (let tag in this.state.nutAlg.getMatches()) {
-      //   const tagMatches = this.state.nutAlg.getMatchList(tag)
-      //   if (tagMatches.length === 0) {
-      //     console.log('No matches found in database for tag: ' + tag);
-      //     unmatchedTags.push(tag)
-      //     continue
-      //   }
-      //   const key = this.state.nutAlg.getBestMatchForTag(tag)
-      //   const dataForKey = this.state.nutAlg.getDataForKey(key)
-      //
-      //   let ingredientModel = new IngredientModel()
-      //   ingredientModel.initializeSingle(key, tag, dataForKey)
-      //
-      //   // Get the Unit data
-      //   let measureQuantity = ingredientModel.getMeasureQuantity()
-      //   let measureUnit = ingredientModel.getMeasureUnit()
-      //
-      //   nutritionModel.addIngredient(
-      //     key, ingredientModel, measureQuantity, measureUnit)
-      //
-      //   let ingredientControlModel =
-      //     new IngredientControlModel(
-      //           measureQuantity,
-      //           this.getPossibleUnits(measureUnit),
-      //           measureUnit,
-      //           tagMatches,
-      //           key)
-      //
-      //   ingredientControlModels[tag] = ingredientControlModel
-      // }
-      //
-      // this.setState({
-      //   matches: this.state.nutAlg.getMatches(),
-      //   unmatchedTags: unmatchedTags,
-      //   nutritionModel: nutritionModel,
-      //   ingredientControlModels: ingredientControlModels
-      // })
     }
   }
 
   componentWillReceiveProps(nextProps) {
     console.log('componentWillReceiveProps -----------------------------------');
 
+    // TODO: refactor and compbine
     // Tuple offsets for firebase data in nutrition reducer:
     const descriptionOffset = 0
     const keyOffset = 1
     const dataObjOffset = 2
 
     const matchData = nextProps.nutrition.matchData
+    const parsedData = nextProps.nutrition.parsedData
+
 
     // Examine to ensure we have got the complete data from firebase, then commence construction
     // and creation of objects for rendering purposes (otherwise we run into problems with things
@@ -212,9 +130,12 @@ export default class Nutrition extends React.Component {
     //
     // There are other things we can do to alleviate this.
     //
-    // TODO: uncomment when finished dev
-    // if (Object.keys(nextProps.nutrition.matchData).length === nextProps.parseData.length) {
-    if (Object.keys(matchData).length !== 2) {
+    console.log(Object.keys(matchData).length);
+    console.log(Object.keys(nextProps.nutrition.parsedData).length);
+    console.log('---------')
+    console.log(matchData)
+    console.log(nextProps.nutrition.parsedData)
+    if (Object.keys(matchData).length !== Object.keys(parsedData).length) {
       // TODO: PBJ||AC render spinner
       return
     }
@@ -263,6 +184,30 @@ export default class Nutrition extends React.Component {
       //  - check to see if measureQuantity/measureUnit specified in parseData and
       //    permissible for ingredient known conversions--if so use it, otherewise
       //    message:
+      let parseQuantity = undefined
+      let parseUnit = undefined
+      for (let i = 0; i < parsedData.length; i++) {
+      // for (let i = 0; i < 2; i++) {
+        const parseObj = parsedData[i]
+        const foodName = parseObj['name']
+
+        if (foodName === tag) {
+          parseQuantity = rationalToFloat(parseObj['amount'])
+          parseUnit = mapToSupportedUnitsStrict(parseObj['unit'])
+
+          if ((parseQuantity !== undefined) && (parseQuantity !== "")) {
+            console.log(tag + ', setting measureQuantity to parseQuantity: ' + parseQuantity)
+            measureQuantity = parseQuantity
+          }
+          if ((parseUnit !== undefined) && (parseUnit !== "")) {
+            console.log(tag + ', setting measureUnit to parseUnit: ' + parseUnit)
+            measureUnit = parseUnit
+          }
+          break
+        }
+      }
+
+
       nutritionModel.addIngredient(
         description, ingredientModel, measureQuantity, measureUnit)
 
@@ -477,7 +422,7 @@ export default class Nutrition extends React.Component {
     //
     for (let i = 0; i < selectedTags.length; i++) {
       if (tag === selectedTags[i]) {
-        selectedTags = selectedTags.splice(i, 1)
+        selectedTags.splice(i, 1)
         break
       }
     }
@@ -498,131 +443,67 @@ export default class Nutrition extends React.Component {
     console.log(this.state.selectedTags);
     console.log('deletedTags = ');
     console.log(this.state.deletedTags);
+
+    // TODO: refactor and compbine
+    // Tuple offsets for firebase data in nutrition reducer:
+    const descriptionOffset = 0
+    const keyOffset = 1
+    const dataObjOffset = 2
+
+    let tagMatches = this.state.matchData[tag]
+    let nutritionModel = this.state.nutritionModel
+    let ingredientControlModels = this.state.ingredientControlModels
+
+    let selectedTags = this.state.selectedTags
+    let deletedTags = this.state.deletedTags
+
+    // TODO: A lot of this is common to componentWillMount. Refactor
+
+    // 1. Add this tag to:
+    //    - this.state.nutritionModel
+    //    - ingredientControlModels
     //
-    // // TODO:
+
+    const description = tagMatches[0][descriptionOffset]
+    const dataForKey = tagMatches[0][dataObjOffset]
+    let ingredientModel = new IngredientModel()
+    ingredientModel.initializeSingle(description, tag, dataForKey)
+
+    const measureQuantity = ingredientModel.getMeasureQuantity()
+    const measureUnit = ingredientModel.getMeasureUnit()
+    nutritionModel.addIngredient(
+      description, ingredientModel, measureQuantity, measureUnit)
+
+    let ingredientControlModel =
+      new IngredientControlModel(
+            measureQuantity,
+            this.getPossibleUnits(measureUnit),
+            measureUnit,
+            getListOfTupleOffset(tagMatches, descriptionOffset),
+            description)
+
+    ingredientControlModels[tag] = ingredientControlModel
+
+    // 2. Add the tag to selectedTags and remove it from deleted tags ...
     //
-    // let matches = this.state.matches
-    // let nutAlg = this.state.nutAlg
-    // let nutritionModel = this.state.nutritionModel
-    // let ingredientControlModels = this.state.ingredientControlModels
-    //
-    // let selectedTags = this.state.selectedTags
-    // let deletedTags = this.state.deletedTags
-    //
-    // if (tag in matches) {
-    //   console.log('   Unable to add ' + tag + ' back; already found in matches.');
-    //   return
-    // }
-    //
-    // // TODO: A lot of this is common to componentWillMount. Refactor
-    //
-    // // 1. Add this tag to:
-    // //    - this.state.matches
-    // //    - this.state.nutAlg.matches
-    // //    - this.state.nutritionModel
-    // //    - ingredientControlModels
-    // //
-    // let localNutAlg = new NutritionAlg()
-    // localNutAlg.processTags(tag)
-    // matches[tag] = localNutAlg.getMatches()[tag]
-    //
-    // nutAlg.addMatches(tag, matches[tag])
-    //
-    // const key = nutAlg.getBestMatchForTag(tag)
-    // const dataForKey = nutAlg.getDataForKey(key)
-    // let ingredientModel = new IngredientModel()
-    // ingredientModel.initializeSingle(key, tag, dataForKey)
-    //
-    // const measureQuantity = ingredientModel.getMeasureQuantity()
-    // const measureUnit = ingredientModel.getMeasureUnit()
-    // nutritionModel.addIngredient(
-    //   key, ingredientModel, measureQuantity, measureUnit)
-    //
-    // let ingredientControlModel =
-    //   new IngredientControlModel(
-    //         measureQuantity,
-    //         this.getPossibleUnits(measureUnit),
-    //         measureUnit,
-    //         nutAlg.getMatchList(tag),
-    //         key)
-    // ingredientControlModels[tag] = ingredientControlModel
-    //
-    // // 2. Add the tag to selectedTags and remove it from deleted tags ...
-    // //
-    // for (let i = 0; i < deletedTags.length; i++) {
-    //   if (tag === deletedTags[i]) {
-    //     deletedTags = deletedTags.splice(i, 1)
-    //     break
-    //   }
-    // }
-    // selectedTags.push(tag)
-    //
-    // this.setState({
-    //   matches: matches,
-    //   nutAlg: nutAlg,
-    //   nutritionModel: nutritionModel,
-    //   ingredientControlModels: ingredientControlModels,
-    //   selectedTags: selectedTags,
-    //   deletedTags: deletedTags
-    // })
+    for (let i = 0; i < deletedTags.length; i++) {
+      if (tag === deletedTags[i]) {
+        deletedTags.splice(i, 1)
+        break
+      }
+    }
+    selectedTags.push(tag)
+
+    this.setState({
+      nutritionModel: nutritionModel,
+      ingredientControlModels: ingredientControlModels,
+      selectedTags: selectedTags,
+      deletedTags: deletedTags
+    })
   }
   //////////////////////////////////////////////////////////////////////////////
   // Miscellany:
   //////////////////////////////////////////////////////////////////////////////
-  //
-  // This method filters out words in the caption that do not match a list of the
-  // unique words in our current DB
-  //
-  filterCaptionWords(caption) {
-    if (caption !== '') {
-      let regex = /\w+/g
-      let words = caption.match(regex)
-      var file = require("raw-loader!../../data/complete.unique-words.txt")
-      let fileWords = new Set(file.match(regex))
-      let fileIntersection = new Set([...words].filter(x => fileWords.has(x)))
-      // var food = require("raw-loader!../../data/ingredients.txt")
-      // let foodWords = new Set(food.match(regex))
-      // let foodIntersection = new Set([...fileIntersection].filter(x => foodWords.has(x)))
-      return fileIntersection
-    }
-  }
-  // Given the original catpion string (caption) and one with selections by a user (updatedCaption),
-  // this method generates two arrays, selectedTagArr and deletedTagArr, as well as returning a
-  // space delimited string containing selected tags.
-  //
-  generateSelectedTags() {
-    let {caption, updatedCaption} = this.props.nutrition
-
-    if (Config.fastDevelopNutritionPage) {
-      // caption = "seasoning breakfast eggs spinach butter"
-      // updatedCaption = "eggs spinach butter"
-      caption = "Wild Salmon baked with lemongrass and chili flakes over a bed of ginger veggies, including bok choy, broccolini, mushrooms, peppers, and onions"
-      updatedCaption = "Wild Salmon lemongrass chili flakes ginger veggies bok choy broccolini mushrooms peppers onions"
-    }
-
-    let deletedTagArr = []
-    let selectedTagArr = []
-    let originalWordSet = this.filterCaptionWords(caption)
-
-    if (updatedCaption === '') {
-      selectedTagArr = [...originalWordSet]
-    } else {
-      const regex = /\w+/g
-      let updatedWordSet = new Set(updatedCaption.match(regex))
-      let cancelledWordSet = new Set([...originalWordSet].filter(x => !updatedWordSet.has(x)))
-
-      selectedTagArr = [...updatedWordSet]
-      deletedTagArr = [...cancelledWordSet]
-    }
-
-    this.setState({
-      selectedTags: selectedTagArr,
-      deletedTags: deletedTagArr
-    })
-
-    const result = selectedTagArr.toString().replace(/,/g, ' ')
-    return result
-  }
   //
   // TODO: probably move this to ConversionUtils.js
   getPossibleUnits(measureUnit) {
@@ -726,12 +607,16 @@ export default class Nutrition extends React.Component {
     )
   }
   //
-  getDiscardedTagPanel() {
+  getTagPanel(tags, tagName, deletable) {
+    if (tags.length === 0) {
+      return (<div></div>)
+    }
+
     return (
       <div>
         <Row>
           <Col xs={12} md={12}>
-            <text style={{fontWeight: 'bold'}}>Discarded Tags:</text>
+            <text style={{fontWeight: 'bold'}}>{tagName}</text>
           </Col>
         </Row>
         <div style={{borderWidth: 1,
@@ -745,38 +630,13 @@ export default class Nutrition extends React.Component {
             <Col xs={12} md={12}>
               {/* The section elements here separate the updated tags from the
                   eliminated ones */}
-              {this.getChipsFromArray(this.state.deletedTags, true)}
+              {this.getChipsFromArray(tags, deletable)}
             </Col>
           </Row>
         </div>
       </div>
     )
-  }
-  getUnmatchedTagPanel() {
-    return (
-      <div style={{marginTop: 54}}>
-        <Row>
-          <Col xs={12} md={12} style={{paddingRight: 5, paddingLeft: 5}}>
-            <text style={{fontWeight: 'bold'}}>No match found for these tags:</text>
-          </Col>
-        </Row>
-        <div style={{borderWidth: 1,
-                     borderColor: 'black',
-                     borderStyle: 'solid',
-                     borderRadius: 5,
-                     padding: 10,
-                     marginRight: 10,
-                     marginLeft: 10}}>
-          <Row>
-            <Col xs={12} md={12} style={{paddingRight: 5, paddingLeft: 5}}>
-              {/* The section elements here separate the updated tags from the
-                  eliminated ones */}
-              {this.getChipsFromArray(this.state.unmatchedTags, false)}
-            </Col>
-          </Row>
-        </div>
-      </div>
-    )
+
   }
   //
   getIngredientController(tag) {
@@ -844,6 +704,7 @@ export default class Nutrition extends React.Component {
       </div>
     )
   }
+  //
   render() {
     if (!this.props.user.profile) {
       return (
@@ -894,32 +755,34 @@ export default class Nutrition extends React.Component {
             </div>
           </Col>
         </Row>
+
         {/*Serving size below: TODO refactor*/}
         <Row style={{marginTop: 20}}>
           <Col xs={8} md={8}>
             {this.getServingsController()}
-          </Col>
-          {/* The padding L/R = 5 is to get the nutrition label to align
-              with the discarded tags widget in most situations. */}
-          <Col xs={4} md={4} style={{paddingRight: 5, paddingLeft: 5}}>
-              {this.getDiscardedTagPanel()}
-          </Col>
-        </Row>
-        <Row>
-          <Col xs={8} md={8}>
             {sliders}
           </Col>
           <Col xs={4} md={4}>
             <Row>
-              {/* To align with sliders need margin of 37 and then text placeholder */}
-              <div style={{marginTop: 37}}>
+              <div>
                 <text>&nbsp;</text>
                 <Label ingredientComposite={compositeModel}/>
               </div>
             </Row>
-            {this.getUnmatchedTagPanel()}
+            {/* temporary hack to align top to adjacent slider */}
+            <Row style={{marginTop: 9}}>
+              {this.getTagPanel(this.state.deletedTags,
+                                'Discarded Tags:',
+                                true)}
+            </Row>
+            <Row>
+              {this.getTagPanel(this.state.unmatchedTags,
+                                'No match found for these tags:',
+                                true)}
+            </Row>
           </Col>
         </Row>
+
       </Grid>
     )
   }

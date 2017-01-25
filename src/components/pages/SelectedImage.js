@@ -23,7 +23,8 @@ export default class SelectedImage extends React.Component {
       chipData: [],
       recipe: '',
       parse: false,
-      ingredients: ''
+      ingredients: '',
+      recipeError: false
     }
   }
   componentWillMount() {
@@ -39,9 +40,14 @@ export default class SelectedImage extends React.Component {
     }
   }
   recipeFlow() {
-    let data = parseRecipe(this.state.ingredients)
-    this.props.storeParsedData(data)
-    this.props.router.push('nutrition')
+    if (this.state.ingredients === '') {
+      this.setState({recipeError: true})
+    }
+    else {
+      let data = parseRecipe(this.state.ingredients)
+      this.props.storeParsedData(data)
+      this.props.router.push('nutrition')
+    }
   }
   captionFlow() {
     let data = parseCaption(this.props.user.photos.data[this.props.nutrition.index].caption.text)
@@ -50,7 +56,7 @@ export default class SelectedImage extends React.Component {
   }
   getData(e) {
     let ingredients = e.target.value
-    this.setState({ingredients})
+    this.setState({ingredients, recipeError: false})
   }
   render() {
     if (!this.props.user.profile) {
@@ -66,6 +72,11 @@ export default class SelectedImage extends React.Component {
     const containerStyle = {
       marginTop: "60px"
     }
+    const recipeAlert = (this.state.recipeError) ? (
+      <Alert bsStyle="danger">
+        <h4>Oh snap! You forgot to enter a recipe!</h4>
+      </Alert>
+    ) : null
     return (
       <Grid>
         <Row className="show-grid">
@@ -78,7 +89,13 @@ export default class SelectedImage extends React.Component {
               <section>
                 <FormGroup controlId="formControlsTextarea">
                   <ControlLabel>Meal Recipe</ControlLabel>
-                  <FormControl componentClass="textarea" rows="10" placeholder="Write or paste recipe here..." onChange={this.getData.bind(this)}/>
+                  {recipeAlert}
+                  <FormControl 
+                    componentClass="textarea" 
+                    rows="10" 
+                    placeholder={"1.5 cup rainbow chard (sliced)\n2 stalks green onion (sliced)\n2 medium tomatoes (chopped)\n1 medium avocado (chopped)\n¼ tsp sea salt\n1 tbsp butter\n1 ½ tbsp flax seed oil\n½ tbsp white wine vinegar\n..."}
+                    onChange={this.getData.bind(this)}
+                  />
                 </FormGroup>
               </section>
               <Button className="btn-primary-spacing" bsStyle="success" onClick={() => this.recipeFlow()}>Use Recipe</Button>

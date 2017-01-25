@@ -1,4 +1,4 @@
-import { 
+import {
   AN_CLEAR_DATA,
   ADD_CAPTION,
   AN_SELECTED_PHOTO,
@@ -23,7 +23,7 @@ const initialState = {
   full: '',
   index: 0,
   parsedData: [],
-  firebaseData: {}
+  matchData: {}
 }
 export default function nutrition(state = initialState, action) {
   switch (action.type) {
@@ -77,15 +77,31 @@ export default function nutrition(state = initialState, action) {
         parsedData: action.parsedData
       }
     case INGREDIENT_FIREBASE_DATA:
-      //TODO: AC organize data
+      // Data structure:
+      //
+      //  matchData: {
+      //    searchTerm1: {
+      //      description1: { ndbNo1 },
+      //      description2: { ndbNo2 },
+      //      ...
+      //    },
+      //    searchTerm2: {
+      //      description1: { ndbNo1 },
+      //      ...
+      //    },
+      //    ...
+      //  }
+      let localMatchData = state.matchData
+      if (action.searchTerm in localMatchData) {
+        localMatchData[action.searchTerm][action.ingredient] = action.data
+      } else {
+        localMatchData[action.searchTerm] = {}
+        localMatchData[action.searchTerm][action.ingredient] = action.data
+      }
+
       return {
         ...state,
-        firebaseData: {
-          ...state.firebaseData,
-          ingredient: {
-            ...action.data
-          }
-        }
+        matchData: localMatchData
       }
     default:
       return state

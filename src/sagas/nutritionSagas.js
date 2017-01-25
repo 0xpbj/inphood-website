@@ -156,52 +156,10 @@ function* postLabelData() {
   }
 }
 
-// function* callElasticSearch(ingredient) {
-//   // This is a bypass that should only be used for development when the lambda server
-//   // is down. It is not publically accessible.
-//
-//   // Call elastic search, essentially this curl command:
-//   //
-//   //   curl -XPOST '35.167.212.47:9200/firebase/_search' -d '
-//   //     {
-//   //       "query": { "match": { "Description": "kale" } },
-//   //       "size": 1
-//   //     }'
-//   //
-//   const nonPublicUrl = '35.167.212.47:9200/firebase/_search'
-//   const data = {
-//     'query': {'match': {'Description': ingredient}},
-//     'size': 20
-//   }
-//   let myHeaders = new Headers()
-//   myHeaders.append('Content-Type', 'application/json')
-//
-//   let request = new Request(url, {
-//     method: 'POST',
-//     body: JSON.stringify(data),
-//     headers: myHeaders,
-//     mode: 'cors',
-//     cache: 'default'
-//   })
-//
-//   fetch(request)
-//   .then(function)
-// }
-
-function* getDataFromFireBase(ingredient, key) {
-  // call firebase:
-  // const {userId, labelId} = yield take (GET_LABEL_ID)
-  // const path = '/global/nutritionLabel/' + userId + '/' + labelId
-  // const data = (yield call(db.getPath, path)).val()
-  // yield put({type: LABEL_DATA, data})
-
-  console.log('Trying to get data from Firebase: ------------------------');
+function* getDataFromFireBase(searchTerm, ingredient, key) {
   const path = 'global/nutritionInfo/' + key
   const data = (yield call(db.getPath, path)).val()
-  console.log('Firebase data: -------------------------------------------');
-  console.log('   from ' + path);
-  console.log(data)
-  yield put ({type: INGREDIENT_FIREBASE_DATA, ingredient, data})
+  yield put ({type: INGREDIENT_FIREBASE_DATA, searchTerm, ingredient, data})
 }
 
 const elasticSearchFetch = (request) => {
@@ -218,10 +176,7 @@ const elasticSearchFetch = (request) => {
   })
 }
 
-function* callElasticSearchLambda(ingredient) {
-  console.log('--------------------------------------------------------------')
-  console.log('callElasticSearch on: ' + ingredient)
-
+function* callElasticSearchLambda(searchTerm) {
   // Call elastic search (effectively this curl request):
   //
   // curl https://da0wffelhb.execute-api.us-west-2.amazonaws.com/prod/ingredients
@@ -236,7 +191,7 @@ function* callElasticSearchLambda(ingredient) {
   const url = debugUrl
 
   const data = {
-    'query': {'match' : {'Description': 'kale'}},
+    'query': {'match' : {'Description': searchTerm}},
     'size': 20
   }
 
@@ -253,10 +208,8 @@ function* callElasticSearchLambda(ingredient) {
   })
   const json = yield call (elasticSearchFetch, request)
   for (let index of json.data) {
-    yield fork(getDataFromFireBase, ingredient, index._id)
+    yield fork(getDataFromFireBase, searchTerm, index._source.Description, index._id)
   }
-  // console.log('Calling getDataFromFireBase: ------------------------');
-  // yield call(getDataFromFireBase, fakeIdForDevSpeed)
 }
 
 function filterOutNonFoodWords(foodPhrase) {
@@ -282,7 +235,7 @@ function* processParseForLabel() {
   //   ]
   const {parsedData} = yield select(state => state.nutritionReducer)
   // for (let i = 0; i < parsedData.length; i++) {
-  for (let i = 0; i < 1; i++) {
+  for (let i = 0; i < 2; i++) {
     const parseObj = parsedData[i]
     const foodName = parseObj['name']
 
@@ -292,10 +245,7 @@ function* processParseForLabel() {
       searchTerm = foodWords.toString().replace(',', ' ')
     }
 
-    // TODO: (uncomment when PBJ server works)
     yield fork(callElasticSearchLambda, searchTerm)
-    // let fakeIdForDevSpeed = 43406
-    // yield fork(getDataFromFireBase, fakeIdForDevSpeed)
   }
 
 }

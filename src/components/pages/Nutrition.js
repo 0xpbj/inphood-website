@@ -170,9 +170,12 @@ export default class Nutrition extends React.Component {
     }
   }
 
-  
+
   componentWillReceiveProps(nextProps) {
     // Can call this.setState
+    console.log('componentWillReceiveProps -----------------------------------');
+    console.log(nextProps.nutrition);
+
   }
 
   //////////////////////////////////////////////////////////////////////////////

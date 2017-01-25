@@ -20,6 +20,7 @@ import Modal from 'react-bootstrap/lib/Modal'
 import Slider from 'react-toolbox/lib/slider'
 import MenuItem from 'react-bootstrap/lib/MenuItem'
 import Button from 'react-bootstrap/lib/Button'
+import DropdownButton from 'react-bootstrap/lib/DropdownButton'
 import FormControl from 'react-bootstrap/lib/FormControl'
 import ControlLabel from 'react-bootstrap/lib/ControlLabel'
 
@@ -774,14 +775,12 @@ export default class Nutrition extends React.Component {
     // TODO: PBJ, what does the next line do? Is it needed here?
     let hideUrlModal = () => this.setState({ showUrlModal: false })
     const eventKey = this.props.nutrition.anonymous === false ? "2" : "1"
-    const path = 'http://www.label.inphood.com/?user=' + this.props.nutrition.username + '&label=' + this.props.nutrition.key
     return (
       <Grid>
         <Row>
           <Col xs={12} md={12}>
-            <div>
-              <Button bsStyle="success" onClick={this.transitionToLabelPage.bind(this, false, composite, full, false)}>Share Image + Label</Button>
-              <Button bsStyle="success" onClick={this.transitionToLabelPage.bind(this, false, composite, full, true)}><Link to={path} target="_blank">Share Label</Link></Button>
+            <div className='text-right'>
+              <Button bsStyle="success" onClick={this.transitionToLabelPage.bind(this, false, composite, full, false)}>Share Results</Button>
             </div>
           </Col>
         </Row>

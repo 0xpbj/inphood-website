@@ -11,7 +11,7 @@ import {
 
 import * as db from './firebaseCommands'
 import { call, fork, put, select, take, takeLatest } from 'redux-saga/effects'
-import firebase from 'firebase'
+const firebase = require('firebase')
 import request from 'request'
 import Hello from 'hellojs'
 const Config = require('Config')
@@ -188,9 +188,7 @@ function* callElasticSearchLambda(searchTerm, foodName) {
   //
   //  TODO: fetch not supported in Safari; PBJ install this https://github.com/github/fetch
   //
-  const productionUrl = 'https://da0wffelhb.execute-api.us-west-2.amazonaws.com/prod/ingredients'
-  const debugUrl = 'https://tah21v2noa.execute-api.us-west-2.amazonaws.com/prod/ingredients'
-  const url = debugUrl
+  const url = Config.LAMBDA_URL
 
   const data = {
     'query': {'match' : {'Description': searchTerm}},

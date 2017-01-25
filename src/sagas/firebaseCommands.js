@@ -1,7 +1,7 @@
 import { eventChannel } from 'redux-saga';
 import { put, fork, call, take } from 'redux-saga/effects';
 
-import firebase from 'firebase'
+const firebase = require('firebase')
 
 // NOTE: Need buffer? If the handler is called before waiting
 //       an event by 'take' effect, it will miss somewhat events.

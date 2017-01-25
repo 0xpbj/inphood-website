@@ -5,8 +5,8 @@ var loaders = require('./webpack.loaders');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var WebpackCleanupPlugin = require('webpack-cleanup-plugin');
-var WebpackStripLoader = require('strip-loader')
-import 'whatwg-fetch'
+var WebpackStripLoader = require('strip-loader');
+require('whatwg-fetch');
 
 loaders.push({
   test: /\.js$/,
@@ -61,11 +61,13 @@ module.exports = {
       FIREBASE_STORAGE_BUCKET:'inphooddb-e0dfd.appspot.com',
       AWS_ACCESS_ID: 'AKIAI25XHNISG4KDDM3Q',
       AWS_SECRET_KEY: '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',
+      LAMBDA_URL: 'https://xmucc9zjlh.execute-api.us-west-2.amazonaws.com/prod/ingredients',
       DEBUG: false,
     }),
     'react': 'React',
     'react-dom': 'ReactDOM',
     'aws-sdk': 'AWS',
+    'firebase': 'firebase',
     'react-redux': 'ReactRedux'
   },
   node: {

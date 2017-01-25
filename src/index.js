@@ -11,15 +11,16 @@ import './index.css'
 
 const Config = require('Config')
 
-import firebase from 'firebase'
-require("firebase/app")
-require("firebase/auth")
-require("firebase/database")
+// const firebase = require('firebase')
+const firebase = require('firebase')
 const fbConfig = {
   apiKey: Config.FIREBASE_API_KEY,
   authDomain: Config.FIREBASE_AUTH_DOMAIN,
   databaseURL: Config.FIREBASE_DATABASE_URL,
   storageBucket: Config.FIREBASE_STORAGE_BUCKET,
+}
+if (firebase.apps.length === 0) {
+  firebase.initializeApp(fbConfig)
 }
 
 import ReactGA from 'react-ga'
@@ -39,7 +40,6 @@ const store = createStore(
   applyMiddleware(sagaMiddleware)
 )
 sagaMiddleware.run(rootSaga)
-firebase.initializeApp(fbConfig)
 
 function fireTracking() {
   ReactGA.set({ page: window.location.pathname })

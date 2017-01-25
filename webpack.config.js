@@ -90,11 +90,13 @@ module.exports = {
       AWS_ACCESS_ID: 'AKIAI25XHNISG4KDDM3Q',
       AWS_SECRET_KEY: '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',
       DEBUG: true,
+      LAMBDA_URL: 'https://tah21v2noa.execute-api.us-west-2.amazonaws.com/prod/ingredients',
       fastDevelopNutritionPage: false
     }),
     'react': 'React',
     'react-dom': 'ReactDOM',
     'aws-sdk': 'AWS',
+    'firebase': 'firebase',
     'react-redux': 'ReactRedux'
   },
   node: {

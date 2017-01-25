@@ -51,6 +51,22 @@ function getListOfTupleOffset(listOfTuples, offset) {
   return listOfTupleOffset
 }
 
+function getDataForDescription(listOfTuples, description) {
+  // TODO: unify these somewhere - DRY
+  // Tuple offsets for firebase data in nutrition reducer:
+  const descriptionOffset = 0
+  const keyOffset = 1
+  const dataObjOffset = 2
+
+  for (let idx = 0; idx < listOfTuples.length; idx++) {
+    if (listOfTuples[idx][descriptionOffset] === description) {
+      return listOfTuples[idx][dataObjOffset]
+    }
+  }
+
+  return null
+}
+
 export default class Nutrition extends React.Component {
   //////////////////////////////////////////////////////////////////////////////
   // React / Component API:
@@ -214,13 +230,14 @@ export default class Nutrition extends React.Component {
     console.log('% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %');
     console.log(' % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %');
     console.log('% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %');
-    console.log('')
+    console.log('');
     console.log('Complete data received from firebase');
 
     console.log(nextProps.nutrition);
 
     let nutritionModel = this.state.nutritionModel
     let ingredientControlModels = this.state.ingredientControlModels
+    let selectedTags = []
     let unmatchedTags = []
 
     for (let tag in matchData) {
@@ -257,10 +274,13 @@ export default class Nutrition extends React.Component {
         description)
 
       ingredientControlModels[tag] = ingredientControlModel
+
+      selectedTags.push(tag)
     }
 
     this.setState({
       matchData: matchData,
+      selectedTags: selectedTags,
       unmatchedTags: unmatchedTags,
       nutritionModel: nutritionModel,
       ingredientControlModels: ingredientControlModels
@@ -333,76 +353,77 @@ export default class Nutrition extends React.Component {
     console.log('handleMatchDropdownChange ----------------------------------------');
     console.log('tag = ' + tag);
     console.log('value = ' + value);
+
+    let ingredientControlModels = this.state.ingredientControlModels
+    let nutritionModel = this.state.nutritionModel
+
+    // 1. Save the current ingredient key for deletion at the end of this
+    //    process:
+    let ingredientKeyToDelete = ingredientControlModels[tag].getDropdownMatchValue()
+    let ingredientModelToDelete = nutritionModel.getIngredientModel(tag)
     //
-    // let ingredientControlModels = this.state.ingredientControlModels
-    // let nutritionModel = this.state.nutritionModel
+    // 2. Create a new IngredientModel:
     //
-    // // 1. Save the current ingredient key for deletion at the end of this
-    // //    process:
-    // let ingredientKeyToDelete = ingredientControlModels[tag].getDropdownMatchValue()
-    // let ingredientModelToDelete = nutritionModel.getIngredientModel(tag)
-    // //
-    // // 2. Create a new IngredientModel:
-    // //
-    // const dataForKey = this.state.nutAlg.getDataForKey(value)
-    // let ingredientModel = new IngredientModel()
-    // ingredientModel.initializeSingle(value, tag, dataForKey)
-    // //
-    // // 3. Update the match value state for the dropdown:
-    // //
-    // ingredientControlModels[tag].setDropdownMatchValue(value)
-    // //
-    // // 4. Update the dropdown units and unit value:
-    // //
-    // //    a. Get the list of new measurement units that are possible:
-    // //
-    // let newMeasureUnit = mapToSupportedUnits(ingredientModel.getMeasureUnit())
-    // let newUnits = this.getPossibleUnits(newMeasureUnit)
-    // ingredientControlModels[tag].setDropdownUnits(newUnits)
-    // //
-    // //    b. See if the current unit is within the new possibilies, if not
-    // //       then set to the FDA measure defaults
-    // //
-    // const currentValue = ingredientControlModels[tag].getSliderValue()
-    // const currentUnit = ingredientControlModels[tag].getDropdownUnitValue()
+    const dataForKey = getDataForDescription(this.state.matchData[tag], value)
+    let ingredientModel = new IngredientModel()
+    ingredientModel.initializeSingle(value, tag, dataForKey)
     //
-    // let newValue = undefined
-    // let newUnit = undefined
-    // if (newUnits.includes(currentUnit)) {
-    //   newValue = currentValue
-    //   newUnit = currentUnit
-    // } else {
-    //   console.log('Ingredient change conversion--using grams to convert:');
-    //   console.log('   ' + currentValue + currentUnit + ' to ' + newMeasureUnit);
+    // 3. Update the match value state for the dropdown:
     //
-    //   // Convert current unit to grams, then convert grams to new measure unit
-    //   // for new ingredient
-    //   let valueInGrams = getValueInUnits(
-    //     currentValue, currentUnit, 'g', ingredientModelToDelete)
-    //   newValue = getValueInUnits(
-    //     valueInGrams, 'g', newMeasureUnit, ingredientModel)
-    //   newUnit = newMeasureUnit
+    ingredientControlModels[tag].setDropdownMatchValue(value)
     //
-    //   ingredientControlModels[tag].setSliderValue(newValue)
-    //   ingredientControlModels[tag].setDropdownUnitValue(newUnit)
-    //   // TODO: possibly an alert to tell the user we've converted their number
-    //   //       to a new amount due to unit change and the old units are not
-    //   //       available.
-    // }
-    // //
-    // // 5. Remove the current IngredientModel from the NutritionModel:
-    // //
-    // nutritionModel.removeIngredient(ingredientKeyToDelete)
-    // //
-    // // 6. Add the new IngredientModel to the NutritionModel:
-    // nutritionModel.addIngredient(value,
-    //                              ingredientModel,
-    //                              newValue,
-    //                              newUnit)
-    // this.setState({
-    //   nutritionModel: nutritionModel,
-    //   ingredientControlModels: ingredientControlModels
-    // })
+    // 4. Update the dropdown units and unit value:
+    //
+    //    a. Get the list of new measurement units that are possible:
+    //
+    let newMeasureUnit = mapToSupportedUnits(ingredientModel.getMeasureUnit())
+    let newUnits = this.getPossibleUnits(newMeasureUnit)
+    ingredientControlModels[tag].setDropdownUnits(newUnits)
+    //
+    //    b. See if the current unit is within the new possibilies, if not
+    //       then set to the FDA measure defaults
+    //    (TODO: or perhaps fallback to the recipe amount/unit if they worked)
+    //
+    const currentValue = ingredientControlModels[tag].getSliderValue()
+    const currentUnit = ingredientControlModels[tag].getDropdownUnitValue()
+
+    let newValue = undefined
+    let newUnit = undefined
+    if (newUnits.includes(currentUnit)) {
+      newValue = currentValue
+      newUnit = currentUnit
+    } else {
+      console.log('Ingredient change conversion--using grams to convert:');
+      console.log('   ' + currentValue + currentUnit + ' to ' + newMeasureUnit);
+
+      // Convert current unit to grams, then convert grams to new measure unit
+      // for new ingredient
+      let valueInGrams = getValueInUnits(
+        currentValue, currentUnit, 'g', ingredientModelToDelete)
+      newValue = getValueInUnits(
+        valueInGrams, 'g', newMeasureUnit, ingredientModel)
+      newUnit = newMeasureUnit
+
+      ingredientControlModels[tag].setSliderValue(newValue)
+      ingredientControlModels[tag].setDropdownUnitValue(newUnit)
+      // TODO: possibly an alert to tell the user we've converted their number
+      //       to a new amount due to unit change and the old units are not
+      //       available.
+    }
+    //
+    // 5. Remove the current IngredientModel from the NutritionModel:
+    //
+    nutritionModel.removeIngredient(ingredientKeyToDelete)
+    //
+    // 6. Add the new IngredientModel to the NutritionModel:
+    nutritionModel.addIngredient(value,
+                                 ingredientModel,
+                                 newValue,
+                                 newUnit)
+    this.setState({
+      nutritionModel: nutritionModel,
+      ingredientControlModels: ingredientControlModels
+    })
   }
   //
   handleUnitDropdownChange(tag, value) {
@@ -442,14 +463,12 @@ export default class Nutrition extends React.Component {
     //    this.state.nutritionModel
     //    ingredientControlModels
     //
-    let matches = this.state.matches
     let nutritionModel = this.state.nutritionModel
     let ingredientControlModels = this.state.ingredientControlModels
     //
     let selectedTags = this.state.selectedTags
     let deletedTags = this.state.deletedTags
     //
-    delete matches[tag]
     nutritionModel.removeIngredient(ingredientControlModels[tag].getDropdownMatchValue())
     delete ingredientControlModels[tag]
     //
@@ -465,7 +484,6 @@ export default class Nutrition extends React.Component {
     deletedTags.push(tag)
     //
     this.setState({
-      matches: matches,
       nutritionModel: nutritionModel,
       ingredientControlModels: ingredientControlModels,
       selectedTags: selectedTags,

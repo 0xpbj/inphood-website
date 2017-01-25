@@ -5,6 +5,23 @@ import Grid from 'react-bootstrap/lib/Grid'
 import Alert from 'react-bootstrap/lib/Alert'
 
 export default class About extends React.Component {
+
+  getTeamMember(memberName, title, imageUrl, instagramUrl, linkedInUrl) {
+    return (
+      <div className="team-member">
+        <img src={imageUrl} className="img-responsive img-circle" width="200" height="200" />
+        <h4>{memberName}</h4>
+        <p className="text-muted">{title}</p>
+        <ul className="list-inline social-buttons">
+          <li><a href={instagramUrl}><i className="fa fa-instagram">Instagram</i></a>
+          </li>
+          <li><a href={linkedInUrl}><i className="fa fa-linkedin">LinkedIn</i></a>
+          </li>
+        </ul>
+      </div>
+    )
+  }
+
   render() {
     return (
       <Grid>
@@ -15,30 +32,18 @@ export default class About extends React.Component {
           <h2 className="page-header">Our Team</h2>
             <div className="row">
               <div className="col-sm-6">
-                <div className="team-member">
-                  <img src="http://static.wixstatic.com/media/1ca336_3823dd5c039244e8bb5c27abc51cbc90~mv2_d_1400_1400_s_2.jpg" className="img-responsive img-circle" width="200" height="200" />
-                  <h4>Prabhaav Bhardwaj</h4>
-                  <p className="text-muted">CEO</p>
-                  <ul className="list-inline social-buttons">
-                    <li><a href="#"><i className="fa fa-instagram"></i></a>
-                    </li>
-                    <li><a href="#"><i className="fa fa-linkedin"></i></a>
-                    </li>
-                  </ul>
-                </div>
+                {this.getTeamMember("Prabhaav Bhardwaj", "CEO",
+                  "http://static.wixstatic.com/media/1ca336_3823dd5c039244e8bb5c27abc51cbc90~mv2_d_1400_1400_s_2.jpg",
+                  "https://www.instagram.com/t3zcat",
+                  "https://www.linkedin.com/in/prabhaav"
+                )}
               </div>
               <div className="col-sm-6">
-                <div className="team-member">
-                  <img src="http://www.theartofdoingstuff.com/wp-content/uploads/2013/03/Banana.jpg" className="img-responsive img-circle" width="200" height="200" />
-                  <h4>Alex Carreira</h4>
-                  <p className="text-muted">CTO</p>
-                  <ul className="list-inline social-buttons">
-                    <li><a href="#"><i className="fa fa-instagram"></i></a>
-                    </li>
-                    <li><a href="#"><i className="fa fa-linkedin"></i></a>
-                    </li>
-                  </ul>
-                </div>
+                {this.getTeamMember("Alex Carreira", "CTO",
+                  "http://www.theartofdoingstuff.com/wp-content/uploads/2013/03/Banana.jpg",
+                  "https://www.instagram.com/ac4tw",
+                  "https://www.linkedin.com/in/alex-carreira-6a2a711"
+                )}
               </div>
             </div>
         </Row>

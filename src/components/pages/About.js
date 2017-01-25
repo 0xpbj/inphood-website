@@ -27,7 +27,8 @@ export default class About extends React.Component {
       <Grid>
         <Row className="show-grid">
           <h1 className="page-header">About Us</h1>
-          <p>Nutrition information provider for home cooked meals</p>
+          <p>Purpose: Labeling food images across the internet</p>
+          <p>Method:  Help users generate a shareable nutrition label based on the FDA database</p>
           <h2 className="page-header">Our Team</h2>
             <div className="row">
               <div className="col-sm-6">

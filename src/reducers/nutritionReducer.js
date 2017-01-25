@@ -24,8 +24,10 @@ const initialState = {
   composite: '',
   full: '',
   index: 0,
+  rawData: '',
   parsedData: [],
-  matchData: {}
+  matchData: {},
+  recipeFlag: false
 }
 export default function nutrition(state = initialState, action) {
   switch (action.type) {
@@ -76,7 +78,9 @@ export default function nutrition(state = initialState, action) {
     case STORE_PARSED_DATA:
       return {
         ...state,
-        parsedData: action.parsedData
+        parsedData: action.parsedData,
+        rawData: action.rawData,
+        recipeFlag: action.recipeFlag
       }
     //
     // FIREBASE DATA:

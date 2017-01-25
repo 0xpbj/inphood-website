@@ -26,6 +26,7 @@ import ControlLabel from 'react-bootstrap/lib/ControlLabel'
 
 import 'react-widgets/lib/less/react-widgets.less'
 import Dropdownlist from 'react-widgets/lib/Dropdownlist'
+import ProgressBar from 'react-toolbox/lib/progress_bar'
 
 const Config = require('Config')
 const Convert = require('convert-units')
@@ -88,7 +89,8 @@ export default class Nutrition extends React.Component {
         min: 1,
         max: 12,
         step: 1
-      }
+      },
+      progress: true
     }
   }
 
@@ -228,7 +230,8 @@ export default class Nutrition extends React.Component {
       selectedTags: selectedTags,
       unmatchedTags: unmatchedTags,
       nutritionModel: nutritionModel,
-      ingredientControlModels: ingredientControlModels
+      ingredientControlModels: ingredientControlModels,
+      progress: false
     })
   }
 
@@ -714,6 +717,13 @@ export default class Nutrition extends React.Component {
             <Button bsStyle="danger" onClick={() => this.props.router.push('/')}>Go Home</Button>
           </p>
         </Alert>
+      )
+    }
+    else if (this.state.progress) {
+      return (
+        <div className="text-center">
+          <ProgressBar type="circular" mode="indeterminate" multicolor={true}/>
+        </div>
       )
     }
     //

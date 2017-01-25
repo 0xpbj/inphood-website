@@ -23,7 +23,7 @@ const firebaseLogin = () => {
   .catch(error => ({ error }))
 }
 
-const uploadImageToS3 = (uri, key, username, thumbnail) => {
+const uploadImageToS3 = (uri, key, username, thumbnail, parsedData, rawData, recipeFlag) => {
   var s3 = new AWS.S3({
     accessKeyId:     Config.AWS_ACCESS_ID,
     secretAccessKey: Config.AWS_SECRET_KEY,
@@ -41,7 +41,8 @@ const uploadImageToS3 = (uri, key, username, thumbnail) => {
         user: username,
         oUrl: uri,
         iUrl: '',
-        thumbnail
+        thumbnail,
+        error: "failed to get image"
       })
     }
     else {
@@ -59,19 +60,23 @@ const uploadImageToS3 = (uri, key, username, thumbnail) => {
             user: username,
             oUrl: uri,
             iUrl: '',
-            thumbnail
+            thumbnail,
+            error: "error downloading image to s3"
           })
         } else {
           console.log("success uploading to s3", data)
         }
       })
-      console.log('Thumbnail: ', thumbnail);
       firebase.database().ref('/global/nutritionLabel/'+username+'/'+key).update({
         key,
         user: username,
         oUrl: uri,
         iUrl: 'http://www.image.inphood.com/' + username + '/' + key + '.jpg',
-        thumbnail
+        thumbnail,
+        rawData: rawData,
+        parsedData: parsedData,
+        recipe: recipeFlag,
+        caption: !recipeFlag
       })
     }
   })
@@ -79,7 +84,7 @@ const uploadImageToS3 = (uri, key, username, thumbnail) => {
 
 function* loadAWSPut() {
   const {profile} = yield select(state => state.userReducer)
-  const {link, picture, username} = yield select(state => state.nutritionReducer)
+  const {link, picture, username, parsedData, rawData, recipeFlag} = yield select(state => state.nutritionReducer)
   const slink = link.slice(0, link.length - 1)
   yield call (firebaseLogin)
   let key = ''
@@ -91,7 +96,7 @@ function* loadAWSPut() {
     key = slink.substring(slink.lastIndexOf('/')+1)
     thumbnail = profile.thumbnail
   }
-  yield call (uploadImageToS3, picture, key, username, thumbnail)
+  yield call (uploadImageToS3, picture, key, username, thumbnail, parsedData, rawData, recipeFlag)
   const url = "http://www.inphood.com/" + key
   if (profile)
     yield put ({type: RESULT_URL, url, key, anonymous: false})
@@ -181,14 +186,13 @@ const elasticSearchFetch = (request) => {
 function* callElasticSearchLambda(searchTerm, foodName) {
   // Call elastic search (effectively this curl request):
   //
-  // curl https://da0wffelhb.execute-api.us-west-2.amazonaws.com/prod/ingredients
+  // curl Config.LAMBDA_URL
   //      -X POST
   //      -d '{"query": {"match": {"Description": "nutritional yeast"}}, "size": 10}'
   //      --header 'content-type: application/json'
   //
-  //  TODO: fetch not supported in Safari; PBJ install this https://github.com/github/fetch
-  //
   const url = Config.LAMBDA_URL
+  console.log('\n\n\n\n\n\n\n\n\nLambda URL: ', url)
 
   const data = {
     'query': {'match' : {'Description': searchTerm}},

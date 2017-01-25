@@ -67,7 +67,8 @@ export default class SelectedImage extends React.Component {
   parseCaption(caption) {
     let regex = /\w+/g
     let words = caption.match(regex)
-    var file = require("raw-loader!../../data/complete.unique-words.txt")
+    var file = require("raw-loader!../../data/ingredients.txt")
+    // var file = require("raw-loader!../../data/complete.unique-words.txt")
     let fileWords = new Set(file.match(regex))
     let fileIntersection = new Set([...words].filter(x => fileWords.has(x)))
     // var food = require("raw-loader!../../data/ingredients.txt")
@@ -84,10 +85,6 @@ export default class SelectedImage extends React.Component {
       )
     }
     this.setState({chips, chipData})
-  }
-  backToGrid() {
-    this.props.anClearData()
-    this.props.goToGallery()
   }
   render() {
     if (!this.props.user.profile) {
@@ -118,13 +115,13 @@ export default class SelectedImage extends React.Component {
             </section>
             </div>
             <div>
-            {/*<section>
+            <section>
               <Parser
                 parse={this.state.parse}
                 storeParsedData={(parsedData) => this.props.storeParsedData(parsedData)}
                 goToNutrition={this.goToNutrition.bind(this)}
               />
-            </section>*/}
+            </section>
             </div>
             <Button className="btn-primary-spacing" bsStyle="success" onClick={() => this.goToNutrition()}>Get Nutrition</Button>
           </Col>

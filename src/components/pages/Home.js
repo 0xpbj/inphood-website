@@ -75,8 +75,8 @@ export default class Home extends React.Component {
     const caption =  this.props.user.photos.data[index].caption.text
     const parsedData = parseRecipe(caption)
     this.props.storeParsedData(parsedData)
-    this.props.router.push('nutrition')
-    // this.props.router.push('image')
+    // this.props.router.push('nutrition')
+    this.props.router.push('image')
   }
   render() {
     const containerStyle = {

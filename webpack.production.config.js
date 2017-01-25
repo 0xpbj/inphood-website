@@ -6,6 +6,7 @@ var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var WebpackCleanupPlugin = require('webpack-cleanup-plugin');
 var WebpackStripLoader = require('strip-loader')
+import 'whatwg-fetch'
 
 loaders.push({
   test: /\.js$/,
@@ -36,6 +37,7 @@ loaders.push({ test: /\.js$/, exclude: /(node_modules)/, loader: WebpackStripLoa
 
 module.exports = {
 	entry: [
+    'whatwg-fetch',
 		'./src/index.js'
 	],
 	output: {

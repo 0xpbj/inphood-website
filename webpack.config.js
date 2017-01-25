@@ -5,7 +5,8 @@ var loaders = require('./webpack.loaders');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var DashboardPlugin = require('webpack-dashboard/plugin');
 var BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
-var WebpackStripLoader = require('strip-loader')
+var WebpackStripLoader = require('strip-loader');
+require('whatwg-fetch');
 
 const HOST = process.env.HOST || "127.0.0.1";
 const PORT = process.env.PORT || "3000";
@@ -49,6 +50,7 @@ loaders.push({ test: /\.(ttf|eot|svg)(\?v=[0-9].[0-9].[0-9])?$/, loader: "file-l
 module.exports = {
 	entry: [
     // 'webpack-hot-middleware/client',
+    'whatwg-fetch',
 		'react-hot-loader/patch',
 		'./src/index.js' // your app's entry point
 	],

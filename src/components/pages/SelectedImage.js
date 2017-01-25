@@ -3,6 +3,7 @@ import ReactGA from 'react-ga'
 import Alert from 'react-bootstrap/lib/Alert'
 import Row from 'react-bootstrap/lib/Row'
 import Col from 'react-bootstrap/lib/Col'
+import Well from 'react-bootstrap/lib/Well'
 import Grid from 'react-bootstrap/lib/Grid'
 import Image from 'react-bootstrap/lib/Image'
 import Button from 'react-bootstrap/lib/Button'
@@ -12,7 +13,7 @@ import FormControl from 'react-bootstrap/lib/FormControl'
 import ControlLabel from 'react-bootstrap/lib/ControlLabel'
 import DropdownButton from 'react-bootstrap/lib/DropdownButton'
 import Chip from 'react-toolbox/lib/chip'
-import Parser from './Parser'
+import {parseRecipe, parseCaption} from '../../helpers/parseRecipe'
 
 export default class SelectedImage extends React.Component {
   constructor() {
@@ -21,7 +22,9 @@ export default class SelectedImage extends React.Component {
       chips: [],
       chipData: [],
       recipe: '',
-      parse: false
+      parse: false,
+      ingredients: '',
+      recipeError: false
     }
   }
   componentWillMount() {
@@ -34,60 +37,26 @@ export default class SelectedImage extends React.Component {
         action: 'Go to image page',
         nonInteraction: false
       });
-      this.generateChips()
     }
   }
-  goToNutrition() {
+  recipeFlow() {
+    if (this.state.ingredients === '') {
+      this.setState({recipeError: true})
+    }
+    else {
+      let data = parseRecipe(this.state.ingredients)
+      this.props.storeParsedData(data)
+      this.props.router.push('nutrition')
+    }
+  }
+  captionFlow() {
+    let data = parseCaption(this.props.user.photos.data[this.props.nutrition.index].caption.text)
+    this.props.storeParsedData(data)
     this.props.router.push('nutrition')
   }
-  getRecipe(e) {
-    let recipe = e.target.value
-    this.setState({recipe})
-  }
-  handleDeleteClick(word) {
-    let {chipData} = this.state
-    chipData.delete(word)
-    let caption = ''
-    let chips = []
-    for (let word of chipData) {
-      chips.push(
-        <Chip onDeleteClick={this.handleDeleteClick.bind(this, word)} deletable>{word}</Chip>
-      )
-      caption += word + ' '
-    }
-    this.props.igUpdatedCaption(caption)
-    this.setState({chips, chipData})
-    ReactGA.event({
-      category: 'User',
-      action: 'User removed parsed tags',
-      nonInteraction: false,
-      label: 'Social Flow'
-    });
-  }
-  parseCaption(caption) {
-    let regex = /\w+/g
-    let words = caption.match(regex)
-    var file = require("raw-loader!../../data/complete.unique-words.txt")
-    let fileWords = new Set(file.match(regex))
-    let fileIntersection = new Set([...words].filter(x => fileWords.has(x)))
-    // var food = require("raw-loader!../../data/ingredients.txt")
-    // let foodWords = new Set(food.match(regex))
-    // let foodIntersection = new Set([...fileIntersection].filter(x => foodWords.has(x)))
-    return fileIntersection
-  }
-  generateChips() {
-    let chipData = this.parseCaption(this.props.user.photos.data[this.props.nutrition.index].caption.text)
-    let chips = []
-    for (let word of chipData) {
-      chips.push(
-        <Chip onDeleteClick={this.handleDeleteClick.bind(this, word)} deletable>{word}</Chip>
-      )
-    }
-    this.setState({chips, chipData})
-  }
-  backToGrid() {
-    this.props.anClearData()
-    this.props.goToGallery()
+  getData(e) {
+    let ingredients = e.target.value
+    this.setState({ingredients, recipeError: false})
   }
   render() {
     if (!this.props.user.profile) {
@@ -103,6 +72,11 @@ export default class SelectedImage extends React.Component {
     const containerStyle = {
       marginTop: "60px"
     }
+    const recipeAlert = (this.state.recipeError) ? (
+      <Alert bsStyle="danger">
+        <h4>Oh snap! You forgot to enter a recipe!</h4>
+      </Alert>
+    ) : null
     return (
       <Grid>
         <Row className="show-grid">
@@ -111,22 +85,28 @@ export default class SelectedImage extends React.Component {
             <Image src={this.props.user.photos.data[this.props.nutrition.index].picture} responsive rounded/>
           </Col>
           <Col xs={6} md={4}>
-            <ControlLabel>Parsed Ingredients</ControlLabel>
             <div style={{marginBottom: "30px"}}>
-            <section>
-              {this.state.chips}
-            </section>
+              <section>
+                <FormGroup controlId="formControlsTextarea">
+                  <ControlLabel>Meal Recipe</ControlLabel>
+                  {recipeAlert}
+                  <FormControl 
+                    componentClass="textarea" 
+                    rows="10" 
+                    placeholder={"1.5 cup rainbow chard (sliced)\n2 stalks green onion (sliced)\n2 medium tomatoes (chopped)\n1 medium avocado (chopped)\n¼ tsp sea salt\n1 tbsp butter\n1 ½ tbsp flax seed oil\n½ tbsp white wine vinegar\n..."}
+                    onChange={this.getData.bind(this)}
+                  />
+                </FormGroup>
+              </section>
+              <Button className="btn-primary-spacing" bsStyle="success" onClick={() => this.recipeFlow()}>Use Recipe</Button>
             </div>
-            <div>
-            {/*<section>
-              <Parser
-                parse={this.state.parse}
-                storeParsedData={(parsedData) => this.props.storeParsedData(parsedData)}
-                goToNutrition={this.goToNutrition.bind(this)}
-              />
-            </section>*/}
+            <ControlLabel>Instagram Caption</ControlLabel>
+            <div style={{marginBottom: "30px"}}>
+              <section>
+                <Well>{this.props.user.photos.data[this.props.nutrition.index].caption.text}</Well>
+              </section>
+              <Button className="btn-primary-spacing" onClick={() => this.captionFlow()}>Use Caption</Button>
             </div>
-            <Button className="btn-primary-spacing" bsStyle="success" onClick={() => this.goToNutrition()}>Get Nutrition</Button>
           </Col>
         </Row>
       </Grid>

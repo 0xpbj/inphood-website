@@ -12,7 +12,8 @@ import {
   IG_UPDATED_CAPTION,
   POST_LABEL_ID,
   SEND_SERIALIZED_DATA,
-  STORE_PARSED_DATA
+  STORE_PARSED_DATA,
+  LAZY_FETCH_FIREBASE,
 } from '../constants/ActionTypes'
 
 export function igUploadPhoto() {
@@ -110,5 +111,15 @@ export function storeParsedData(parsedData, rawData, recipeFlag) {
     parsedData,
     rawData,
     recipeFlag
+  }
+}
+
+export function lazyFetchFirebase(foodName, ingredient, key, index) {
+  return {
+    type: LAZY_FETCH_FIREBASE,
+    foodName,
+    ingredient,
+    key,
+    index
   }
 }

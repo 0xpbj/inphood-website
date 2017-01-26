@@ -51,7 +51,7 @@ function getListOfTupleOffset(listOfTuples, offset) {
   return listOfTupleOffset
 }
 
-function getDataForDescription(listOfTuples, description) {
+function getIndexForDescription(listOfTuples, description) {
   // TODO: unify these somewhere - DRY
   // Tuple offsets for firebase data in nutrition reducer:
   const descriptionOffset = 0
@@ -60,11 +60,36 @@ function getDataForDescription(listOfTuples, description) {
 
   for (let idx = 0; idx < listOfTuples.length; idx++) {
     if (listOfTuples[idx][descriptionOffset] === description) {
-      return listOfTuples[idx][dataObjOffset]
+      return idx
     }
   }
 
-  return null
+  return -1  
+}
+
+function getTupleForDescription(listOfTuples, description) {
+  let index = getIndexForDescription(listOfTuples, description)
+
+  if (index < 0) {
+    return null
+  }
+
+  return listOfTuples[index]
+}
+
+function getDataForDescription(listOfTuples, description) {
+  // TODO: unify these somewhere - DRY
+  // Tuple offsets for firebase data in nutrition reducer:
+  const descriptionOffset = 0
+  const keyOffset = 1
+  const dataObjOffset = 2
+
+  let tuple = getTupleForDescription(listOfTuples, description)
+  if (tuple === null) {
+    return null
+  }
+
+  return tuple[dataObjOffset]
 }
 
 export default class Nutrition extends React.Component {
@@ -125,7 +150,6 @@ export default class Nutrition extends React.Component {
     const matchData = nextProps.nutrition.matchData
     const parsedData = nextProps.nutrition.parsedData
 
-
     // Examine to ensure we have got the complete data from firebase, then commence construction
     // and creation of objects for rendering purposes (otherwise we run into problems with things
     // not being defined):
@@ -141,14 +165,16 @@ export default class Nutrition extends React.Component {
       // TODO: PBJ||AC render spinner
       return
     }
-    for (let tag in matchData) {
-      const tagMatches = matchData[tag]
-      for (let idx = 0; idx < matchData[tag].length; idx++) {
-        if (matchData[tag][idx][dataObjOffset] === undefined) {
-          return
-        }
-      }
-    }
+    // commented out for delayed fetch
+    //
+    // for (let tag in matchData) {
+    //   const tagMatches = matchData[tag]
+    //   for (let idx = 0; idx < matchData[tag].length; idx++) {
+    //     if (matchData[tag][idx][dataObjOffset] === undefined) {
+    //       return
+    //     }
+    //   }
+    // }
 
     console.log('% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %');
     console.log(' % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %');
@@ -302,6 +328,12 @@ export default class Nutrition extends React.Component {
     console.log('tag = ' + tag);
     console.log('value = ' + value);
 
+    // TODO: refactor and compbine
+    // Tuple offsets for firebase data in nutrition reducer:
+    const descriptionOffset = 0
+    const keyOffset = 1
+    const dataObjOffset = 2
+
     let ingredientControlModels = this.state.ingredientControlModels
     let nutritionModel = this.state.nutritionModel
 
@@ -312,7 +344,15 @@ export default class Nutrition extends React.Component {
     //
     // 2. Create a new IngredientModel:
     //
-    const dataForKey = getDataForDescription(this.state.matchData[tag], value)
+    let dataForKey = getDataForDescription(this.state.matchData[tag], value)
+    if (dataForKey === undefined) {   // Lazy loading from FB
+      let index = getIndexForDescription(this.state.matchData[tag], value)
+      let tuple = this.state.matchData[tag][index]
+      this.props.lazyFetchFirebase(value, tag, tuple[keyOffset], index)
+      // PBJ: you need to get the firebase data and assign it:
+      // dataFromFirebase = getDataFromFB(dataForKey[keyOffset])
+      // this.state.matchData[tag][index][dataObjOffset] = dataFromFirebase
+    }
     let ingredientModel = new IngredientModel()
     ingredientModel.initializeSingle(value, tag, dataForKey)
     //

@@ -6,7 +6,9 @@ import {
   STORE_PARSED_DATA,
   CLEAR_FIREBASE_DATA,
   INITIALIZE_FIREBASE_DATA,
-  INGREDIENT_FIREBASE_DATA
+  INGREDIENT_FIREBASE_DATA,
+  LAZY_FETCH_FIREBASE,
+  LAZY_LOAD_FIREBASE
 } from '../constants/ActionTypes'
 
 import * as db from './firebaseCommands'
@@ -118,55 +120,14 @@ function* loadSerializedData() {
     })
 }
 
-function* postLabelData() {
-  while (true) {
-    const {labelId, comment} = yield take (POST_LABEL_ID)
-    const token = Hello('instagram').getAuthResponse().access_token
-    const url = 'https://api.instagram.com/v1/media/' + labelId + '/comments'
-    console.log('LabelId: ', labelId);
-    console.log('Comment: ', comment);
-    console.log('Token: ', token);
-    console.log('URL: ', url);
-    var options = {
-      url: url,
-      method: 'post',
-      headers: {'Access-Control-Allow-Origin': 'http://127.0.0.1:3000'},
-      // 'Access-Control-Allow-Origin': 'http://127.0.0.1:3000',
-      form: {
-        access_token: token,
-        text: comment
-      }
-    }
-    request(options, function(error, response, body) {
-      console.log('Error: ', error);
-      console.log('Response: ', response);
-      console.log('Body: ', body);
-    })
-    // fetch(url, {
-    //   mode: 'no-cors',
-    //   method: 'post',
-    //   form: {access_token: token, text: 'www.inphood.com/BPCIqRoDtV4'}
-    // }).then(function(response) {
-    //   console.log(response.status);
-    //   console.log("response");
-    //   console.log(response);
-    // })
-    // Hello( 'instagram' ).api( 'me/comments', 'post', {
-    //   id: labelId,
-    //   text: comment
-    // })
-    // .then(function(r) {
-    //   if (r.meta.code === 200) {
-    //     console.log('Comment Added');
-    //   }
-    // }, console.error.bind(console))
-  }
-}
-
-function* getDataFromFireBase(searchTerm, foodName, ingredient, key) {
+function* getDataFromFireBase(foodName, ingredient, key, index) {
+  console.log('foodName, ingredient, key: ', foodName, ingredient, key)
   const path = 'global/nutritionInfo/' + key
   const data = (yield call(db.getPath, path)).val()
-  yield put ({type: INGREDIENT_FIREBASE_DATA, foodName, ingredient, data})
+  if (index)
+    yield put ({type: LAZY_LOAD_FIREBASE, foodName, ingredient, index, data})
+  else
+    yield put ({type: INGREDIENT_FIREBASE_DATA, foodName, ingredient, data})
 }
 
 const elasticSearchFetch = (request) => {
@@ -193,7 +154,7 @@ function* callElasticSearchLambda(searchTerm, foodName) {
   //
   const url = Config.LAMBDA_URL
 
-  const data = {
+  const search = {
     'query': {'match' : {'Description': searchTerm}},
     'size': 7
   }
@@ -204,7 +165,7 @@ function* callElasticSearchLambda(searchTerm, foodName) {
   // From MDN and here: https://github.com/matthew-andrews/isomorphic-fetch/issues/34
   let request = new Request(url, {
     method: 'POST',
-    body: JSON.stringify(data),
+    body: JSON.stringify(search),
     headers: myHeaders,
     mode: 'cors',
     cache: 'default'
@@ -214,9 +175,16 @@ function* callElasticSearchLambda(searchTerm, foodName) {
   // object construction in nutritionReducer destroys this.)
 
   yield put ({type: INITIALIZE_FIREBASE_DATA, foodName, json})
+  const {data} = json
+  // for (let index of json.data) {
+  if (data && data[0])
+    yield fork(getDataFromFireBase, foodName, data[0]._source.Description, data[0]._id, 0)
+}
 
-  for (let index of json.data) {
-    yield fork(getDataFromFireBase, searchTerm, foodName, index._source.Description, index._id)
+function* layzFetchFirebaseData() {
+  while (true) {
+    const {foodName, ingredient, key, index} = yield take(LAZY_FETCH_FIREBASE)
+    yield fork(getDataFromFireBase, foodName, ingredient, key, index)
   }
 }
 
@@ -260,7 +228,7 @@ function* processParseForLabel() {
 }
 
 export default function* root() {
-  // yield fork(postLabelData)
+  yield fork(layzFetchFirebaseData)
   yield fork(takeLatest, SEND_SERIALIZED_DATA, loadSerializedData)
   yield fork(takeLatest, IG_UPLOAD_PHOTO, loadAWSPut)
   yield fork(takeLatest, STORE_PARSED_DATA, processParseForLabel)

@@ -9,7 +9,8 @@ import {
   STORE_PARSED_DATA,
   CLEAR_FIREBASE_DATA,
   INITIALIZE_FIREBASE_DATA,
-  INGREDIENT_FIREBASE_DATA
+  INGREDIENT_FIREBASE_DATA,
+  LAZY_LOAD_FIREBASE
 } from '../constants/ActionTypes'
 
 const initialState = {
@@ -112,13 +113,8 @@ export default function nutrition(state = initialState, action) {
     //
     case INITIALIZE_FIREBASE_DATA:
       {
-        console.log('nutritionReducer: INITIALIZE_FIREBASE_DATA --------------');
-        console.log(action.foodName);
-        console.log(action.json);
-
         // Initializes our dictionary of match data with ordered arrays of tuples
         // containing the description, ndbNo and undefined:
-
         // Clear the match data to prevent populating it twice on 'back' button actions etc.
         let localMatchData = state.matchData
         if (action.foodName in localMatchData) {
@@ -137,7 +133,17 @@ export default function nutrition(state = initialState, action) {
           matchData: localMatchData
         }
       }
-    //
+    case LAZY_LOAD_FIREBASE:
+      {
+        debugger
+        let {matchData} = state
+        const dataObjOffset = 2
+        matchData[action.ingredient][action.index][dataObjOffset] = action.data
+        return {
+          ...state,
+          matchData
+        }
+      }
     case INGREDIENT_FIREBASE_DATA:
       {
         // console.log('nutritionReducer: INGREDIENT_FIREBASE_DATA --------------');
@@ -146,7 +152,6 @@ export default function nutrition(state = initialState, action) {
 
         // Performs an ordered insertion of the data returned by firebase for the
         // key (ndbNo) returned from elastic search:
-
         const descriptionOffset = 0
         const dataObjOffset = 2
 

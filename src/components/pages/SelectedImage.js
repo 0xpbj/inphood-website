@@ -74,7 +74,7 @@ export default class SelectedImage extends React.Component {
     const containerStyle = {
       marginTop: "60px"
     }
-    console.log(this.props.user.photos.data[this.props.nutrition.index].caption.text)
+    const caption = <pre>{this.props.user.photos.data[this.props.nutrition.index].caption.text}</pre>
     const recipeAlert = (this.state.recipeError) ? (
       <Alert bsStyle="danger">
         <h4>Oh snap! You forgot to enter a recipe!</h4>
@@ -106,7 +106,7 @@ export default class SelectedImage extends React.Component {
             <ControlLabel>Instagram Caption</ControlLabel>
             <div style={{marginBottom: "30px"}}>
               <section>
-                <Well>{this.props.user.photos.data[this.props.nutrition.index].caption.text}</Well>
+                {caption}
               </section>
               <Button className="btn-primary-spacing" onClick={() => this.captionFlow()}>Use Caption</Button>
             </div>

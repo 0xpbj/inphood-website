@@ -144,6 +144,7 @@ export default class Nutrition extends React.Component {
     let lazyLoadOperation = nextProps.nutrition.lazyLoadOperation
     if (lazyLoadOperation.status === 'done') {
       this.completeMatchDropdownChange(lazyLoadOperation.tag, lazyLoadOperation.value)
+      this.props.resetLazyLoadOperation()
       return
     }
 

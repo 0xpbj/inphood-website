@@ -35,7 +35,7 @@ const rootEffects = []
 
 function effectTriggered(desc) {
   if (VERBOSE) {
-    console.log('Saga monitor: effectTriggered:', desc)
+    console.info('Saga monitor: effectTriggered:', desc)
   }
   effectsById[desc.effectId] = Object.assign({},
     desc,
@@ -51,21 +51,21 @@ function effectTriggered(desc) {
 
 function effectResolved(effectId, result) {
   if (VERBOSE) {
-    console.log('Saga monitor: effectResolved:', effectId, result)
+    console.info('Saga monitor: effectResolved:', effectId, result)
   }
   resolveEffect(effectId, result)
 }
 
 function effectRejected(effectId, error) {
   if (VERBOSE) {
-    console.log('Saga monitor: effectRejected:', effectId, error)
+    console.info('Saga monitor: effectRejected:', effectId, error)
   }
   rejectEffect(effectId, error)
 }
 
 function effectCancelled(effectId) {
   if (VERBOSE) {
-    console.log('Saga monitor: effectCancelled:', effectId)
+    console.info('Saga monitor: effectCancelled:', effectId)
   }
   cancelEffect(effectId)
 }
@@ -147,8 +147,8 @@ function consoleGroup(...args) {
   if(console.group) {
     console.group(...args)
   } else {
-    console.log('')
-    console.log(groupPrefix + GROUP_ARROW, ...args)
+    console.info('')
+    console.info(groupPrefix + GROUP_ARROW, ...args)
     groupPrefix += GROUP_SHIFT
   }
 }
@@ -398,12 +398,12 @@ const logSaga = (...topEffects) => {
     topEffects = rootEffects
   }
   if(!rootEffects.length) {
-    console.log(groupPrefix, 'Saga monitor: No effects to log')
+    console.info(groupPrefix, 'Saga monitor: No effects to log')
   }
-  console.log('')
-  console.log('Saga monitor:', Date.now(), (new Date()).toISOString())
+  console.info('')
+  console.info('Saga monitor:', Date.now(), (new Date()).toISOString())
   logEffects(topEffects)
-  console.log('')
+  console.info('')
 }
 
 // Export the snapshot-logging function to run from the browser console or extensions.

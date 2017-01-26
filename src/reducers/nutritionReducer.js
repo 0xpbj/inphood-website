@@ -11,7 +11,8 @@ import {
   INITIALIZE_FIREBASE_DATA,
   INGREDIENT_FIREBASE_DATA,
   LAZY_LOAD_FIREBASE,
-  LAZY_FETCH_FIREBASE
+  LAZY_FETCH_FIREBASE,
+  RESET_LAZY_LOAD_STATUS
 } from '../constants/ActionTypes'
 
 const initialState = {
@@ -165,6 +166,17 @@ export default function nutrition(state = initialState, action) {
           ...state,
           matchData,
           lazyLoadOperation: lazyLoadOperation
+        }
+      }
+    case RESET_LAZY_LOAD_STATUS:
+      {
+        return {
+          ...state,
+          lazyLoadOperation: {
+            status: '',
+            tag: undefined,
+            value: undefined
+          }
         }
       }
     case INGREDIENT_FIREBASE_DATA:

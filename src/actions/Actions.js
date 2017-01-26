@@ -14,6 +14,7 @@ import {
   SEND_SERIALIZED_DATA,
   STORE_PARSED_DATA,
   LAZY_FETCH_FIREBASE,
+  RESET_LAZY_LOAD_STATUS
 } from '../constants/ActionTypes'
 
 export function igUploadPhoto() {
@@ -121,5 +122,11 @@ export function lazyFetchFirebase(foodName, ingredient, key, index) {
     ingredient,
     key,
     index
+  }
+}
+
+export function resetLazyLoadOperation() {
+  return {
+    type: RESET_LAZY_LOAD_STATUS
   }
 }

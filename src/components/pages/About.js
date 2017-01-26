@@ -7,11 +7,13 @@ import instagram from '../../data/instagram.svg'
 import linkedin from '../../data/linkedin.svg'
 
 export default class About extends React.Component {
-
-  getTeamMember(memberName, title, imageUrl, instagramUrl, linkedInUrl) {
+  getTeamMember(memberName, title, flag, instagramUrl, linkedInUrl) {
+    const pbj = require('../../images/PBJ.png')
+    const ayc = require('../../images/AC.png')
+    let avatar = flag ? pbj : ayc
     return (
       <div className="team-member">
-        <img src={imageUrl} className="img-responsive img-circle" width="200" height="200" />
+        <img src={avatar} className="img-responsive img-circle" width="200" height="200" />
         <h4>{memberName}</h4>
         <p className="text-muted">{title}</p>
         <ul className="list-inline social-buttons">
@@ -25,8 +27,6 @@ export default class About extends React.Component {
   }
 
   render() {
-    const avatarAC = require('../../images/AC.jpg')
-    
     return (
       <Grid>
         <Row className="show-grid">
@@ -37,14 +37,14 @@ export default class About extends React.Component {
             <div className="row">
               <div className="col-sm-6">
                 {this.getTeamMember("Prabhaav Bhardwaj", "CEO",
-                  "http://static.wixstatic.com/media/1ca336_3823dd5c039244e8bb5c27abc51cbc90~mv2_d_1400_1400_s_2.jpg",
+                  true,
                   "https://www.instagram.com/t3zcat",
                   "https://www.linkedin.com/in/prabhaav"
                 )}
               </div>
               <div className="col-sm-6">
                 {this.getTeamMember("Alex Carreira", "CTO",
-                  {avatarAC},
+                  false,
                   "https://www.instagram.com/ac4tw",
                   "https://www.linkedin.com/in/alex-carreira-6a2a711"
                 )}

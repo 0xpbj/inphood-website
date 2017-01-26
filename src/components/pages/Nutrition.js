@@ -237,13 +237,20 @@ export default class Nutrition extends React.Component {
       let parseQuantity = undefined
       let parseUnit = undefined
       for (let i = 0; i < parsedData.length; i++) {
-      // for (let i = 0; i < 2; i++) {
         const parseObj = parsedData[i]
         const foodName = parseObj['name']
 
         if (foodName === tag) {
-          parseQuantity = rationalToFloat(parseObj['amount'])
-          parseUnit = mapToSupportedUnitsStrict(parseObj['unit'])
+
+          // Sometimes the parseObj returns things like 'toTaste=true' and no
+          // amount or unit fields. TODO: we should probably exclude those tags/
+          // ingredients from the label in MVP3 or put them in their own bucket.
+          if ('amount' in parseObj) {
+            parseQuantity = rationalToFloat(parseObj['amount'])
+          }
+          if ('unit' in parseObj) {
+            parseUnit = mapToSupportedUnitsStrict(parseObj['unit'])
+          }
 
           if ((parseQuantity !== undefined) && (parseQuantity !== "") && (!isNaN(parseQuantity))) {
             console.log(tag + ', setting measureQuantity to parseQuantity: ' + parseQuantity);

@@ -3,6 +3,8 @@ import Col from 'react-bootstrap/lib/Col'
 import Row from 'react-bootstrap/lib/Row'
 import Grid from 'react-bootstrap/lib/Grid'
 import Alert from 'react-bootstrap/lib/Alert'
+import instagram from '../../data/instagram.svg'
+import linkedin from '../../data/linkedin.svg'
 
 export default class About extends React.Component {
 
@@ -13,9 +15,9 @@ export default class About extends React.Component {
         <h4>{memberName}</h4>
         <p className="text-muted">{title}</p>
         <ul className="list-inline social-buttons">
-          <li><a href={instagramUrl}><i className="fa fa-instagram">Instagram</i></a>
+          <li><a href={instagramUrl}><i className="fa fa-instagram"><img src={instagram} className="App-logo" alt="logo" height={40} width={40} /></i></a>
           </li>
-          <li><a href={linkedInUrl}><i className="fa fa-linkedin">LinkedIn</i></a>
+          <li><a href={linkedInUrl}><i className="fa fa-linkedin"><img src={linkedin} className="App-logo" alt="logo" height={40} width={40} /></i></a>
           </li>
         </ul>
       </div>

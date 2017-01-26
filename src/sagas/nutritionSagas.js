@@ -170,14 +170,20 @@ function* callElasticSearchLambda(searchTerm, foodName) {
     mode: 'cors',
     cache: 'default'
   })
+  const start = Date.now()
+  console.info('callElasticSearchLambda: START elasticSearchFetch on ' + searchTerm);
   const json = yield call (elasticSearchFetch, request)
+  console.info('callElasticSearchLambda(' + (Date.now()-start) + '): FINISH elasticSearchFetch on ' + searchTerm);
   // TODO: possibly need to preserve the order of the results (the parallel get and
   // object construction in nutritionReducer destroys this.)
 
   yield put ({type: INITIALIZE_FIREBASE_DATA, foodName, json})
   const {data} = json
   if (data && data[0]) {
+    const start2 = Date.now()
+    console.info('callElasticSearchLambda: START getDataFromFireBase on ' + searchTerm);
     yield fork(getDataFromFireBase, foodName, data[0]._source.Description, data[0]._id, 0)
+    console.info('callElasticSearchLambda(' + (Date.now()-start2) + '): FINISH getDataFromFireBase on ' + searchTerm);
   }
 }
 

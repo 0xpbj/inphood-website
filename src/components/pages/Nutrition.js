@@ -144,7 +144,7 @@ export default class Nutrition extends React.Component {
     let lazyLoadOperation = nextProps.nutrition.lazyLoadOperation
     if (lazyLoadOperation.status === 'done') {
       this.completeMatchDropdownChange(lazyLoadOperation.tag, lazyLoadOperation.value)
-
+      return
     }
 
     // TODO: refactor and compbine
@@ -422,9 +422,6 @@ export default class Nutrition extends React.Component {
       let index = getIndexForDescription(tagMatches, value)
       let tuple = tagMatches[index]
       this.props.lazyFetchFirebase(value, tag, tuple[keyOffset], index)
-      // PBJ: you need to get the firebase data and assign it:
-      // dataFromFirebase = getDataFromFB(dataForKey[keyOffset])
-      // this.state.matchData[tag][index][dataObjOffset] = dataFromFirebase
     } else {
       this.completeMatchDropdownChange(tag, value)
     }

@@ -47,7 +47,10 @@ export default class Results extends React.Component {
         margin: "10px",
       }
       const labelContainerStyle = {
-        margin: "30px",
+        marginTop: "20px",
+        border: "2px solid black",
+        padding: "5px",
+        margin: "10px",
       }
       const image = this.props.params.userId === 'anonymous'
       ? <Image src={this.props.results.data.oUrl} responsive rounded/>
@@ -61,11 +64,11 @@ export default class Results extends React.Component {
       )
       const credit = this.props.params.userId === 'anaonymous' ? (
         <div style={socialContainerStyle}>
-          inPhood Credit: Anonymous
+          Picture Credit: Anonymous
         </div>
       ) : ( 
         <div style={socialContainerStyle}>
-          inPhood Credit: <Link to={'http://www.instagram.com/' + this.props.params.userId} target="_blank">{this.props.params.userId}</Link>
+          Picture Credit: <Link to={'http://www.instagram.com/' + this.props.params.userId} target="_blank">{this.props.params.userId}</Link>
         </div>
       )
       // If we've received the data for the Nutrition label, deserialize it for
@@ -81,24 +84,24 @@ export default class Results extends React.Component {
       const path = 'http://www.label.inphood.com/?user=' + this.props.params.userId + '&label=' + this.props.params.labelId
       const labelPath = ( 
         <div style={labelContainerStyle}>
-          <Link to={path} target="_blank">Nutrition Label Link</Link>
+          <Link to={path} target="_blank">Shareable Nutrition Label</Link>
         </div>
       )
       const label = (
         <Grid>
           <div className="text-center">
           <Row className="show-grid">
-            <Col xs={6} md={4}>
+            <Col xs={5} md={5}>
               <Row className="show-grid">
                 {image}
-                {credit}
               </Row>
             </Col>
-            <Col xs={6} md={4}>
+            <Col xs={1} md={1} />
+            <Col xs={5} md={5}>
               <Row className="show-grid">
                 {nutritionLabel}
-                {labelPath}
               </Row>
+                {labelPath}
             </Col>
           </Row>
           </div>

@@ -8,13 +8,13 @@ import linkedin from '../../images/linkedin.svg'
 
 export default class About extends React.Component {
   getTeamMember(memberName, title, flag, instagramUrl, linkedInUrl) {
-    const pbj = require('../../images/PBJ.png')
-    const ayc = require('../../images/AC.png')
-    let avatar = flag ? pbj : ayc
+    const pbj = require('../../images/PBJ.jpg')
+    const ayc = require('../../images/AC.jpg')
+    const avatar = flag ? pbj : ayc
     return (
       <div className="team-member">
-        <img src={avatar} className="img-responsive img-circle" width="200" height="200" style={{borderRadius: 5}}/>
-        <h4>{memberName}</h4>
+        <img src={avatar} className="img-responsive img-circle" width="200" height="200" style={{borderRadius: 10}}/>
+        <h3>{memberName}</h3>
         <p className="text-muted">{title}</p>
         <ul className="list-inline social-buttons">
           <li><a href={instagramUrl}><i className="fa fa-instagram"><img src={instagram} className="App-logo" alt="logo" height={40} width={40} /></i></a>
@@ -30,8 +30,8 @@ export default class About extends React.Component {
       <Grid>
         <Row className="show-grid">
           <h1 className="page-header">About Us</h1>
-          <p>Purpose: Labeling food images across the internet</p>
-          <p>Method:  Help users generate a shareable nutrition label based on the FDA database</p>
+          <h4>inPhood LLC founded in 2016, labels food images across the internet.</h4>
+          <h4>Our products help users generate shareable nutrition labels, based on USDA information and proprietary sources.</h4>
           <h2 className="page-header">Our Team</h2>
             <div className="row">
               <div className="col-sm-6">

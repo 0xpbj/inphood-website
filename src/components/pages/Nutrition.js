@@ -197,7 +197,7 @@ export default class Nutrition extends React.Component {
           parseQuantity = rationalToFloat(parseObj['amount'])
           parseUnit = mapToSupportedUnitsStrict(parseObj['unit'])
 
-          if ((parseQuantity !== undefined) && (parseQuantity !== "")) {
+          if ((parseQuantity !== undefined) && (parseQuantity !== "") && (!isNaN(parseQuantity))) {
             console.log(tag + ', setting measureQuantity to parseQuantity: ' + parseQuantity)
             measureQuantity = parseQuantity
           }

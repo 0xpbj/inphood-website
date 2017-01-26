@@ -45,7 +45,7 @@ export default class SelectedImage extends React.Component {
     }
     else {
       const raw = this.state.ingredients
-      let data = parseRecipe()
+      let data = parseRecipe(raw)
       this.props.storeParsedData(data, raw, true)
       this.props.router.push('nutrition')
     }
@@ -92,9 +92,9 @@ export default class SelectedImage extends React.Component {
                 <FormGroup controlId="formControlsTextarea">
                   <ControlLabel>Meal Recipe</ControlLabel>
                   {recipeAlert}
-                  <FormControl 
-                    componentClass="textarea" 
-                    rows="10" 
+                  <FormControl
+                    componentClass="textarea"
+                    rows="10"
                     placeholder={"1.5 cup rainbow chard (sliced)\n2 stalks green onion (sliced)\n2 medium tomatoes (chopped)\n1 medium avocado (chopped)\n¼ tsp sea salt\n1 tbsp butter\n1 ½ tbsp flax seed oil\n½ tbsp white wine vinegar\n..."}
                     onChange={this.getData.bind(this)}
                   />

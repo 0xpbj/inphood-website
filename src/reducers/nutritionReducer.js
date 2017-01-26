@@ -10,7 +10,8 @@ import {
   CLEAR_FIREBASE_DATA,
   INITIALIZE_FIREBASE_DATA,
   INGREDIENT_FIREBASE_DATA,
-  LAZY_LOAD_FIREBASE
+  LAZY_LOAD_FIREBASE,
+  LAZY_FETCH_FIREBASE
 } from '../constants/ActionTypes'
 
 const initialState = {
@@ -28,7 +29,12 @@ const initialState = {
   rawData: '',
   parsedData: [],
   matchData: {},
-  recipeFlag: false
+  recipeFlag: false,
+  lazyLoadOperation: {
+    status: '',
+    tag: undefined,
+    value: undefined
+  }
 }
 export default function nutrition(state = initialState, action) {
   switch (action.type) {
@@ -133,15 +139,32 @@ export default function nutrition(state = initialState, action) {
           matchData: localMatchData
         }
       }
+    case LAZY_FETCH_FIREBASE:
+      {
+        let lazyLoadOperation = {
+          status: 'inProgress',
+          tag: action.ingredient,
+          value: action.foodName
+        }
+
+        return {
+          ...state,
+          lazyLoadOperation: lazyLoadOperation
+        }
+      }
     case LAZY_LOAD_FIREBASE:
       {
-        debugger
         let {matchData} = state
         const dataObjOffset = 2
         matchData[action.ingredient][action.index][dataObjOffset] = action.data
+
+        let {lazyLoadOperation} = state
+        lazyLoadOperation.status = 'done'
+
         return {
           ...state,
-          matchData
+          matchData,
+          lazyLoadOperation: lazyLoadOperation
         }
       }
     case INGREDIENT_FIREBASE_DATA:

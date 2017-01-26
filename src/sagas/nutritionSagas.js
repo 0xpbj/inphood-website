@@ -176,12 +176,12 @@ function* callElasticSearchLambda(searchTerm, foodName) {
 
   yield put ({type: INITIALIZE_FIREBASE_DATA, foodName, json})
   const {data} = json
-  // for (let index of json.data) {
-  if (data && data[0])
+  if (data && data[0]) {
     yield fork(getDataFromFireBase, foodName, data[0]._source.Description, data[0]._id, 0)
+  }
 }
 
-function* layzFetchFirebaseData() {
+function* lazyFetchFirebaseData() {
   while (true) {
     const {foodName, ingredient, key, index} = yield take(LAZY_FETCH_FIREBASE)
     yield fork(getDataFromFireBase, foodName, ingredient, key, index)
@@ -228,7 +228,7 @@ function* processParseForLabel() {
 }
 
 export default function* root() {
-  yield fork(layzFetchFirebaseData)
+  yield fork(lazyFetchFirebaseData)
   yield fork(takeLatest, SEND_SERIALIZED_DATA, loadSerializedData)
   yield fork(takeLatest, IG_UPLOAD_PHOTO, loadAWSPut)
   yield fork(takeLatest, STORE_PARSED_DATA, processParseForLabel)

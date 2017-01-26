@@ -64,7 +64,7 @@ function getIndexForDescription(listOfTuples, description) {
     }
   }
 
-  return -1  
+  return -1
 }
 
 function getTupleForDescription(listOfTuples, description) {
@@ -141,6 +141,12 @@ export default class Nutrition extends React.Component {
   componentWillReceiveProps(nextProps) {
     console.log('componentWillReceiveProps -----------------------------------');
 
+    let lazyLoadOperation = nextProps.nutrition.lazyLoadOperation
+    if (lazyLoadOperation.status === 'done') {
+      this.completeMatchDropdownChange(lazyLoadOperation.tag, lazyLoadOperation.value)
+
+    }
+
     // TODO: refactor and compbine
     // Tuple offsets for firebase data in nutrition reducer:
     const descriptionOffset = 0
@@ -165,16 +171,15 @@ export default class Nutrition extends React.Component {
       // TODO: PBJ||AC render spinner
       return
     }
-    // commented out for delayed fetch
-    //
-    // for (let tag in matchData) {
-    //   const tagMatches = matchData[tag]
-    //   for (let idx = 0; idx < matchData[tag].length; idx++) {
-    //     if (matchData[tag][idx][dataObjOffset] === undefined) {
-    //       return
-    //     }
-    //   }
-    // }
+
+    // Check that the first dataObject is not undefined (modified from non-lazy
+    // load where every match was checked)
+    const firstMatch = 0
+    for (let tag in matchData) {
+      if (matchData[tag][firstMatch][dataObjOffset] === undefined) {
+        return
+      }
+    }
 
     console.log('% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %');
     console.log(' % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %');
@@ -323,16 +328,10 @@ export default class Nutrition extends React.Component {
     })
   }
   //
-  handleMatchDropdownChange(tag, value) {
-    console.log('handleMatchDropdownChange ----------------------------------------');
+  completeMatchDropdownChange(tag, value) {
+    console.log('completeMatchDropdownChange ----------------------------------------');
     console.log('tag = ' + tag);
     console.log('value = ' + value);
-
-    // TODO: refactor and compbine
-    // Tuple offsets for firebase data in nutrition reducer:
-    const descriptionOffset = 0
-    const keyOffset = 1
-    const dataObjOffset = 2
 
     let ingredientControlModels = this.state.ingredientControlModels
     let nutritionModel = this.state.nutritionModel
@@ -345,14 +344,6 @@ export default class Nutrition extends React.Component {
     // 2. Create a new IngredientModel:
     //
     let dataForKey = getDataForDescription(this.state.matchData[tag], value)
-    if (dataForKey === undefined) {   // Lazy loading from FB
-      let index = getIndexForDescription(this.state.matchData[tag], value)
-      let tuple = this.state.matchData[tag][index]
-      this.props.lazyFetchFirebase(value, tag, tuple[keyOffset], index)
-      // PBJ: you need to get the firebase data and assign it:
-      // dataFromFirebase = getDataFromFB(dataForKey[keyOffset])
-      // this.state.matchData[tag][index][dataObjOffset] = dataFromFirebase
-    }
     let ingredientModel = new IngredientModel()
     ingredientModel.initializeSingle(value, tag, dataForKey)
     //
@@ -412,6 +403,31 @@ export default class Nutrition extends React.Component {
       nutritionModel: nutritionModel,
       ingredientControlModels: ingredientControlModels
     })
+  }
+  //
+  handleMatchDropdownChange(tag, value) {
+    console.log('handleMatchDropdownChange ----------------------------------------');
+    console.log('tag = ' + tag);
+    console.log('value = ' + value);
+
+    // TODO: refactor and compbine
+    // Tuple offsets for firebase data in nutrition reducer:
+    const descriptionOffset = 0
+    const keyOffset = 1
+    const dataObjOffset = 2
+
+    let tagMatches = this.state.matchData[tag]
+    let dataForKey = getDataForDescription(tagMatches, value)
+    if (dataForKey === undefined) {   // Lazy loading from FB
+      let index = getIndexForDescription(tagMatches, value)
+      let tuple = tagMatches[index]
+      this.props.lazyFetchFirebase(value, tag, tuple[keyOffset], index)
+      // PBJ: you need to get the firebase data and assign it:
+      // dataFromFirebase = getDataFromFB(dataForKey[keyOffset])
+      // this.state.matchData[tag][index][dataObjOffset] = dataFromFirebase
+    } else {
+      this.completeMatchDropdownChange(tag, value)
+    }
   }
   //
   handleUnitDropdownChange(tag, value) {

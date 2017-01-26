@@ -11,7 +11,6 @@ import './index.css'
 
 const Config = require('Config')
 
-// const firebase = require('firebase')
 const firebase = require('firebase')
 const fbConfig = {
   apiKey: Config.FIREBASE_API_KEY,

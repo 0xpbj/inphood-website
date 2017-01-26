@@ -330,6 +330,7 @@ export default class Nutrition extends React.Component {
   }
   //
   completeMatchDropdownChange(tag, value) {
+    // debugger
     console.log('completeMatchDropdownChange ----------------------------------------');
     console.log('tag = ' + tag);
     console.log('value = ' + value);
@@ -763,6 +764,7 @@ export default class Nutrition extends React.Component {
   }
   //
   render() {
+    // debugger
     if (!this.props.user.profile) {
       return (
         <Alert bsStyle="danger" onDismiss={() => this.props.router.push('/')}>

@@ -64,6 +64,7 @@ export default class Home extends React.Component {
   selectPhoto() {
     const index = this._imageGallery.getCurrentIndex()
     const photo =  this.props.user.photos.data[index]
+    this.props.cleanReducers()
     this.props.igSelectedPhoto(index, photo)
     ReactGA.event({
       category: 'User',

@@ -12,7 +12,8 @@ import {
   INGREDIENT_FIREBASE_DATA,
   LAZY_LOAD_FIREBASE,
   LAZY_FETCH_FIREBASE,
-  RESET_LAZY_LOAD_STATUS
+  RESET_LAZY_LOAD_STATUS,
+  CLEAN_REDUCERS
 } from '../constants/ActionTypes'
 
 const initialState = {
@@ -39,6 +40,7 @@ const initialState = {
 }
 export default function nutrition(state = initialState, action) {
   switch (action.type) {
+    case CLEAN_REDUCERS:
     case AN_CLEAR_DATA:
       return {
         ...initialState

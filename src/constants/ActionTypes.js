@@ -23,6 +23,7 @@ export const AN_CLEAR_DATA = 'AN_CLEAR_DATA'
 export const ADD_CAPTION = 'ADD_CAPTION'
 export const AN_UPLOAD_PHOTO = 'AN_UPLOAD_PHOTO'
 export const AN_SELECTED_PHOTO = 'AN_SELECTED_PHOTO'
+export const CLEAN_REDUCERS = 'CLEAN_REDUCERS'
 
 
 // Results Actions

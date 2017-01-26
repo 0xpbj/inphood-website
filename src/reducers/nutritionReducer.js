@@ -175,7 +175,7 @@ export default function nutrition(state = initialState, action) {
         return {
           ...state,
           lazyLoadOperation: {
-            status: '',
+            status: 'idle',
             tag: undefined,
             value: undefined
           }

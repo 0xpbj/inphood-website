@@ -142,9 +142,25 @@ export default class Nutrition extends React.Component {
     console.log('componentWillReceiveProps -----------------------------------');
 
     let lazyLoadOperation = nextProps.nutrition.lazyLoadOperation
+    console.log('lazyLoadOperation.status = ' + lazyLoadOperation.status)
     if (lazyLoadOperation.status === 'done') {
       this.completeMatchDropdownChange(lazyLoadOperation.tag, lazyLoadOperation.value)
       this.props.resetLazyLoadOperation()
+    }
+    // HORRIBLE HACK:
+    //  - the code below here used to be in componentWillMount, it was essentially
+    //    designed to be run once. When we inserted the code to lazy load the pulldown
+    //    data from firebase, we ended up introducing additional calls to this method.
+    //    The check below uses the state of the lazyLoadOperation in redux to prevent
+    //    the code below from being repeatedly run, which introduces a host of bugs, i.e.:
+    //      * the pulldown gets re-rendered with incorrect information
+    //      * items from the unselected list get pushed back into the selected list
+    //
+    //    TODO: in MVP3, re-architect this properly to work with the redux store
+    //
+    if (lazyLoadOperation.status === 'inProgress' ||
+        lazyLoadOperation.status === 'idle' ||
+        lazyLoadOperation.status == 'done') {
       return
     }
 

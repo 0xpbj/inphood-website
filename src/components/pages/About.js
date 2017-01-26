@@ -3,8 +3,8 @@ import Col from 'react-bootstrap/lib/Col'
 import Row from 'react-bootstrap/lib/Row'
 import Grid from 'react-bootstrap/lib/Grid'
 import Alert from 'react-bootstrap/lib/Alert'
-import instagram from '../../data/instagram.svg'
-import linkedin from '../../data/linkedin.svg'
+import instagram from '../../images/instagram.svg'
+import linkedin from '../../images/linkedin.svg'
 
 export default class About extends React.Component {
   getTeamMember(memberName, title, flag, instagramUrl, linkedInUrl) {
@@ -13,7 +13,7 @@ export default class About extends React.Component {
     let avatar = flag ? pbj : ayc
     return (
       <div className="team-member">
-        <img src={avatar} className="img-responsive img-circle" width="200" height="200" />
+        <img src={avatar} className="img-responsive img-circle" width="200" height="200" style={{borderRadius: 5}}/>
         <h4>{memberName}</h4>
         <p className="text-muted">{title}</p>
         <ul className="list-inline social-buttons">
@@ -25,7 +25,6 @@ export default class About extends React.Component {
       </div>
     )
   }
-
   render() {
     return (
       <Grid>

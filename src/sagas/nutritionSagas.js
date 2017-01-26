@@ -64,7 +64,7 @@ const uploadImageToS3 = (uri, key, username, thumbnail, parsedData, rawData, rec
             error: "error downloading image to s3"
           })
         } else {
-          console.log("success uploading to s3", data)
+          console.log("success uploading to s3", data);
         }
       })
       firebase.database().ref('/global/nutritionLabel/'+username+'/'+key).update({
@@ -192,7 +192,6 @@ function* callElasticSearchLambda(searchTerm, foodName) {
   //      --header 'content-type: application/json'
   //
   const url = Config.LAMBDA_URL
-  console.log('\n\n\n\n\n\n\n\n\nLambda URL: ', url)
 
   const data = {
     'query': {'match' : {'Description': searchTerm}},

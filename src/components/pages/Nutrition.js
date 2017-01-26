@@ -134,9 +134,9 @@ export default class Nutrition extends React.Component {
     //
     console.log(Object.keys(matchData).length);
     console.log(Object.keys(nextProps.nutrition.parsedData).length);
-    console.log('---------')
-    console.log(matchData)
-    console.log(nextProps.nutrition.parsedData)
+    console.log('---------');
+    console.log(matchData);
+    console.log(nextProps.nutrition.parsedData);
     if (Object.keys(matchData).length !== Object.keys(parsedData).length) {
       // TODO: PBJ||AC render spinner
       return
@@ -198,11 +198,11 @@ export default class Nutrition extends React.Component {
           parseUnit = mapToSupportedUnitsStrict(parseObj['unit'])
 
           if ((parseQuantity !== undefined) && (parseQuantity !== "") && (!isNaN(parseQuantity))) {
-            console.log(tag + ', setting measureQuantity to parseQuantity: ' + parseQuantity)
+            console.log(tag + ', setting measureQuantity to parseQuantity: ' + parseQuantity);
             measureQuantity = parseQuantity
           }
           if ((parseUnit !== undefined) && (parseUnit !== "")) {
-            console.log(tag + ', setting measureUnit to parseUnit: ' + parseUnit)
+            console.log(tag + ', setting measureUnit to parseUnit: ' + parseUnit);
             measureUnit = parseUnit
           }
           break

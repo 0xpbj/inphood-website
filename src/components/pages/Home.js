@@ -179,18 +179,14 @@ export default class Home extends React.Component {
         <Grid>
           <Row className="show-grid">
             <div className="text-center" style={containerStyle}/>
-            <Col md={2} />
-            <Col md={8}>
-              <div className='row, text-center'>
-                <div className='text-left'>
-                  <DropdownButton bsStyle="info" title="Options" id={`dropdown-basic`}>
-                    <MenuItem key="1" onClick={() => this.props.igRefreshRequest()}>Refresh</MenuItem>
-                    <MenuItem key="2" onClick={() => this.props.igLogoutRequest()}>Logout</MenuItem>
-                  </DropdownButton>
-                </div>
-                <div className='text-right'>
-                  <Button className="btn-primary-spacing" bsStyle="success" onClick={this.selectPhoto.bind(this)}>Select Image</Button>
-                </div>
+            <Col xs={2} md={2} />
+            <Col xs={8} md={8}>
+              <div className="text-right">
+                <DropdownButton bsStyle="info" title="Options" id={`dropdown-basic`}>
+                  <MenuItem key="1" onClick={() => this.props.igRefreshRequest()}>Refresh</MenuItem>
+                  <MenuItem key="2" onClick={() => this.props.igLogoutRequest()}>Logout</MenuItem>
+                </DropdownButton>
+                <Button className="btn-primary-spacing" bsStyle="success" onClick={this.selectPhoto.bind(this)}>Select Image</Button>
               </div>
               <ImageGallery
                 ref={i => this._imageGallery = i}
@@ -201,7 +197,7 @@ export default class Home extends React.Component {
                 showPlayButton={false}
               />
             </Col>
-            <Col md={2} />
+            <Col xs={2} md={2} />
           </Row>
         </Grid>
       )

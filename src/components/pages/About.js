@@ -23,6 +23,8 @@ export default class About extends React.Component {
   }
 
   render() {
+    const avatarAC = require('../../images/AC.jpg')
+    
     return (
       <Grid>
         <Row className="show-grid">
@@ -40,7 +42,7 @@ export default class About extends React.Component {
               </div>
               <div className="col-sm-6">
                 {this.getTeamMember("Alex Carreira", "CTO",
-                  "http://www.theartofdoingstuff.com/wp-content/uploads/2013/03/Banana.jpg",
+                  {avatarAC},
                   "https://www.instagram.com/ac4tw",
                   "https://www.linkedin.com/in/alex-carreira-6a2a711"
                 )}

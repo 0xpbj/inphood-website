@@ -74,6 +74,7 @@ export default class SelectedImage extends React.Component {
     const containerStyle = {
       marginTop: "60px"
     }
+    console.log(this.props.user.photos.data[this.props.nutrition.index].caption.text)
     const recipeAlert = (this.state.recipeError) ? (
       <Alert bsStyle="danger">
         <h4>Oh snap! You forgot to enter a recipe!</h4>

@@ -14,7 +14,7 @@ import Glyphicon from 'react-bootstrap/lib/Glyphicon'
 import ControlLabel from 'react-bootstrap/lib/ControlLabel'
 import DropdownButton from 'react-bootstrap/lib/DropdownButton'
 import ImageGallery from 'react-image-gallery'
-import {Redirect} from 'react-router' 
+import {Redirect} from 'react-router'
 import {parseRecipe} from '../../helpers/parseRecipe'
 import Hello from 'hellojs'
 import Anon from './Anon'
@@ -79,7 +79,7 @@ export default class Home extends React.Component {
   }
   render() {
     const containerStyle = {
-      marginTop: "30px", 
+      marginTop: "30px",
       width: "500px",
     }
     // if (this.props.nutrition.anonymous) {
@@ -100,13 +100,17 @@ export default class Home extends React.Component {
     // else {
       // let hideUploadModal = () => this.setState({ showUploadModal: false });
     if (!this.props.user.login) {
+      const inPhoodLogo = require('../../images/Icon512.png')
+
       return (
         <div>
-        <Jumbotron>
-          <h1 className="text-center">Welcome to inPhood!</h1>
-        </Jumbotron>
           <div>
             <Grid>
+              <Row style={{margin: 50}}>
+                <Col xs={12} md={12}>
+                  <img src={inPhoodLogo} className="center-block" alt="Welcome to inPhood!"/>
+                </Col>
+              </Row>
               <Row>
                 <div className="text-center">
                   {/*<Col xs={6} md={6}>
@@ -177,18 +181,27 @@ export default class Home extends React.Component {
       }
       return (
         <Grid>
-          <Row className="show-grid">
+          <Row className="show-grid" style={{marginBottom: 10}}>
             <div className="text-center" style={containerStyle}/>
             <Col xs={2} md={2} />
+            <Col xs={2} md={2}>
+              <DropdownButton bsStyle="info" title="Options" id={`dropdown-basic`}>
+                <MenuItem key="1" onClick={() => this.props.igRefreshRequest()}>Refresh</MenuItem>
+                <MenuItem key="2" onClick={() => this.props.igLogoutRequest()}>Logout</MenuItem>
+              </DropdownButton>
+            </Col>
+            <Col xs={4} md={4} />
+            <Col xs={2} md={2} className="text-right">
+              <Button className="btn-primary-spacing" bsStyle="success" onClick={this.selectPhoto.bind(this)}>Select Image</Button>
+            </Col>
+            <Col xs={2} md={2} />
+          </Row>
+
+          <Row>
+            <Col xs={2} md={2} />
             <Col xs={8} md={8}>
-              <div className="text-right">
-                <DropdownButton bsStyle="info" title="Options" id={`dropdown-basic`}>
-                  <MenuItem key="1" onClick={() => this.props.igRefreshRequest()}>Refresh</MenuItem>
-                  <MenuItem key="2" onClick={() => this.props.igLogoutRequest()}>Logout</MenuItem>
-                </DropdownButton>
-                <Button className="btn-primary-spacing" bsStyle="success" onClick={this.selectPhoto.bind(this)}>Select Image</Button>
-              </div>
               <ImageGallery
+                className="center-block"
                 ref={i => this._imageGallery = i}
                 items={images}
                 slideInterval={2000}

@@ -13,7 +13,7 @@ export default class About extends React.Component {
     const avatar = flag ? pbj : ayc
     return (
       <div className="team-member">
-        <img src={avatar} className="img-responsive img-circle" width="200" height="200" style={{borderRadius: 10}}/>
+        <img src={avatar} className="img-responsive img-circle" width="256" height="256" style={{borderRadius: 10, borderWidth: 2, borderStyle: 'solid', borderColor: 'black'}}/>
         <h3>{memberName}</h3>
         <p className="text-muted">{title}</p>
         <ul className="list-inline social-buttons">

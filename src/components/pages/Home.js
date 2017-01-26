@@ -14,7 +14,7 @@ import Glyphicon from 'react-bootstrap/lib/Glyphicon'
 import ControlLabel from 'react-bootstrap/lib/ControlLabel'
 import DropdownButton from 'react-bootstrap/lib/DropdownButton'
 import ImageGallery from 'react-image-gallery'
-import {Redirect} from 'react-router' 
+import {Redirect} from 'react-router'
 import {parseRecipe} from '../../helpers/parseRecipe'
 import Hello from 'hellojs'
 import Anon from './Anon'
@@ -79,7 +79,7 @@ export default class Home extends React.Component {
   }
   render() {
     const containerStyle = {
-      marginTop: "30px", 
+      marginTop: "30px",
       width: "500px",
     }
     // if (this.props.nutrition.anonymous) {
@@ -100,13 +100,17 @@ export default class Home extends React.Component {
     // else {
       // let hideUploadModal = () => this.setState({ showUploadModal: false });
     if (!this.props.user.login) {
+      const inPhoodLogo = require('../../images/Icon512.png')
+
       return (
         <div>
-        <Jumbotron>
-          <h1 className="text-center">Welcome to inPhood!</h1>
-        </Jumbotron>
           <div>
             <Grid>
+              <Row style={{margin: 50}}>
+                <Col xs={12} md={12}>
+                  <img src={inPhoodLogo} className="center-block" alt="Welcome to inPhood!"/>
+                </Col>
+              </Row>
               <Row>
                 <div className="text-center">
                   {/*<Col xs={6} md={6}>

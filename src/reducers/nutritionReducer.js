@@ -132,8 +132,8 @@ export default function nutrition(state = initialState, action) {
 
         localMatchData[action.foodName] = []
 
-        for (let obj of action.json.data) {
-          let dataEntry = [obj._source.Description, obj._id, undefined]
+        for (let obj of action.data) {
+          let dataEntry = [obj.info._source.Description, obj.info._id, undefined]
           localMatchData[action.foodName].push(dataEntry)
         }
 

@@ -171,19 +171,22 @@ function* callElasticSearchLambda(searchTerm, foodName) {
     cache: 'default'
   })
   const start = Date.now()
-  console.info('callElasticSearchLambda: START elasticSearchFetch on ' + searchTerm);
   const json = yield call (elasticSearchFetch, request)
-  console.info('callElasticSearchLambda(' + (Date.now()-start) + '): FINISH elasticSearchFetch on ' + searchTerm);
   // TODO: possibly need to preserve the order of the results (the parallel get and
   // object construction in nutritionReducer destroys this.)
-
-  yield put ({type: INITIALIZE_FIREBASE_DATA, foodName, json})
-  const {data} = json
-  if (data && data[0]) {
-    const start2 = Date.now()
-    console.info('callElasticSearchLambda: START getDataFromFireBase on ' + searchTerm);
-    yield fork(getDataFromFireBase, foodName, data[0]._source.Description, data[0]._id, 0)
-    console.info('callElasticSearchLambda(' + (Date.now()-start2) + '): FINISH getDataFromFireBase on ' + searchTerm);
+  let {data} = json
+  var levenshtein = require('fast-levenshtein');
+  let sortedData = []
+  for (let i of data) {
+    let d = levenshtein.get(foodName, i._source.Description)
+    sortedData.push({info: i, distance: d})
+  }
+  sortedData.sort(function(a, b) {
+    return a.distance - b.distance;
+  })
+  yield put ({type: INITIALIZE_FIREBASE_DATA, foodName, data: sortedData})
+  if (sortedData && sortedData[0]) {
+    yield fork(getDataFromFireBase, foodName, sortedData[0].info._source.Description, sortedData[0].info._id, 0)
   }
 }
 

@@ -1,6 +1,7 @@
 var React = require('react')
 import Button from 'react-bootstrap/lib/Button'
 import Glyphicon from 'react-bootstrap/lib/Glyphicon'
+import {Link} from 'react-router'
 
 export default class Footer extends React.Component {
   render() {
@@ -25,7 +26,7 @@ export default class Footer extends React.Component {
                             </a>
                         </li>
                     </ul>
-                    <a href="http://www.inphood.com/privacy_policy.pdf">Privacy Policy</a>
+                    <Link to="http://www.inphood.com/privacy_policy.pdf" target="_blank">Privacy Policy</Link>
                     <p className="text-center"> Copyright &copy; {currentYear} inPhood Inc., All rights reserved.</p>
                 </div>
             </div>

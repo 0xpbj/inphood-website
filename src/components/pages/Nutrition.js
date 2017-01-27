@@ -245,7 +245,13 @@ export default class Nutrition extends React.Component {
           // amount or unit fields. TODO: we should probably exclude those tags/
           // ingredients from the label in MVP3 or put them in their own bucket.
           if ('amount' in parseObj) {
-            parseQuantity = rationalToFloat(parseObj['amount'])
+            if (('min' in parseObj['amount']) && ('max' in parseObj['amount'])) {
+              const parseMinQuantity = rationalToFloat(parseObj['amount'].min)
+              const parseMaxQuantity = rationalToFloat(parseObj['amount'].max)
+              parseQuantity = (parseMinQuantity + parseMaxQuantity) / 2.0
+            } else {
+              parseQuantity = rationalToFloat(parseObj['amount'])
+            }
           }
           if ('unit' in parseObj) {
             parseUnit = mapToSupportedUnitsStrict(parseObj['unit'])
@@ -269,6 +275,7 @@ export default class Nutrition extends React.Component {
         nutritionModel.addIngredient(description, ingredientModel, tryQuantity, tryUnit)
       } catch(err) {
         errorStr = err
+        console.log(errorStr);
       }
 
       // We failed to add the ingredient with the specified quantity/unit, so try
@@ -291,6 +298,11 @@ export default class Nutrition extends React.Component {
 
       selectedTags.push(tag)
     }
+
+    // Hackity hack hack--init the serving amount from the servingControls so they
+    // match on presentation of the label
+    let servingControls = this.state.servingControls
+    nutritionModel.setSuggestedServingAmount(servingControls['value'], servingControls['unit'])
 
     this.setState({
       matchData: matchData,
@@ -337,9 +349,9 @@ export default class Nutrition extends React.Component {
       servingControls['value'] = 2
     } else {
       servingControls['min'] = 0
-      servingControls['max'] = 100
-      servingControls['step'] = 10
-      servingControls['value'] = 50
+      servingControls['max'] = 300
+      servingControls['step'] = 25
+      servingControls['value'] = 100
     }
     servingControls['unit'] = servingUnit
 

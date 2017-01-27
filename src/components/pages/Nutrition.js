@@ -246,7 +246,8 @@ export default class Nutrition extends React.Component {
           // amount or unit fields. TODO: we should probably exclude those tags/
           // ingredients from the label in MVP3 or put them in their own bucket.
           if ('amount' in parseObj) {
-            if (('min' in parseObj['amount']) && ('max' in parseObj['amount'])) {
+            if ((parseObj['amount'].hasOwnProperty('min')) &&
+                 parseObj['amount'].hasOwnProperty('max')) {
               const parseMinQuantity = rationalToFloat(parseObj['amount'].min)
               const parseMaxQuantity = rationalToFloat(parseObj['amount'].max)
               parseQuantity = (parseMinQuantity + parseMaxQuantity) / 2.0
@@ -813,6 +814,10 @@ export default class Nutrition extends React.Component {
   //
   render() {
     console.log('\n\n\nNutrition props: ', this)
+
+    const numIngredients = Object.keys(this.props.nutrition.parsedData).length
+    const loadedIngredients = Object.keys(this.props.nutrition.matchData).length
+
     if (!this.props.user.profile) {
       return (
         <Alert bsStyle="danger" onDismiss={() => this.props.router.push('/')}>
@@ -822,11 +827,13 @@ export default class Nutrition extends React.Component {
           </p>
         </Alert>
       )
-    } else if (this.state.progress != 1) {
-      console.log('\n\n\nProgress: ', this.state.progress*100)
+    } else if (loadedIngredients < numIngredients) {
+      const progress = (100.0 * loadedIngredients) / numIngredients
+      console.log('\n\n\nProgress: ', progress)
       return (
         <div className="text-center">
-          <ProgressBar striped bsStyle="success" now={this.state.progress*100} />
+          <ProgressBar striped
+           bsStyle="success" now={progress} />
         </div>
       )
     }

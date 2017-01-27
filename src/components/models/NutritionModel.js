@@ -66,9 +66,22 @@ export class NutritionModel {
     return JSON.stringify(typeToInstance)
   }
 
+  // throws if setRecipeAmount blows up
   addIngredient(key, anIngredient, quantity, unit) {
     this._scaledIngredients[key] = new ScaledIngredient(anIngredient)
-    this._scaledIngredients[key].setRecipeAmount(quantity, unit)
+
+    let errorStr = ''
+    try {
+      this._scaledIngredients[key].setRecipeAmount(quantity, unit)
+    } catch(err) {
+      errorStr = err
+    } finally {
+      // If we weren't successful, remove the added ingredient
+      if (errorStr !== '') {
+        delete this._scaledIngredients[key]
+        throw new Error(errorStr)
+      }
+    }
   }
 
   getScaledIngredient(tag) {

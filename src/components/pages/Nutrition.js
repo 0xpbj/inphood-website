@@ -233,11 +233,9 @@ export default class Nutrition extends React.Component {
       let measureQuantity = ingredientModel.getMeasureQuantity()
       let measureUnit = ingredientModel.getMeasureUnit()
 
-      // TODO: measureQuantity and measureUnit should actually come from parseData
-      // TODO TODO TODO TODO MVP2
-      //  - check to see if measureQuantity/measureUnit specified in parseData and
-      //    permissible for ingredient known conversions--if so use it, otherewise
-      //    message:
+      let tryQuantity = measureQuantity
+      let tryUnit = measureUnit
+
       let parseQuantity = undefined
       let parseUnit = undefined
       for (let i = 0; i < parsedData.length; i++) {
@@ -258,19 +256,30 @@ export default class Nutrition extends React.Component {
 
           if ((parseQuantity !== undefined) && (parseQuantity !== "") && (!isNaN(parseQuantity))) {
             console.log(tag + ', setting measureQuantity to parseQuantity: ' + parseQuantity);
-            measureQuantity = parseQuantity
+            tryQuantity = parseQuantity
           }
           if ((parseUnit !== undefined) && (parseUnit !== "")) {
             console.log(tag + ', setting measureUnit to parseUnit: ' + parseUnit);
-            measureUnit = parseUnit
+            tryUnit = parseUnit
           }
+
           break
         }
       }
 
+      let errorStr = ''
+      try {
+        nutritionModel.addIngredient(description, ingredientModel, tryQuantity, tryUnit)
+      } catch(err) {
+        errorStr = err
+      }
 
-      nutritionModel.addIngredient(
-        description, ingredientModel, measureQuantity, measureUnit)
+      // We failed to add the ingredient with the specified quantity/unit, so try
+      // using the FDA values (not try/catch--if this fails we have a serious internal
+      // error--i.e. this should always work.)
+      if (errorStr !== '') {
+        nutritionModel.addIngredient(description, ingredientModel, measureQuantity, measureUnit)
+      }
 
       let ingredientControlModel = new IngredientControlModel(
         measureQuantity,

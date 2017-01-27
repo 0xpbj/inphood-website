@@ -176,14 +176,11 @@ export default class Nutrition extends React.Component {
     // Examine to ensure we have got the complete data from firebase, then commence construction
     // and creation of objects for rendering purposes (otherwise we run into problems with things
     // not being defined):
-    //
-    // There are other things we can do to alleviate this.
-    //
-    console.log(Object.keys(matchData).length);
-    console.log(Object.keys(nextProps.nutrition.parsedData).length);
-    console.log('---------');
-    console.log(matchData);
-    console.log(nextProps.nutrition.parsedData);
+    // console.log(Object.keys(matchData).length);
+    // console.log(Object.keys(nextProps.nutrition.parsedData).length);
+    // console.log('---------');
+    // console.log(matchData);
+    // console.log(nextProps.nutrition.parsedData);
     if (Object.keys(matchData).length !== Object.keys(parsedData).length) {
       return
     }
@@ -202,10 +199,10 @@ export default class Nutrition extends React.Component {
 
     // A spinner gets rendered until this method gets here.
 
+    // console.log('% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %');
+    // console.log(' % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %');
     console.log('% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %');
-    console.log(' % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %');
-    console.log('% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %');
-    console.log('');
+    // console.log('');
     console.log('Complete data received from firebase');
 
     console.log(nextProps.nutrition);
@@ -278,13 +275,15 @@ export default class Nutrition extends React.Component {
       // using the FDA values (not try/catch--if this fails we have a serious internal
       // error--i.e. this should always work.)
       if (errorStr !== '') {
-        nutritionModel.addIngredient(description, ingredientModel, measureQuantity, measureUnit)
+        tryQuantity = measureQuantity
+        tryUnit = measureUnit
+        nutritionModel.addIngredient(description, ingredientModel, tryQuantity, tryUnit)
       }
 
       let ingredientControlModel = new IngredientControlModel(
-        measureQuantity,
-        this.getPossibleUnits(measureUnit),
-        measureUnit,
+        tryQuantity,
+        this.getPossibleUnits(tryUnit),
+        tryUnit,
         getListOfTupleOffset(tagMatches, descriptionOffset),
         description)
 
@@ -800,7 +799,6 @@ export default class Nutrition extends React.Component {
   }
   //
   render() {
-    // debugger
     if (!this.props.user.profile) {
       return (
         <Alert bsStyle="danger" onDismiss={() => this.props.router.push('/')}>
@@ -810,8 +808,7 @@ export default class Nutrition extends React.Component {
           </p>
         </Alert>
       )
-    }
-    else if (this.state.progress) {
+    } else if (this.state.progress) {
       return (
         <div className="text-center">
           <ProgressBar type="circular" mode="indeterminate" multicolor={true}/>
@@ -826,7 +823,6 @@ export default class Nutrition extends React.Component {
     let notFound = ""
     let ingredientControlModels = this.state.ingredientControlModels
     for (let tag in this.state.matchData) {
-    // for (let tag in this.state.matches) {
       if (! (tag in ingredientControlModels)) {
         notFound = notFound + tag + " "
         continue

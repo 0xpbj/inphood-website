@@ -7,7 +7,9 @@ import Well from 'react-bootstrap/lib/Well'
 import Grid from 'react-bootstrap/lib/Grid'
 import Image from 'react-bootstrap/lib/Image'
 import Button from 'react-bootstrap/lib/Button'
+import Popover from 'react-bootstrap/lib/Popover'
 import MenuItem from 'react-bootstrap/lib/MenuItem'
+import Glyphicon from 'react-bootstrap/lib/Glyphicon'
 import FormGroup from 'react-bootstrap/lib/FormGroup'
 import FormControl from 'react-bootstrap/lib/FormControl'
 import ControlLabel from 'react-bootstrap/lib/ControlLabel'
@@ -24,7 +26,9 @@ export default class SelectedImage extends React.Component {
       recipe: '',
       parse: false,
       ingredients: '',
-      recipeError: false
+      recipeError: false,
+      captionPopoverFlag: false,
+      recipePopoverFlag: false
     }
   }
   componentWillMount() {
@@ -80,6 +84,22 @@ export default class SelectedImage extends React.Component {
         <h4>Oh snap! You forgot to enter a recipe!</h4>
       </Alert>
     ) : null
+    const recipePopover = this.state.recipePopoverFlag ? (
+      <Popover
+        id="popover-basic"
+        title="Recipe Flow"
+      >
+        Use recipe flow to enter accurate quantity and amount metrics
+      </Popover>
+    ) : null
+    const captionPopover = this.state.captionPopoverFlag ? (
+      <Popover
+        id="popover-basic"
+        title="Caption Flow"
+      >
+        Use caption flow to parse social media comment for ingredients
+      </Popover>
+    ) : null
     return (
       <Grid>
         <Row className="show-grid">
@@ -93,6 +113,9 @@ export default class SelectedImage extends React.Component {
                 <FormGroup controlId="formControlsTextarea">
                   <ControlLabel>Meal Recipe</ControlLabel>
                   {recipeAlert}
+                  <Glyphicon onClick={()=>this.setState({recipePopoverFlag: !this.state.recipePopoverFlag})} style={{marginLeft: 10}} glyph="glyphicon glyphicon-info-sign">
+                    {recipePopover}
+                  </Glyphicon>
                   <FormControl
                     componentClass="textarea"
                     rows="10"
@@ -104,6 +127,9 @@ export default class SelectedImage extends React.Component {
               <Button className="btn-primary-spacing" bsStyle="success" onClick={() => this.recipeFlow()}>Use Recipe</Button>
             </div>
             <ControlLabel>Instagram Caption</ControlLabel>
+            <Glyphicon onClick={()=>this.setState({captionPopoverFlag: !this.state.captionPopoverFlag})} style={{marginLeft: 10}} glyph="glyphicon glyphicon-info-sign">
+              {captionPopover}
+            </Glyphicon>
             <div style={{marginBottom: "30px"}}>
               <section>
                 {caption}

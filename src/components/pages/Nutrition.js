@@ -185,7 +185,6 @@ export default class Nutrition extends React.Component {
     console.log(matchData);
     console.log(nextProps.nutrition.parsedData);
     if (Object.keys(matchData).length !== Object.keys(parsedData).length) {
-      // TODO: PBJ||AC render spinner
       return
     }
 
@@ -193,10 +192,15 @@ export default class Nutrition extends React.Component {
     // load where every match was checked)
     const firstMatch = 0
     for (let tag in matchData) {
+      if (matchData[tag].length === 0) {
+        continue
+      }
       if (matchData[tag][firstMatch][dataObjOffset] === undefined) {
         return
       }
     }
+
+    // A spinner gets rendered until this method gets here.
 
     console.log('% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %');
     console.log(' % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %');
@@ -867,7 +871,7 @@ export default class Nutrition extends React.Component {
             <Row>
               {this.getTagPanel(this.state.unmatchedTags,
                                 'No match found for these tags:',
-                                true)}
+                                false)}
             </Row>
           </Col>
         </Row>

@@ -23,10 +23,11 @@ import Button from 'react-bootstrap/lib/Button'
 import DropdownButton from 'react-bootstrap/lib/DropdownButton'
 import FormControl from 'react-bootstrap/lib/FormControl'
 import ControlLabel from 'react-bootstrap/lib/ControlLabel'
+import ProgressBar from 'react-bootstrap/lib/ProgressBar'
 
 import 'react-widgets/lib/less/react-widgets.less'
 import Dropdownlist from 'react-widgets/lib/Dropdownlist'
-import ProgressBar from 'react-toolbox/lib/progress_bar'
+// import ProgressBar from 'react-toolbox/lib/progress_bar'
 
 const Config = require('Config')
 const Convert = require('convert-units')
@@ -115,7 +116,8 @@ export default class Nutrition extends React.Component {
         max: 12,
         step: 1
       },
-      progress: true
+      progress: 0,
+      matchIndex: 0
     }
   }
 
@@ -211,7 +213,6 @@ export default class Nutrition extends React.Component {
     let ingredientControlModels = this.state.ingredientControlModels
     let selectedTags = []
     let unmatchedTags = []
-
     for (let tag in matchData) {
       const tagMatches = matchData[tag]
       if (tagMatches.length === 0) {
@@ -310,7 +311,7 @@ export default class Nutrition extends React.Component {
       unmatchedTags: unmatchedTags,
       nutritionModel: nutritionModel,
       ingredientControlModels: ingredientControlModels,
-      progress: false
+      progress: 1
     })
   }
 
@@ -811,6 +812,7 @@ export default class Nutrition extends React.Component {
   }
   //
   render() {
+    console.log('\n\n\nNutrition props: ', this)
     if (!this.props.user.profile) {
       return (
         <Alert bsStyle="danger" onDismiss={() => this.props.router.push('/')}>
@@ -820,10 +822,11 @@ export default class Nutrition extends React.Component {
           </p>
         </Alert>
       )
-    } else if (this.state.progress) {
+    } else if (this.state.progress != 1) {
+      console.log('\n\n\nProgress: ', this.state.progress*100)
       return (
         <div className="text-center">
-          <ProgressBar type="circular" mode="indeterminate" multicolor={true}/>
+          <ProgressBar striped bsStyle="success" now={this.state.progress*100} />
         </div>
       )
     }

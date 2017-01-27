@@ -5,6 +5,7 @@ import Grid from 'react-bootstrap/lib/Grid'
 import Alert from 'react-bootstrap/lib/Alert'
 import instagram from '../../images/instagram.svg'
 import linkedin from '../../images/linkedin.svg'
+import {Link} from 'react-router'
 
 export default class About extends React.Component {
   getTeamMember(memberName, title, flag, instagramUrl, linkedInUrl) {
@@ -17,9 +18,9 @@ export default class About extends React.Component {
         <h3>{memberName}</h3>
         <p className="text-muted">{title}</p>
         <ul className="list-inline social-buttons">
-          <li><a href={instagramUrl}><i className="fa fa-instagram"><img src={instagram} className="App-logo" alt="logo" height={40} width={40} /></i></a>
+          <li><Link to={instagramUrl} target="_blank"><i className="fa fa-instagram"><img src={instagram} className="App-logo" alt="logo" height={40} width={40} /></i></Link>
           </li>
-          <li><a href={linkedInUrl}><i className="fa fa-linkedin"><img src={linkedin} className="App-logo" alt="logo" height={40} width={40} /></i></a>
+          <li><Link to={linkedInUrl} target="_blank"><i className="fa fa-linkedin"><img src={linkedin} className="App-logo" alt="logo" height={40} width={40} /></i></Link>
           </li>
         </ul>
       </div>

@@ -37,6 +37,7 @@ huckleberries
 bok choy
 brassicas
 bread
+flaxseed oil
 breadfruit
 broad beans
 broccoflower
@@ -139,6 +140,7 @@ nutmeg
 nutritional yeast
 nuts
 octopuses
+oil
 oils
 okra
 olive

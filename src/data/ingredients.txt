@@ -212,3 +212,226 @@ xanthan gum
 yam
 yeast
 zucchini
+chicken
+chicken liver
+cornish game hen
+duck
+duck liver
+emu
+gizzards
+goose
+goose liver
+grouse
+guinea hen
+liver
+organs
+ostrich
+partridge
+pheasant
+quail
+squab
+turkey
+bear
+beef
+buffalo
+bison
+calf liver
+caribou
+goat
+ham
+horse
+kangaroo
+lamb
+marrow
+moose
+mutton
+opossum
+pork
+pork
+bacon
+rabbit
+snake
+squirrel
+sweetbreads
+tripe
+turtle
+veal
+abalone
+muttonshells
+anchovy
+barracuda
+bass
+bluefish
+bullhead
+butterfish
+carp
+catfish
+chub
+clam
+cod
+conch
+crab
+croaker
+cusk
+drum
+eel
+flounder
+frog
+gray sole
+grouper
+haddock
+hake
+halfmoon fish
+halibut
+harvest fish
+herring
+jellyfish
+lobster
+mackerel
+mahi-mahi
+monkfish
+mullet
+muskellunge
+mussels
+ocean pout
+octopus
+opaleye
+orange roughy
+oyster
+parrotfish
+perch
+perch, ocean
+pickerel
+walleye
+pike
+pilchards
+pollock, atlantic
+pompano
+porgy
+red snapper
+rosefish
+salmon
+sardine
+scallops
+scrod
+scup
+sea beam
+shad
+shark
+sheepshead fish
+shrimp
+skate
+smelt
+snail
+escargot
+sole
+squid
+calamari
+sturgeon
+sucker
+sunfish
+swordfish
+tilapia
+tilefish
+trout
+tuna
+turbot
+turtle
+weakfish
+whitefish
+whiting
+wolfish
+yellowtail
+venison
+amaranth
+artichoke flour
+artichoke pasta
+barley
+barley flour
+bean flours
+bran, oat
+bran, rice
+bran, wheat
+buckwheat
+carrageenan
+cassava
+cattail
+chia seed
+coix spp.
+corn
+cornmeal
+cous cous
+cream of rice
+cream of wheat
+durum wheat flour
+essene bread
+familia
+farina
+farro (triticum dicoccum)
+flax seed
+flaxseed bread (with allowable grains)
+fonio (a form of millet)
+gluten flour
+gluten –free
+graham flour
+grains
+grains, sprouted
+granola
+grape nuts
+guar gum
+hominy
+job’s tears
+kamut
+kasha
+kasha (buckwheat) bulgur wheat flour
+kudzu
+larch fiber
+lentil flour, dahl
+maize
+malanga
+manioc
+manna bread
+mastic gum
+millet
+nut flours
+oat
+oat bran
+oat flour
+oatmeal
+oats
+organic
+palmer’s grass (salt grass)
+papadam
+polenta
+popcorn
+quinoa
+rice
+rice bran
+rice flour
+rice flour
+rye
+rye crisp
+rye flour
+semolina
+seven grain cereal
+soba
+sorghum
+soy
+soybean
+spelt
+pasta
+flour
+tannier
+tapioca
+taro
+tahitian
+poi
+teff
+triticale
+wheat
+wheat germ
+wheat
+white flour
+whole wheat flour
+wild rice
+zoom

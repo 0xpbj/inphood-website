@@ -274,19 +274,25 @@ export default class Nutrition extends React.Component {
 
       let errorStr = ''
       try {
-        nutritionModel.addIngredient(description, ingredientModel, tryQuantity, tryUnit)
+        nutritionModel.addIngredient(tag, ingredientModel, tryQuantity, tryUnit)
       } catch(err) {
         errorStr = err
         console.log(errorStr);
+      } finally {
+        // We failed to add the ingredient with the specified quantity/unit, so try
+        // using the FDA values (not try/catch--if this fails we have a serious internal
+        // error--i.e. this should always work.)
+        if (errorStr !== '') {
+          tryQuantity = measureQuantity
+          tryUnit = measureUnit
+          nutritionModel.addIngredient(tag, ingredientModel, tryQuantity, tryUnit)
+        }
       }
-
-      // We failed to add the ingredient with the specified quantity/unit, so try
-      // using the FDA values (not try/catch--if this fails we have a serious internal
-      // error--i.e. this should always work.)
-      if (errorStr !== '') {
-        tryQuantity = measureQuantity
-        tryUnit = measureUnit
-        nutritionModel.addIngredient(description, ingredientModel, tryQuantity, tryUnit)
+      console.log('===========================================================')
+      console.log('after addIngredient: ' + tag + '(' + description + ')')
+      console.log('nutritionModel:')
+      for (let key in nutritionModel._scaledIngredients) {
+        console.log('key = ' + key)
       }
 
       let ingredientControlModel = new IngredientControlModel(
@@ -443,10 +449,10 @@ export default class Nutrition extends React.Component {
     //
     // 5. Remove the current IngredientModel from the NutritionModel:
     //
-    nutritionModel.removeIngredient(ingredientKeyToDelete)
+    nutritionModel.removeIngredient(tag)
     //
     // 6. Add the new IngredientModel to the NutritionModel:
-    nutritionModel.addIngredient(value,
+    nutritionModel.addIngredient(tag,
                                  ingredientModel,
                                  newValue,
                                  newUnit)
@@ -521,7 +527,7 @@ export default class Nutrition extends React.Component {
     let selectedTags = this.state.selectedTags
     let deletedTags = this.state.deletedTags
     //
-    nutritionModel.removeIngredient(ingredientControlModels[tag].getDropdownMatchValue())
+    nutritionModel.removeIngredient(tag)
     delete ingredientControlModels[tag]
     //
     // 2. Remove the tag from selectedTags (use splice--delete just makes the
@@ -579,7 +585,7 @@ export default class Nutrition extends React.Component {
     const measureQuantity = ingredientModel.getMeasureQuantity()
     const measureUnit = ingredientModel.getMeasureUnit()
     nutritionModel.addIngredient(
-      description, ingredientModel, measureQuantity, measureUnit)
+      tag, ingredientModel, measureQuantity, measureUnit)
 
     let ingredientControlModel =
       new IngredientControlModel(

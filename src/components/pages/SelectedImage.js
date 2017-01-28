@@ -81,17 +81,19 @@ export default class SelectedImage extends React.Component {
     const caption = <pre>{this.props.user.photos.data[this.props.nutrition.index].caption.text}</pre>
     const recipeAlert = (this.state.recipeError) ? (
       <Alert bsStyle="danger">
-        <h4>Oh snap! You forgot to enter a recipe!</h4>
+        <h4>Oh snap! You forgot to enter a recipe!</h4>.
+
       </Alert>
     ) : null
+
     const recipePopover = this.state.recipePopoverFlag ? (
-      <Popover
-        id="popover-basic"
-        title="Recipe Flow"
-      >
-        Use recipe flow to enter accurate quantity and amount metrics
-      </Popover>
-    ) : null
+        <Popover
+          id="popover-basic"
+          title="Recipe Flow">
+          Use recipe flow to enter accurate quantity and amount metrics
+        </Popover>
+      ) : null
+
     const captionPopover = this.state.captionPopoverFlag ? (
       <Popover
         id="popover-basic"
@@ -113,7 +115,10 @@ export default class SelectedImage extends React.Component {
                 <FormGroup controlId="formControlsTextarea">
                   <ControlLabel>Meal Recipe</ControlLabel>
                   {recipeAlert}
-                  <Glyphicon onClick={()=>this.setState({recipePopoverFlag: !this.state.recipePopoverFlag})} style={{marginLeft: 10}} glyph="glyphicon glyphicon-info-sign">
+                  <Glyphicon
+                    onClick={()=>this.setState({recipePopoverFlag: !this.state.recipePopoverFlag})}
+                    style={{marginLeft: 10}}
+                    glyph="glyphicon glyphicon-info-sign">
                     {recipePopover}
                   </Glyphicon>
                   <FormControl

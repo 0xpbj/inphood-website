@@ -67,46 +67,47 @@ export class NutritionModel {
   }
 
   // throws if setRecipeAmount blows up
-  addIngredient(key, anIngredient, quantity, unit) {
-    this._scaledIngredients[key] = new ScaledIngredient(anIngredient)
+  // throws if a duplicate tag is specified
+  addIngredient(tag, anIngredient, quantity, unit) {
+    if (tag in this._scaledIngredients) {
+      throw new Error('tag already exists in nutrition model: ' + tag)
+    }
+
+    this._scaledIngredients[tag] = new ScaledIngredient(anIngredient)
 
     let errorStr = ''
     try {
-      this._scaledIngredients[key].setRecipeAmount(quantity, unit)
+      this._scaledIngredients[tag].setRecipeAmount(quantity, unit)
     } catch(err) {
       errorStr = err
     } finally {
       // If we weren't successful, remove the added ingredient
       if (errorStr !== '') {
-        delete this._scaledIngredients[key]
+        delete this._scaledIngredients[tag]
         throw new Error(errorStr)
       }
     }
   }
 
   getScaledIngredient(tag) {
-    for (let key in this._scaledIngredients) {
-      let scaledIngredient = this._scaledIngredients[key]
-      if (tag === scaledIngredient.getIngredientModel()._tag) {
-        return scaledIngredient
-      }
+    if (tag in this._scaledIngredients) {
+      return this._scaledIngredients[tag]
     }
 
     return null
   }
 
   getIngredientModel(tag) {
-    let scaledIngredient = this.getScaledIngredient(tag)
-    if (scaledIngredient !== null) {
-      return scaledIngredient.getIngredientModel()
+    if (tag in this._scaledIngredients) {
+      return this._scaledIngredients[tag].getIngredientModel()
     }
 
     return null
   }
 
-  removeIngredient(key) {
-    if (key in this._scaledIngredients) {
-      delete this._scaledIngredients[key]
+  removeIngredient(tag) {
+    if (tag in this._scaledIngredients) {
+      delete this._scaledIngredients[tag]
     }
   }
 

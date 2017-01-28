@@ -36,7 +36,6 @@ export default class SelectedImage extends React.Component {
       this.props.router.push('/')
     }
     else {
-      this.props.cleanReducers()
       ReactGA.event({
         category: 'User',
         action: 'Go to image page',

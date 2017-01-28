@@ -38,14 +38,14 @@ const uploadImageToS3 = (uri, key, username, thumbnail, parsedData, rawData, rec
   request(options, function(error, response, body) {
     if (error || response.statusCode !== 200) {
       console.log("failed to get image", error);
-      firebase.database().ref('/global/nutritionLabel/'+username+'/'+key).update({
-        key,
-        user: username,
-        oUrl: uri,
-        iUrl: '',
-        thumbnail,
-        error: "failed to get image"
-      })
+      // firebase.database().ref('/global/nutritionLabel/'+username+'/'+key).update({
+      //   key,
+      //   user: username,
+      //   oUrl: uri,
+      //   iUrl: '',
+      //   thumbnail,
+      //   error: "failed to get image"
+      // })
     }
     else {
       s3.putObject({
@@ -57,14 +57,14 @@ const uploadImageToS3 = (uri, key, username, thumbnail, parsedData, rawData, rec
       }, function(error, data) {
         if (error) {
           console.log("error downloading image to s3", error);
-          firebase.database().ref('/global/nutritionLabel/'+username+'/'+key).update({
-            key,
-            user: username,
-            oUrl: uri,
-            iUrl: '',
-            thumbnail,
-            error: "error downloading image to s3"
-          })
+          // firebase.database().ref('/global/nutritionLabel/'+username+'/'+key).update({
+          //   key,
+          //   user: username,
+          //   oUrl: uri,
+          //   iUrl: '',
+          //   thumbnail,
+          //   error: "error downloading image to s3"
+          // })
         } else {
           console.log("success uploading to s3", data);
         }

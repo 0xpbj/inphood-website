@@ -288,11 +288,11 @@ export default class Nutrition extends React.Component {
           nutritionModel.addIngredient(tag, ingredientModel, tryQuantity, tryUnit)
         }
       }
-      console.log('===========================================================')
-      console.log('after addIngredient: ' + tag + '(' + description + ')')
-      console.log('nutritionModel:')
+      console.log('===========================================================');
+      console.log('after addIngredient: ' + tag + '(' + description + ')');
+      console.log('nutritionModel:');
       for (let key in nutritionModel._scaledIngredients) {
-        console.log('key = ' + key)
+        console.log('key = ' + key);
       }
 
       let ingredientControlModel = new IngredientControlModel(

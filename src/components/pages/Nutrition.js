@@ -813,8 +813,6 @@ export default class Nutrition extends React.Component {
   }
   //
   render() {
-    console.log('\n\n\nNutrition props: ', this)
-
     const numIngredients = Object.keys(this.props.nutrition.parsedData).length
     const loadedIngredients = Object.keys(this.props.nutrition.matchData).length
 

@@ -80,7 +80,7 @@ corn
 corn syrup
 cottonseed oil
 courgette
-cream of tartar
+cream tartar
 cucumber
 cumin
 daikon
@@ -107,7 +107,7 @@ giblets
 ginger
 grains
 grape seed oil
-heart of palm
+heart palm
 hemp
 herbs
 honey
@@ -172,7 +172,8 @@ rice flour
 rum
 salmon
 salt
-salt cod
+salt
+cod
 scallion
 seafood
 seeds
@@ -315,7 +316,7 @@ sardine
 scallops
 scrod
 scup
-sea beam
+beam
 shad
 shark
 sheepshead fish
@@ -361,16 +362,16 @@ coix spp.
 corn
 cornmeal
 cous cous
-cream of rice
-cream of wheat
+cream rice
+cream wheat
 durum wheat flour
 essene bread
 familia
 farina
-farro (triticum dicoccum)
+farro
 flax seed
-flaxseed bread (with allowable grains)
-fonio (a form of millet)
+flaxseed bread
+fonio
 gluten flour
 gluten –free
 graham flour
@@ -383,10 +384,11 @@ hominy
 job’s tears
 kamut
 kasha
-kasha (buckwheat) bulgur wheat flour
+kasha
 kudzu
 larch fiber
-lentil flour, dahl
+lentil
+dahl
 maize
 malanga
 manioc
@@ -399,8 +401,7 @@ oat bran
 oat flour
 oatmeal
 oats
-organic
-palmer’s grass (salt grass)
+grass
 papadam
 polenta
 popcorn
@@ -431,7 +432,7 @@ triticale
 wheat
 wheat germ
 wheat
-white flour
+flour
 whole wheat flour
 wild rice
 zoom

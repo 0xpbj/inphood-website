@@ -17,7 +17,6 @@ import ImageGallery from 'react-image-gallery'
 import {Redirect} from 'react-router'
 import {parseRecipe} from '../../helpers/parseRecipe'
 import Hello from 'hellojs'
-import Anon from './Anon'
 import UploadModal from '../layout/UploadModal'
 
 const Config = require('Config')
@@ -28,8 +27,17 @@ export default class Home extends React.Component {
   constructor() {
     super()
     this.state = {
-      showUploadModal: false
+      showUploadModal: false,
+      anonymous: false
     }
+  }
+  componentWillMount() {
+    if (this.props.user.anonymous)
+      this.props.anClearData()
+  }
+  componentWillReceiveProps(nextProps) {
+    if (this.state.anonymous !== nextProps.user.anonymous)
+      this.setState({anonymous: nextProps.user.anonymous})
   }
   handleClick() {
     this.props.igLoginRequest()
@@ -39,7 +47,6 @@ export default class Home extends React.Component {
       label: 'Social Flow',
       nonInteraction: false
     });
-    // this.props.router.push('gallery')
   }
   handleUrl(e) {
     this.props.anSelectedPhoto(e.target.value)
@@ -49,6 +56,8 @@ export default class Home extends React.Component {
       label: 'URL Flow',
       nonInteraction: false
     });
+    this.props.router.push('image')
+    // this.props.router.push('anon')
   }
   onDrop(acceptedFiles, rejectedFiles) {
     ReactGA.event({
@@ -72,10 +81,6 @@ export default class Home extends React.Component {
       nonInteraction: false,
       label: 'Social Flow'
     });
-    // const caption =  this.props.user.photos.data[index].caption.text
-    // const parsedData = parseRecipe(caption)
-    // this.props.storeParsedData(parsedData)
-    // this.props.router.push('nutrition')
     this.props.router.push('image')
   }
   render() {
@@ -83,26 +88,10 @@ export default class Home extends React.Component {
       marginTop: "30px",
       width: "500px",
     }
-    // if (this.props.nutrition.anonymous) {
-    //   return (
-    //     <div style={containerStyle}>
-    //       <Col md={12} className="text-center">
-    //         <Anon
-    //           nutrition={this.props.nutrition}
-    //           goToNutrition={(flag) => this.goToNutrition(flag)}
-    //           addCaption={(data) => this.props.addCaption(data)}
-    //           anSelectedPhoto={(data) => this.props.anSelectedPhoto(data)}
-    //           anClearData={() => this.props.anClearData()}
-    //         />
-    //       </Col>
-    //     </div>
-    //   )
-    // }
     // else {
       // let hideUploadModal = () => this.setState({ showUploadModal: false });
-    if (!this.props.user.login) {
+    if (!this.props.user.login && !this.state.anonymous) {
       const inPhoodLogo = require('../../images/Icon512.png')
-
       return (
         <div>
           <div>
@@ -114,7 +103,7 @@ export default class Home extends React.Component {
               </Row>
               <Row>
                 <div className="text-center">
-                  {/*<Col xs={6} md={6}>
+                  <Col xs={6} md={6}>
                     <form>
                       <FormGroup
                         controlId="formBasicText"
@@ -123,14 +112,14 @@ export default class Home extends React.Component {
                           className="text-center"
                           type="text"
                           value={this.state.value}
-                          placeholder="www.google.com/images"
+                          placeholder="add image url here"
                           onChange={this.handleUrl.bind(this)}
                         />
                         <FormControl.Feedback />
                       </FormGroup>
                     </form>
                   </Col>
-                  <Col xs={1} md={1}>
+                  {/*<Col xs={1} md={1}>
                     <Button bsStyle="default" onClick={()=>this.setState({ showUploadModal: true })}>
                       <Glyphicon glyph="glyphicon glyphicon-open" />
                     </Button>
@@ -139,11 +128,11 @@ export default class Home extends React.Component {
                       show={this.state.showUploadModal}
                       onHide={hideUploadModal}
                     />
-                  </Col>
+                  </Col>*/}
                   <Col xs={5} md={5}>
                     <Button onClick={this.handleClick.bind(this)}>Sign in with Instagram</Button>
-                  </Col>*/}
-                  <Button onClick={this.handleClick.bind(this)}>Sign in with Instagram</Button>
+                  </Col>
+                  {/*<Button onClick={this.handleClick.bind(this)}>Sign in with Instagram</Button>*/}
                 </div>
               </Row>
             </Grid>
@@ -151,21 +140,21 @@ export default class Home extends React.Component {
         </div>
       )
     }
-    else if (this.props.user.error !== '') {
+    else if (this.props.user.error !== '' && !this.state.anonymous) {
       return (
         <Alert bsStyle="danger">
           <strong>Error: {this.props.user.error}</strong>
         </Alert>
       )
     }
-    else if (this.props.user.photos.length === 0 || this.props.user.photos.data.length === 0) {
+    else if (!this.state.anonymous && (this.props.user.photos.length === 0 || this.props.user.photos.data.length === 0)) {
       return (
         <Alert bsStyle="info">
           <strong>Photos loading...</strong>
         </Alert>
       )
     }
-    else {
+    else if (!this.state.anonymous) {
       ReactGA.set({ userId: this.props.user.profile.name })
       ReactGA.event({
         category: 'User',

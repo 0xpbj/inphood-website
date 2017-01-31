@@ -1,21 +1,20 @@
 var React = require('react')
 import ReactGA from 'react-ga'
-import Alert from 'react-bootstrap/lib/Alert'
 import Row from 'react-bootstrap/lib/Row'
 import Col from 'react-bootstrap/lib/Col'
 import Well from 'react-bootstrap/lib/Well'
 import Grid from 'react-bootstrap/lib/Grid'
+import Alert from 'react-bootstrap/lib/Alert'
 import Image from 'react-bootstrap/lib/Image'
 import Button from 'react-bootstrap/lib/Button'
 import Popover from 'react-bootstrap/lib/Popover'
-import MenuItem from 'react-bootstrap/lib/MenuItem'
 import Glyphicon from 'react-bootstrap/lib/Glyphicon'
 import FormGroup from 'react-bootstrap/lib/FormGroup'
 import FormControl from 'react-bootstrap/lib/FormControl'
 import ControlLabel from 'react-bootstrap/lib/ControlLabel'
 import DropdownButton from 'react-bootstrap/lib/DropdownButton'
-import Chip from 'react-toolbox/lib/chip'
 import {parseRecipe, parseCaption} from '../../helpers/parseRecipe'
+import Chip from 'react-toolbox/lib/chip'
 
 export default class SelectedImage extends React.Component {
   constructor() {
@@ -32,7 +31,7 @@ export default class SelectedImage extends React.Component {
     }
   }
   componentWillMount() {
-    if (!this.props.user.login) {
+    if (!this.props.user.login && !this.props.user.anonymous) {
       this.props.router.push('/')
     }
     else {
@@ -65,7 +64,7 @@ export default class SelectedImage extends React.Component {
     this.setState({ingredients, recipeError: false})
   }
   render() {
-    if (!this.props.user.profile) {
+    if (!this.props.user.login && !this.props.user.anonymous) {
       return (
         <Alert bsStyle="danger" onDismiss={() => this.props.router.push('/')}>
           <h4>Oh snap! Login Error!</h4>
@@ -78,22 +77,20 @@ export default class SelectedImage extends React.Component {
     const containerStyle = {
       marginTop: "60px"
     }
-    const caption = <pre>{this.props.user.photos.data[this.props.nutrition.index].caption.text}</pre>
+    const caption = this.props.user.anonymous ? null : <pre>{this.props.user.photos.data[this.props.nutrition.index].caption.text}</pre>
     const recipeAlert = (this.state.recipeError) ? (
       <Alert bsStyle="danger">
         <h4>Oh snap! You forgot to enter a recipe!</h4>.
 
       </Alert>
     ) : null
-
     const recipePopover = this.state.recipePopoverFlag ? (
-        <Popover
-          id="popover-basic"
-          title="Recipe Flow">
-          Use recipe flow to enter accurate quantity and amount metrics
-        </Popover>
-      ) : null
-
+      <Popover
+        id="popover-basic"
+        title="Recipe Flow">
+        Use recipe flow to enter accurate quantity and amount metrics
+      </Popover>
+    ) : null
     const captionPopover = this.state.captionPopoverFlag ? (
       <Popover
         id="popover-basic"
@@ -102,12 +99,31 @@ export default class SelectedImage extends React.Component {
         Use caption flow to parse social media comment for ingredients
       </Popover>
     ) : null
+    const instagramCaption = this.props.user.anonymous ? null : (
+      <div>
+        <ControlLabel>Instagram Caption</ControlLabel>
+        <Glyphicon onClick={()=>this.setState({captionPopoverFlag: !this.state.captionPopoverFlag})} style={{marginLeft: 10}} glyph="glyphicon glyphicon-info-sign">
+          {captionPopover}
+        </Glyphicon>
+        <div style={{marginBottom: "30px"}}>
+          <section>
+            {caption}
+          </section>
+          <Button className="btn-primary-spacing" onClick={() => this.captionFlow()}>Use Caption</Button>
+        </div>
+      </div>
+    )
+    const image = this.props.user.anonymous ? (
+      <Image src={this.props.nutrition.picture} responsive rounded/>
+    ) : (
+      <Image src={this.props.user.photos.data[this.props.nutrition.index].picture} responsive rounded/>
+    )
     return (
       <Grid>
         <Row className="show-grid">
           <Col xs={12} md={8}>
             <ControlLabel>Food Image</ControlLabel>
-            <Image src={this.props.user.photos.data[this.props.nutrition.index].picture} responsive rounded/>
+            {image}
           </Col>
           <Col xs={6} md={4}>
             <div style={{marginBottom: "30px"}}>
@@ -131,16 +147,7 @@ export default class SelectedImage extends React.Component {
               </section>
               <Button className="btn-primary-spacing" bsStyle="success" onClick={() => this.recipeFlow()}>Use Recipe</Button>
             </div>
-            <ControlLabel>Instagram Caption</ControlLabel>
-            <Glyphicon onClick={()=>this.setState({captionPopoverFlag: !this.state.captionPopoverFlag})} style={{marginLeft: 10}} glyph="glyphicon glyphicon-info-sign">
-              {captionPopover}
-            </Glyphicon>
-            <div style={{marginBottom: "30px"}}>
-              <section>
-                {caption}
-              </section>
-              <Button className="btn-primary-spacing" onClick={() => this.captionFlow()}>Use Caption</Button>
-            </div>
+            {instagramCaption}
           </Col>
         </Row>
       </Grid>

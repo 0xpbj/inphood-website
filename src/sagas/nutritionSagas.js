@@ -31,10 +31,23 @@ const uploadImageToS3 = (uri, key, username, thumbnail, parsedData, rawData, rec
     secretAccessKey: Config.AWS_SECRET_KEY,
     region: 'us-west-2',
   })
+  console.log('AWS Data: ', uri, key, username, thumbnail, parsedData, rawData, recipeFlag);
+  let myHeaders = new Headers()
+  myHeaders.append('Content-Type', 'application/json')
   var options = {
     uri: uri,
-    encoding: null
+    encoding: null,
+    headers: myHeaders,
+    cache: 'default',
   }
+  // From MDN and here: https://github.com/matthew-andrews/isomorphic-fetch/issues/34
+  // let request = new Request(url, {
+  //   method: 'POST',
+  //   body: JSON.stringify(search),
+  //   headers: myHeaders,
+  //   mode: 'cors',
+  //   cache: 'default'
+  // })
   request(options, function(error, response, body) {
     if (error || response.statusCode !== 200) {
       console.log("failed to get image", error);

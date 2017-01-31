@@ -122,10 +122,10 @@ export default class Nutrition extends React.Component {
   }
 
   componentWillMount() {
-    if (!this.props.user.login) {
+    if (!this.props.user.login && !this.props.user.anonymous) {
       this.props.router.push('/')
     }
-    else if (this.props.user.profile) {
+    else {
       ReactGA.event({
         category: 'User',
         action: 'Get nutrition information for image',
@@ -822,7 +822,7 @@ export default class Nutrition extends React.Component {
     const numIngredients = Object.keys(this.props.nutrition.parsedData).length
     const loadedIngredients = Object.keys(this.props.nutrition.matchData).length
 
-    if (!this.props.user.profile) {
+    if (!this.props.user.login && !this.props.user.anonymous) {
       return (
         <Alert bsStyle="danger" onDismiss={() => this.props.router.push('/')}>
           <h4>Oh snap! Login Error!</h4>

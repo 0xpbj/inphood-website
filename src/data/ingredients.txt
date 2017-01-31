@@ -87,6 +87,7 @@ daikon
 dandelion
 dough
 eggplant
+egg
 eggs
 endive
 fats
@@ -214,6 +215,7 @@ yam
 yeast
 zucchini
 chicken
+chickpeas
 chicken liver
 cornish game hen
 duck

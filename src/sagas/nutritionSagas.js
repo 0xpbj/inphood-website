@@ -179,9 +179,9 @@ function* callElasticSearchLambda(searchTerm, foodName) {
   let sortedData = []
   for (let i of data) {
     var res = i._source.Description.split(",")
-    console.log('First word: ', res[0])
-    console.log('Foodname: ', foodName)
-    console.log('Ingredient: ', searchTerm)
+    console.log('First word: ', res[0]);
+    console.log('Foodname: ', foodName);
+    console.log('Ingredient: ', searchTerm);
     let d = levenshtein.get(searchTerm, res[0])
     sortedData.push({info: i, distance: d})
   }

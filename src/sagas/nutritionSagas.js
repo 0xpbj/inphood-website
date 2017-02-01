@@ -17,7 +17,7 @@ const firebase = require('firebase')
 import request from 'request'
 import Hello from 'hellojs'
 const Config = require('Config')
-var AWS = require('aws-sdk')
+// var AWS = require('aws-sdk')
 
 const firebaseLogin = () => {
   return firebase.auth().signInAnonymously()
@@ -25,76 +25,50 @@ const firebaseLogin = () => {
   .catch(error => ({ error }))
 }
 
-const uploadImageToS3 = (uri, key, username, thumbnail, parsedData, rawData, recipeFlag) => {
-  var s3 = new AWS.S3({
-    accessKeyId:     Config.AWS_ACCESS_ID,
-    secretAccessKey: Config.AWS_SECRET_KEY,
-    region: 'us-west-2',
+const sendToS3 = (request) => {
+  return fetch(request)
+  .then(function(response) {
+    var contentType = response.headers.get("content-type");
+    if(contentType && contentType.indexOf("application/json") !== -1) {
+      return response.json().then(function(json) {
+        return json
+      });
+    } else {
+      console.log("Unexpected server response (non-JSON object returned)");
+    }
   })
-  console.log('AWS Data: ', uri, key, username, thumbnail, parsedData, rawData, recipeFlag);
+}
+
+function* uploadImageToS3(url, key, username, thumbnail, parsedData, rawData, recipeFlag) {
+  const lUrl = Config.SCRAPER_LAMBDA_URL
   let myHeaders = new Headers()
   myHeaders.append('Content-Type', 'application/json')
-  var options = {
-    uri: uri,
-    encoding: null,
-    headers: myHeaders,
-    cache: 'default',
+  const awsData = {
+    url,
+    username,
+    key
   }
-  // From MDN and here: https://github.com/matthew-andrews/isomorphic-fetch/issues/34
-  // let request = new Request(url, {
-  //   method: 'POST',
-  //   body: JSON.stringify(search),
-  //   headers: myHeaders,
-  //   mode: 'cors',
-  //   cache: 'default'
-  // })
-  request(options, function(error, response, body) {
-    if (error || response.statusCode !== 200) {
-      console.log("failed to get image", error);
-      // firebase.database().ref('/global/nutritionLabel/'+username+'/'+key).update({
-      //   key,
-      //   user: username,
-      //   oUrl: uri,
-      //   iUrl: '',
-      //   thumbnail,
-      //   error: "failed to get image"
-      // })
-    }
-    else {
-      s3.putObject({
-        Body: body,
-        Key: username + '/' + key + '.jpg',
-        ACL: "public-read",
-        Bucket: "inphoodlabelimagescdn",
-        ContentType: "image/jpeg"
-      }, function(error, data) {
-        if (error) {
-          console.log("error downloading image to s3", error);
-          // firebase.database().ref('/global/nutritionLabel/'+username+'/'+key).update({
-          //   key,
-          //   user: username,
-          //   oUrl: uri,
-          //   iUrl: '',
-          //   thumbnail,
-          //   error: "error downloading image to s3"
-          // })
-        } else {
-          console.log("success uploading to s3", data);
-        }
-      })
-      firebase.database().ref('/global/nutritionLabel/'+username+'/'+key).update({
-        key,
-        user: username,
-        oUrl: uri,
-        iUrl: 'http://www.image.inphood.com/' + username + '/' + key + '.jpg',
-        thumbnail,
-        rawData: rawData,
-        parsedData: parsedData,
-        recipe: recipeFlag,
-        caption: !recipeFlag
-      })
-    }
+  let request = new Request(lUrl, {
+    method: 'POST',
+    body: JSON.stringify(awsData),
+    headers: myHeaders,
+    mode: 'cors',
+    cache: 'default'
   })
+  const response = yield call (sendToS3, request)
+  if (Object.prototype.hasOwnProperty.call(response, 'success')) {
+    firebase.database().ref('/global/nutritionLabel/'+username+'/'+key).update({
+      key,
+      user: username,
+      oUrl: url,
+      iUrl: 'http://www.image.inphood.com/' + username + '/' + key + '.jpg',
+      thumbnail,
+      rawData: rawData,
+      parsedData: parsedData,
+      recipe: recipeFlag,
+      caption: !recipeFlag
+    })
+  }
 }
 
 function* loadAWSPut() {
@@ -160,12 +134,12 @@ const elasticSearchFetch = (request) => {
 function* callElasticSearchLambda(searchTerm, foodName) {
   // Call elastic search (effectively this curl request):
   //
-  // curl Config.LAMBDA_URL
+  // curl Config.ELASTIC_LAMBDA_URL
   //      -X POST
   //      -d '{"query": {"match": {"Description": "nutritional yeast"}}, "size": 10}'
   //      --header 'content-type: application/json'
   //
-  const url = Config.LAMBDA_URL
+  const url = Config.ELASTIC_LAMBDA_URL
 
   const search = {
     'query': {'match' : {'Description': searchTerm}},
@@ -195,7 +169,7 @@ function* callElasticSearchLambda(searchTerm, foodName) {
     console.log('First word: ', res[0]);
     console.log('Foodname: ', foodName);
     console.log('Ingredient: ', searchTerm);
-    let d = levenshtein.get(searchTerm, res[0])
+    let d = levenshtein.get(searchTerm, res[0].toLowerCase())
     sortedData.push({info: i, distance: d})
   }
   sortedData.sort(function(a, b) {

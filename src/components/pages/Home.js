@@ -103,7 +103,7 @@ export default class Home extends React.Component {
               </Row>
               <Row>
                 <div className="text-center">
-                  <Col xs={6} md={6}>
+                  {/*<Col xs={6} md={6}>
                     <form>
                       <FormGroup
                         controlId="formBasicText"
@@ -119,7 +119,7 @@ export default class Home extends React.Component {
                       </FormGroup>
                     </form>
                   </Col>
-                  {/*<Col xs={1} md={1}>
+                  <Col xs={1} md={1}>
                     <Button bsStyle="default" onClick={()=>this.setState({ showUploadModal: true })}>
                       <Glyphicon glyph="glyphicon glyphicon-open" />
                     </Button>
@@ -128,11 +128,11 @@ export default class Home extends React.Component {
                       show={this.state.showUploadModal}
                       onHide={hideUploadModal}
                     />
-                  </Col>*/}
+                  </Col>
                   <Col xs={5} md={5}>
                     <Button onClick={this.handleClick.bind(this)}>Sign in with Instagram</Button>
-                  </Col>
-                  {/*<Button onClick={this.handleClick.bind(this)}>Sign in with Instagram</Button>*/}
+                  </Col>*/}
+                  <Button onClick={this.handleClick.bind(this)}>Sign in with Instagram</Button>
                 </div>
               </Row>
             </Grid>

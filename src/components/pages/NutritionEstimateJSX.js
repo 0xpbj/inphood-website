@@ -17,13 +17,16 @@ export default class NutritionEstimateJSX extends React.Component {
   }
   render() {
     const myStyles = new Style()
+    let resultIsNan = false
 
     let ingredientComposite = this.props.ingredientComposite
     if (ingredientComposite === undefined) {
       const nutritionModel = this.props.nutritionModel
       if (nutritionModel != undefined) {
         ingredientComposite = nutritionModel.getScaledCompositeIngredientModel()
-      } // else TODO: error / reload something
+      }
+    } else {
+      resultIsNan = isNaN(ingredientComposite.getCalories())
     }
 
     return(

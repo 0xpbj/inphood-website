@@ -32,11 +32,19 @@ export default class Search extends React.Component {
     this.state = {
       searchIngredient: '',
       searchError: false,
-      searchPopoverFlag: false
+      searchPopoverFlag: false,
+      results: []
     }
   }
   componentWillReceiveProps(nextProps) {
     console.log('Got some search results here: ', nextProps)
+    const {searchResults} = nextProps.search
+    let results = []
+    for (let i of searchResults) {
+      let data = {id: i._id, name: i._source.Description}
+      results.push(data)
+    }
+    this.setState({results})
     // let ingredientModel = new IngredientModel()
     // ingredientModel.initializeSingle(description, tag, dataForKey)
     // let measureQuantity = ingredientModel.getMeasureQuantity()
@@ -53,7 +61,7 @@ export default class Search extends React.Component {
   }
   searchFlow() {
     if (this.state.searchIngredient === '') {
-      this.setState({searchError: true})
+      this.setState({searchError: true, results: []})
     }
     else {
       ReactGA.event({
@@ -68,28 +76,8 @@ export default class Search extends React.Component {
     let searchIngredient = e.target.value.toLowerCase()
     this.setState({searchIngredient, searchError: false})
   }
-  //
-  handleUnitDropdownChange(tag, value) {
-    //console.log('handleUnitDropdownChange ----------------------------------------');
-    //console.log('tag = ' + tag);
-    //console.log('value = ' + value);
-
-    // let newUnit = value
-    // let ingredientControlModels = this.state.ingredientControlModels
-    // let ingredientControlModel = ingredientControlModels[tag]
-    // let ingredientModel = this.state.nutritionModel.getIngredientModel(tag)
-
-    // // TODO: catch the exception from here and mention that their current value
-    // // will be lost if we change to those units.
-    // let newValue = getIngredientValueInUnits(
-    //   newUnit, ingredientModel, ingredientControlModel)
-
-    // ingredientControlModels[tag].setSliderValue(newValue)
-    // ingredientControlModels[tag].setDropdownUnitValue(newUnit)
-
-    // this.setState({
-    //   ingredientControlModels: ingredientControlModels
-    // })
+  handleChange(tag) {
+    console.log('Ingredient Changed: ', tag)
   }
   render() {
     const containerStyle = {
@@ -107,12 +95,14 @@ export default class Search extends React.Component {
         Enter ingredient to search for
       </Popover>
     ) : null
-    // const ingredientDropdown = (
-    //   <Dropdownlist
-    //     data={ingredientControlModel.getDropdownUnits()}
-    //     value={ingredientControlModel.getDropdownUnitValue()}
-    //     onChange={this.handleUnitDropdownChange.bind(this, tag)}/>
-    // )
+    const ingredientsDropdown = this.state.results.length ? (
+      <Dropdownlist
+        valueField='id'
+        textField='name'
+        data={this.state.results}
+        onChange={this.handleChange.bind(this)}
+      />
+    ) : null
     return (
       <div>
         <section>
@@ -135,6 +125,7 @@ export default class Search extends React.Component {
           />
           <Button className="btn-primary-spacing" onClick={() => this.searchFlow()}><Glyphicon glyph="glyphicon glyphicon-search"></Glyphicon></Button>
         </section>
+        {ingredientsDropdown}
       </div>
     )
   }

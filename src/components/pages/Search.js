@@ -10,6 +10,22 @@ import Glyphicon from 'react-bootstrap/lib/Glyphicon'
 import FormControl from 'react-bootstrap/lib/FormControl'
 import ControlLabel from 'react-bootstrap/lib/ControlLabel'
 
+import 'react-widgets/lib/less/react-widgets.less'
+import Dropdownlist from 'react-widgets/lib/Dropdownlist'
+
+import {IngredientModel} from '../models/IngredientModel'
+import {NutritionModel} from '../models/NutritionModel'
+import {IngredientControlModel} from '../models/IngredientControlModel'
+import {Link} from 'react-router'
+import {getValueInUnits,
+        getIngredientValueInUnits,
+        mapToSupportedUnits,
+        mapToSupportedUnitsStrict,
+        rationalToFloat} from '../../helpers/ConversionUtils'
+const Config = require('Config')
+const Convert = require('convert-units')
+import * as tuple from '../../helpers/TupleHelpers'
+
 export default class Search extends React.Component {
   constructor() {
     super()
@@ -21,6 +37,19 @@ export default class Search extends React.Component {
   }
   componentWillReceiveProps(nextProps) {
     console.log('Got some search results here: ', nextProps)
+    // let ingredientModel = new IngredientModel()
+    // ingredientModel.initializeSingle(description, tag, dataForKey)
+    // let measureQuantity = ingredientModel.getMeasureQuantity()
+    // let measureUnit = ingredientModel.getMeasureUnit()
+
+    // let tryQuantity = measureQuantity
+    // let tryUnit = measureUnit
+    // let ingredientControlModel = new IngredientControlModel(
+    //     tryQuantity,
+    //     this.getPossibleUnits(tryUnit),
+    //     tryUnit,
+    //     tuple.getListOfTupleOffset(tagMatches, descriptionOffset),
+    //     description)
   }
   searchFlow() {
     if (this.state.searchIngredient === '') {
@@ -39,6 +68,29 @@ export default class Search extends React.Component {
     let searchIngredient = e.target.value.toLowerCase()
     this.setState({searchIngredient, searchError: false})
   }
+  //
+  handleUnitDropdownChange(tag, value) {
+    //console.log('handleUnitDropdownChange ----------------------------------------');
+    //console.log('tag = ' + tag);
+    //console.log('value = ' + value);
+
+    // let newUnit = value
+    // let ingredientControlModels = this.state.ingredientControlModels
+    // let ingredientControlModel = ingredientControlModels[tag]
+    // let ingredientModel = this.state.nutritionModel.getIngredientModel(tag)
+
+    // // TODO: catch the exception from here and mention that their current value
+    // // will be lost if we change to those units.
+    // let newValue = getIngredientValueInUnits(
+    //   newUnit, ingredientModel, ingredientControlModel)
+
+    // ingredientControlModels[tag].setSliderValue(newValue)
+    // ingredientControlModels[tag].setDropdownUnitValue(newUnit)
+
+    // this.setState({
+    //   ingredientControlModels: ingredientControlModels
+    // })
+  }
   render() {
     const containerStyle = {
       marginTop: "60px"
@@ -55,6 +107,12 @@ export default class Search extends React.Component {
         Enter ingredient to search for
       </Popover>
     ) : null
+    // const ingredientDropdown = (
+    //   <Dropdownlist
+    //     data={ingredientControlModel.getDropdownUnits()}
+    //     value={ingredientControlModel.getDropdownUnitValue()}
+    //     onChange={this.handleUnitDropdownChange.bind(this, tag)}/>
+    // )
     return (
       <div>
         <section>

@@ -27,6 +27,7 @@ export default class Home extends React.Component {
   constructor() {
     super()
     this.state = {
+      url: '',
       showUploadModal: false,
       anonymous: false
     }
@@ -48,15 +49,16 @@ export default class Home extends React.Component {
       nonInteraction: false
     });
   }
-  handleUrl(e) {
-    this.props.anSelectedPhoto(e.target.value)
+  handleUrl() {
+    console.log('Submit')
+    // this.props.anSelectedPhoto(this.state.url)
     ReactGA.event({
       category: 'User',
       action: 'Anonymous flow initiated',
       label: 'URL Flow',
       nonInteraction: false
     });
-    this.props.router.push('image')
+    // this.props.router.push('image')
   }
   // onDrop(acceptedFiles, rejectedFiles) {
   //   ReactGA.event({
@@ -103,20 +105,27 @@ export default class Home extends React.Component {
               <Row>
                 <div className="text-center">
                   <Col xs={6} md={6}>
-                    <form>
-                      <FormGroup
-                        controlId="formBasicText"
-                      >
-                        <FormControl
-                          className="text-center"
-                          type="text"
-                          value={this.state.value}
-                          placeholder="add image url here"
-                          onChange={this.handleUrl.bind(this)}
-                        />
-                        <FormControl.Feedback />
-                      </FormGroup>
-                    </form>
+                    <Row>
+                      <Col xs={11} md={11}>
+                        <form onSubmit={this.handleUrl.bind(this)}>
+                          <FormGroup
+                            controlId="formBasicText"
+                          >
+                            <FormControl
+                              className="text-center"
+                              type="text"
+                              value={this.state.url}
+                              placeholder="add image url here"
+                              onChange={(e) => this.setState({url: e.target.value.toLowerCase()})}
+                            />
+                            <FormControl.Feedback />
+                          </FormGroup>
+                        </form>
+                      </Col>
+                      <Col xs={1} md={1}>
+                        <Button className="btn-primary-spacing" onClick={() => this.handleUrl()}><Glyphicon glyph="glyphicon glyphicon-search"></Glyphicon></Button>
+                      </Col>
+                    </Row>
                   </Col>
                   {/*<Col xs={1} md={1}>
                     <Button bsStyle="default" onClick={()=>this.setState({ showUploadModal: true })}>

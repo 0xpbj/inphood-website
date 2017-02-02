@@ -41,7 +41,7 @@ export default class Search extends React.Component {
     const {searchResults} = nextProps.search
     let results = []
     for (let i of searchResults) {
-      let data = {id: i._id, name: i._source.Description}
+      let data = {id: i.info._id, name: i.info._source.Description}
       results.push(data)
     }
     this.setState({results})
@@ -99,6 +99,7 @@ export default class Search extends React.Component {
       <Dropdownlist
         valueField='id'
         textField='name'
+        defaultValue={this.state.results[0]}
         data={this.state.results}
         onChange={this.handleChange.bind(this)}
       />
@@ -116,6 +117,8 @@ export default class Search extends React.Component {
           </Glyphicon>
         </section>
         <section>
+          <Row>
+          <Col xs={7} md={7}>
           <FormControl
             id="formControlsText"
             type="text"
@@ -123,8 +126,13 @@ export default class Search extends React.Component {
             onChange={this.getData.bind(this)}
             placeholder="Example: green onions"
           />
+          </Col>
+          <Col xs={1} md={1}>
           <Button className="btn-primary-spacing" onClick={() => this.searchFlow()}><Glyphicon glyph="glyphicon glyphicon-search"></Glyphicon></Button>
+          </Col>
+          </Row>
         </section>
+        <div style={{marginBottom: 10}} />
         {ingredientsDropdown}
       </div>
     )

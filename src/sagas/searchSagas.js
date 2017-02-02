@@ -43,8 +43,22 @@ function* searchForIngredients() {
     })
     const json = yield call (elasticSearchFetch, request)
     const {data} = json
-    if (data.length)
-      yield put ({type: SEARCH_RESULT, data})
+    let sortedData = []
+    var levenshtein = require('fast-levenshtein');
+    for (let i of data) {
+      var res = i._source.Description.split(",")
+      //console.log('First word: ', res[0]);
+      //console.log('Foodname: ', foodName);
+      //console.log('Ingredient: ', searchTerm);
+      let d = levenshtein.get(searchIngredient, res[0].toLowerCase())
+      sortedData.push({info: i, distance: d})
+    }
+    if (data.length) {
+      sortedData.sort(function(a, b) {
+        return a.distance - b.distance;
+      })
+      yield put ({type: SEARCH_RESULT, data: sortedData})
+    }
     else
       yield put ({type: SEARCH_ERROR})
   }

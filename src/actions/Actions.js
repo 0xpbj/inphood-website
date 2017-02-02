@@ -16,6 +16,7 @@ import {
   LAZY_FETCH_FIREBASE,
   RESET_LAZY_LOAD_STATUS,
   CLEAN_REDUCERS,
+  SEARCH_INGREDIENT,
 } from '../constants/ActionTypes'
 
 export function igUploadPhoto() {
@@ -135,5 +136,12 @@ export function resetLazyLoadOperation() {
 export function cleanReducers() {
   return {
     type: CLEAN_REDUCERS
+  }
+}
+
+export function searchIngredientData(searchIngredient) {
+  return {
+    type: SEARCH_INGREDIENT,
+    searchIngredient
   }
 }

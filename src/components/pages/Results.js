@@ -82,26 +82,23 @@ export default class Results extends React.Component {
         nutritionLabel = <Label ingredientComposite={ingredient}/>
       }
       const path = 'http://www.label.inphood.com/?user=' + this.props.params.userId + '&label=' + this.props.params.labelId
-      const labelPath = ( 
-        <div style={labelContainerStyle}>
-          <Link to={path} target="_blank">Shareable Nutrition Label</Link>
-        </div>
-      )
+      const recipe = <pre>{this.props.results.data.rawData}</pre>
       const label = (
         <Grid>
-          <div className="text-center">
+          <div>
           <Row className="show-grid">
-            <Col xs={5} md={5}>
+            <Col xs={3} md={3}>
               <Row className="show-grid">
                 {image}
               </Row>
             </Col>
             <Col xs={1} md={1} />
-            <Col xs={5} md={5}>
-              <Row className="show-grid">
-                {nutritionLabel}
-              </Row>
-                {labelPath}
+            <Col xs={3} md={3}>
+              <Link to={path} target="_blank" style={{}}>{nutritionLabel}</Link>
+            </Col>
+            <Col xs={1} md={1} />
+            <Col xs={4} md={4}>
+              {recipe}
             </Col>
           </Row>
           </div>

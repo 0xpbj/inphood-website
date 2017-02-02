@@ -27,71 +27,11 @@ import ProgressBar from 'react-bootstrap/lib/ProgressBar'
 
 import 'react-widgets/lib/less/react-widgets.less'
 import Dropdownlist from 'react-widgets/lib/Dropdownlist'
-// import ProgressBar from 'react-toolbox/lib/progress_bar'
 
+import Search from '../../containers/SearchContainer'
 const Config = require('Config')
 const Convert = require('convert-units')
-
-// TODO: put this somewhere sensible:
-//
-//  Takes a list of [[a, b, c], [d, e, f] ...] and returns a new list containing
-//  elements of the specified tuple offset--i.e. given offset 1, it would return
-//  [b, e] for the example given above.
-//
-function getListOfTupleOffset(listOfTuples, offset) {
-  if ((listOfTuples.length <= 0) ||
-      (listOfTuples[0].length <= offset)) {
-    return []
-  }
-
-  let listOfTupleOffset = []
-  for (let idx = 0; idx < listOfTuples.length; idx++) {
-    listOfTupleOffset.push(listOfTuples[idx][offset])
-  }
-
-  return listOfTupleOffset
-}
-
-function getIndexForDescription(listOfTuples, description) {
-  // TODO: unify these somewhere - DRY
-  // Tuple offsets for firebase data in nutrition reducer:
-  const descriptionOffset = 0
-  const keyOffset = 1
-  const dataObjOffset = 2
-
-  for (let idx = 0; idx < listOfTuples.length; idx++) {
-    if (listOfTuples[idx][descriptionOffset] === description) {
-      return idx
-    }
-  }
-
-  return -1
-}
-
-function getTupleForDescription(listOfTuples, description) {
-  let index = getIndexForDescription(listOfTuples, description)
-
-  if (index < 0) {
-    return null
-  }
-
-  return listOfTuples[index]
-}
-
-function getDataForDescription(listOfTuples, description) {
-  // TODO: unify these somewhere - DRY
-  // Tuple offsets for firebase data in nutrition reducer:
-  const descriptionOffset = 0
-  const keyOffset = 1
-  const dataObjOffset = 2
-
-  let tuple = getTupleForDescription(listOfTuples, description)
-  if (tuple === null) {
-    return null
-  }
-
-  return tuple[dataObjOffset]
-}
+import * as tuple from '../../helpers/TupleHelpers'
 
 export default class Nutrition extends React.Component {
   //////////////////////////////////////////////////////////////////////////////
@@ -141,10 +81,10 @@ export default class Nutrition extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    console.log('componentWillReceiveProps -----------------------------------');
+    //console.log('componentWillReceiveProps -----------------------------------');
 
     let lazyLoadOperation = nextProps.nutrition.lazyLoadOperation
-    console.log('lazyLoadOperation.status = ' + lazyLoadOperation.status)
+    //console.log('lazyLoadOperation.status = ' + lazyLoadOperation.status)
     if (lazyLoadOperation.status === 'done') {
       this.completeMatchDropdownChange(lazyLoadOperation.tag, lazyLoadOperation.value)
       this.props.resetLazyLoadOperation()
@@ -178,11 +118,11 @@ export default class Nutrition extends React.Component {
     // Examine to ensure we have got the complete data from firebase, then commence construction
     // and creation of objects for rendering purposes (otherwise we run into problems with things
     // not being defined):
-    // console.log(Object.keys(matchData).length);
-    // console.log(Object.keys(nextProps.nutrition.parsedData).length);
-    // console.log('---------');
-    // console.log(matchData);
-    // console.log(nextProps.nutrition.parsedData);
+    // //console.log(Object.keys(matchData).length);
+    // //console.log(Object.keys(nextProps.nutrition.parsedData).length);
+    // //console.log('---------');
+    // //console.log(matchData);
+    // //console.log(nextProps.nutrition.parsedData);
     if (Object.keys(matchData).length !== Object.keys(parsedData).length) {
       return
     }
@@ -201,13 +141,13 @@ export default class Nutrition extends React.Component {
 
     // A spinner gets rendered until this method gets here.
 
-    // console.log('% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %');
-    // console.log(' % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %');
-    console.log('% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %');
-    // console.log('');
-    console.log('Complete data received from firebase');
+    // //console.log('% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %');
+    // //console.log(' % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %');
+    //console.log('% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %');
+    // //console.log('');
+    //console.log('Complete data received from firebase');
 
-    console.log(nextProps.nutrition);
+    //console.log(nextProps.nutrition);
 
     let nutritionModel = this.state.nutritionModel
     let ingredientControlModels = this.state.ingredientControlModels
@@ -260,11 +200,11 @@ export default class Nutrition extends React.Component {
           }
 
           if ((parseQuantity !== undefined) && (parseQuantity !== "") && (!isNaN(parseQuantity))) {
-            console.log(tag + ', setting measureQuantity to parseQuantity: ' + parseQuantity);
+            //console.log(tag + ', setting measureQuantity to parseQuantity: ' + parseQuantity);
             tryQuantity = parseQuantity
           }
           if ((parseUnit !== undefined) && (parseUnit !== "")) {
-            console.log(tag + ', setting measureUnit to parseUnit: ' + parseUnit);
+            //console.log(tag + ', setting measureUnit to parseUnit: ' + parseUnit);
             tryUnit = parseUnit
           }
 
@@ -277,7 +217,7 @@ export default class Nutrition extends React.Component {
         nutritionModel.addIngredient(tag, ingredientModel, tryQuantity, tryUnit)
       } catch(err) {
         errorStr = err
-        console.log(errorStr);
+        //console.log(errorStr);
       } finally {
         // We failed to add the ingredient with the specified quantity/unit, so try
         // using the FDA values (not try/catch--if this fails we have a serious internal
@@ -288,18 +228,18 @@ export default class Nutrition extends React.Component {
           nutritionModel.addIngredient(tag, ingredientModel, tryQuantity, tryUnit)
         }
       }
-      console.log('===========================================================');
-      console.log('after addIngredient: ' + tag + '(' + description + ')');
-      console.log('nutritionModel:');
+      //console.log('===========================================================');
+      //console.log('after addIngredient: ' + tag + '(' + description + ')');
+      //console.log('nutritionModel:');
       for (let key in nutritionModel._scaledIngredients) {
-        console.log('key = ' + key);
+        //console.log('key = ' + key);
       }
 
       let ingredientControlModel = new IngredientControlModel(
         tryQuantity,
         this.getPossibleUnits(tryUnit),
         tryUnit,
-        getListOfTupleOffset(tagMatches, descriptionOffset),
+        tuple.getListOfTupleOffset(tagMatches, descriptionOffset),
         description)
 
       ingredientControlModels[tag] = ingredientControlModel
@@ -386,9 +326,9 @@ export default class Nutrition extends React.Component {
   //
   completeMatchDropdownChange(tag, value) {
     // debugger
-    console.log('completeMatchDropdownChange ----------------------------------------');
-    console.log('tag = ' + tag);
-    console.log('value = ' + value);
+    //console.log('completeMatchDropdownChange ----------------------------------------');
+    //console.log('tag = ' + tag);
+    //console.log('value = ' + value);
 
     let ingredientControlModels = this.state.ingredientControlModels
     let nutritionModel = this.state.nutritionModel
@@ -400,7 +340,7 @@ export default class Nutrition extends React.Component {
     //
     // 2. Create a new IngredientModel:
     //
-    let dataForKey = getDataForDescription(this.state.matchData[tag], value)
+    let dataForKey = tuple.getDataForDescription(this.state.matchData[tag], value)
     let ingredientModel = new IngredientModel()
     ingredientModel.initializeSingle(value, tag, dataForKey)
     //
@@ -429,8 +369,8 @@ export default class Nutrition extends React.Component {
       newValue = currentValue
       newUnit = currentUnit
     } else {
-      console.log('Ingredient change conversion--using grams to convert:');
-      console.log('   ' + currentValue + currentUnit + ' to ' + newMeasureUnit);
+      //console.log('Ingredient change conversion--using grams to convert:');
+      //console.log('   ' + currentValue + currentUnit + ' to ' + newMeasureUnit);
 
       // Convert current unit to grams, then convert grams to new measure unit
       // for new ingredient
@@ -463,9 +403,9 @@ export default class Nutrition extends React.Component {
   }
   //
   handleMatchDropdownChange(tag, value) {
-    console.log('handleMatchDropdownChange ----------------------------------------');
-    console.log('tag = ' + tag);
-    console.log('value = ' + value);
+    //console.log('handleMatchDropdownChange ----------------------------------------');
+    //console.log('tag = ' + tag);
+    //console.log('value = ' + value);
 
     // TODO: refactor and compbine
     // Tuple offsets for firebase data in nutrition reducer:
@@ -474,9 +414,9 @@ export default class Nutrition extends React.Component {
     const dataObjOffset = 2
 
     let tagMatches = this.state.matchData[tag]
-    let dataForKey = getDataForDescription(tagMatches, value)
+    let dataForKey = tuple.getDataForDescription(tagMatches, value)
     if (dataForKey === undefined) {   // Lazy loading from FB
-      let index = getIndexForDescription(tagMatches, value)
+      let index = tuple.getIndexForDescription(tagMatches, value)
       let tuple = tagMatches[index]
       this.props.lazyFetchFirebase(value, tag, tuple[keyOffset], index)
     } else {
@@ -485,9 +425,9 @@ export default class Nutrition extends React.Component {
   }
   //
   handleUnitDropdownChange(tag, value) {
-    console.log('handleUnitDropdownChange ----------------------------------------');
-    console.log('tag = ' + tag);
-    console.log('value = ' + value);
+    //console.log('handleUnitDropdownChange ----------------------------------------');
+    //console.log('tag = ' + tag);
+    //console.log('value = ' + value);
 
     let newUnit = value
     let ingredientControlModels = this.state.ingredientControlModels
@@ -508,12 +448,12 @@ export default class Nutrition extends React.Component {
   }
   //
   handleChipDelete(tag) {
-    console.log('handleChipDelete ------------------------------------------------');
-    console.log('tag = ' + tag);
-    console.log('selectedTags = ');
-    console.log(this.state.selectedTags);
-    console.log('deletedTags = ');
-    console.log(this.state.deletedTags);
+    //console.log('handleChipDelete ------------------------------------------------');
+    //console.log('tag = ' + tag);
+    //console.log('selectedTags = ');
+    //console.log(this.state.selectedTags);
+    //console.log('deletedTags = ');
+    //console.log(this.state.deletedTags);
 
     // 1. Delete this tag from:
     //    this.state..
@@ -550,12 +490,12 @@ export default class Nutrition extends React.Component {
   }
   //
   handleChipAdd(tag) {
-    console.log('handleChipAdd    ------------------------------------------------');
-    console.log('tag = ' + tag);
-    console.log('selectedTags = ');
-    console.log(this.state.selectedTags);
-    console.log('deletedTags = ');
-    console.log(this.state.deletedTags);
+    //console.log('handleChipAdd    ------------------------------------------------');
+    //console.log('tag = ' + tag);
+    //console.log('selectedTags = ');
+    //console.log(this.state.selectedTags);
+    //console.log('deletedTags = ');
+    //console.log(this.state.deletedTags);
 
     // TODO: refactor and compbine
     // Tuple offsets for firebase data in nutrition reducer:
@@ -592,7 +532,7 @@ export default class Nutrition extends React.Component {
             measureQuantity,
             this.getPossibleUnits(measureUnit),
             measureUnit,
-            getListOfTupleOffset(tagMatches, descriptionOffset),
+            tuple.getListOfTupleOffset(tagMatches, descriptionOffset),
             description)
 
     ingredientControlModels[tag] = ingredientControlModel
@@ -644,8 +584,8 @@ export default class Nutrition extends React.Component {
       // From: http://stackoverflow.com/questions/1723168/what-is-the-fastest-or-most-elegant-way-to-compute-a-set-difference-using-javasc
       unitData = unitData.filter(x => excludedUnits.indexOf(x) < 0)
     } else {
-      console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-      console.log("Unsupported measureUnit = " + sanitizedMeasureUnit);
+      //console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+      //console.log("Unsupported measureUnit = " + sanitizedMeasureUnit);
       unitData = massUnits.concat([sanitizedMeasureUnit])
       unitData = unitData.filter(x => excludedUnits.indexOf(x) < 0)
     }
@@ -833,7 +773,7 @@ export default class Nutrition extends React.Component {
       )
     } else if (loadedIngredients < numIngredients) {
       const progress = (100.0 * loadedIngredients) / numIngredients
-      console.log('\n\n\nProgress: ', progress)
+      //console.log('\n\n\nProgress: ', progress)
       return (
         <div className="text-center">
           <ProgressBar striped
@@ -903,6 +843,9 @@ export default class Nutrition extends React.Component {
               {this.getTagPanel(this.state.unmatchedTags,
                                 'No match found for these tags:',
                                 false)}
+            </Row>
+            <Row>
+              <Search />
             </Row>
           </Col>
         </Row>

@@ -1,5 +1,6 @@
 var React = require('react')
 import Style from "../styles/NutritionEstimateStyles.js"
+import ProgressBar from 'react-bootstrap/lib/ProgressBar'
 
 export default class NutritionEstimateJSX extends React.Component {
   getInPhoodLogo() {
@@ -27,6 +28,8 @@ export default class NutritionEstimateJSX extends React.Component {
       }
     } else {
       resultIsNan = isNaN(ingredientComposite.getCalories())
+      if (resultIsNan)
+        return <ProgressBar active now={50} bsStyle="info" />
     }
 
     return(

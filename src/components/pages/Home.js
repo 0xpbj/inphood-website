@@ -57,19 +57,19 @@ export default class Home extends React.Component {
       nonInteraction: false
     });
     this.props.router.push('image')
-    // this.props.router.push('anon')
   }
-  onDrop(acceptedFiles, rejectedFiles) {
-    ReactGA.event({
-      category: 'User',
-      action: 'Image upload flow initiated',
-      label: 'Local Image Flow',
-      nonInteraction: false
-    });
-    if (acceptedFiles.length > 0) {
-      this.props.anSelectedPhoto(acceptedFiles[0].preview)
-    }
-  }
+  // onDrop(acceptedFiles, rejectedFiles) {
+  //   ReactGA.event({
+  //     category: 'User',
+  //     action: 'Image upload flow initiated',
+  //     label: 'Local Image Flow',
+  //     nonInteraction: false
+  //   });
+  //   if (acceptedFiles.length > 0) {
+  //     this.props.anSelectedPhoto(acceptedFiles[0].preview)
+  //     this.props.router.push('image')
+  //   }
+  // }
   selectPhoto() {
     const index = this._imageGallery.getCurrentIndex()
     const photo =  this.props.user.photos.data[index]
@@ -88,9 +88,8 @@ export default class Home extends React.Component {
       marginTop: "30px",
       width: "500px",
     }
-    // else {
-      // let hideUploadModal = () => this.setState({ showUploadModal: false });
     if (!this.props.user.login && !this.state.anonymous) {
+      let hideUploadModal = () => this.setState({ showUploadModal: false });
       const inPhoodLogo = require('../../images/Icon512.png')
       return (
         <div>
@@ -103,7 +102,7 @@ export default class Home extends React.Component {
               </Row>
               <Row>
                 <div className="text-center">
-                  {/*<Col xs={6} md={6}>
+                  <Col xs={6} md={6}>
                     <form>
                       <FormGroup
                         controlId="formBasicText"
@@ -119,7 +118,7 @@ export default class Home extends React.Component {
                       </FormGroup>
                     </form>
                   </Col>
-                  <Col xs={1} md={1}>
+                  {/*<Col xs={1} md={1}>
                     <Button bsStyle="default" onClick={()=>this.setState({ showUploadModal: true })}>
                       <Glyphicon glyph="glyphicon glyphicon-open" />
                     </Button>
@@ -128,11 +127,11 @@ export default class Home extends React.Component {
                       show={this.state.showUploadModal}
                       onHide={hideUploadModal}
                     />
-                  </Col>
-                  <Col xs={5} md={5}>
-                    <Button onClick={this.handleClick.bind(this)}>Sign in with Instagram</Button>
                   </Col>*/}
-                  <Button onClick={this.handleClick.bind(this)}>Sign in with Instagram</Button>
+                  <Col xs={6} md={6}>
+                    <Button onClick={this.handleClick.bind(this)}>Sign in with Instagram</Button>
+                  </Col>
+                  {/*<Button onClick={this.handleClick.bind(this)}>Sign in with Instagram</Button>*/}
                 </div>
               </Row>
             </Grid>

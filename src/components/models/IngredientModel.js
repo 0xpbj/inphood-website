@@ -159,7 +159,7 @@ export class IngredientModel {
   }
 
   initializeComposite(scaledIngredients) {
-    console.log('initializeComposite ------------------------------------------');
+    // console.log('initializeComposite ------------------------------------------');
     for (var key in scaledIngredients) {
       var scaledIngredient = scaledIngredients[key]
       const scaleFactor = scaledIngredient.getScale()

@@ -54,13 +54,13 @@ export default class SelectedImage extends React.Component {
     }
   }
   captionFlow() {
-    const raw = (this.props.user.photos.data[this.props.nutrition.index].caption.text).toLowerCase()
+    const raw = (this.props.user.photos.data[this.props.nutrition.index].caption.text)
     let data = parseCaption(raw)
     this.props.storeParsedData(data, raw, false)
     this.props.router.push('nutrition')
   }
   getData(e) {
-    let ingredients = e.target.value.toLowerCase()
+    let ingredients = e.target.value
     this.setState({ingredients, recipeError: false})
   }
   render() {

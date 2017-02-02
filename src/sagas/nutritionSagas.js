@@ -17,7 +17,6 @@ const firebase = require('firebase')
 import request from 'request'
 import Hello from 'hellojs'
 const Config = require('Config')
-// var AWS = require('aws-sdk')
 
 const firebaseLogin = () => {
   return firebase.auth().signInAnonymously()
@@ -34,7 +33,7 @@ const sendToS3 = (request) => {
         return json
       });
     } else {
-      console.log("Unexpected server response (non-JSON object returned)");
+      //console.log("Unexpected server response (non-JSON object returned)");
     }
   })
 }
@@ -108,7 +107,6 @@ function* loadSerializedData() {
 }
 
 function* getDataFromFireBase(foodName, ingredient, key, index) {
-  console.log('foodName, ingredient, key: ', foodName, ingredient, key)
   const path = 'global/nutritionInfo/' + key
   const data = (yield call(db.getPath, path)).val()
   if (index)
@@ -126,7 +124,7 @@ const elasticSearchFetch = (request) => {
         return json
       });
     } else {
-      console.log("Unexpected server response (non-JSON object returned)");
+      //console.log("Unexpected server response (non-JSON object returned)");
     }
   })
 }
@@ -157,7 +155,6 @@ function* callElasticSearchLambda(searchTerm, foodName) {
     mode: 'cors',
     cache: 'default'
   })
-  const start = Date.now()
   const json = yield call (elasticSearchFetch, request)
   // TODO: possibly need to preserve the order of the results (the parallel get and
   // object construction in nutritionReducer destroys this.)
@@ -166,17 +163,17 @@ function* callElasticSearchLambda(searchTerm, foodName) {
   let sortedData = []
   for (let i of data) {
     var res = i._source.Description.split(",")
-    console.log('First word: ', res[0]);
-    console.log('Foodname: ', foodName);
-    console.log('Ingredient: ', searchTerm);
+    //console.log('First word: ', res[0]);
+    //console.log('Foodname: ', foodName);
+    //console.log('Ingredient: ', searchTerm);
     let d = levenshtein.get(searchTerm, res[0].toLowerCase())
     sortedData.push({info: i, distance: d})
   }
-  sortedData.sort(function(a, b) {
-    return a.distance - b.distance;
-  })
-  yield put ({type: INITIALIZE_FIREBASE_DATA, foodName, data: sortedData})
-  if (sortedData && sortedData[0]) {
+  if (sortedData[0]) {
+    sortedData.sort(function(a, b) {
+      return a.distance - b.distance;
+    })
+    yield put ({type: INITIALIZE_FIREBASE_DATA, foodName, data: sortedData})
     yield fork(getDataFromFireBase, foodName, sortedData[0].info._source.Description, sortedData[0].info._id, 0)
   }
 }

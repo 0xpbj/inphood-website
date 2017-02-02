@@ -50,15 +50,16 @@ export default class Home extends React.Component {
     });
   }
   handleUrl() {
-    console.log('Submit')
-    // this.props.anSelectedPhoto(this.state.url)
-    ReactGA.event({
-      category: 'User',
-      action: 'Anonymous flow initiated',
-      label: 'URL Flow',
-      nonInteraction: false
-    });
-    // this.props.router.push('image')
+    if (this.getValidationState() === 'success') {
+      this.props.anSelectedPhoto(this.state.url)
+      ReactGA.event({
+        category: 'User',
+        action: 'Anonymous flow initiated',
+        label: 'URL Flow',
+        nonInteraction: false
+      });
+      this.props.router.push('image')
+    }
   }
   // onDrop(acceptedFiles, rejectedFiles) {
   //   ReactGA.event({
@@ -85,6 +86,21 @@ export default class Home extends React.Component {
     });
     this.props.router.push('image')
   }
+  getValidationState() {
+    const urlPattern = new RegExp('^(https?:\\/\\/)?'+ // protocol
+    '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.?)+[a-z]{2,}|'+ // domain name
+    '((\\d{1,3}\\.){3}\\d{1,3}))'+ // OR ip (v4) address
+    '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // port and path
+    '(\\?[;&a-z\\d%_.~+=-]*)?'+ // query string
+    '(\\#[-a-z\\d_]*)?$','i'); // fragment locator
+    const result = urlPattern.test(this.state.url)
+    if (result)
+      return 'success'
+    else {
+      if (this.state.url !== '')
+        return 'error'
+    }
+  }
   render() {
     const containerStyle = {
       marginTop: "30px",
@@ -110,6 +126,7 @@ export default class Home extends React.Component {
                         <form onSubmit={this.handleUrl.bind(this)}>
                           <FormGroup
                             controlId="formBasicText"
+                            validationState={this.getValidationState()}
                           >
                             <FormControl
                               className="text-center"
@@ -118,12 +135,11 @@ export default class Home extends React.Component {
                               placeholder="add image url here"
                               onChange={(e) => this.setState({url: e.target.value.toLowerCase()})}
                             />
-                            <FormControl.Feedback />
                           </FormGroup>
                         </form>
                       </Col>
                       <Col xs={1} md={1}>
-                        <Button className="btn-primary-spacing" onClick={() => this.handleUrl()}><Glyphicon glyph="glyphicon glyphicon-search"></Glyphicon></Button>
+                        <Button className="btn-primary-spacing" onClick={this.handleUrl.bind(this)}><Glyphicon glyph="glyphicon glyphicon-search"></Glyphicon></Button>
                       </Col>
                     </Row>
                   </Col>

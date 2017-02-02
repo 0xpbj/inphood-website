@@ -7,6 +7,7 @@ import Alert from 'react-bootstrap/lib/Alert'
 import Button from 'react-bootstrap/lib/Button'
 import Popover from 'react-bootstrap/lib/Popover'
 import Glyphicon from 'react-bootstrap/lib/Glyphicon'
+import FormGroup from 'react-bootstrap/lib/FormGroup'
 import FormControl from 'react-bootstrap/lib/FormControl'
 import ControlLabel from 'react-bootstrap/lib/ControlLabel'
 
@@ -31,7 +32,6 @@ export default class Search extends React.Component {
     super()
     this.state = {
       searchIngredient: '',
-      searchError: false,
       searchPopoverFlag: false,
       results: []
     }
@@ -60,8 +60,8 @@ export default class Search extends React.Component {
     //     description)
   }
   searchFlow() {
-    if (this.state.searchIngredient === '') {
-      this.setState({searchError: true, results: []})
+    if (this.getValidationState() === 'error') {
+      this.setState({results: []})
     }
     else {
       ReactGA.event({
@@ -74,20 +74,22 @@ export default class Search extends React.Component {
   }
   getData(e) {
     let searchIngredient = e.target.value.toLowerCase()
-    this.setState({searchIngredient, searchError: false})
+    this.setState({searchIngredient})
   }
   handleChange(tag) {
     console.log('Ingredient Changed: ', tag)
+  }
+  getValidationState() {
+    const length = this.state.searchIngredient.length
+    if (length > 0)
+      return 'success'
+    else if (length === 0)
+      return 'error'
   }
   render() {
     const containerStyle = {
       marginTop: "60px"
     }
-    const searchAlert = (this.state.searchError) ? (
-      <Alert bsStyle="danger">
-        <h4>Oh snap! You forgot to enter a search ingredient!</h4>
-      </Alert>
-    ) : null
     const searchPopover = this.state.searchPopoverFlag ? (
       <Popover
         id="popover-basic"
@@ -108,7 +110,6 @@ export default class Search extends React.Component {
       <div>
         <section>
           <ControlLabel>Search for a ingredient</ControlLabel>
-          {searchAlert}
           <Glyphicon
             onClick={()=>this.setState({searchPopoverFlag: !this.state.searchPopoverFlag})}
             style={{marginLeft: 10}}
@@ -118,18 +119,24 @@ export default class Search extends React.Component {
         </section>
         <section>
           <Row>
-          <Col xs={7} md={7}>
-          <FormControl
-            id="formControlsText"
-            type="text"
-            label="Text"
-            onChange={this.getData.bind(this)}
-            placeholder="Example: green onions"
-          />
-          </Col>
-          <Col xs={1} md={1}>
-          <Button className="btn-primary-spacing" onClick={() => this.searchFlow()}><Glyphicon glyph="glyphicon glyphicon-search"></Glyphicon></Button>
-          </Col>
+            <Col xs={7} md={7}>
+              <form onSubmit={this.searchFlow.bind(this)}>
+                <FormGroup
+                  controlId="formBasicText"
+                  validationState={this.getValidationState()}
+                >
+                  <FormControl
+                    type="text"
+                    label="Text"
+                    onChange={this.getData.bind(this)}
+                    placeholder="Example: green onions"
+                  />
+                </FormGroup>
+              </form>
+            </Col>
+            <Col xs={1} md={1}>
+              <Button className="btn-primary-spacing" onClick={this.searchFlow.bind(this)}><Glyphicon glyph="glyphicon glyphicon-search"></Glyphicon></Button>
+            </Col>
           </Row>
         </section>
         <div style={{marginBottom: 10}} />

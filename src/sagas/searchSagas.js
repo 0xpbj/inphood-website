@@ -64,6 +64,27 @@ function* searchForIngredients() {
   }
 }
 
+function* lambdaHack() {
+  if (!Config.DEBUG) {
+    const url = Config.ELASTIC_LAMBDA_URL
+    const search = {
+      'query': {'match' : {'Description': 'kale'}},
+      'size': 5
+    }
+    let myHeaders = new Headers()
+    myHeaders.append('Content-Type', 'application/json')
+    let request = new Request(url, {
+      method: 'POST',
+      body: JSON.stringify(search),
+      headers: myHeaders,
+      mode: 'cors',
+      cache: 'default'
+    })
+    yield call (elasticSearchFetch, request)
+  }
+}
+
 export default function* root() {
+  yield call(lambdaHack)
   yield fork(searchForIngredients)
 }

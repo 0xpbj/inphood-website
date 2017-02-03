@@ -14,7 +14,7 @@ const igLogin = () => {
       instagram : Config.instagram
   },{
       scope : 'basic',
-      redirect_uri: Config.redirect_uri
+      force: false
   });
   return Hello('instagram').login()
 }

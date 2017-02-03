@@ -141,7 +141,7 @@ function* callElasticSearchLambda(searchTerm, foodName) {
 
   const search = {
     'query': {'match' : {'Description': searchTerm}},
-    'size': 20
+    'size': 10
   }
 
   let myHeaders = new Headers()

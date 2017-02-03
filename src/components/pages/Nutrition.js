@@ -31,7 +31,7 @@ import Dropdownlist from 'react-widgets/lib/Dropdownlist'
 import Search from '../../containers/SearchContainer'
 const Config = require('Config')
 const Convert = require('convert-units')
-import * as tuple from '../../helpers/TupleHelpers'
+import * as tupleHelper from '../../helpers/TupleHelpers'
 
 export default class Nutrition extends React.Component {
   //////////////////////////////////////////////////////////////////////////////
@@ -239,7 +239,7 @@ export default class Nutrition extends React.Component {
         tryQuantity,
         this.getPossibleUnits(tryUnit),
         tryUnit,
-        tuple.getListOfTupleOffset(tagMatches, descriptionOffset),
+        tupleHelper.getListOfTupleOffset(tagMatches, descriptionOffset),
         description)
 
       ingredientControlModels[tag] = ingredientControlModel
@@ -340,7 +340,7 @@ export default class Nutrition extends React.Component {
     //
     // 2. Create a new IngredientModel:
     //
-    let dataForKey = tuple.getDataForDescription(this.state.matchData[tag], value)
+    let dataForKey = tupleHelper.getDataForDescription(this.state.matchData[tag], value)
     let ingredientModel = new IngredientModel()
     ingredientModel.initializeSingle(value, tag, dataForKey)
     //
@@ -414,9 +414,9 @@ export default class Nutrition extends React.Component {
     const dataObjOffset = 2
 
     let tagMatches = this.state.matchData[tag]
-    let dataForKey = tuple.getDataForDescription(tagMatches, value)
+    let dataForKey = tupleHelper.getDataForDescription(tagMatches, value)
     if (dataForKey === undefined) {   // Lazy loading from FB
-      let index = tuple.getIndexForDescription(tagMatches, value)
+      let index = tupleHelper.getIndexForDescription(tagMatches, value)
       let tuple = tagMatches[index]
       this.props.lazyFetchFirebase(value, tag, tuple[keyOffset], index)
     } else {
@@ -532,7 +532,7 @@ export default class Nutrition extends React.Component {
             measureQuantity,
             this.getPossibleUnits(measureUnit),
             measureUnit,
-            tuple.getListOfTupleOffset(tagMatches, descriptionOffset),
+            tupleHelper.getListOfTupleOffset(tagMatches, descriptionOffset),
             description)
 
     ingredientControlModels[tag] = ingredientControlModel

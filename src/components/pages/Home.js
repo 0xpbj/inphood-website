@@ -122,7 +122,7 @@ export default class Home extends React.Component {
                 <div className="text-center">
                   <Col xs={6} md={6}>
                     <Row>
-                      <Col xs={11} md={11}>
+                      <Col xs={12} md={12}>
                         <form onSubmit={this.handleUrl.bind(this)}>
                           <FormGroup
                             controlId="formBasicText"
@@ -138,9 +138,9 @@ export default class Home extends React.Component {
                           </FormGroup>
                         </form>
                       </Col>
-                      <Col xs={1} md={1}>
+                      {/*<Col xs={1} md={1}>
                         <Button className="btn-primary-spacing" onClick={this.handleUrl.bind(this)}><Glyphicon glyph="glyphicon glyphicon-search"></Glyphicon></Button>
-                      </Col>
+                      </Col>*/}
                     </Row>
                   </Col>
                   {/*<Col xs={1} md={1}>

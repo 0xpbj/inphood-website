@@ -1,10 +1,9 @@
 var React = require('react')
 import ReactGA from 'react-ga'
 import Label from './NutritionEstimateJSX'
-import {IngredientModel} from '../models/IngredientModel'
-import {NutritionModel} from '../models/NutritionModel'
-import {IngredientControlModel} from '../models/IngredientControlModel'
 import {Link} from 'react-router'
+import {IngredientModel} from '../models/IngredientModel'
+import {IngredientControlModel} from '../models/IngredientControlModel'
 import {getValueInUnits,
         getIngredientValueInUnits,
         mapToSupportedUnits,
@@ -40,12 +39,8 @@ export default class Nutrition extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      ingredientControlModels: {},
-      nutritionModel: new NutritionModel(),
       labelRedirect: false,
-      matches: {},  // TODO: delete this
       matchData: {},
-      showUrlModal: false,
       selectedTags: [],
       deletedTags: [],
       unmatchedTags: [],
@@ -60,7 +55,6 @@ export default class Nutrition extends React.Component {
       matchIndex: 0
     }
   }
-
   componentWillMount() {
     if (!this.props.user.login && !this.props.user.anonymous) {
       this.props.router.push('/')
@@ -79,16 +73,7 @@ export default class Nutrition extends React.Component {
       });
     }
   }
-
   componentWillReceiveProps(nextProps) {
-    //console.log('componentWillReceiveProps -----------------------------------');
-
-    let lazyLoadOperation = nextProps.nutrition.lazyLoadOperation
-    //console.log('lazyLoadOperation.status = ' + lazyLoadOperation.status)
-    if (lazyLoadOperation.status === 'done') {
-      this.completeMatchDropdownChange(lazyLoadOperation.tag, lazyLoadOperation.value)
-      this.props.resetLazyLoadOperation()
-    }
     // HORRIBLE HACK:
     //  - the code below here used to be in componentWillMount, it was essentially
     //    designed to be run once. When we inserted the code to lazy load the pulldown
@@ -100,33 +85,32 @@ export default class Nutrition extends React.Component {
     //
     //    TODO: in MVP3, re-architect this properly to work with the redux store
     //
-    if (lazyLoadOperation.status === 'inProgress' ||
-        lazyLoadOperation.status === 'idle' ||
-        lazyLoadOperation.status == 'done') {
-      return
+    const {parsedData} = nextProps.nutrition
+    const {modelSetup, matchData, lazyLoadOperation} = nextProps.model
+    if (lazyLoadOperation.status === 'done') {
+      this.completeMatchDropdownChange(lazyLoadOperation.tag, lazyLoadOperation.value)
+      this.props.resetLazyLoadOperation()
+    } 
+    else if (!modelSetup && (Object.keys(matchData).length === Object.keys(parsedData).length))
+    {
+      this.changesFromNutrition()
     }
-
+  }
+  changesFromNutrition() {
+    // A spinner gets rendered until this method gets here.
+    // //console.log('% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %');
+    // //console.log(' % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %');
+    //console.log('% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %');
+    // //console.log('');
+    //console.log('Complete data received from firebase');
+    //console.log(nextProps.nutrition);
+    const {parsedData} = this.props.nutrition
+    const {matchData} = this.props.model
     // TODO: refactor and compbine
     // Tuple offsets for firebase data in nutrition reducer:
     const descriptionOffset = 0
     const keyOffset = 1
     const dataObjOffset = 2
-
-    const matchData = nextProps.nutrition.matchData
-    const parsedData = nextProps.nutrition.parsedData
-
-    // Examine to ensure we have got the complete data from firebase, then commence construction
-    // and creation of objects for rendering purposes (otherwise we run into problems with things
-    // not being defined):
-    // //console.log(Object.keys(matchData).length);
-    // //console.log(Object.keys(nextProps.nutrition.parsedData).length);
-    // //console.log('---------');
-    // //console.log(matchData);
-    // //console.log(nextProps.nutrition.parsedData);
-    if (Object.keys(matchData).length !== Object.keys(parsedData).length) {
-      return
-    }
-
     // Check that the first dataObject is not undefined (modified from non-lazy
     // load where every match was checked)
     const firstMatch = 0
@@ -138,19 +122,6 @@ export default class Nutrition extends React.Component {
         return
       }
     }
-
-    // A spinner gets rendered until this method gets here.
-
-    // //console.log('% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %');
-    // //console.log(' % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %');
-    //console.log('% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %');
-    // //console.log('');
-    //console.log('Complete data received from firebase');
-
-    //console.log(nextProps.nutrition);
-
-    let nutritionModel = this.state.nutritionModel
-    let ingredientControlModels = this.state.ingredientControlModels
     let selectedTags = []
     let unmatchedTags = []
     for (let tag in matchData) {
@@ -159,29 +130,23 @@ export default class Nutrition extends React.Component {
         unmatchedTags.push(tag)
         continue
       }
-
       // We use the first value in the list (assumes elastic search returns results
       // in closest match order)
       //const key = tagMatches[0][keyOffset]
       const description = tagMatches[0][descriptionOffset]
       const dataForKey = tagMatches[0][dataObjOffset]
-
       let ingredientModel = new IngredientModel()
       ingredientModel.initializeSingle(description, tag, dataForKey)
       let measureQuantity = ingredientModel.getMeasureQuantity()
       let measureUnit = ingredientModel.getMeasureUnit()
-
       let tryQuantity = measureQuantity
       let tryUnit = measureUnit
-
       let parseQuantity = undefined
       let parseUnit = undefined
       for (let i = 0; i < parsedData.length; i++) {
         const parseObj = parsedData[i]
         const foodName = parseObj['name']
-
         if (foodName === tag) {
-
           // Sometimes the parseObj returns things like 'toTaste=true' and no
           // amount or unit fields. TODO: we should probably exclude those tags/
           // ingredients from the label in MVP3 or put them in their own bucket.
@@ -198,7 +163,6 @@ export default class Nutrition extends React.Component {
           if ('unit' in parseObj) {
             parseUnit = mapToSupportedUnitsStrict(parseObj['unit'])
           }
-
           if ((parseQuantity !== undefined) && (parseQuantity !== "") && (!isNaN(parseQuantity))) {
             //console.log(tag + ', setting measureQuantity to parseQuantity: ' + parseQuantity);
             tryQuantity = parseQuantity
@@ -207,61 +171,53 @@ export default class Nutrition extends React.Component {
             //console.log(tag + ', setting measureUnit to parseUnit: ' + parseUnit);
             tryUnit = parseUnit
           }
-
           break
         }
       }
-
       let errorStr = ''
       try {
-        nutritionModel.addIngredient(tag, ingredientModel, tryQuantity, tryUnit)
-      } catch(err) {
+        this.props.nutritionModelAddIng(tag, ingredientModel, tryQuantity, tryUnit)
+      }
+      catch(err) {
         errorStr = err
         //console.log(errorStr);
-      } finally {
+      } 
+      finally {
         // We failed to add the ingredient with the specified quantity/unit, so try
         // using the FDA values (not try/catch--if this fails we have a serious internal
         // error--i.e. this should always work.)
         if (errorStr !== '') {
           tryQuantity = measureQuantity
           tryUnit = measureUnit
-          nutritionModel.addIngredient(tag, ingredientModel, tryQuantity, tryUnit)
+          this.props.nutritionModelAddIng(tag, ingredientModel, tryQuantity, tryUnit)
         }
       }
       //console.log('===========================================================');
       //console.log('after addIngredient: ' + tag + '(' + description + ')');
       //console.log('nutritionModel:');
-      for (let key in nutritionModel._scaledIngredients) {
+      // for (let key in nutritionModel._scaledIngredients) {
         //console.log('key = ' + key);
-      }
-
+      // }
       let ingredientControlModel = new IngredientControlModel(
         tryQuantity,
         this.getPossibleUnits(tryUnit),
         tryUnit,
         tupleHelper.getListOfTupleOffset(tagMatches, descriptionOffset),
         description)
-
-      ingredientControlModels[tag] = ingredientControlModel
-
+      this.props.ingredientAddModel(tag, ingredientControlModel)
       selectedTags.push(tag)
     }
-
     // Hackity hack hack--init the serving amount from the servingControls so they
     // match on presentation of the label
     let servingControls = this.state.servingControls
-    nutritionModel.setSuggestedServingAmount(servingControls['value'], servingControls['unit'])
-
+    this.props.nutritionModelSetServings(servingControls['value'], servingControls['unit'])
     this.setState({
-      matchData: matchData,
       selectedTags: selectedTags,
       unmatchedTags: unmatchedTags,
-      nutritionModel: nutritionModel,
-      ingredientControlModels: ingredientControlModels,
       progress: 1
     })
+    this.props.nutritionModelSetup(true)
   }
-
   //////////////////////////////////////////////////////////////////////////////
   // Action Handlers:
   //////////////////////////////////////////////////////////////////////////////
@@ -272,24 +228,18 @@ export default class Nutrition extends React.Component {
     if (!labelOnly)
       this.props.router.push('result/'+this.props.nutrition.username + '/' + this.props.nutrition.key)
   }
-  //
   handleServingValuesChange(servingValue) {
     let servingControls = this.state.servingControls
-    let nutritionModel = this.state.nutritionModel
 
     servingControls['value'] = servingValue
-    nutritionModel.setSuggestedServingAmount(servingValue, servingControls['unit'])
+    this.props.nutritionModelSetServings(servingValue, servingControls['unit'])
 
     this.setState({
-      nutritionModel: nutritionModel,
       servingControls: servingControls
     })
   }
-  //
   handleServingDropDownChange(servingUnit) {
     let servingControls = this.state.servingControls
-    let nutritionModel = this.state.nutritionModel
-
     if (servingUnit === 'people') {
       servingControls['min'] = 1
       servingControls['max'] = 12
@@ -302,67 +252,41 @@ export default class Nutrition extends React.Component {
       servingControls['value'] = 100
     }
     servingControls['unit'] = servingUnit
-
-    nutritionModel.setSuggestedServingAmount(servingControls['value'], servingUnit)
-
+    this.props.nutritionModelSetServings(servingControls['value'], servingUnit)
     this.setState({
-      nutritionModel: nutritionModel,
       servingControls: servingControls
     })
   }
-  //
   handleSliderValuesChange(tag, value) {
-    let ingredientControlModels= this.state.ingredientControlModels
-    ingredientControlModels[tag].setSliderValue(value)
-
-    let nutritionModel = this.state.nutritionModel
-    nutritionModel.scaleIngredientToUnit(tag, value, ingredientControlModels[tag].getDropdownUnitValue())
-
-    this.setState({
-      nutritionModel: nutritionModel,
-      ingredientControlModels: ingredientControlModels
-    })
+    this.props.ingredientSetSliderValue(tag, value)
+    this.props.nutritionModelScaleIng(tag, value, this.props.model.ingredientControlModels[tag].getDropdownUnitValue())
   }
-  //
   completeMatchDropdownChange(tag, value) {
-    // debugger
     //console.log('completeMatchDropdownChange ----------------------------------------');
     //console.log('tag = ' + tag);
     //console.log('value = ' + value);
-
-    let ingredientControlModels = this.state.ingredientControlModels
-    let nutritionModel = this.state.nutritionModel
-
+    const {nutritionModel, ingredientControlModels} = this.props.model
     // 1. Save the current ingredient key for deletion at the end of this
     //    process:
     let ingredientKeyToDelete = ingredientControlModels[tag].getDropdownMatchValue()
     let ingredientModelToDelete = nutritionModel.getIngredientModel(tag)
-    //
     // 2. Create a new IngredientModel:
-    //
-    let dataForKey = tupleHelper.getDataForDescription(this.state.matchData[tag], value)
+    let dataForKey = tupleHelper.getDataForDescription(this.props.model.matchData[tag], value)
     let ingredientModel = new IngredientModel()
     ingredientModel.initializeSingle(value, tag, dataForKey)
-    //
     // 3. Update the match value state for the dropdown:
-    //
-    ingredientControlModels[tag].setDropdownMatchValue(value)
-    //
+    this.props.ingredientSetDropdownMatchValue(tag,value)
     // 4. Update the dropdown units and unit value:
     //
     //    a. Get the list of new measurement units that are possible:
-    //
     let newMeasureUnit = mapToSupportedUnits(ingredientModel.getMeasureUnit())
     let newUnits = this.getPossibleUnits(newMeasureUnit)
-    ingredientControlModels[tag].setDropdownUnits(newUnits)
-    //
+    this.props.ingredientSetDropdownUnits(tag, newUnits)
     //    b. See if the current unit is within the new possibilies, if not
     //       then set to the FDA measure defaults
     //    (TODO: or perhaps fallback to the recipe amount/unit if they worked)
-    //
     const currentValue = ingredientControlModels[tag].getSliderValue()
     const currentUnit = ingredientControlModels[tag].getDropdownUnitValue()
-
     let newValue = undefined
     let newUnit = undefined
     if (newUnits.includes(currentUnit)) {
@@ -371,7 +295,6 @@ export default class Nutrition extends React.Component {
     } else {
       //console.log('Ingredient change conversion--using grams to convert:');
       //console.log('   ' + currentValue + currentUnit + ' to ' + newMeasureUnit);
-
       // Convert current unit to grams, then convert grams to new measure unit
       // for new ingredient
       let valueInGrams = getValueInUnits(
@@ -379,41 +302,30 @@ export default class Nutrition extends React.Component {
       newValue = getValueInUnits(
         valueInGrams, 'g', newMeasureUnit, ingredientModel)
       newUnit = newMeasureUnit
-
-      ingredientControlModels[tag].setSliderValue(newValue)
-      ingredientControlModels[tag].setDropdownUnitValue(newUnit)
+      this.props.ingredientSetSliderValue(tag, newValue)
+      this.props.ingredientSetDropdownUnits(tag, newUnit)
       // TODO: possibly an alert to tell the user we've converted their number
       //       to a new amount due to unit change and the old units are not
       //       available.
     }
-    //
     // 5. Remove the current IngredientModel from the NutritionModel:
-    //
-    nutritionModel.removeIngredient(tag)
-    //
+    this.props.nutritionModelRemIng(tag)
     // 6. Add the new IngredientModel to the NutritionModel:
-    nutritionModel.addIngredient(tag,
+    this.props.nutritionModelAddIng(tag,
                                  ingredientModel,
                                  newValue,
                                  newUnit)
-    this.setState({
-      nutritionModel: nutritionModel,
-      ingredientControlModels: ingredientControlModels
-    })
   }
-  //
   handleMatchDropdownChange(tag, value) {
     //console.log('handleMatchDropdownChange ----------------------------------------');
     //console.log('tag = ' + tag);
     //console.log('value = ' + value);
-
     // TODO: refactor and compbine
     // Tuple offsets for firebase data in nutrition reducer:
     const descriptionOffset = 0
     const keyOffset = 1
     const dataObjOffset = 2
-
-    let tagMatches = this.state.matchData[tag]
+    let tagMatches = this.props.model.matchData[tag]
     let dataForKey = tupleHelper.getDataForDescription(tagMatches, value)
     if (dataForKey === undefined) {   // Lazy loading from FB
       let index = tupleHelper.getIndexForDescription(tagMatches, value)
@@ -423,30 +335,20 @@ export default class Nutrition extends React.Component {
       this.completeMatchDropdownChange(tag, value)
     }
   }
-  //
   handleUnitDropdownChange(tag, value) {
     //console.log('handleUnitDropdownChange ----------------------------------------');
     //console.log('tag = ' + tag);
     //console.log('value = ' + value);
-
     let newUnit = value
-    let ingredientControlModels = this.state.ingredientControlModels
-    let ingredientControlModel = ingredientControlModels[tag]
-    let ingredientModel = this.state.nutritionModel.getIngredientModel(tag)
-
+    let ingredientControlModel = this.props.model.ingredientControlModels[tag]
+    let ingredientModel = this.props.model.nutritionModel.getIngredientModel(tag)
     // TODO: catch the exception from here and mention that their current value
     // will be lost if we change to those units.
     let newValue = getIngredientValueInUnits(
       newUnit, ingredientModel, ingredientControlModel)
-
-    ingredientControlModels[tag].setSliderValue(newValue)
-    ingredientControlModels[tag].setDropdownUnitValue(newUnit)
-
-    this.setState({
-      ingredientControlModels: ingredientControlModels
-    })
+    this.props.ingredientSetSliderValue(tag, newValue)
+    this.props.setDropdownUnitValue(tag, newUnit)
   }
-  //
   handleChipDelete(tag) {
     //console.log('handleChipDelete ------------------------------------------------');
     //console.log('tag = ' + tag);
@@ -454,25 +356,16 @@ export default class Nutrition extends React.Component {
     //console.log(this.state.selectedTags);
     //console.log('deletedTags = ');
     //console.log(this.state.deletedTags);
-
     // 1. Delete this tag from:
     //    this.state..
-
     //    this.state.nutritionModel
     //    ingredientControlModels
-    //
-    let nutritionModel = this.state.nutritionModel
-    let ingredientControlModels = this.state.ingredientControlModels
-    //
     let selectedTags = this.state.selectedTags
     let deletedTags = this.state.deletedTags
-    //
-    nutritionModel.removeIngredient(tag)
-    delete ingredientControlModels[tag]
-    //
+    this.props.nutritionModelRemIng(tag)
+    this.props.ingredientModelRemTag(tag)
     // 2. Remove the tag from selectedTags (use splice--delete just makes the
     //    element undefined):
-    //
     for (let i = 0; i < selectedTags.length; i++) {
       if (tag === selectedTags[i]) {
         selectedTags.splice(i, 1)
@@ -480,15 +373,11 @@ export default class Nutrition extends React.Component {
       }
     }
     deletedTags.push(tag)
-    //
     this.setState({
-      nutritionModel: nutritionModel,
-      ingredientControlModels: ingredientControlModels,
       selectedTags: selectedTags,
       deletedTags: deletedTags
     })
   }
-  //
   handleChipAdd(tag) {
     //console.log('handleChipAdd    ------------------------------------------------');
     //console.log('tag = ' + tag);
@@ -496,37 +385,26 @@ export default class Nutrition extends React.Component {
     //console.log(this.state.selectedTags);
     //console.log('deletedTags = ');
     //console.log(this.state.deletedTags);
-
     // TODO: refactor and compbine
     // Tuple offsets for firebase data in nutrition reducer:
     const descriptionOffset = 0
     const keyOffset = 1
     const dataObjOffset = 2
-
-    let tagMatches = this.state.matchData[tag]
-    let nutritionModel = this.state.nutritionModel
-    let ingredientControlModels = this.state.ingredientControlModels
-
+    let tagMatches = this.props.model.matchData[tag]
     let selectedTags = this.state.selectedTags
     let deletedTags = this.state.deletedTags
-
     // TODO: A lot of this is common to componentWillMount. Refactor
-
     // 1. Add this tag to:
     //    - this.state.nutritionModel
     //    - ingredientControlModels
-    //
-
     const description = tagMatches[0][descriptionOffset]
     const dataForKey = tagMatches[0][dataObjOffset]
     let ingredientModel = new IngredientModel()
     ingredientModel.initializeSingle(description, tag, dataForKey)
-
     const measureQuantity = ingredientModel.getMeasureQuantity()
     const measureUnit = ingredientModel.getMeasureUnit()
-    nutritionModel.addIngredient(
+    this.props.nutritionModelAddIng(
       tag, ingredientModel, measureQuantity, measureUnit)
-
     let ingredientControlModel =
       new IngredientControlModel(
             measureQuantity,
@@ -534,9 +412,7 @@ export default class Nutrition extends React.Component {
             measureUnit,
             tupleHelper.getListOfTupleOffset(tagMatches, descriptionOffset),
             description)
-
-    ingredientControlModels[tag] = ingredientControlModel
-
+    this.props.ingredientAddModel(tag, ingredientControlModel)
     // 2. Add the tag to selectedTags and remove it from deleted tags ...
     //
     for (let i = 0; i < deletedTags.length; i++) {
@@ -546,10 +422,7 @@ export default class Nutrition extends React.Component {
       }
     }
     selectedTags.push(tag)
-
     this.setState({
-      nutritionModel: nutritionModel,
-      ingredientControlModels: ingredientControlModels,
       selectedTags: selectedTags,
       deletedTags: deletedTags
     })
@@ -565,13 +438,10 @@ export default class Nutrition extends React.Component {
       'mcg', 'mg']
 
     let sanitizedMeasureUnit = mapToSupportedUnits(measureUnit)
-
     // We can also convert anything to grams so include those measures since
     // our data is in grams (mass):
     const massUnits = Convert().from('g').possibilities()
-
     let unitData = []
-
     const allUnits = Convert().possibilities()
     if (allUnits.includes(sanitizedMeasureUnit)) {
     // if (Convert().possibilities().includes(measureUnit)) {
@@ -621,7 +491,6 @@ export default class Nutrition extends React.Component {
       <div>{htmlResult}</div>
     )
   }
-  //
   getServingsController() {
     return (
       <div>
@@ -659,12 +528,10 @@ export default class Nutrition extends React.Component {
       </div>
     )
   }
-  //
   getTagPanel(tags, tagName, deletable) {
     if (tags.length === 0) {
       return (<div></div>)
     }
-
     return (
       <div>
         <Row>
@@ -689,9 +556,7 @@ export default class Nutrition extends React.Component {
         </div>
       </div>
     )
-
   }
-  //
   getIngredientController(tag) {
     // Layout:
     //
@@ -702,8 +567,7 @@ export default class Nutrition extends React.Component {
     // TODO: - the meta info about the unit (probably make it a little info
     // button next to the units that pops up)
     //
-    const ingredientControlModel = this.state.ingredientControlModels[tag]
-
+    const ingredientControlModel = this.props.model.ingredientControlModels[tag]
     return (
       <div>
           {/* row 1 from above: */}
@@ -757,10 +621,9 @@ export default class Nutrition extends React.Component {
       </div>
     )
   }
-  //
   render() {
     const numIngredients = Object.keys(this.props.nutrition.parsedData).length
-    const loadedIngredients = Object.keys(this.props.nutrition.matchData).length
+    const loadedIngredients = Object.keys(this.props.model.matchData).length
 
     if (!this.props.user.login && !this.props.user.anonymous) {
       return (
@@ -781,34 +644,25 @@ export default class Nutrition extends React.Component {
         </div>
       )
     }
-    //
     // 1. Generate a list of tags not found in our DB and build the array of
     //    sliders:
-    //
     let sliders = []
     let notFound = ""
-    let ingredientControlModels = this.state.ingredientControlModels
-    for (let tag in this.state.matchData) {
+    const {ingredientControlModels, matchData} = this.props.model
+    for (let tag in matchData) {
       if (! (tag in ingredientControlModels)) {
         notFound = notFound + tag + " "
         continue
       }
-
       sliders.push(this.getIngredientController(tag))
     }
-
     if (notFound != "") {
       notFound = "(No data for: " + notFound + ")"
     }
-    //
     // 2. Serialize the nutrition model and composite ingreident model:
-    //
-    const full = this.state.nutritionModel.serialize()
-    const compositeModel = this.state.nutritionModel.getScaledCompositeIngredientModel()
+    const full = this.props.model.nutritionModel.serialize()
+    const compositeModel = this.props.model.nutritionModel.getScaledCompositeIngredientModel()
     const composite = compositeModel.serialize()
-
-    // TODO: PBJ, what does the next line do? Is it needed here?
-    let hideUrlModal = () => this.setState({ showUrlModal: false })
     const eventKey = this.props.nutrition.anonymous === false ? "2" : "1"
     return (
       <Grid>
@@ -819,7 +673,6 @@ export default class Nutrition extends React.Component {
             </div>
           </Col>
         </Row>
-
         {/*Serving size below: TODO refactor*/}
         <Row style={{marginTop: 20}}>
           <Col xs={8} md={8}>
@@ -849,7 +702,6 @@ export default class Nutrition extends React.Component {
             </Row>
           </Col>
         </Row>
-
       </Grid>
     )
   }

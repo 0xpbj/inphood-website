@@ -1,6 +1,3 @@
-import { createAction } from 'redux-actions'
-
-
 // Instagram Flow Actions
 export const IG_LOGIN_REQUEST = 'IG_LOGIN_REQUEST'
 export const IG_LOGOUT_REQUEST = 'IG_LOGOUT_REQUEST'
@@ -42,3 +39,17 @@ export const RESET_LAZY_LOAD_STATUS = 'RESET_LAZY_LOAD_STATUS'
 export const SEARCH_INGREDIENT = 'SEARCH_INGREDIENT'
 export const SEARCH_RESULT = 'SEARCH_RESULT'
 export const SEARCH_ERROR = 'SEARCH_ERROR'
+
+
+// Model Actions
+export const NM_RESET = 'NM_RESET'
+export const NM_SETUP = 'NM_SETUP'
+export const NM_ADD_INGREDIENT = 'NM_ADD_INGREDIENT'
+export const NM_REM_INGREDIENT = 'NM_REM_INGREDIENT'
+export const NM_SET_SERVINGS = 'NM_SET_SERVINGS'
+export const NM_SCALE_INGREDIENT = 'NM_SCALE_INGREDIENT'
+export const IM_ADD_CONTROL_MODEL = 'IM_ADD_CONTROL_MODEL'
+export const IM_SET_SLIDER_VALUE = 'IM_SET_SLIDER_VALUE'
+export const IM_SET_DROPDOWN_MATCH_VALUE = 'IM_SET_DROPDOWN_MATCH_VALUE'
+export const IM_SET_DROPDOWN_UNITS = 'IM_SET_DROPDOWN_UNITS'
+export const IM_REM_INGREDIENT_TAG = 'IM_REM_INGREDIENT_TAG'

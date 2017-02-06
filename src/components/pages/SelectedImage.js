@@ -35,6 +35,7 @@ export default class SelectedImage extends React.Component {
       this.props.router.push('/')
     }
     else {
+      this.props.nutritionModelReset()
       ReactGA.event({
         category: 'User',
         action: 'Go to image page',

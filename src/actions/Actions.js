@@ -17,6 +17,17 @@ import {
   RESET_LAZY_LOAD_STATUS,
   CLEAN_REDUCERS,
   SEARCH_INGREDIENT,
+  NM_RESET,
+  NM_SETUP,
+  NM_ADD_INGREDIENT,
+  NM_REM_INGREDIENT,
+  NM_SET_SERVINGS,
+  NM_SCALE_INGREDIENT,
+  IM_ADD_CONTROL_MODEL,
+  IM_SET_SLIDER_VALUE,
+  IM_SET_DROPDOWN_MATCH_VALUE,
+  IM_SET_DROPDOWN_UNITS,
+  IM_REM_INGREDIENT_TAG
 } from '../constants/ActionTypes'
 
 export function igUploadPhoto() {
@@ -143,5 +154,91 @@ export function searchIngredientData(searchIngredient) {
   return {
     type: SEARCH_INGREDIENT,
     searchIngredient
+  }
+}
+
+export function nutritionModelReset() {
+  return {
+    type: NM_RESET
+  }
+}
+
+export function nutritionModelSetup(flag) {
+  return {
+    type: NM_SETUP,
+    flag
+  }
+}
+
+export function nutritionModelAddIng(tag, ingredientModel, quantity, unit) {
+  return {
+    type: NM_ADD_INGREDIENT,
+    tag,
+    ingredientModel,
+    quantity,
+    unit
+  }
+}
+
+export function nutritionModelRemIng(tag) {
+  return {
+    type: NM_REM_INGREDIENT,
+    tag
+  }
+}
+
+export function nutritionModelSetServings(value, units) {
+  return {
+    type: NM_SET_SERVINGS,
+    value,
+    units
+  }
+}
+
+export function nutritionModelScaleIng(tag, value, units) {
+  return {
+    type: NM_SCALE_INGREDIENT,
+    tag,
+    value,
+    units
+  }
+}
+
+export function ingredientAddModel(tag, ingredientControlModel) {
+  return {
+    type: IM_ADD_CONTROL_MODEL,
+    tag,
+    ingredientControlModel
+  }
+}
+
+export function ingredientSetSliderValue(tag, value) {
+  return {
+    type: IM_SET_SLIDER_VALUE,
+    tag,
+    value
+  }
+}
+
+export function ingredientSetDropdownMatchValue(tag, value) {
+  return {
+    type: IM_SET_DROPDOWN_MATCH_VALUE,
+    tag,
+    value
+  }
+}
+
+export function ingredientSetDropdownUnits(tag, units) {
+  return {
+    type: IM_SET_DROPDOWN_UNITS,
+    tag,
+    units
+  }
+}
+
+export function ingredientModelRemTag(tag) {
+  return {
+    type: IM_REM_INGREDIENT_TAG,
+    tag
   }
 }

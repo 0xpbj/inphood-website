@@ -209,6 +209,7 @@ vanilla
 vegetables
 watercress
 watermelon
+maitake mushroom
 mushroom
 xanthan gum
 yam

@@ -9,6 +9,9 @@ import {getValueInUnits,
         mapToSupportedUnits,
         mapToSupportedUnitsStrict,
         rationalToFloat} from '../../helpers/ConversionUtils'
+import TagController from '../controllers/TagController'
+import ServingsController from '../controllers/ServingsController'
+import IngredientController from '../controllers/IngredientController'
 import Chip from 'react-toolbox/lib/chip'
 import Row from 'react-bootstrap/lib/Row'
 import Col from 'react-bootstrap/lib/Col'
@@ -347,7 +350,7 @@ export default class Nutrition extends React.Component {
     let newValue = getIngredientValueInUnits(
       newUnit, ingredientModel, ingredientControlModel)
     this.props.ingredientSetSliderValue(tag, newValue)
-    this.props.setDropdownUnitValue(tag, newUnit)
+    this.props.ingredientSetDropdownUnits(tag, newUnit)
   }
   handleChipDelete(tag) {
     //console.log('handleChipDelete ------------------------------------------------');
@@ -461,170 +464,9 @@ export default class Nutrition extends React.Component {
     }
     return unitData
   }
-  //////////////////////////////////////////////////////////////////////////////
-  // UI Element Generation:
-  //////////////////////////////////////////////////////////////////////////////
-  getChipsFromArray(anArray, deletable) {
-    let htmlResult = []
-    for (let i = 0; i < anArray.length; i++) {
-      let tag = anArray[i]
-      if (deletable) {
-        htmlResult.push(
-          <Chip
-            onDeleteClick={this.handleChipAdd.bind(this, tag)}
-            deletable>
-            <span style={{textDecoration: 'line-through'}}>
-              {tag}
-            </span>
-          </Chip>)
-      } else {
-        htmlResult.push(
-          <Chip
-            onDeleteClick={this.handleChipAdd.bind(this, tag)}>
-            <span style={{textDecoration: 'line-through'}}>
-              {tag}
-            </span>
-          </Chip>)
-        }
-    }
-    return (
-      <div>{htmlResult}</div>
-    )
-  }
-  getServingsController() {
-    return (
-      <div>
-        <Row>
-          <Col xs={12} md={12}>
-            <text style={{fontWeight: 'bold'}}>Servings</text>
-          </Col>
-        </Row>
-        <div style={{borderWidth: 1,
-                     borderColor: 'black',
-                     borderStyle: 'solid',
-                     borderRadius: 5,
-                     padding: 10,
-                     marginRight: 10,
-                     marginLeft: 10}}>
-          <Row>
-            <Col xs={10} md={10}>
-              <Slider
-                value={this.state.servingControls['value']}
-                onChange={this.handleServingValuesChange.bind(this)}
-                min={this.state.servingControls['min']}
-                max={this.state.servingControls['max']}
-                step={this.state.servingControls['step']}
-                editable pinned snaps/>
-            </Col>
-            <Col xs={2} md={2}>
-                {/* TODO */}
-                <Dropdownlist
-                  data={['people', 'g']}
-                  value={this.state.servingControls['unit']}
-                  onChange={this.handleServingDropDownChange.bind(this)}/>
-            </Col>
-          </Row>
-        </div>
-      </div>
-    )
-  }
-  getTagPanel(tags, tagName, deletable) {
-    if (tags.length === 0) {
-      return (<div></div>)
-    }
-    return (
-      <div>
-        <Row>
-          <Col xs={12} md={12}>
-            <text style={{fontWeight: 'bold'}}>{tagName}</text>
-          </Col>
-        </Row>
-        <div style={{borderWidth: 1,
-                     borderColor: 'black',
-                     borderStyle: 'solid',
-                     borderRadius: 5,
-                     padding: 10,
-                     marginRight: 10,
-                     marginLeft: 10}}>
-          <Row>
-            <Col xs={12} md={12}>
-              {/* The section elements here separate the updated tags from the
-                  eliminated ones */}
-              {this.getChipsFromArray(tags, deletable)}
-            </Col>
-          </Row>
-        </div>
-      </div>
-    )
-  }
-  getIngredientController(tag) {
-    // Layout:
-    //
-    //      Egg:
-    //      <--------*-------------------------> [   1] [egg]^v
-    //      [Eggs, scrambled, frozen mixture                ]^v
-    //
-    // TODO: - the meta info about the unit (probably make it a little info
-    // button next to the units that pops up)
-    //
-    const ingredientControlModel = this.props.model.ingredientControlModels[tag]
-    return (
-      <div>
-          {/* row 1 from above: */}
-          <Row
-            style={{marginTop: 20}}>
-            <Col xs={12} md={12}>
-              <Chip
-                onDeleteClick={this.handleChipDelete.bind(this, tag)}
-                deletable>
-                {tag}
-              </Chip>
-            </Col>
-          </Row>
-          <div style={{borderWidth: 1,
-                       borderColor: 'black',
-                       borderStyle: 'solid',
-                       borderRadius: 5,
-                       padding: 10,
-                       marginRight: 10,
-                       marginLeft: 10}}>
-            {/* row 2 from above: */}
-            <Row>
-              <Col xs={10} md={10} style={{paddingLeft: 5, paddingRight: 5}}>
-                <Slider
-                  value={ingredientControlModel.getSliderValue()}
-                  onChange={this.handleSliderValuesChange.bind(this, tag)}
-                  min={ingredientControlModel.getSliderMin()}
-                  max={ingredientControlModel.getSliderMax()}
-                  step={ingredientControlModel.getSliderStep()}
-                  editable
-                  snaps/>
-              </Col>
-              <Col xs={2} md={2} style={{paddingLeft: 0}}>
-                <Dropdownlist
-                  data={ingredientControlModel.getDropdownUnits()}
-                  value={ingredientControlModel.getDropdownUnitValue()}
-                  onChange={this.handleUnitDropdownChange.bind(this, tag)}/>
-              </Col>
-            </Row>
-            {/* row 3 from above: */}
-            <Row
-              style={{marginTop: 10}}>
-              <Col xs={12} md={12}>
-              <Dropdownlist
-                data={ingredientControlModel.getDropdownMatches()}
-                value={ingredientControlModel.getDropdownMatchValue()}
-                onChange={this.handleMatchDropdownChange.bind(this, tag)}/>
-              </Col>
-            </Row>
-          </div>
-      </div>
-    )
-  }
   render() {
     const numIngredients = Object.keys(this.props.nutrition.parsedData).length
     const loadedIngredients = Object.keys(this.props.model.matchData).length
-
     if (!this.props.user.login && !this.props.user.anonymous) {
       return (
         <Alert bsStyle="danger" onDismiss={() => this.props.router.push('/')}>
@@ -654,7 +496,16 @@ export default class Nutrition extends React.Component {
         notFound = notFound + tag + " "
         continue
       }
-      sliders.push(this.getIngredientController(tag))
+      sliders.push(
+        <IngredientController
+          tag={tag}
+          ingredientControlModel={this.props.model.ingredientControlModels[tag]}
+          handleChipDelete={this.handleChipDelete.bind(this, tag)}
+          handleSliderValuesChange={this.handleSliderValuesChange.bind(this, tag)}
+          handleUnitDropdownChange={this.handleUnitDropdownChange.bind(this, tag)}
+          handleMatchDropdownChange={this.handleMatchDropdownChange.bind(this, tag)}
+        />
+      )
     }
     if (notFound != "") {
       notFound = "(No data for: " + notFound + ")"
@@ -664,6 +515,7 @@ export default class Nutrition extends React.Component {
     const compositeModel = this.props.model.nutritionModel.getScaledCompositeIngredientModel()
     const composite = compositeModel.serialize()
     const eventKey = this.props.nutrition.anonymous === false ? "2" : "1"
+    const {servingControls} = this.state
     return (
       <Grid>
         <Row>
@@ -676,7 +528,15 @@ export default class Nutrition extends React.Component {
         {/*Serving size below: TODO refactor*/}
         <Row style={{marginTop: 20}}>
           <Col xs={8} md={8}>
-            {this.getServingsController()}
+            <ServingsController
+              value={servingControls['value']}
+              min={servingControls['min']}
+              max={servingControls['max']}
+              step={servingControls['step']}
+              unit={servingControls['unit']}
+              handleServingValuesChange={this.handleServingValuesChange.bind(this)}
+              handleServingDropDownChange={this.handleServingDropDownChange.bind(this)}
+            />
             {sliders}
           </Col>
           <Col xs={4} md={4}>
@@ -688,14 +548,20 @@ export default class Nutrition extends React.Component {
             </Row>
             {/* temporary hack to align top to adjacent slider */}
             <Row style={{marginTop: 9}}>
-              {this.getTagPanel(this.state.deletedTags,
-                                'Discarded Tags:',
-                                true)}
+              <TagController
+                tags={this.state.deletedTags}
+                tagName={'Discarded Tags:'}
+                deletable={true}
+                handleChipAdd={this.handleChipAdd.bind(this)}
+              />
             </Row>
             <Row>
-              {this.getTagPanel(this.state.unmatchedTags,
-                                'No match found for these tags:',
-                                false)}
+              <TagController
+                tags={this.state.unmatchedTags}
+                tagName={'No match found for these tags:'}
+                deletable={false}
+                handleChipAdd={this.handleChipAdd.bind(this)}
+              />
             </Row>
             <Row>
               <Search />

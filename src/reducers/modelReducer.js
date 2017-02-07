@@ -42,7 +42,17 @@ export default function modelFun(state = initialState, action) {
     case NM_RESET:
     {
       return {
-        ...initialState
+        matchData: {},
+        ingredientControlModels: {},
+        nutritionModel: new NutritionModel(),
+        lazyLoadOperation: {
+          status: '',
+          tag: undefined,
+          value: undefined
+        },
+        modelSetup: false,
+        userSearch: false,
+        searchIngredient: ''
       }
     }
     case NM_SETUP:

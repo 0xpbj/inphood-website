@@ -7,7 +7,8 @@ import {
   RESULT_URL,
   SEND_SERIALIZED_DATA,
   STORE_PARSED_DATA,
-  CLEAN_REDUCERS
+  CLEAN_REDUCERS,
+  NM_RESET
 } from '../constants/ActionTypes'
 
 const initialState = {
@@ -31,7 +32,20 @@ export default function nutrition(state = initialState, action) {
     case CLEAN_REDUCERS:
     case AN_CLEAR_DATA:
       return {
-        ...initialState
+        link: '',
+        picture: '',
+        caption: '',
+        updatedCaption: '',
+        username: '',
+        anonymous: false,
+        resultUrl: '',
+        key: '',
+        composite: '',
+        full: '',
+        index: 0,
+        rawData: '',
+        parsedData: [],
+        recipeFlag: false
       }
     case ADD_CAPTION:
       return {

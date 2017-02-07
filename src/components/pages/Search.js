@@ -3,29 +3,12 @@ import ReactGA from 'react-ga'
 import Row from 'react-bootstrap/lib/Row'
 import Col from 'react-bootstrap/lib/Col'
 import Grid from 'react-bootstrap/lib/Grid'
-import Alert from 'react-bootstrap/lib/Alert'
 import Button from 'react-bootstrap/lib/Button'
 import Popover from 'react-bootstrap/lib/Popover'
 import Glyphicon from 'react-bootstrap/lib/Glyphicon'
 import FormGroup from 'react-bootstrap/lib/FormGroup'
 import FormControl from 'react-bootstrap/lib/FormControl'
 import ControlLabel from 'react-bootstrap/lib/ControlLabel'
-
-import 'react-widgets/lib/less/react-widgets.less'
-import Dropdownlist from 'react-widgets/lib/Dropdownlist'
-
-import {IngredientModel} from '../models/IngredientModel'
-import {NutritionModel} from '../models/NutritionModel'
-import {IngredientControlModel} from '../models/IngredientControlModel'
-import {Link} from 'react-router'
-import {getValueInUnits,
-        getIngredientValueInUnits,
-        mapToSupportedUnits,
-        mapToSupportedUnitsStrict,
-        rationalToFloat} from '../../helpers/ConversionUtils'
-const Config = require('Config')
-const Convert = require('convert-units')
-import * as tuple from '../../helpers/TupleHelpers'
 
 export default class Search extends React.Component {
   constructor() {
@@ -35,29 +18,6 @@ export default class Search extends React.Component {
       searchPopoverFlag: false,
       results: []
     }
-  }
-  componentWillReceiveProps(nextProps) {
-    console.log('Got some search results here: ', nextProps)
-    const {searchResults} = nextProps.search
-    let results = []
-    for (let i of searchResults) {
-      let data = {id: i.info._id, name: i.info._source.Description}
-      results.push(data)
-    }
-    this.setState({results})
-    // let ingredientModel = new IngredientModel()
-    // ingredientModel.initializeSingle(description, tag, dataForKey)
-    // let measureQuantity = ingredientModel.getMeasureQuantity()
-    // let measureUnit = ingredientModel.getMeasureUnit()
-
-    // let tryQuantity = measureQuantity
-    // let tryUnit = measureUnit
-    // let ingredientControlModel = new IngredientControlModel(
-    //     tryQuantity,
-    //     this.getPossibleUnits(tryUnit),
-    //     tryUnit,
-    //     tuple.getListOfTupleOffset(tagMatches, descriptionOffset),
-    //     description)
   }
   searchFlow() {
     if (this.getValidationState() === 'error') {
@@ -76,9 +36,6 @@ export default class Search extends React.Component {
     let searchIngredient = e.target.value.toLowerCase()
     this.setState({searchIngredient})
   }
-  handleChange(tag) {
-    console.log('Ingredient Changed: ', tag)
-  }
   getValidationState() {
     const length = this.state.searchIngredient.length
     if (length > 0)
@@ -96,15 +53,6 @@ export default class Search extends React.Component {
         title="Search Flow">
         Enter ingredient to search for
       </Popover>
-    ) : null
-    const ingredientsDropdown = this.state.results.length ? (
-      <Dropdownlist
-        valueField='id'
-        textField='name'
-        defaultValue={this.state.results[0]}
-        data={this.state.results}
-        onChange={this.handleChange.bind(this)}
-      />
     ) : null
     return (
       <div>
@@ -140,7 +88,6 @@ export default class Search extends React.Component {
           </Row>
         </section>
         <div style={{marginBottom: 10}} />
-        {ingredientsDropdown}
       </div>
     )
   }

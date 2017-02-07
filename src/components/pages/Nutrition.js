@@ -30,7 +30,7 @@ import ProgressBar from 'react-bootstrap/lib/ProgressBar'
 import 'react-widgets/lib/less/react-widgets.less'
 import Dropdownlist from 'react-widgets/lib/Dropdownlist'
 
-import Search from '../../containers/SearchContainer'
+import Search from './Search'
 const Config = require('Config')
 const Convert = require('convert-units')
 import * as tupleHelper from '../../helpers/TupleHelpers'
@@ -89,17 +89,81 @@ export default class Nutrition extends React.Component {
     //    TODO: in MVP3, re-architect this properly to work with the redux store
     //
     const {parsedData} = nextProps.nutrition
-    const {modelSetup, matchData, lazyLoadOperation} = nextProps.model
+    const {modelSetup, matchData, lazyLoadOperation, userSearch} = nextProps.model
     if (lazyLoadOperation.status === 'done') {
       this.completeMatchDropdownChange(lazyLoadOperation.tag, lazyLoadOperation.value)
       this.props.resetLazyLoadOperation()
     } 
     else if (!modelSetup && (Object.keys(matchData).length === Object.keys(parsedData).length))
     {
-      this.changesFromNutrition()
+      this.changesFromRecipe()
+    }
+    else if (userSearch) {
+      this.changesFromSearch()
     }
   }
-  changesFromNutrition() {
+  //TODO: this can be cleaned & merged with the recipe code
+  changesFromSearch() {
+    const {matchData, searchIngredient} = this.props.model
+    // TODO: refactor and compbine
+    // Tuple offsets for firebase data in nutrition reducer:
+    const descriptionOffset = 0
+    const keyOffset = 1
+    const dataObjOffset = 2
+    // Check that the first dataObject is not undefined (modified from non-lazy
+    // load where every match was checked)
+    const firstMatch = 0
+    const tag = searchIngredient
+    const tagMatches = matchData[tag]
+    // We use the first value in the list (assumes elastic search returns results
+    // in closest match order)
+    const description = tagMatches[0][descriptionOffset]
+    const dataForKey = tagMatches[0][dataObjOffset]
+    let ingredientModel = new IngredientModel()
+    if (!dataForKey)
+      return
+    ingredientModel.initializeSingle(description, tag, dataForKey)
+    let measureQuantity = ingredientModel.getMeasureQuantity()
+    let measureUnit = ingredientModel.getMeasureUnit()
+    let tryQuantity = measureQuantity
+    let tryUnit = measureUnit
+    let errorStr = ''
+    try {
+      this.props.nutritionModelAddIng(tag, ingredientModel, tryQuantity, tryUnit)
+    }
+    catch(err) {
+      errorStr = err
+    } 
+    finally {
+      // We failed to add the ingredient with the specified quantity/unit, so try
+      // using the FDA values (not try/catch--if this fails we have a serious internal
+      // error--i.e. this should always work.)
+      if (errorStr !== '') {
+        tryQuantity = measureQuantity
+        tryUnit = measureUnit
+        this.props.nutritionModelAddIng(tag, ingredientModel, tryQuantity, tryUnit)
+      }
+    }
+    //console.log('===========================================================');
+    //console.log('after addIngredient: ' + tag + '(' + description + ')');
+    //console.log('nutritionModel:');
+    // for (let key in nutritionModel._scaledIngredients) {
+      //console.log('key = ' + key);
+    // }
+    let ingredientControlModel = new IngredientControlModel(
+      tryQuantity,
+      this.getPossibleUnits(tryUnit),
+      tryUnit,
+      tupleHelper.getListOfTupleOffset(tagMatches, descriptionOffset),
+      description)
+    this.props.ingredientAddModel(tag, ingredientControlModel)
+    // Hackity hack hack--init the serving amount from the servingControls so they
+    // match on presentation of the label
+    let servingControls = this.state.servingControls
+    this.props.nutritionModelSetServings(servingControls['value'], servingControls['unit'])
+    this.props.resetSearchFlag()
+  }
+  changesFromRecipe() {
     // A spinner gets rendered until this method gets here.
     // //console.log('% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %');
     // //console.log(' % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %');
@@ -564,7 +628,9 @@ export default class Nutrition extends React.Component {
               />
             </Row>
             <Row>
-              <Search />
+              <Search 
+                searchIngredientData={(ingredient) => this.props.searchIngredientData(ingredient)}
+              />
             </Row>
           </Col>
         </Row>

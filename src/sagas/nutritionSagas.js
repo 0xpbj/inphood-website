@@ -8,7 +8,8 @@ import {
   INITIALIZE_FIREBASE_DATA,
   INGREDIENT_FIREBASE_DATA,
   LAZY_FETCH_FIREBASE,
-  LAZY_LOAD_FIREBASE
+  LAZY_LOAD_FIREBASE,
+  SEARCH_INGREDIENT
 } from '../constants/ActionTypes'
 
 import * as db from './firebaseCommands'
@@ -129,7 +130,7 @@ const elasticSearchFetch = (request) => {
   })
 }
 
-function* callElasticSearchLambda(searchTerm, foodName) {
+function* callElasticSearchLambda(searchTerm, foodName, userSearch) {
   // Call elastic search (effectively this curl request):
   //
   // curl Config.ELASTIC_LAMBDA_URL
@@ -173,7 +174,7 @@ function* callElasticSearchLambda(searchTerm, foodName) {
     sortedData.sort(function(a, b) {
       return a.distance - b.distance;
     })
-    yield put ({type: INITIALIZE_FIREBASE_DATA, foodName, data: sortedData})
+    yield put ({type: INITIALIZE_FIREBASE_DATA, foodName, data: sortedData, userSearch})
     yield fork(getDataFromFireBase, foodName, sortedData[0].info._source.Description, sortedData[0].info._id, 0)
   }
 }
@@ -227,13 +228,45 @@ function* processParseForLabel() {
     const foodWords = filterOutNonFoodWords(searchTerm)
     if (foodWords[0]) {
       yield put({type: CLEAR_FIREBASE_DATA})
-      yield fork(callElasticSearchLambda, foodWords[0].data, foodName)
+      yield fork(callElasticSearchLambda, foodWords[0].data, foodName, false)
     }
   }
 }
 
+function* userSearchIngredient() {
+  while (true) {
+    const {searchIngredient} = yield take(SEARCH_INGREDIENT)
+    const foodWords = filterOutNonFoodWords(searchIngredient)
+    if (foodWords[0]) {
+      yield fork(callElasticSearchLambda, foodWords[0].data, searchIngredient, true)
+    }
+  }
+}
+
+function* lambdaHack() {
+  if (!Config.DEBUG) {
+    const url = Config.ELASTIC_LAMBDA_URL
+    const search = {
+      'query': {'match' : {'Description': 'kale'}},
+      'size': 5
+    }
+    let myHeaders = new Headers()
+    myHeaders.append('Content-Type', 'application/json')
+    let request = new Request(url, {
+      method: 'POST',
+      body: JSON.stringify(search),
+      headers: myHeaders,
+      mode: 'cors',
+      cache: 'default'
+    })
+    yield call (elasticSearchFetch, request)
+  }
+}
+
 export default function* root() {
+  yield call(lambdaHack)
   yield fork(lazyFetchFirebaseData)
+  yield fork(userSearchIngredient)
   yield fork(takeLatest, SEND_SERIALIZED_DATA, loadSerializedData)
   yield fork(takeLatest, IG_UPLOAD_PHOTO, loadAWSPut)
   yield fork(takeLatest, STORE_PARSED_DATA, processParseForLabel)

@@ -16,6 +16,8 @@ import {
   LAZY_LOAD_FIREBASE,
   LAZY_FETCH_FIREBASE,
   RESET_LAZY_LOAD_STATUS,
+  SEARCH_INGREDIENT,
+  RESET_SEARCH_FLAG
 } from '../constants/ActionTypes'
 
 import {NutritionModel} from '../components/models/NutritionModel'
@@ -29,7 +31,9 @@ const initialState = {
     tag: undefined,
     value: undefined
   },
-  modelSetup: false
+  modelSetup: false,
+  userSearch: false,
+  searchIngredient: ''
 }
 
 export default function modelFun(state = initialState, action) {
@@ -155,7 +159,6 @@ export default function modelFun(state = initialState, action) {
           matchData: localMatchData
         }
       }
-    //
     case INITIALIZE_FIREBASE_DATA:
       {
         // Initializes our dictionary of match data with ordered arrays of tuples
@@ -175,7 +178,8 @@ export default function modelFun(state = initialState, action) {
 
         return {
           ...state,
-          matchData: localMatchData
+          matchData: localMatchData,
+          userSearch: action.userSearch
         }
       }
     case LAZY_FETCH_FIREBASE:
@@ -217,6 +221,21 @@ export default function modelFun(state = initialState, action) {
           }
         }
       }
+    case RESET_SEARCH_FLAG:
+      {
+        return {
+          ...state,
+          userSearch: false,
+          searchIngredient: ''
+        }
+      }
+    case SEARCH_INGREDIENT:
+    {
+      return {
+        ...state,
+        searchIngredient: action.searchIngredient
+      }
+    }
     case INGREDIENT_FIREBASE_DATA:
       {
         // console.log('nutritionReducer: INGREDIENT_FIREBASE_DATA --------------');

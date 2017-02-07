@@ -27,7 +27,8 @@ import {
   IM_SET_SLIDER_VALUE,
   IM_SET_DROPDOWN_MATCH_VALUE,
   IM_SET_DROPDOWN_UNITS,
-  IM_REM_INGREDIENT_TAG
+  IM_REM_INGREDIENT_TAG,
+  RESET_SEARCH_FLAG
 } from '../constants/ActionTypes'
 
 export function igUploadPhoto() {
@@ -240,5 +241,11 @@ export function ingredientModelRemTag(tag) {
   return {
     type: IM_REM_INGREDIENT_TAG,
     tag
+  }
+}
+
+export function resetSearchFlag() {
+  return {
+    type: RESET_SEARCH_FLAG,
   }
 }

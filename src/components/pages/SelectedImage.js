@@ -56,9 +56,8 @@ export default class SelectedImage extends React.Component {
   }
   captionFlow() {
     const raw = (this.props.user.photos.data[this.props.nutrition.index].caption.text)
-    let data = parseCaption(raw)
-    this.props.storeParsedData(data, raw, false)
-    this.props.router.push('nutrition')
+    const ingredients = parseCaption(raw)
+    this.setState({ingredients})
   }
   getData(e) {
     let ingredients = e.target.value
@@ -97,7 +96,7 @@ export default class SelectedImage extends React.Component {
         id="popover-basic"
         title="Caption Flow"
       >
-        Use caption flow to parse social media comment for ingredients
+        Extract ingredients from social media caption
       </Popover>
     ) : null
     const instagramCaption = this.props.user.anonymous ? null : (
@@ -110,7 +109,7 @@ export default class SelectedImage extends React.Component {
           <section>
             {caption}
           </section>
-          <Button className="btn-primary-spacing" onClick={() => this.captionFlow()}>Use Caption</Button>
+          <Button className="btn-primary-spacing" onClick={() => this.captionFlow()}>Extract Recipe</Button>
         </div>
       </div>
     )
@@ -141,6 +140,7 @@ export default class SelectedImage extends React.Component {
                   <FormControl
                     componentClass="textarea"
                     rows="10"
+                    value={this.state.ingredients}
                     placeholder={"1.5 cup rainbow chard (sliced)\n2 stalks green onion (sliced)\n2 medium tomatoes (chopped)\n1 medium avocado (chopped)\n¼ tsp sea salt\n1 tbsp butter\n1 ½ tbsp flax seed oil\n½ tbsp white wine vinegar\n..."}
                     onChange={this.getData.bind(this)}
                   />

@@ -187,15 +187,28 @@ function* lazyFetchFirebaseData() {
 
 function filterOutNonFoodWords(foodPhrase) {
   const regex = /\w+/g
+  const regexIng = /[^\r\n]+/g
   let words = foodPhrase.match(regex)
-
-  // TODO: look into best way to do this (i.e. if we're bombing memory with this
-  //       list being allocated every time this is called, then restructure).
   const listOfFoods = require("raw-loader!../data/ingredients.txt")
-  const foodWords = new Set(listOfFoods.match(regex))
-
-  const foodIntersection = new Set([...words].filter(x => foodWords.has(x)))
-  return [...foodIntersection]
+  const foodWords = new Set(listOfFoods.match(regexIng))
+  const lowerFoodPhrase = foodPhrase.toLowerCase()
+  let searchTerm = []
+  for (let i of foodWords) {
+    if (lowerFoodPhrase.indexOf(i) !== -1)
+      searchTerm.push(i)
+  }
+  var levenshtein = require('fast-levenshtein')
+  let sortedData = []
+  for (let i of searchTerm) {
+    let d = levenshtein.get(i, lowerFoodPhrase)
+    sortedData.push({data: i, distance: d})
+  }
+  if (sortedData[0]) {
+    sortedData.sort(function(a, b) {
+      return a.distance - b.distance;
+    })
+  }
+  return sortedData
 }
 
 function* processParseForLabel() {
@@ -208,20 +221,15 @@ function* processParseForLabel() {
   //   ]
   const {parsedData} = yield select(state => state.nutritionReducer)
   for (let i = 0; i < parsedData.length; i++) {
-  // for (let i = 0; i < 2; i++) {
     const parseObj = parsedData[i]
     const foodName = parseObj['name']
-
     let searchTerm = foodName
     const foodWords = filterOutNonFoodWords(searchTerm)
-    if (foodWords.length > 0) {
-      searchTerm = foodWords.toString().replace(',', ' ')
+    if (foodWords[0]) {
+      yield put({type: CLEAR_FIREBASE_DATA})
+      yield fork(callElasticSearchLambda, foodWords[0].data, foodName)
     }
-
-    yield put({type: CLEAR_FIREBASE_DATA})
-    yield fork(callElasticSearchLambda, searchTerm, foodName)
   }
-
 }
 
 export default function* root() {

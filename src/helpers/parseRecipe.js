@@ -59,28 +59,16 @@ function removeSpecialChars(str) {
 }
 
 export function parseCaption(caption) {
-  let regex = /\w+/g
-  let words = caption.match(regex)
-  var file = require("raw-loader!../data/ingredients.txt")
-  // var file = require("raw-loader!../../data/complete.unique-words.txt")
-  let fileWords = new Set(file.match(regex))
-  let fileIntersection = new Set([...words].filter(x => fileWords.has(x)))
-  // var food = require("raw-loader!../../data/ingredients.txt")
-  // let foodWords = new Set(food.match(regex))
-  // let foodIntersection = new Set([...fileIntersection].filter(x => foodWords.has(x)))
-  // return fileIntersection
-  if (!fileIntersection)
-    return
-  let parsedData = []
-  for (let index of fileIntersection) {
-    let data = {
-      amount: "",
-      name: index,
-      unit: ""
-    }
-    parsedData.push(data)
+  const regex = /[^\r\n]+/g
+  const file = require("raw-loader!../data/ingredients.txt")
+  const fileWords = new Set(file.match(regex))
+  let ingredients = ''
+  let lowerCaption = caption.toLowerCase()
+  for (let i of fileWords) {
+    if (lowerCaption.indexOf(i) !== -1)
+      ingredients += 'amount? units? ' + i + '\n'
   }
-  return parsedData
+  return ingredients
 }
 
 export function parseRecipe(data) {

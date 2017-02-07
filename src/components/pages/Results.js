@@ -81,7 +81,7 @@ export default class Results extends React.Component {
         ingredient.initializeFromSerialization(ingredientData)
         nutritionLabel = <Label ingredientComposite={ingredient}/>
       }
-      const path = 'http://www.label.inphood.com/?user=' + this.props.params.userId + '&label=' + this.props.params.labelId
+      const path = 'http://www.label.inphood.com/?user=' + this.props.params.userId + '&label=' + this.props.params.labelId + '&embed=false'
       const recipe = <pre>{this.props.results.data.rawData}</pre>
       const label = (
         <Grid>

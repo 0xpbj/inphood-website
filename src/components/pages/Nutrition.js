@@ -414,7 +414,8 @@ export default class Nutrition extends React.Component {
     let newValue = getIngredientValueInUnits(
       newUnit, ingredientModel, ingredientControlModel)
     this.props.ingredientSetSliderValue(tag, newValue)
-    this.props.ingredientSetDropdownUnits(tag, newUnit)
+    this.props.ingredientSetDropdownUnitsValue(tag, newUnit)
+    this.props.ingredientAddModel(tag, ingredientControlModel)
   }
   handleChipDelete(tag) {
     //console.log('handleChipDelete ------------------------------------------------');

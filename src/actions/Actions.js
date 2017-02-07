@@ -26,6 +26,7 @@ import {
   IM_ADD_CONTROL_MODEL,
   IM_SET_SLIDER_VALUE,
   IM_SET_DROPDOWN_MATCH_VALUE,
+  IM_SET_DROPDOWN_UNITS_VALUE,
   IM_SET_DROPDOWN_UNITS,
   IM_REM_INGREDIENT_TAG,
   RESET_SEARCH_FLAG
@@ -232,6 +233,14 @@ export function ingredientSetDropdownMatchValue(tag, value) {
 export function ingredientSetDropdownUnits(tag, units) {
   return {
     type: IM_SET_DROPDOWN_UNITS,
+    tag,
+    units
+  }
+}
+
+export function ingredientSetDropdownUnitsValue(tag, units) {
+  return {
+    type: IM_SET_DROPDOWN_UNITS_VALUE,
     tag,
     units
   }

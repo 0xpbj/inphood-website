@@ -142,7 +142,7 @@ export class IngredientControlModel {
 
   setDropdownUnitValue(aValue) {
     // TODO: need to modify configureSlidersForUnit to handle out of range values
-    this.configureSlidersForUnit(aValue)
+    // this.configureSlidersForUnit(aValue)
     this._dropdownUnitValue = aValue
   }
 

@@ -9,6 +9,7 @@ import {
   IM_SET_SLIDER_VALUE,
   IM_SET_DROPDOWN_MATCH_VALUE,
   IM_SET_DROPDOWN_UNITS,
+  IM_SET_DROPDOWN_UNITS_VALUE,
   IM_REM_INGREDIENT_TAG,
   CLEAR_FIREBASE_DATA,
   INITIALIZE_FIREBASE_DATA,
@@ -117,7 +118,16 @@ export default function modelFun(state = initialState, action) {
     case IM_SET_DROPDOWN_UNITS:
     {
       let {ingredientControlModels} = state
-      ingredientControlModels[action.tag].setDropdownUnits(action.value)
+      ingredientControlModels[action.tag].setDropdownUnits(action.units)
+      return {
+        ...state,
+        ingredientControlModels: ingredientControlModels
+      }
+    }
+    case IM_SET_DROPDOWN_UNITS_VALUE:
+    {
+      let {ingredientControlModels} = state
+      ingredientControlModels[action.tag].setDropdownUnitValue(action.units)
       return {
         ...state,
         ingredientControlModels: ingredientControlModels

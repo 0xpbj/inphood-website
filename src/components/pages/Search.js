@@ -30,6 +30,7 @@ export default class Search extends React.Component {
         nonInteraction: false
       });
       this.props.searchIngredientData(this.state.searchIngredient)
+      this.setState({searchIngredient: ''})
     }
   }
   getData(e) {
@@ -68,7 +69,7 @@ export default class Search extends React.Component {
         <section>
           <Row>
             <Col xs={7} md={7}>
-              <form onSubmit={this.searchFlow.bind(this)}>
+              {/*<form onSubmit={this.searchFlow.bind(this)}>*/}
                 <FormGroup
                   controlId="formBasicText"
                   validationState={this.getValidationState()}
@@ -76,11 +77,12 @@ export default class Search extends React.Component {
                   <FormControl
                     type="text"
                     label="Text"
+                    value={this.state.searchIngredient}
                     onChange={this.getData.bind(this)}
                     placeholder="Example: green onions"
                   />
                 </FormGroup>
-              </form>
+              {/*</form>*/}
             </Col>
             <Col xs={1} md={1}>
               <Button className="btn-primary-spacing" onClick={this.searchFlow.bind(this)}><Glyphicon glyph="glyphicon glyphicon-search"></Glyphicon></Button>

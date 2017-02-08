@@ -177,6 +177,9 @@ function* callElasticSearchLambda(searchTerm, foodName, userSearch) {
     yield put ({type: INITIALIZE_FIREBASE_DATA, foodName, data: sortedData, userSearch})
     yield fork(getDataFromFireBase, foodName, sortedData[0].info._source.Description, sortedData[0].info._id, 0)
   }
+  else {
+    yield put ({type: INITIALIZE_FIREBASE_DATA, foodName, data: [], userSearch})
+  }
 }
 
 function* lazyFetchFirebaseData() {
@@ -230,6 +233,9 @@ function* processParseForLabel() {
       yield put({type: CLEAR_FIREBASE_DATA})
       yield fork(callElasticSearchLambda, foodWords[0].data, foodName, false)
     }
+    else {
+      yield put ({type: INITIALIZE_FIREBASE_DATA, foodName, data: [], userSearch: false})
+    }
   }
 }
 
@@ -239,6 +245,9 @@ function* userSearchIngredient() {
     const foodWords = filterOutNonFoodWords(searchIngredient)
     if (foodWords[0]) {
       yield fork(callElasticSearchLambda, foodWords[0].data, searchIngredient, true)
+    }
+    else {
+      yield put ({type: INITIALIZE_FIREBASE_DATA, foodName: searchIngredient, data: [], userSearch: true})
     }
   }
 }

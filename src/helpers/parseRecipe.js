@@ -72,14 +72,16 @@ export function parseCaption(caption) {
 }
 
 export function parseRecipe(data) {
-  let regex = /[^\r\n]+/g
+  const regex = /[^\r\n]+/g
+  const sRegex = /([^\-\.\*:><^#~ ] ?)([a-zA-Z1-9½⅓⅔¼¾⅕⅖⅗⅘⅙⅚⅛⅜⅝⅞/, ()]+)/g
   let phrases = data.match(regex)
   var ingp = require('../algorithms/parser/ingredientparser')
   let parsedData = []
   if (!phrases)
     return
   for (let i of phrases) {
-    let clean = removeSpecialChars(i)
+    let reg = i.match(sRegex)
+    let clean = reg ? removeSpecialChars(reg[0]) : removeSpecialChars(i)
     let parsed = ingp.parse(clean)
     parsedData.push(parsed)
   }

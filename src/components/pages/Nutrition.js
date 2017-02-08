@@ -99,12 +99,12 @@ export default class Nutrition extends React.Component {
       this.changesFromRecipe()
     }
     else if (userSearch) {
-      this.changesFromSearch()
+      this.changesFromSearch(nextProps)
     }
   }
   //TODO: this can be cleaned & merged with the recipe code
-  changesFromSearch() {
-    const {matchData, searchIngredient} = this.props.model
+  changesFromSearch(nextProps) {
+    const {matchData, searchIngredient} = nextProps.model
     // TODO: refactor and compbine
     // Tuple offsets for firebase data in nutrition reducer:
     const descriptionOffset = 0
@@ -115,13 +115,20 @@ export default class Nutrition extends React.Component {
     const firstMatch = 0
     const tag = searchIngredient
     const tagMatches = matchData[tag]
+    let unmatchedTags = []
+    if (tagMatches.length === 0) {
+      let {unmatchedTags} = this.state
+      unmatchedTags.push(tag)
+      this.setState({
+        unmatchedTags: unmatchedTags,
+      })
+      return
+    }
     // We use the first value in the list (assumes elastic search returns results
     // in closest match order)
     const description = tagMatches[0][descriptionOffset]
     const dataForKey = tagMatches[0][dataObjOffset]
     let ingredientModel = new IngredientModel()
-    if (!dataForKey)
-      return
     ingredientModel.initializeSingle(description, tag, dataForKey)
     let measureQuantity = ingredientModel.getMeasureQuantity()
     let measureUnit = ingredientModel.getMeasureUnit()

@@ -188,7 +188,7 @@ export default function modelFun(state = initialState, action) {
         if (action.foodName in localMatchData) {
           return
         }
-
+        
         localMatchData[action.foodName] = []
 
         for (let obj of action.data) {

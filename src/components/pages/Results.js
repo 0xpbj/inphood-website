@@ -90,7 +90,7 @@ export default class Results extends React.Component {
       const tags = selectedTags ? (
         <TagController
           tags={selectedTags}
-          tagName={'Recipe Tags:'}
+          tagName={'Ingredient Tags:'}
           clean={true}
         /> ) : null
       const label = (

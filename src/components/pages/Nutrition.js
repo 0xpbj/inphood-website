@@ -44,7 +44,6 @@ export default class Nutrition extends React.Component {
     this.state = {
       labelRedirect: false,
       matchData: {},
-      selectedTags: [],
       deletedTags: [],
       unmatchedTags: [],
       servingControls: {
@@ -104,7 +103,7 @@ export default class Nutrition extends React.Component {
   }
   //TODO: this can be cleaned & merged with the recipe code
   changesFromSearch(nextProps) {
-    const {matchData, searchIngredient} = nextProps.model
+    const {matchData, searchIngredient, selectedTags} = nextProps.model
     // TODO: refactor and compbine
     // Tuple offsets for firebase data in nutrition reducer:
     const descriptionOffset = 0
@@ -168,6 +167,8 @@ export default class Nutrition extends React.Component {
     // match on presentation of the label
     let servingControls = this.state.servingControls
     this.props.nutritionModelSetServings(servingControls['value'], servingControls['unit'])
+    selectedTags.push(tag)
+    this.props.selectedTags(selectedTags)
     this.props.resetSearchFlag()
   }
   changesFromRecipe() {
@@ -285,8 +286,8 @@ export default class Nutrition extends React.Component {
     // match on presentation of the label
     let servingControls = this.state.servingControls
     this.props.nutritionModelSetServings(servingControls['value'], servingControls['unit'])
+    this.props.selectedTags(selectedTags)
     this.setState({
-      selectedTags: selectedTags,
       unmatchedTags: unmatchedTags,
       progress: 1
     })
@@ -435,7 +436,7 @@ export default class Nutrition extends React.Component {
     //    this.state..
     //    this.state.nutritionModel
     //    ingredientControlModels
-    let selectedTags = this.state.selectedTags
+    let selectedTags = this.props.model.selectedTags
     let deletedTags = this.state.deletedTags
     this.props.nutritionModelRemIng(tag)
     this.props.ingredientModelRemTag(tag)
@@ -448,8 +449,8 @@ export default class Nutrition extends React.Component {
       }
     }
     deletedTags.push(tag)
+    this.props.selectedTags(selectedTags)
     this.setState({
-      selectedTags: selectedTags,
       deletedTags: deletedTags
     })
   }
@@ -466,7 +467,7 @@ export default class Nutrition extends React.Component {
     const keyOffset = 1
     const dataObjOffset = 2
     let tagMatches = this.props.model.matchData[tag]
-    let selectedTags = this.state.selectedTags
+    let selectedTags = this.props.model.selectedTags
     let deletedTags = this.state.deletedTags
     // TODO: A lot of this is common to componentWillMount. Refactor
     // 1. Add this tag to:
@@ -497,8 +498,8 @@ export default class Nutrition extends React.Component {
       }
     }
     selectedTags.push(tag)
+    this.props.selectedTags(selectedTags)
     this.setState({
-      selectedTags: selectedTags,
       deletedTags: deletedTags
     })
   }

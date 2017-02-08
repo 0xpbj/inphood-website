@@ -4,11 +4,20 @@ import Col from 'react-bootstrap/lib/Col'
 import Chip from 'react-toolbox/lib/chip'
 
 export default class TagController extends React.Component {
-  getChipsFromArray(anArray, deletable, handleChipAdd) {
+  getChipsFromArray(anArray, deletable, handleChipAdd, clean) {
     let htmlResult = []
     for (let i = 0; i < anArray.length; i++) {
       let tag = anArray[i]
-      if (deletable) {
+      if (clean) {
+        htmlResult.push(
+        <Chip
+          onDeleteClick={() => handleChipAdd(tag)}>
+          <span>
+            {tag}
+          </span>
+        </Chip>)
+      }
+      else if (deletable) {
         htmlResult.push(
         <Chip
           onDeleteClick={() => handleChipAdd(tag)}
@@ -17,7 +26,7 @@ export default class TagController extends React.Component {
             {tag}
           </span>
         </Chip>)
-      } 
+      }
       else {
         htmlResult.push(
         <Chip
@@ -33,7 +42,7 @@ export default class TagController extends React.Component {
     )
   }
   render() {
-    const {tags, tagName, deletable, handleChipAdd} = this.props
+    const {tags, tagName, deletable, handleChipAdd, clean} = this.props
     if (tags.length === 0) {
       return (<div></div>)
     }
@@ -53,7 +62,7 @@ export default class TagController extends React.Component {
                      marginLeft: 10}}>
           <Row>
             <Col xs={12} md={12}>
-              {this.getChipsFromArray(tags, deletable, handleChipAdd)}
+              {this.getChipsFromArray(tags, deletable, handleChipAdd, clean)}
             </Col>
           </Row>
         </div>

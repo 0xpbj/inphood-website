@@ -18,7 +18,8 @@ import {
   LAZY_FETCH_FIREBASE,
   RESET_LAZY_LOAD_STATUS,
   SEARCH_INGREDIENT,
-  RESET_SEARCH_FLAG
+  RESET_SEARCH_FLAG,
+  SELECTED_TAGS
 } from '../constants/ActionTypes'
 
 import {NutritionModel} from '../components/models/NutritionModel'
@@ -34,7 +35,8 @@ const initialState = {
   },
   modelSetup: false,
   userSearch: false,
-  searchIngredient: ''
+  searchIngredient: '',
+  selectedTags: []
 }
 
 export default function modelFun(state = initialState, action) {
@@ -52,7 +54,8 @@ export default function modelFun(state = initialState, action) {
         },
         modelSetup: false,
         userSearch: false,
-        searchIngredient: ''
+        searchIngredient: '',
+        selectedTags: []
       }
     }
     case NM_SETUP:
@@ -257,37 +260,44 @@ export default function modelFun(state = initialState, action) {
       }
     }
     case INGREDIENT_FIREBASE_DATA:
-      {
-        // console.log('nutritionReducer: INGREDIENT_FIREBASE_DATA --------------');
-        // console.log(action.foodName);
-        // console.log(action.json);
+    {
+      // console.log('nutritionReducer: INGREDIENT_FIREBASE_DATA --------------');
+      // console.log(action.foodName);
+      // console.log(action.json);
 
-        // Performs an ordered insertion of the data returned by firebase for the
-        // key (ndbNo) returned from elastic search:
-        const descriptionOffset = 0
-        const dataObjOffset = 2
+      // Performs an ordered insertion of the data returned by firebase for the
+      // key (ndbNo) returned from elastic search:
+      const descriptionOffset = 0
+      const dataObjOffset = 2
 
-        let localMatchData = state.matchData
-        if (action.foodName in localMatchData) {
-          let foodNameArr = localMatchData[action.foodName]
+      let localMatchData = state.matchData
+      if (action.foodName in localMatchData) {
+        let foodNameArr = localMatchData[action.foodName]
 
-          for (let tupleIdx = 0; tupleIdx < foodNameArr.length; tupleIdx++) {
-            if (action.ingredient === foodNameArr[tupleIdx][descriptionOffset]) {
-              foodNameArr[tupleIdx][dataObjOffset] = action.data
-              break
-            }
+        for (let tupleIdx = 0; tupleIdx < foodNameArr.length; tupleIdx++) {
+          if (action.ingredient === foodNameArr[tupleIdx][descriptionOffset]) {
+            foodNameArr[tupleIdx][dataObjOffset] = action.data
+            break
           }
-        } else {
-          console.log('nutritionReducer - error in INGREDIENT_FIREBASE_DATA');
-          console.log(action.foodName);
-          console.log(localMatchData.length);
         }
-
-        return {
-          ...state,
-          matchData: localMatchData
-        }
+      } else {
+        console.log('nutritionReducer - error in INGREDIENT_FIREBASE_DATA');
+        console.log(action.foodName);
+        console.log(localMatchData.length);
       }
+
+      return {
+        ...state,
+        matchData: localMatchData
+      }
+    }
+    case SELECTED_TAGS:
+    {
+      return {
+        ...state,
+        selectedTags: action.tags
+      }
+    }
     default:
       return state
   }

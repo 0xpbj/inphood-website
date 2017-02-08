@@ -40,6 +40,7 @@ export const SEARCH_INGREDIENT = 'SEARCH_INGREDIENT'
 export const SEARCH_RESULT = 'SEARCH_RESULT'
 export const SEARCH_ERROR = 'SEARCH_ERROR'
 export const RESET_SEARCH_FLAG = 'RESET_SEARCH_FLAG'
+export const SELECTED_TAGS = 'SELECTED_TAGS'
 
 
 // Model Actions

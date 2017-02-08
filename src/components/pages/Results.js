@@ -10,6 +10,7 @@ import ControlLabel from 'react-bootstrap/lib/ControlLabel'
 import Label from './NutritionEstimateJSX'
 import {Link} from 'react-router'
 import {IngredientModel} from '../models/IngredientModel'
+import TagController from '../controllers/TagController'
 
 export default class Results extends React.Component {
   constructor() {
@@ -24,6 +25,8 @@ export default class Results extends React.Component {
   //
   hasProp(object, property) {
     return Object.prototype.hasOwnProperty.call(object, property)
+  }
+  loadTags() {
   }
   render() {
     const containerStyle = {
@@ -83,22 +86,28 @@ export default class Results extends React.Component {
       }
       const path = 'http://www.label.inphood.com/?user=' + this.props.params.userId + '&label=' + this.props.params.labelId + '&embed=false'
       const recipe = <pre>{this.props.results.data.rawData}</pre>
+      const {selectedTags} = this.props.results.data
+      const tags = selectedTags ? (
+        <TagController
+          tags={selectedTags}
+          tagName={'Recipe Tags:'}
+          clean={true}
+        /> ) : null
       const label = (
         <Grid>
           <div>
           <Row className="show-grid">
-            <Col xs={3} md={3}>
+            <Col xs={4} md={4}>
               <Row className="show-grid">
                 {image}
               </Row>
             </Col>
-            <Col xs={1} md={1} />
-            <Col xs={3} md={3}>
+            <Col xs={4} md={4}>
               <Link to={path} target="_blank" style={{}}>{nutritionLabel}</Link>
             </Col>
-            <Col xs={1} md={1} />
             <Col xs={4} md={4}>
               {recipe}
+              {tags}
             </Col>
           </Row>
           </div>

@@ -9,7 +9,8 @@ import {
   INGREDIENT_FIREBASE_DATA,
   LAZY_FETCH_FIREBASE,
   LAZY_LOAD_FIREBASE,
-  SEARCH_INGREDIENT
+  SEARCH_INGREDIENT,
+  SELECTED_TAGS
 } from '../constants/ActionTypes'
 
 import * as db from './firebaseCommands'
@@ -95,16 +96,18 @@ function* loadAWSPut() {
 
 function* loadSerializedData() {
   const {composite, full, key, anonymous,username} = yield select(state => state.nutritionReducer)
-  if (anonymous)
+  if (anonymous) {
     firebase.database().ref('/global/nutritionLabel/anonymous/'+key).update({
       composite,
       full
     })
-  else
+  }
+  else if (username) {
     firebase.database().ref('/global/nutritionLabel/'+username+'/'+key).update({
       composite,
       full
     })
+  }
 }
 
 function* getDataFromFireBase(foodName, ingredient, key, index) {
@@ -112,8 +115,9 @@ function* getDataFromFireBase(foodName, ingredient, key, index) {
   const data = (yield call(db.getPath, path)).val()
   if (index)
     yield put ({type: LAZY_LOAD_FIREBASE, foodName, ingredient, index, data})
-  else
+  else {
     yield put ({type: INGREDIENT_FIREBASE_DATA, foodName, ingredient, data})
+  }
 }
 
 const elasticSearchFetch = (request) => {
@@ -252,6 +256,19 @@ function* userSearchIngredient() {
   }
 }
 
+function* updateFirebaseTags() {
+  const {selectedTags} = yield select(state => state.modelReducer)
+  const {profile} = yield select(state => state.userReducer)
+  if (profile) {
+    const {link, username} = yield select(state => state.nutritionReducer)
+    const slink = link.slice(0, link.length - 1)
+    const key = slink.substring(slink.lastIndexOf('/')+1)
+    firebase.database().ref('/global/nutritionLabel/'+username+'/'+key).update({
+      selectedTags: selectedTags
+    })
+  }
+}
+
 function* lambdaHack() {
   if (!Config.DEBUG) {
     const url = Config.ELASTIC_LAMBDA_URL
@@ -276,6 +293,7 @@ export default function* root() {
   yield call(lambdaHack)
   yield fork(lazyFetchFirebaseData)
   yield fork(userSearchIngredient)
+  yield fork(takeLatest, SELECTED_TAGS, updateFirebaseTags)
   yield fork(takeLatest, SEND_SERIALIZED_DATA, loadSerializedData)
   yield fork(takeLatest, IG_UPLOAD_PHOTO, loadAWSPut)
   yield fork(takeLatest, STORE_PARSED_DATA, processParseForLabel)

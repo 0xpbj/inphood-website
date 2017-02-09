@@ -118,7 +118,42 @@ export default class Home extends React.Component {
                   <img src={inPhoodLogo} className="center-block" alt="Welcome to inPhood!"/>
                 </Col>
               </Row>
+
               <Row>
+                <div className="text-center">
+                  <Col xs={3} md={3}>
+                  </Col>
+                  <Col xs={3} md={3}>
+                    <form onSubmit={this.handleUrl.bind(this)}>
+                      <FormGroup
+                        controlId="formBasicText"
+                        validationState={this.getValidationState()}
+                      >
+                        <FormControl
+                          className="text-center"
+                          type="text"
+                          value={this.state.url}
+                          placeholder="paste image url here"
+                          onChange={(e) => this.setState({url: e.target.value.toLowerCase()})}
+                        />
+                      </FormGroup>
+                    </form>
+                  </Col>
+                  <Col xs={1} md={1} style={{paddingTop: 6}}>
+                    <text>or</text>
+                  </Col>
+                  <Col xs={2} md={2}>
+                    <Button onClick={this.handleClick.bind(this)}>Sign in with Instagram</Button>
+                  </Col>
+                  <Col xs={3} md={3}>
+                  </Col>
+
+                </div>
+              </Row>
+
+              {/* TODO: PBJ, delete this unless you need something from it--I
+                restyled it into the row seen above.*/}
+              {/*<Row>
                 <div className="text-center">
                   <Col xs={6} md={6}>
                     <Row>
@@ -138,12 +173,12 @@ export default class Home extends React.Component {
                           </FormGroup>
                         </form>
                       </Col>
-                      {/*<Col xs={1} md={1}>
+                      <Col xs={1} md={1}>
                         <Button className="btn-primary-spacing" onClick={this.handleUrl.bind(this)}><Glyphicon glyph="glyphicon glyphicon-search"></Glyphicon></Button>
-                      </Col>*/}
+                      </Col>
                     </Row>
                   </Col>
-                  {/*<Col xs={1} md={1}>
+                  <Col xs={1} md={1}>
                     <Button bsStyle="default" onClick={()=>this.setState({ showUploadModal: true })}>
                       <Glyphicon glyph="glyphicon glyphicon-open" />
                     </Button>
@@ -152,13 +187,14 @@ export default class Home extends React.Component {
                       show={this.state.showUploadModal}
                       onHide={hideUploadModal}
                     />
-                  </Col>*/}
+                  </Col>
                   <Col xs={6} md={6}>
                     <Button onClick={this.handleClick.bind(this)}>Sign in with Instagram</Button>
                   </Col>
-                  {/*<Button onClick={this.handleClick.bind(this)}>Sign in with Instagram</Button>*/}
+                  <Button onClick={this.handleClick.bind(this)}>Sign in with Instagram</Button>
                 </div>
               </Row>
+              */}
             </Grid>
           </div>
         </div>

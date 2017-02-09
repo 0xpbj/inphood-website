@@ -22,7 +22,7 @@ export default class ServingsController extends React.Component {
                      marginRight: 10,
                      marginLeft: 10}}>
           <Row>
-            <Col xs={10} md={10}>
+            <Col xs={9} md={9} style={{paddingLeft: 5, paddingRight: 5}}>
               <Slider
                 value={this.props.value}
                 onChange={this.props.handleServingValuesChange}
@@ -31,7 +31,7 @@ export default class ServingsController extends React.Component {
                 step={this.props.step}
                 editable pinned snaps/>
             </Col>
-            <Col xs={2} md={2}>
+            <Col xs={3} md={3} style={{paddingLeft: 0}}>
                 {/* TODO */}
                 <Dropdownlist
                   data={['people', 'g']}

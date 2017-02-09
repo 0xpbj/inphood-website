@@ -3,9 +3,9 @@ export default class NutritionEstimateStyles {
     borderWidth: '1px',
     borderStyle: 'solid',
     borderColor: 'black',
-    float: 'left',
     padding: '0.5rem',
-    borderCollapse: 'collapse'
+    borderCollapse: 'collapse',
+    marginRight: '17px'
   }
 
   performanceFactsHeader = {

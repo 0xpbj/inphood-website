@@ -592,15 +592,34 @@ export default class Nutrition extends React.Component {
     return (
       <Grid>
         <Row>
-          <Col xs={12} md={12}>
-            <div className='text-right'>
-              <Button bsStyle="success" onClick={this.transitionToLabelPage.bind(this, false, composite, full, false)}>Share Results</Button>
-            </div>
+          <Col xs={2} md={2}/>
+          <Col xs={9} md={9}>
+            <Row style={{marginLeft: 0,
+                         marginRight: 0,
+                         marginBottom: 10,
+                         padding: 5,
+                         borderColor: 'black',
+                         borderStyle: 'solid',
+                         borderWidth: 1,
+                         borderRadius: 5,
+                         backgroundColor: 'lightgray'}}>
+              <Col xs={6} md={6}>
+                <Search
+                  searchIngredientData={(ingredient) => this.props.searchIngredientData(ingredient)}
+                />
+              </Col>
+              <Col xs={3} md={3} />
+              <Col xs={3} md={3} className='text-right'>
+                <Button bsStyle="success" onClick={this.transitionToLabelPage.bind(this, false, composite, full, false)}>Share Results</Button>
+              </Col>
+            </Row>
           </Col>
+          <Col xs={1} md={1}/>
         </Row>
         {/*Serving size below: TODO refactor*/}
-        <Row style={{marginTop: 20}}>
-          <Col xs={8} md={8}>
+        <Row>
+          <Col xs={2} md={2}/>
+          <Col xs={5} md={5}>
             <ServingsController
               value={servingControls['value']}
               min={servingControls['min']}
@@ -636,12 +655,8 @@ export default class Nutrition extends React.Component {
                 handleChipAdd={this.handleChipAdd.bind(this)}
               />
             </Row>
-            <Row>
-              <Search
-                searchIngredientData={(ingredient) => this.props.searchIngredientData(ingredient)}
-              />
-            </Row>
           </Col>
+          <Col xs={1} md={1}/>
         </Row>
       </Grid>
     )

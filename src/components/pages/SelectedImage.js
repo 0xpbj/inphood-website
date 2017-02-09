@@ -74,9 +74,6 @@ export default class SelectedImage extends React.Component {
         </Alert>
       )
     }
-    const containerStyle = {
-      marginTop: "60px"
-    }
     const caption = this.props.user.anonymous ? null : <pre>{this.props.user.photos.data[this.props.nutrition.index].caption.text}</pre>
     const recipeAlert = (this.state.recipeError) ? (
       <Alert bsStyle="danger">
@@ -99,35 +96,69 @@ export default class SelectedImage extends React.Component {
         Extract ingredients from social media caption
       </Popover>
     ) : null
-    const instagramCaption = this.props.user.anonymous ? null : (
-      <div>
-        <ControlLabel>Instagram Caption</ControlLabel>
-        <Glyphicon onClick={()=>this.setState({captionPopoverFlag: !this.state.captionPopoverFlag})} style={{marginLeft: 10}} glyph="glyphicon glyphicon-info-sign">
-          {captionPopover}
-        </Glyphicon>
-        <div style={{marginBottom: "30px"}}>
+
+    let instagramCaption = null
+    let instagramButton = null
+    let textRows = 10
+    if (this.props.user.anonymous === false) {
+      instagramCaption = (
+        <div>
+          <ControlLabel>Instagram Caption</ControlLabel>
+          <Glyphicon onClick={()=>this.setState({captionPopoverFlag: !this.state.captionPopoverFlag})} style={{marginLeft: 10}} glyph="glyphicon glyphicon-info-sign">
+            {captionPopover}
+          </Glyphicon>
           <section>
             {caption}
           </section>
-          <Button className="btn-primary-spacing" onClick={() => this.captionFlow()}>Extract Recipe</Button>
         </div>
-      </div>
-    )
+      )
+      instagramButton = (
+        <Button className="btn-primary-spacing"
+                onClick={() => this.captionFlow()}>
+          Extract Recipe from Instagram Caption
+        </Button>
+      )
+      textRows = this.props.user.photos.data[this.props.nutrition.index].caption.text.split(/\n/).length
+      if (textRows < 5) {
+        textRows = 10
+      }
+    }
+
     const image = this.props.user.anonymous ? (
-      <Image src={this.props.nutrition.picture} responsive rounded/>
+      <Image className="center-block" src={this.props.nutrition.picture} responsive rounded/>
     ) : (
-      <Image src={this.props.user.photos.data[this.props.nutrition.index].picture} responsive rounded/>
+      <Image className="center-block" src={this.props.user.photos.data[this.props.nutrition.index].picture} responsive rounded/>
     )
     return (
       <Grid>
         <Row className="show-grid">
-          <Col xs={12} md={8}>
-            <ControlLabel>Food Image</ControlLabel>
-            {image}
-          </Col>
-          <Col xs={6} md={4}>
-            <div style={{marginBottom: "30px"}}>
-              <section>
+          <Col xs={2} md={2} />
+
+          <Col xs={8} md={8}>
+
+          <Row style={{marginLeft: 0,
+                       marginRight: 0,
+                       marginBottom: 10,
+                       padding: 5,
+                       borderColor: 'black',
+                       borderStyle: 'solid',
+                       borderWidth: 1,
+                       borderRadius: 5,
+                       backgroundColor: 'lightgray'}}>
+            <Col xs={3} md={3}>
+              {instagramButton}
+            </Col>
+            <Col xs={6} md={6} />
+            <Col xs={3} md={3} className="text-right">
+              <Button className="btn-primary-spacing" bsStyle="success" onClick={() => this.recipeFlow()}>Use Recipe</Button>
+            </Col>
+          </Row>
+          <Row>
+              <Col xs={12} md={6}>
+                {instagramCaption}
+              </Col>
+
+              <Col xs={12} md={6}>
                 <FormGroup controlId="formControlsTextarea">
                   <ControlLabel>Meal Recipe</ControlLabel>
                   {recipeAlert}
@@ -139,17 +170,21 @@ export default class SelectedImage extends React.Component {
                   </Glyphicon>
                   <FormControl
                     componentClass="textarea"
-                    rows="10"
+                    rows={textRows}
                     value={this.state.ingredients}
                     placeholder={"1.5 cup rainbow chard (sliced)\n2 stalks green onion (sliced)\n2 medium tomatoes (chopped)\n1 medium avocado (chopped)\n¼ tsp sea salt\n1 tbsp butter\n1 ½ tbsp flax seed oil\n½ tbsp white wine vinegar\n..."}
                     onChange={this.getData.bind(this)}
                   />
                 </FormGroup>
-              </section>
-              <Button className="btn-primary-spacing" bsStyle="success" onClick={() => this.recipeFlow()}>Use Recipe</Button>
-            </div>
-            {instagramCaption}
+              </Col>
+            </Row>
+
+            <Row>
+              {image}
+            </Row>
+
           </Col>
+          <Col xs={2} md={2}/>
         </Row>
       </Grid>
     )

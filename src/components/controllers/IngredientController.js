@@ -31,7 +31,7 @@ export default class IngredientController extends React.Component {
                      marginLeft: 10}}>
           {/* row 2 from above: */}
           <Row>
-            <Col xs={10} md={10} style={{paddingLeft: 5, paddingRight: 5}}>
+            <Col xs={9} md={9} style={{paddingLeft: 5, paddingRight: 5}}>
               <Slider
                 value={ingredientControlModel.getSliderValue()}
                 onChange={this.props.handleSliderValuesChange}
@@ -41,7 +41,7 @@ export default class IngredientController extends React.Component {
                 editable
                 snaps/>
             </Col>
-            <Col xs={2} md={2} style={{paddingLeft: 0}}>
+            <Col xs={3} md={3} style={{paddingLeft: 0}}>
               <Dropdownlist
                 data={ingredientControlModel.getDropdownUnits()}
                 value={ingredientControlModel.getDropdownUnitValue()}

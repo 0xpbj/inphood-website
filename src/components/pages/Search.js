@@ -45,9 +45,6 @@ export default class Search extends React.Component {
       return 'error'
   }
   render() {
-    const containerStyle = {
-      marginTop: "60px"
-    }
     const searchPopover = this.state.searchPopoverFlag ? (
       <Popover
         id="popover-basic"
@@ -57,7 +54,7 @@ export default class Search extends React.Component {
     ) : null
     return (
       <div>
-        <section>
+        {/*<section>
           <ControlLabel>Search for a ingredient</ControlLabel>
           <Glyphicon
             onClick={()=>this.setState({searchPopoverFlag: !this.state.searchPopoverFlag})}
@@ -66,11 +63,12 @@ export default class Search extends React.Component {
             {searchPopover}
           </Glyphicon>
         </section>
-        <section>
+        <section>*/}
           <Row>
-            <Col xs={7} md={7}>
+            <Col xs={11} md={11} style={{paddingRight: 0}}>
               {/*<form onSubmit={this.searchFlow.bind(this)}>*/}
                 <FormGroup
+                  style={{marginBottom:0}}
                   controlId="formBasicText"
                   validationState={this.getValidationState()}
                 >
@@ -79,17 +77,17 @@ export default class Search extends React.Component {
                     label="Text"
                     value={this.state.searchIngredient}
                     onChange={this.getData.bind(this)}
-                    placeholder="Example: green onions"
+                    placeholder="Search & add (e.g: green onions)"
                   />
                 </FormGroup>
               {/*</form>*/}
             </Col>
-            <Col xs={1} md={1}>
+            <Col xs={1} md={1} style={{paddingLeft: 5}}>
               <Button className="btn-primary-spacing" onClick={this.searchFlow.bind(this)}><Glyphicon glyph="glyphicon glyphicon-search"></Glyphicon></Button>
             </Col>
           </Row>
-        </section>
-        <div style={{marginBottom: 10}} />
+        {/*</section>
+        <div style={{marginBottom: 10}} />*/}
       </div>
     )
   }

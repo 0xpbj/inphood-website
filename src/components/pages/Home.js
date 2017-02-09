@@ -237,28 +237,21 @@ export default class Home extends React.Component {
               <Row style={{marginLeft: 0,
                            marginRight: 0,
                            marginBottom: 10,
-                           padding: 5,
-                           borderColor: 'black',
-                           borderStyle: 'solid',
-                           borderWidth: 1,
-                           borderRadius: 5,
-                           backgroundColor: 'lightgray'}}>
-                <Col xs={3} md={3}>
+                           padding: 5}}>
+                <Col xs={2} md={2}>
                   <DropdownButton bsStyle="info" title="Options" id={`dropdown-basic`}>
                     <MenuItem key="1" onClick={() => this.props.igRefreshRequest()}>Refresh</MenuItem>
                     <MenuItem key="2" onClick={() => this.props.igLogoutRequest()}>Logout</MenuItem>
                   </DropdownButton>
                 </Col>
-                <Col xs={6} md={6} />
-                <Col xs={3} md={3} className="text-right">
+                <Col xs={8} md={8} />
+                <Col xs={2} md={2} className="text-right">
                   <Button className="btn-primary-spacing" bsStyle="success" onClick={this.selectPhoto.bind(this)}>Select Image</Button>
                 </Col>
               </Row>
             </Col>
-
             <Col xs={2} md={2} />
           </Row>
-
           <Row>
             <Col xs={2} md={2} />
             <Col xs={8} md={8}>

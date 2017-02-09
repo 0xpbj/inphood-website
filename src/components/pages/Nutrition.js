@@ -597,12 +597,7 @@ export default class Nutrition extends React.Component {
             <Row style={{marginLeft: 0,
                          marginRight: 0,
                          marginBottom: 10,
-                         padding: 5,
-                         borderColor: 'black',
-                         borderStyle: 'solid',
-                         borderWidth: 1,
-                         borderRadius: 5,
-                         backgroundColor: 'lightgray'}}>
+                         padding: 5}}>
               <Col xs={6} md={6}>
                 <Search
                   searchIngredientData={(ingredient) => this.props.searchIngredientData(ingredient)}

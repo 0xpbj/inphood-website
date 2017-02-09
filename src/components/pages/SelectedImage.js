@@ -96,7 +96,6 @@ export default class SelectedImage extends React.Component {
         Extract ingredients from social media caption
       </Popover>
     ) : null
-
     let instagramCaption = null
     let instagramButton = null
     let textRows = 10
@@ -115,7 +114,7 @@ export default class SelectedImage extends React.Component {
       instagramButton = (
         <Button className="btn-primary-spacing"
                 onClick={() => this.captionFlow()}>
-          Extract Recipe from Instagram Caption
+          Extract Recipe
         </Button>
       )
       textRows = this.props.user.photos.data[this.props.nutrition.index].caption.text.split(/\n/).length
@@ -123,7 +122,6 @@ export default class SelectedImage extends React.Component {
         textRows = 10
       }
     }
-
     const image = this.props.user.anonymous ? (
       <Image className="center-block" src={this.props.nutrition.picture} responsive rounded/>
     ) : (
@@ -133,23 +131,16 @@ export default class SelectedImage extends React.Component {
       <Grid>
         <Row className="show-grid">
           <Col xs={2} md={2} />
-
           <Col xs={8} md={8}>
-
           <Row style={{marginLeft: 0,
-                       marginRight: 0,
-                       marginBottom: 10,
-                       padding: 5,
-                       borderColor: 'black',
-                       borderStyle: 'solid',
-                       borderWidth: 1,
-                       borderRadius: 5,
-                       backgroundColor: 'lightgray'}}>
-            <Col xs={3} md={3}>
+                           marginRight: 0,
+                           marginBottom: 10,
+                           padding: 5}}>
+            <Col xs={2} md={2}>
               {instagramButton}
             </Col>
-            <Col xs={6} md={6} />
-            <Col xs={3} md={3} className="text-right">
+            <Col xs={8} md={8} />
+            <Col xs={2} md={2} className="text-right">
               <Button className="btn-primary-spacing" bsStyle="success" onClick={() => this.recipeFlow()}>Use Recipe</Button>
             </Col>
           </Row>
@@ -157,7 +148,6 @@ export default class SelectedImage extends React.Component {
               <Col xs={12} md={6}>
                 {instagramCaption}
               </Col>
-
               <Col xs={12} md={6}>
                 <FormGroup controlId="formControlsTextarea">
                   <ControlLabel>Meal Recipe</ControlLabel>
@@ -178,11 +168,9 @@ export default class SelectedImage extends React.Component {
                 </FormGroup>
               </Col>
             </Row>
-
             <Row>
               {image}
             </Row>
-
           </Col>
           <Col xs={2} md={2}/>
         </Row>

@@ -274,7 +274,7 @@ function* lambdaHack() {
     const url = Config.ELASTIC_LAMBDA_URL
     const search = {
       'query': {'match' : {'Description': 'kale'}},
-      'size': 5
+      'size': 1
     }
     let myHeaders = new Headers()
     myHeaders.append('Content-Type', 'application/json')

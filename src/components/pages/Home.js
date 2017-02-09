@@ -108,7 +108,7 @@ export default class Home extends React.Component {
     }
     if (!this.props.user.login && !this.state.anonymous) {
       let hideUploadModal = () => this.setState({ showUploadModal: false });
-      const inPhoodLogo = require('../../images/Icon512.png')
+      const inPhoodLogo = require('../../images/logoLarge.jpg')
       return (
         <div>
           <div>

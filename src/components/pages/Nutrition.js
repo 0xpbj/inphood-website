@@ -92,7 +92,7 @@ export default class Nutrition extends React.Component {
     if (lazyLoadOperation.status === 'done') {
       this.completeMatchDropdownChange(lazyLoadOperation.tag, lazyLoadOperation.value)
       this.props.resetLazyLoadOperation()
-    } 
+    }
     else if (!modelSetup && (Object.keys(matchData).length === Object.keys(parsedData).length))
     {
       this.changesFromRecipe()
@@ -139,7 +139,7 @@ export default class Nutrition extends React.Component {
     }
     catch(err) {
       errorStr = err
-    } 
+    }
     finally {
       // We failed to add the ingredient with the specified quantity/unit, so try
       // using the FDA values (not try/catch--if this fails we have a serious internal
@@ -256,7 +256,7 @@ export default class Nutrition extends React.Component {
       catch(err) {
         errorStr = err
         //console.log(errorStr);
-      } 
+      }
       finally {
         // We failed to add the ingredient with the specified quantity/unit, so try
         // using the FDA values (not try/catch--if this fails we have a serious internal
@@ -378,7 +378,7 @@ export default class Nutrition extends React.Component {
         valueInGrams, 'g', newMeasureUnit, ingredientModel)
       newUnit = newMeasureUnit
       this.props.ingredientSetSliderValue(tag, newValue)
-      this.props.ingredientSetDropdownUnits(tag, newUnit)
+      this.props.ingredientSetDropdownUnitsValue(tag, newUnit)
       // TODO: possibly an alert to tell the user we've converted their number
       //       to a new amount due to unit change and the old units are not
       //       available.
@@ -637,7 +637,7 @@ export default class Nutrition extends React.Component {
               />
             </Row>
             <Row>
-              <Search 
+              <Search
                 searchIngredientData={(ingredient) => this.props.searchIngredientData(ingredient)}
               />
             </Row>

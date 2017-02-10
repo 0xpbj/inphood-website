@@ -102,10 +102,6 @@ export default class Home extends React.Component {
     }
   }
   render() {
-    const containerStyle = {
-      marginTop: "30px",
-      width: "500px",
-    }
     if (!this.props.user.login && !this.state.anonymous) {
       let hideUploadModal = () => this.setState({ showUploadModal: false });
       const inPhoodLogo = require('../../images/logoLarge.jpg')
@@ -238,19 +234,26 @@ export default class Home extends React.Component {
                            marginRight: 0,
                            marginBottom: 10,
                            padding: 5,
-                           borderColor: 'black',
+                           backgroundColor: 'blanchedalmond',
                            borderStyle: 'solid',
                            borderWidth: 1,
+                           borderColor: 'bisque',
                            borderRadius: 5}}>
-                <Col xs={2} md={2}>
+                <Col xs={12} md={7}>
+                  <text><b>Step 1:</b> Select a food image to create a label...</text>
+                </Col>
+                <Col xs={12} md={2}>
                   <DropdownButton bsStyle="info" title="Options" id={`dropdown-basic`}>
                     <MenuItem key="1" onClick={() => this.props.igRefreshRequest()}>Refresh</MenuItem>
                     <MenuItem key="2" onClick={() => this.props.igLogoutRequest()}>Logout</MenuItem>
                   </DropdownButton>
                 </Col>
-                <Col xs={8} md={8} />
-                <Col xs={2} md={2} className="text-right">
-                  <Button className="btn-primary-spacing" bsStyle="success" onClick={this.selectPhoto.bind(this)}>Select Image</Button>
+                <Col xs={12} md={3}>
+                  <Button className="btn-primary-spacing"
+                          bsStyle="success"
+                          onClick={this.selectPhoto.bind(this)}>
+                    Select Image
+                  </Button>
                 </Col>
               </Row>
             </Col>

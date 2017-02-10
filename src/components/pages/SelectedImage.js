@@ -133,13 +133,11 @@ export default class SelectedImage extends React.Component {
           <Col xs={2} md={2} />
           <Col xs={8} md={8}>
           <Row style={{marginLeft: 0,
-                           marginRight: 0,
-                           marginBottom: 10,
-                           padding: 5,
-                           borderColor: 'black',
-                           borderStyle: 'solid',
-                           borderWidth: 1,
-                           borderRadius: 5}}>
+                       marginRight: 0,
+                       marginBottom: 10,
+                       padding: 5,
+                       backgroundColor: 'powderblue',
+                       borderRadius: 5}}>
             <Col xs={2} md={2}>
               {instagramButton}
             </Col>

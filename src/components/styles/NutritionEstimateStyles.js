@@ -5,7 +5,8 @@ export default class NutritionEstimateStyles {
     borderColor: 'black',
     padding: '0.5rem',
     borderCollapse: 'collapse',
-    marginRight: '17px'
+    marginRight: '17px',
+    color: 'black'
   }
 
   performanceFactsHeader = {

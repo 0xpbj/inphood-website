@@ -1,0 +1,36 @@
+import Col from 'react-bootstrap/lib/Col'
+
+export default class MarginLayout {
+  marginCol = null
+
+  xsCol = null
+  smCol = null
+  mdCol = null
+  lgCol = null
+
+  constructor() {
+    // The array represents # of columns for xs sm md lg xl:
+    const xsOffset = 0
+    const smOffset = 1
+    const mdOffset = 2
+    const lgOffset = 3
+    const margins = [1, 1, 2, 2]
+
+    let centers = []
+
+    for (let margin of margins) {
+      let center = 12 - (2*margin)
+      centers.push(center)
+    }
+
+    this.marginCol = (<Col xs={margins[xsOffset]}
+                           sm={margins[smOffset]}
+                           md={margins[mdOffset]}
+                           lg={margins[lgOffset]}/>)
+
+    this.xsCol = centers[xsOffset]
+    this.smCol = centers[smOffset]
+    this.mdCol = centers[mdOffset]
+    this.lgCol = centers[lgOffset]
+  }
+}

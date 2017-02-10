@@ -35,6 +35,9 @@ const Config = require('Config')
 const Convert = require('convert-units')
 import * as tupleHelper from '../../helpers/TupleHelpers'
 
+import MarginLayout from '../../helpers/MarginLayout'
+import TopBar from '../layout/TopBar'
+
 export default class Nutrition extends React.Component {
   //////////////////////////////////////////////////////////////////////////////
   // React / Component API:
@@ -589,75 +592,75 @@ export default class Nutrition extends React.Component {
     const composite = compositeModel.serialize()
     const eventKey = this.props.nutrition.anonymous === false ? "2" : "1"
     const {servingControls} = this.state
+
+    const ml = new MarginLayout()
+    const searchWidget = (
+      <Search
+        searchIngredientData={(ingredient) => this.props.searchIngredientData(ingredient)}/>
+    )
+    const shareResultsButton = (
+      <Button bsStyle="success"
+              onClick={this.transitionToLabelPage.bind(this, false, composite, full, false)}>
+        Share Results
+      </Button>
+    )
     return (
-      <Grid>
-        <Row>
-          <Col xs={2} md={2}/>
-          <Col xs={9} md={9}>
-            <Row style={{marginLeft: 0,
-                         marginRight: 0,
-                         marginBottom: 10,
-                         padding: 5,
-                         borderColor: 'black',
-                         borderStyle: 'solid',
-                         borderWidth: 1,
-                         borderRadius: 5}}>
-              <Col xs={6} md={6}>
-                <Search
-                  searchIngredientData={(ingredient) => this.props.searchIngredientData(ingredient)}
-                />
-              </Col>
-              <Col xs={3} md={3} />
-              <Col xs={3} md={3} className='text-right'>
-                <Button bsStyle="success" onClick={this.transitionToLabelPage.bind(this, false, composite, full, false)}>Share Results</Button>
-              </Col>
-            </Row>
-          </Col>
-          <Col xs={1} md={1}/>
-        </Row>
+      <div>
+        <TopBar step="3"
+                stepText=""
+                altContent={searchWidget}
+                aButton={shareResultsButton}/>
+
         {/*Serving size below: TODO refactor*/}
         <Row>
-          <Col xs={2} md={2}/>
-          <Col xs={5} md={5}>
-            <ServingsController
-              value={servingControls['value']}
-              min={servingControls['min']}
-              max={servingControls['max']}
-              step={servingControls['step']}
-              unit={servingControls['unit']}
-              handleServingValuesChange={this.handleServingValuesChange.bind(this)}
-              handleServingDropDownChange={this.handleServingDropDownChange.bind(this)}
-            />
-            {sliders}
-          </Col>
-          <Col xs={4} md={4}>
+          {ml.marginCol}
+          <Col xs={ml.xsCol}
+               sm={ml.smCol}
+               md={ml.mdCol}
+               lg={ml.lgCol}>
             <Row>
-              <div>
-                <text>&nbsp;</text>
-                <Label ingredientComposite={compositeModel}/>
-              </div>
-            </Row>
-            {/* temporary hack to align top to adjacent slider */}
-            <Row style={{marginTop: 9}}>
-              <TagController
-                tags={this.state.deletedTags}
-                tagName={'Discarded Tags:'}
-                deletable={true}
-                handleChipAdd={this.handleChipAdd.bind(this)}
-              />
-            </Row>
-            <Row>
-              <TagController
-                tags={this.state.unmatchedTags}
-                tagName={'No match found for these tags:'}
-                deletable={false}
-                handleChipAdd={this.handleChipAdd.bind(this)}
-              />
+              <Col xs={12} sm={12} md={12} lg={7}>
+                <ServingsController
+                  value={servingControls['value']}
+                  min={servingControls['min']}
+                  max={servingControls['max']}
+                  step={servingControls['step']}
+                  unit={servingControls['unit']}
+                  handleServingValuesChange={this.handleServingValuesChange.bind(this)}
+                  handleServingDropDownChange={this.handleServingDropDownChange.bind(this)}
+                />
+                {sliders}
+              </Col>
+              <Col xs={12} sm={12} md={12} lg={5}>
+                <Row>
+                  <div>
+                    <text>&nbsp;</text>
+                    <Label ingredientComposite={compositeModel}/>
+                  </div>
+                </Row>
+                {/* temporary hack to align top to adjacent slider */}
+                <Row style={{marginTop: 9}}>
+                  <TagController
+                    tags={this.state.deletedTags}
+                    tagName={'Discarded Tags:'}
+                    deletable={true}
+                    handleChipAdd={this.handleChipAdd.bind(this)}
+                  />
+                </Row>
+                <Row>
+                  <TagController
+                    tags={this.state.unmatchedTags}
+                    tagName={'No match found for these tags:'}
+                    deletable={false}
+                    handleChipAdd={this.handleChipAdd.bind(this)}
+                  />
+                </Row>
+              </Col>
             </Row>
           </Col>
-          <Col xs={1} md={1}/>
+          {ml.marginCol}
         </Row>
-      </Grid>
+      </div>
     )
   }
 }

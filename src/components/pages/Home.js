@@ -12,6 +12,9 @@ import ImageGallery from 'react-image-gallery'
 import "react-image-gallery/styles/css/image-gallery.css"
 const Config = require('Config')
 
+import MarginLayout from '../../helpers/MarginLayout'
+import TopBar from '../layout/TopBar'
+
 export default class Home extends React.Component {
   constructor() {
     super()
@@ -103,76 +106,41 @@ export default class Home extends React.Component {
         images.push(image)
       }
 
-      // The array represents # of columns for xs sm md lg xl:
-      const xsOffset = 0
-      const smOffset = 1
-      const mdOffset = 2
-      const lgOffset = 3
-      const margins = [1, 1, 2, 3]
-      let centers = []
-      for (let margin of margins) {
-        let center = 12 - (2*margin)
-        centers.push(center)
-      }
-      const marginCol = (<Col xs={margins[xsOffset]}
-                              sm={margins[smOffset]}
-                              md={margins[mdOffset]}
-                              lg={margins[lgOffset]}/>)
-
+      const ml = new MarginLayout()
+      const selectImgButton = (
+        <Button className="btn-primary-spacing"
+                bsStyle="success"
+                onClick={this.selectPhoto.bind(this)}>
+          Select Image
+        </Button>
+      )
       return (
         <div>
-          {/* Top Bar: */}
-          <Row style={{marginLeft: 0,
-                       marginRight: 0,
-                       marginBottom: 10,
-                       padding: 5,
-                       borderBottomStyle: 'solid',
-                       borderWidth: 1,
-                       borderColor: 'black'}}>
-            {marginCol}
-            <Col xs={centers[xsOffset]}
-                 sm={centers[smOffset]}
-                 md={centers[mdOffset]}
-                 lg={centers[lgOffset]}>
-              <Row>
-                <Col xs={12} sm={2} style={{paddingLeft: 0, paddingRight: 0}}>
-                  <img src={require('../../images/logoSmall.png')} width="147" height="35"/>
-                </Col>
-                {/* Hack: rather than use flex or other things that cause the display to
-                  not respond well to massive size changes, we use this marginTop setting
-                  to align the text to the bottom with the other elements */}
-                <Col xs={12} sm={8} className="text-center" style={{marginTop: 35-20}}>
-                  <text><h4 style={{margin: 0}}><b>Step 1:</b> Select a food image...</h4></text>
-                </Col>
-                <Col xs={12} sm={2} className="text-right" style={{paddingLeft: 0, paddingRight: 0, marginTop: 1}}>
-                  <Button className="btn-primary-spacing"
-                          bsStyle="success"
-                          onClick={this.selectPhoto.bind(this)}>
-                    Select Image
-                  </Button>
-                </Col>
-              </Row>
-            </Col>
-            {marginCol}
-          </Row>
-
+          <TopBar step="1"
+                  stepText="Select a food image ..."
+                  aButton={selectImgButton}/>
           <Row>
-            {marginCol}
-            <Col xs={centers[xsOffset]}
-                 sm={centers[smOffset]}
-                 md={centers[mdOffset]}
-                 lg={centers[lgOffset]}>
-              <ImageGallery
-                className="center-block"
-                ref={i => this._imageGallery = i}
-                items={images}
-                slideInterval={2000}
-                showFullscreenButton={false}
-                showNav={true}
-                showPlayButton={false}
-              />
+            {ml.marginCol}
+            <Col xs={ml.xsCol}
+                 sm={ml.smCol}
+                 md={ml.mdCol}
+                 lg={ml.lgCol}>
+              {/*<Row>
+                <Col xs={2} sm={2} md={2} lg={2}/>
+                <Col xs={8} sm={8} md={8} lg={8}>*/}
+                  <ImageGallery
+                    className="center-block"
+                    ref={i => this._imageGallery = i}
+                    items={images}
+                    slideInterval={2000}
+                    showFullscreenButton={false}
+                    showNav={true}
+                    showPlayButton={false}/>
+                {/*</Col>
+                <Col xs={2} sm={2} md={2} lg={2}/>
+              </Row>*/}
             </Col>
-            {marginCol}
+            {ml.marginCol}
           </Row>
         </div>
       )

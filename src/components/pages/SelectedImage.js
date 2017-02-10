@@ -16,6 +16,9 @@ import DropdownButton from 'react-bootstrap/lib/DropdownButton'
 import {parseRecipe, parseCaption} from '../../helpers/parseRecipe'
 import Chip from 'react-toolbox/lib/chip'
 
+import MarginLayout from '../../helpers/MarginLayout'
+import TopBar from '../layout/TopBar'
+
 export default class SelectedImage extends React.Component {
   constructor() {
     super()
@@ -127,26 +130,28 @@ export default class SelectedImage extends React.Component {
     ) : (
       <Image className="center-block" src={this.props.user.photos.data[this.props.nutrition.index].picture} responsive rounded/>
     )
+
+    const ml = new MarginLayout()
+    const useRecipeButton = (
+      <Button className="btn-primary-spacing"
+              bsStyle="success"
+              onClick={() => this.recipeFlow()}>
+        Use Recipe
+      </Button>
+    )
     return (
-      <Grid>
-        <Row className="show-grid">
-          <Col xs={2} md={2} />
-          <Col xs={8} md={8}>
-          <Row style={{marginLeft: 0,
-                       marginRight: 0,
-                       marginBottom: 10,
-                       padding: 5,
-                       backgroundColor: 'powderblue',
-                       borderRadius: 5}}>
-            {/*<Col xs={2} md={2}>
-              {instagramButton}
-            </Col>*/}
-            <Col xs={8} md={8} />
-            <Col xs={2} md={2} className="text-right">
-              <Button className="btn-primary-spacing" bsStyle="success" onClick={() => this.recipeFlow()}>Use Recipe</Button>
-            </Col>
-          </Row>
-          <Row>
+      <div>
+        <TopBar step="2"
+                stepText="Enter or paste a recipe ..."
+                aButton={useRecipeButton}/>
+
+        <Row>
+          {ml.marginCol}
+          <Col xs={ml.xsCol}
+               sm={ml.smCol}
+               md={ml.mdCol}
+               lg={ml.lgCol}>
+            <Row>
               <Col xs={12} md={6}>
                 {instagramCaption}
               </Col>
@@ -170,13 +175,22 @@ export default class SelectedImage extends React.Component {
                 </FormGroup>
               </Col>
             </Row>
-            <Row>
-              {image}
-            </Row>
           </Col>
-          <Col xs={2} md={2}/>
+          {ml.marginCol}
         </Row>
-      </Grid>
+
+
+        <Row>
+          {ml.marginCol}
+          <Col xs={ml.xsCol}
+               sm={ml.smCol}
+               md={ml.mdCol}
+               lg={ml.lgCol}>
+            {image}
+          </Col>
+          {ml.marginCol}
+        </Row>
+      </div>
     )
   }
 }

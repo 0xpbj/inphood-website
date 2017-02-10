@@ -229,33 +229,49 @@ export default class Home extends React.Component {
         }
         images.push(image)
       }
+
+      // The array represents # of columns for xs sm md lg xl:
+      const xsOffset = 0
+      const smOffset = 1
+      const mdOffset = 2
+      const lgOffset = 3
+      const margins = [1, 1, 2, 3]
+      let centers = []
+      for (let margin of margins) {
+        let center = 12 - (2*margin)
+        centers.push(center)
+      }
+      const marginCol = (<Col xs={margins[xsOffset]}
+                              sm={margins[smOffset]}
+                              md={margins[mdOffset]}
+                              lg={margins[lgOffset]}/>)
+
       return (
-        <Grid>
-          <Row className="show-grid">
-            <Col xs={2} md={2} />
-            <Col xs={8} md={8}>
-              <Row style={{marginLeft: 0,
-                           marginRight: 0,
-                           marginBottom: 10,
-                           padding: 5,
-                           backgroundColor: 'blanchedalmond',
-                           borderStyle: 'solid',
-                           borderWidth: 1,
-                           borderColor: 'bisque',
-                           borderRadius: 5}}>
-                <Col xs={12} md={7}>
-                  <text><b>Step 1:</b> Select a food image to create a label...</text>
+        <div>
+          {/* Top Bar: */}
+          <Row style={{marginLeft: 0,
+                       marginRight: 0,
+                       marginBottom: 10,
+                       padding: 5,
+                       borderBottomStyle: 'solid',
+                       borderWidth: 1,
+                       borderColor: 'black'}}>
+            {marginCol}
+            <Col xs={centers[xsOffset]}
+                 sm={centers[smOffset]}
+                 md={centers[mdOffset]}
+                 lg={centers[lgOffset]}>
+              <Row>
+                <Col xs={12} sm={2} style={{paddingLeft: 0, paddingRight: 0}}>
+                  <img src={require('../../images/logoSmall.png')} width="147" height="35"/>
                 </Col>
-                {/*<Col xs={12} md={2}>
-                  <DropdownButton bsStyle="info" title="Options" id={`dropdown-basic`}>
-                    <MenuItem key="1" onClick={() => this.props.igRefreshRequest()}>Refresh</MenuItem>
-                    <MenuItem key="2" onClick={() => this.props.igLogoutRequest()}>Logout</MenuItem>
-                  </DropdownButton>
-                </Col>*/}
-                {/*<Button className="btn-primary-spacing" onClick={() => this.props.igLogoutRequest()}>
-                  <Glyphicon glyph="glyphicon glyphicon-log-out"></Glyphicon>
-                </Button>*/}
-                <Col xs={12} md={3}>
+                {/* Hack: rather than use flex or other things that cause the display to
+                  not respond well to massive size changes, we use this marginTop setting
+                  to align the text to the bottom with the other elements */}
+                <Col xs={12} sm={8} className="text-center" style={{marginTop: 35-20}}>
+                  <text><h4 style={{margin: 0}}><b>Step 1:</b> Select a food image...</h4></text>
+                </Col>
+                <Col xs={12} sm={2} className="text-right" style={{paddingLeft: 0, paddingRight: 0, marginTop: 1}}>
                   <Button className="btn-primary-spacing"
                           bsStyle="success"
                           onClick={this.selectPhoto.bind(this)}>
@@ -264,11 +280,15 @@ export default class Home extends React.Component {
                 </Col>
               </Row>
             </Col>
-            <Col xs={2} md={2} />
+            {marginCol}
           </Row>
+
           <Row>
-            <Col xs={2} md={2} />
-            <Col xs={8} md={8}>
+            {marginCol}
+            <Col xs={centers[xsOffset]}
+                 sm={centers[smOffset]}
+                 md={centers[mdOffset]}
+                 lg={centers[lgOffset]}>
               <ImageGallery
                 className="center-block"
                 ref={i => this._imageGallery = i}
@@ -280,9 +300,9 @@ export default class Home extends React.Component {
                 onClick={this.selectPhoto.bind(this)}
               />
             </Col>
-            <Col xs={2} md={2} />
+            {marginCol}
           </Row>
-        </Grid>
+        </div>
       )
     }
   }

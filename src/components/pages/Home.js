@@ -109,12 +109,16 @@ export default class Home extends React.Component {
         <div>
           <div>
             <Grid>
-              <Row style={{margin: 50}}>
+              {/*<Row style={{margin: 50}}>
                 <Col xs={12} md={12}>
                   <img src={inPhoodLogo} className="center-block" alt="Welcome to inPhood!"/>
                 </Col>
-              </Row>
-
+              </Row>*/}
+              <Jumbotron>
+                <h1>What's really in your food?</h1>
+                <p></p>
+                <p><Button bsStyle="primary">Learn more</Button></p>
+              </Jumbotron>
               <Row>
                 <div className="text-center">
                   <Col xs={3} md={3}>
@@ -242,12 +246,15 @@ export default class Home extends React.Component {
                 <Col xs={12} md={7}>
                   <text><b>Step 1:</b> Select a food image to create a label...</text>
                 </Col>
-                <Col xs={12} md={2}>
+                {/*<Col xs={12} md={2}>
                   <DropdownButton bsStyle="info" title="Options" id={`dropdown-basic`}>
                     <MenuItem key="1" onClick={() => this.props.igRefreshRequest()}>Refresh</MenuItem>
                     <MenuItem key="2" onClick={() => this.props.igLogoutRequest()}>Logout</MenuItem>
                   </DropdownButton>
-                </Col>
+                </Col>*/}
+                {/*<Button className="btn-primary-spacing" onClick={() => this.props.igLogoutRequest()}>
+                  <Glyphicon glyph="glyphicon glyphicon-log-out"></Glyphicon>
+                </Button>*/}
                 <Col xs={12} md={3}>
                   <Button className="btn-primary-spacing"
                           bsStyle="success"
@@ -270,6 +277,7 @@ export default class Home extends React.Component {
                 showFullscreenButton={false}
                 showNav={true}
                 showPlayButton={false}
+                onClick={this.selectPhoto.bind(this)}
               />
             </Col>
             <Col xs={2} md={2} />

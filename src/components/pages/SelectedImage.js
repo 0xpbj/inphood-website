@@ -103,9 +103,9 @@ export default class SelectedImage extends React.Component {
       instagramCaption = (
         <div>
           <ControlLabel>Instagram Caption</ControlLabel>
-          <Glyphicon onClick={()=>this.setState({captionPopoverFlag: !this.state.captionPopoverFlag})} style={{marginLeft: 10}} glyph="glyphicon glyphicon-info-sign">
+          {/*<Glyphicon onClick={()=>this.setState({captionPopoverFlag: !this.state.captionPopoverFlag})} style={{marginLeft: 10}} glyph="glyphicon glyphicon-info-sign">
             {captionPopover}
-          </Glyphicon>
+          </Glyphicon>*/}
           <section>
             {caption}
           </section>
@@ -138,9 +138,9 @@ export default class SelectedImage extends React.Component {
                        padding: 5,
                        backgroundColor: 'powderblue',
                        borderRadius: 5}}>
-            <Col xs={2} md={2}>
+            {/*<Col xs={2} md={2}>
               {instagramButton}
-            </Col>
+            </Col>*/}
             <Col xs={8} md={8} />
             <Col xs={2} md={2} className="text-right">
               <Button className="btn-primary-spacing" bsStyle="success" onClick={() => this.recipeFlow()}>Use Recipe</Button>

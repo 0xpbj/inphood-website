@@ -45,6 +45,7 @@ broccoli
 broccoli rabe
 broccolini
 brussels sprouts
+clarified butter
 butter
 butternut pumpkin
 butternut squash

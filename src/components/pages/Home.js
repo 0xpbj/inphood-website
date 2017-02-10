@@ -237,7 +237,11 @@ export default class Home extends React.Component {
               <Row style={{marginLeft: 0,
                            marginRight: 0,
                            marginBottom: 10,
-                           padding: 5}}>
+                           padding: 5,
+                           borderColor: 'black',
+                           borderStyle: 'solid',
+                           borderWidth: 1,
+                           borderRadius: 5}}>
                 <Col xs={2} md={2}>
                   <DropdownButton bsStyle="info" title="Options" id={`dropdown-basic`}>
                     <MenuItem key="1" onClick={() => this.props.igRefreshRequest()}>Refresh</MenuItem>

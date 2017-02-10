@@ -15,6 +15,7 @@ const Config = require('Config')
 export default class Home extends React.Component {
   constructor() {
     super()
+    this.state = {}
   }
   componentWillMount() {
     if (this.props.user.anonymous)

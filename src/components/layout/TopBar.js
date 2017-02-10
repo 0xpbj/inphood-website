@@ -1,6 +1,7 @@
 var React = require('react')
 import Row from 'react-bootstrap/lib/Row'
 import Col from 'react-bootstrap/lib/Col'
+import {Link} from 'react-router'
 import MarginLayout from '../../helpers/MarginLayout'
 
 export default class TopBar extends React.Component {
@@ -44,7 +45,7 @@ export default class TopBar extends React.Component {
              lg={ml.lgCol}>
           <Row>
             <Col xs={12} sm={3} style={{paddingLeft: 0, paddingRight: 0}}>
-              <img src={require('../../images/logoSmall.png')} width="147" height="35"/>
+              <Link to="http://www.inphood.com"><img src={require('../../images/logoSmall.png')} width="147" height="35"/></Link>
             </Col>
             {centerContent}
             <Col xs={12} sm={3} className="text-right" style={{paddingLeft: 0, paddingRight: 0, marginTop: 1}}>

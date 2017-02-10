@@ -8,6 +8,7 @@ import Image from 'react-bootstrap/lib/Image'
 import Button from 'react-bootstrap/lib/Button'
 import Jumbotron from 'react-bootstrap/lib/Jumbotron'
 import Glyphicon from 'react-bootstrap/lib/Glyphicon'
+import UploadModal from '../layout/UploadModal'
 import ImageGallery from 'react-image-gallery'
 import "react-image-gallery/styles/css/image-gallery.css"
 const Config = require('Config')
@@ -18,7 +19,9 @@ import TopBar from '../layout/TopBar'
 export default class Home extends React.Component {
   constructor() {
     super()
-    this.state = {}
+    this.state = {
+      showUploadModal: false
+    }
   }
   componentWillMount() {
     if (this.props.user.anonymous)
@@ -35,7 +38,7 @@ export default class Home extends React.Component {
       action: 'Instagram Login',
       label: 'Social Flow',
       nonInteraction: false
-    });
+    })
   }
   selectPhoto() {
     const index = this._imageGallery.getCurrentIndex()
@@ -47,17 +50,24 @@ export default class Home extends React.Component {
       action: 'Image selected for nutrition information',
       nonInteraction: false,
       label: 'Social Flow'
-    });
+    })
     this.props.router.push('image')
+  }
+  onDrop(acceptedFiles, rejectedFiles) {
+    ReactGA.event({
+      category: 'User',
+      action: 'Image upload flow initiated',
+      label: 'Local Image Flow',
+      nonInteraction: false
+    })
+    if (acceptedFiles.length > 0) {
+      this.props.anSelectedPhoto(acceptedFiles[0].preview)
+      this.props.router.push('image')
+    }
   }
   render() {
     if (!this.props.user.login) {
-      const inPhoodLogo = require('../../images/logoLarge.jpg')
-      var sectionStyle = {
-        width: '100%',
-        height: '400px',
-        backgroundImage: `url(${inPhoodLogo})`
-      }
+      let hideUploadModal = () => this.setState({ showUploadModal: false })
       return (
         <div>
           <Grid>
@@ -66,10 +76,17 @@ export default class Home extends React.Component {
               <h3 className="text-center">Make nutrition labels in three easy steps!</h3>
               <p className="text-right"><Button bsStyle="primary">Learn more</Button></p>
             </Jumbotron>
-            {/*<section style={ sectionStyle }></section>*/}
             <Row>
               <div className="text-center">
-                <Button onClick={this.handleClick.bind(this)}>Sign in with Instagram</Button>
+                {/*<Button onClick={this.handleClick.bind(this)}>Sign in with Instagram</Button>*/}
+                  <Button bsStyle="default" onClick={()=>this.setState({ showUploadModal: true })}>
+                    Upload Photo&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-open"></Glyphicon>
+                  </Button>
+                  <UploadModal
+                    onDrop={(acceptedFiles, rejectedFiles) => this.onDrop.bind(this)}
+                    show={this.state.showUploadModal}
+                    onHide={hideUploadModal}
+                  />
               </div>
             </Row>
           </Grid>
@@ -96,7 +113,7 @@ export default class Home extends React.Component {
         category: 'User',
         action: 'Go to gallery page',
         nonInteraction: false
-      });
+      })
       var images = []
       for (let img of this.props.user.photos.data) {
         let image = {
@@ -105,7 +122,6 @@ export default class Home extends React.Component {
         }
         images.push(image)
       }
-
       const ml = new MarginLayout()
       const selectImgButton = (
         <Button className="btn-primary-spacing"

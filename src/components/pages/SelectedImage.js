@@ -141,8 +141,8 @@ export default class SelectedImage extends React.Component {
     )
     return (
       <div>
-        <TopBar step="2"
-                stepText="Enter or paste a recipe ..."
+        <TopBar step="1"
+                stepText="Enter a recipe ..."
                 aButton={useRecipeButton}/>
 
         <Row>
@@ -152,10 +152,10 @@ export default class SelectedImage extends React.Component {
                md={ml.mdCol}
                lg={ml.lgCol}>
             <Row>
-              <Col xs={12} md={6}>
+              {/*<Col xs={12} md={6}>
                 {instagramCaption}
-              </Col>
-              <Col xs={12} md={6}>
+              </Col>*/}
+              <Col xs={12} md={12}>
                 <FormGroup controlId="formControlsTextarea">
                   <ControlLabel>Meal Recipe</ControlLabel>
                   {recipeAlert}
@@ -178,8 +178,6 @@ export default class SelectedImage extends React.Component {
           </Col>
           {ml.marginCol}
         </Row>
-
-
         <Row>
           {ml.marginCol}
           <Col xs={ml.xsCol}

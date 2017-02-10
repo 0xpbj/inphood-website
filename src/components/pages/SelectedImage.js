@@ -19,6 +19,16 @@ import Chip from 'react-toolbox/lib/chip'
 import MarginLayout from '../../helpers/MarginLayout'
 import TopBar from '../layout/TopBar'
 
+const FieldGroup = ({ id, label, help, ...props }) => {
+  return (
+    <FormGroup controlId={id}>
+      <ControlLabel>{label}</ControlLabel>
+      <FormControl {...props} />
+      {help && <HelpBlock>{help}</HelpBlock>}
+    </FormGroup>
+  )
+}
+
 export default class SelectedImage extends React.Component {
   constructor() {
     super()
@@ -85,11 +95,17 @@ export default class SelectedImage extends React.Component {
       </Alert>
     ) : null
     const recipePopover = this.state.recipePopoverFlag ? (
-      <Popover
-        id="popover-basic"
-        title="Recipe Flow">
-        Use recipe flow to enter accurate quantity and amount metrics
-      </Popover>
+      <div style={{ width: 300 }}>
+        <Popover
+          id="popover-basic"
+          placement="right"
+          positionLeft={20}
+          positionTop={-40}
+          title="Recipe Help"
+        >
+          Enter recipe ingredients you would like nutrition information for
+        </Popover>
+      </div>
     ) : null
     const captionPopover = this.state.captionPopoverFlag ? (
       <Popover
@@ -99,11 +115,11 @@ export default class SelectedImage extends React.Component {
         Extract ingredients from social media caption
       </Popover>
     ) : null
-    let instagramCaption = null
+    let socialCaption = null
     let instagramButton = null
-    let textRows = 10
+    let textRows = 9
     if (this.props.user.anonymous === false) {
-      instagramCaption = (
+      socialCaption = (
         <div>
           <ControlLabel>Instagram Caption</ControlLabel>
           {/*<Glyphicon onClick={()=>this.setState({captionPopoverFlag: !this.state.captionPopoverFlag})} style={{marginLeft: 10}} glyph="glyphicon glyphicon-info-sign">
@@ -122,8 +138,32 @@ export default class SelectedImage extends React.Component {
       )
       textRows = this.props.user.photos.data[this.props.nutrition.index].caption.text.split(/\n/).length
       if (textRows < 5) {
-        textRows = 10
+        textRows = 9
       }
+    }
+    else {
+      socialCaption = (
+        <div>
+          <FieldGroup
+            id="formControlsText"
+            type="text"
+            label="Recipe Title"
+            placeholder="Enter title"
+          />
+          <FieldGroup
+            id="formControlsText"
+            type="text"
+            label="Dietary Information"
+            placeholder="Enter related diets"
+          />
+          <FieldGroup
+            id="formControlsText"
+            type="text"
+            label="Allergen Information"
+            placeholder="Enter possible allergens"
+          />
+        </div>
+      )
     }
     const image = this.props.user.anonymous ? (
       <Image className="center-block" src={this.props.nutrition.picture} responsive rounded/>
@@ -142,7 +182,7 @@ export default class SelectedImage extends React.Component {
     return (
       <div>
         <TopBar step="1"
-                stepText="Enter a recipe ..."
+                stepText="Enter recipe information ..."
                 aButton={useRecipeButton}/>
 
         <Row>
@@ -152,12 +192,12 @@ export default class SelectedImage extends React.Component {
                md={ml.mdCol}
                lg={ml.lgCol}>
             <Row>
-              {/*<Col xs={12} md={6}>
-                {instagramCaption}
-              </Col>*/}
-              <Col xs={12} md={12}>
+              <Col xs={4} md={4}>
+                {socialCaption}
+              </Col>
+              <Col xs={8} md={8}>
                 <FormGroup controlId="formControlsTextarea">
-                  <ControlLabel>Meal Recipe</ControlLabel>
+                  <ControlLabel>Recipe Ingredients</ControlLabel>
                   {recipeAlert}
                   <Glyphicon
                     onClick={()=>this.setState({recipePopoverFlag: !this.state.recipePopoverFlag})}

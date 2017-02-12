@@ -24,7 +24,6 @@ const FieldGroup = ({ id, label, help, ...props }) => {
     <FormGroup controlId={id}>
       <ControlLabel>{label}</ControlLabel>
       <FormControl {...props} />
-      {help && <HelpBlock>{help}</HelpBlock>}
     </FormGroup>
   )
 }
@@ -37,6 +36,9 @@ export default class SelectedImage extends React.Component {
       chipData: [],
       recipe: '',
       parse: false,
+      allergen: '',
+      dietary: '',
+      title: '',
       ingredients: '',
       recipeError: false,
       captionPopoverFlag: false,
@@ -61,20 +63,11 @@ export default class SelectedImage extends React.Component {
       this.setState({recipeError: true})
     }
     else {
-      const raw = this.state.ingredients
-      let data = parseRecipe(raw)
-      this.props.storeParsedData(data, raw, true)
+      const {ingredients, title, dietary, allergen} = this.state
+      let data = parseRecipe(ingredients)
+      this.props.storeParsedData(data, ingredients, title, dietary, allergen)
       this.props.router.push('nutrition')
     }
-  }
-  captionFlow() {
-    const raw = (this.props.user.photos.data[this.props.nutrition.index].caption.text)
-    const ingredients = parseCaption(raw)
-    this.setState({ingredients})
-  }
-  getData(e) {
-    let ingredients = e.target.value
-    this.setState({ingredients, recipeError: false})
   }
   render() {
     if (!this.props.user.login && !this.props.user.anonymous) {
@@ -103,7 +96,7 @@ export default class SelectedImage extends React.Component {
           positionTop={-40}
           title="Recipe Help"
         >
-          Enter recipe ingredients you would like nutrition information for
+          Enter recipe ingredients and quantities for the nutrition label
         </Popover>
       </div>
     ) : null
@@ -148,19 +141,22 @@ export default class SelectedImage extends React.Component {
             id="formControlsText"
             type="text"
             label="Recipe Title"
-            placeholder="Enter title"
+            placeholder="Pumpkin Waffles"
+            onChange={(e) => this.setState({title: e.target.value})}
           />
           <FieldGroup
             id="formControlsText"
             type="text"
             label="Dietary Information"
-            placeholder="Enter related diets"
+            placeholder="Paleo, Vegan, etc..."
+            onChange={(e) => this.setState({dietary: e.target.value})}
           />
           <FieldGroup
             id="formControlsText"
             type="text"
             label="Allergen Information"
-            placeholder="Enter possible allergens"
+            placeholder="Peanut, Gluten, etc..."
+            onChange={(e) => this.setState({allergen: e.target.value})}
           />
         </div>
       )
@@ -210,7 +206,7 @@ export default class SelectedImage extends React.Component {
                     rows={textRows}
                     value={this.state.ingredients}
                     placeholder={"1.5 cup rainbow chard (sliced)\n2 stalks green onion (sliced)\n2 medium tomatoes (chopped)\n1 medium avocado (chopped)\n¼ tsp sea salt\n1 tbsp butter\n1 ½ tbsp flax seed oil\n½ tbsp white wine vinegar\n..."}
-                    onChange={this.getData.bind(this)}
+                    onChange={(e) => this.setState({ingredients: e.target.value, recipeError: false})}
                   />
                 </FormGroup>
               </Col>

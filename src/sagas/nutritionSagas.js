@@ -40,7 +40,7 @@ const sendToS3 = (request) => {
   })
 }
 
-function* uploadImageToS3(url, key, username, thumbnail, parsedData, rawData, recipeFlag) {
+function* uploadImageToS3(url, key, username, thumbnail, parsedData, rawData, title, allergen, dietary) {
   const lUrl = Config.SCRAPER_LAMBDA_URL
   let myHeaders = new Headers()
   myHeaders.append('Content-Type', 'application/json')
@@ -64,17 +64,18 @@ function* uploadImageToS3(url, key, username, thumbnail, parsedData, rawData, re
       oUrl: url,
       iUrl: 'http://www.image.inphood.com/' + username + '/' + key + '.jpg',
       thumbnail,
-      rawData: rawData,
-      parsedData: parsedData,
-      recipe: recipeFlag,
-      caption: !recipeFlag
+      rawData,
+      parsedData,
+      title,
+      dietary,
+      allergen
     })
   }
 }
 
 function* loadAWSPut() {
   const {profile} = yield select(state => state.userReducer)
-  const {link, picture, username, parsedData, rawData, recipeFlag} = yield select(state => state.nutritionReducer)
+  const {link, picture, username, parsedData, rawData, title, dietary, allergen} = yield select(state => state.nutritionReducer)
   const slink = link.slice(0, link.length - 1)
   yield call (firebaseLogin)
   let key = ''
@@ -86,7 +87,7 @@ function* loadAWSPut() {
     key = slink.substring(slink.lastIndexOf('/')+1)
     thumbnail = profile.thumbnail
   }
-  yield call (uploadImageToS3, picture, key, username, thumbnail, parsedData, rawData, recipeFlag)
+  yield call (uploadImageToS3, picture, key, username, thumbnail, parsedData, rawData, title, dietary, allergen)
   const url = "http://www.inphood.com/" + key
   if (profile)
     yield put ({type: RESULT_URL, url, key, anonymous: false})

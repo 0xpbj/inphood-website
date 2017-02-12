@@ -13,9 +13,10 @@ export default class UploadModal extends React.Component {
   render() {
     return (
       <Modal {...this.props} bsSize="small" aria-labelledby="contained-modal-title-sm">
-        <Dropzone style = {{ width: 300, height: 300, borderStyle: 'dashed'}} onDrop={this.props.onDrop()}>
-          <div className="centered">
-              Click or Drag to add a image file
+        <Dropzone multiple={false} accept={'image/*'}style = {{ width: 300, height: 300, borderStyle: 'dashed'}} onDrop={this.props.onDrop()}>
+          <div style={{height: 110}} />
+          <div className="text-center">
+            <h3 style={{color: 'grey'}}>Click Here | Drag Image</h3>
           </div>
         </Dropzone>
       </Modal>

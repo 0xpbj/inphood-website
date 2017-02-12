@@ -12,23 +12,28 @@ export default class TopBar extends React.Component {
     const altContent = this.props.altContent
     const aButton = this.props.aButton
 
-    let centerContent = (<Col xs={12} sm={6}/>)
-    if (step != "" && stepText != "") {
-      /* Hack: rather than use flex or other things that cause the display to
-        not respond well to massive size changes, we use this marginTop setting
-        to align the text to the bottom with the other elements */
-      centerContent = (
-        <Col xs={12} sm={6} className="text-center" style={{marginTop: 35-20}}>
-            <text><h4 style={{margin: 0}}><b>Step {step}: </b>{stepText}</h4></text>
-        </Col>
-      )
-    } else if (altContent != "") {
-      centerContent = (
-        <Col xs={12} sm={6} className="text-center">
-          {altContent}
-        </Col>
-      )
-    }
+    // let centerContent = (<Col xs={12} sm={6}/>)
+    // if (step != "" && stepText != "") {
+    //   /* Hack: rather than use flex or other things that cause the display to
+    //     not respond well to massive size changes, we use this marginTop setting
+    //     to align the text to the bottom with the other elements */
+    //   centerContent = (
+    //     <Col xs={12} sm={6} className="text-center" style={{marginTop: 35-20}}>
+    //         <text><h4 style={{margin: 0}}><b>Step {step}: </b>{stepText}</h4></text>
+    //     </Col>
+    //   )
+    // } else if (altContent != "") {
+    //   centerContent = (
+    //     <Col xs={12} sm={6} className="text-center">
+    //       {altContent}
+    //     </Col>
+    //   )
+    // }
+    let centerContent = (
+      <Col xs={12} sm={6} className="text-center">
+        {altContent}
+      </Col>
+    )
 
     return (
       <Row style={{marginLeft: 0,

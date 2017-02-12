@@ -122,12 +122,14 @@ export function sendSerializedData(composite, full) {
   }
 }
 
-export function storeParsedData(parsedData, rawData, recipeFlag) {
+export function storeParsedData(parsedData, rawData, title, dietary, allergen) {
   return {
     type: STORE_PARSED_DATA,
     parsedData,
     rawData,
-    recipeFlag
+    title,
+    dietary,
+    allergen
   }
 }
 

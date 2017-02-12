@@ -60,10 +60,10 @@ export default class Home extends React.Component {
       label: 'Local Image Flow',
       nonInteraction: false
     })
-    if (acceptedFiles.length > 0) {
-      this.props.anSelectedPhoto(acceptedFiles[0].preview)
-      this.props.router.push('image')
-    }
+    acceptedFiles.forEach(file => {
+      this.props.anSelectedPhoto(file.preview)
+    })
+    this.props.router.push('image')
   }
   render() {
     if (!this.props.user.login) {

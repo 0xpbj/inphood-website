@@ -1,7 +1,6 @@
 var React = require('react')
 import ReactGA from 'react-ga'
 import Label from './NutritionEstimateJSX'
-import {Link} from 'react-router'
 import {IngredientModel} from '../models/IngredientModel'
 import {IngredientControlModel} from '../models/IngredientControlModel'
 import {getValueInUnits,
@@ -12,23 +11,15 @@ import {getValueInUnits,
 import TagController from '../controllers/TagController'
 import ServingsController from '../controllers/ServingsController'
 import IngredientController from '../controllers/IngredientController'
-import Chip from 'react-toolbox/lib/chip'
 import Row from 'react-bootstrap/lib/Row'
 import Col from 'react-bootstrap/lib/Col'
-import Well from 'react-bootstrap/lib/Well'
 import Grid from 'react-bootstrap/lib/Grid'
 import Alert from 'react-bootstrap/lib/Alert'
-import Modal from 'react-bootstrap/lib/Modal'
-import Slider from 'react-toolbox/lib/slider'
 import MenuItem from 'react-bootstrap/lib/MenuItem'
 import Button from 'react-bootstrap/lib/Button'
-import DropdownButton from 'react-bootstrap/lib/DropdownButton'
 import FormControl from 'react-bootstrap/lib/FormControl'
 import ControlLabel from 'react-bootstrap/lib/ControlLabel'
 import ProgressBar from 'react-bootstrap/lib/ProgressBar'
-
-import 'react-widgets/lib/less/react-widgets.less'
-import Dropdownlist from 'react-widgets/lib/Dropdownlist'
 
 import Search from './Search'
 const Config = require('Config')

@@ -17,8 +17,8 @@ import * as db from './firebaseCommands'
 import { call, fork, put, select, take, takeLatest } from 'redux-saga/effects'
 const firebase = require('firebase')
 import request from 'request'
-import Hello from 'hellojs'
 const Config = require('Config')
+const S3 = require('aws-sdk').S3
 
 const firebaseLogin = () => {
   return firebase.auth().signInAnonymously()
@@ -40,7 +40,7 @@ const sendToS3 = (request) => {
   })
 }
 
-function* uploadImageToS3(url, key, username, thumbnail, parsedData, rawData, title, allergen, dietary) {
+function* sendToLambdaScraper(url, key, username, thumbnail, parsedData, rawData, title, allergen, dietary) {
   const lUrl = Config.SCRAPER_LAMBDA_URL
   let myHeaders = new Headers()
   myHeaders.append('Content-Type', 'application/json')
@@ -73,9 +73,39 @@ function* uploadImageToS3(url, key, username, thumbnail, parsedData, rawData, ti
   }
 }
 
+function* uploadImageToS3(file, key, username, thumbnail, parsedData, rawData, title, allergen, dietary) {
+  const extension = file.name.substr(file.name.lastIndexOf('.'))
+  const s3 = new S3({
+    accessKeyId:     Config.AWS_ACCESS_ID,
+    secretAccessKey: Config.AWS_SECRET_KEY,
+    region: 'us-west-2',
+  })
+  const params = {
+    Bucket: 'inphoodlabelimagescdn', 
+    Key: username +'/'+ key+extension, 
+    Body: file,
+    ContentType: 'image/jpeg',
+    ACL: 'public-read'
+  }
+  s3.upload(params, function(err, data) {
+    if (!err) {
+      firebase.database().ref('/global/nutritionLabel/'+username+'/'+key).update({
+        key,
+        user: username,
+        iUrl: 'http://www.image.inphood.com/'+username+'/'+key+extension,
+        rawData,
+        parsedData,
+        title,
+        dietary,
+        allergen
+      })
+    }
+  })
+}
+
 function* loadAWSPut() {
   const {profile} = yield select(state => state.userReducer)
-  const {link, picture, username, parsedData, rawData, title, dietary, allergen} = yield select(state => state.nutritionReducer)
+  const {link, picture, username, parsedData, rawData, title, dietary, allergen, file} = yield select(state => state.nutritionReducer)
   const slink = link.slice(0, link.length - 1)
   yield call (firebaseLogin)
   let key = ''
@@ -87,7 +117,8 @@ function* loadAWSPut() {
     key = slink.substring(slink.lastIndexOf('/')+1)
     thumbnail = profile.thumbnail
   }
-  yield call (uploadImageToS3, picture, key, username, thumbnail, parsedData, rawData, title, dietary, allergen)
+  // yield call (sendToLambdaScraper, picture, key, username, thumbnail, parsedData, rawData, title, dietary, allergen)
+  yield call (uploadImageToS3, file, key, username, thumbnail, parsedData, rawData, title, dietary, allergen)
   const url = "http://www.inphood.com/" + key
   if (profile)
     yield put ({type: RESULT_URL, url, key, anonymous: false})

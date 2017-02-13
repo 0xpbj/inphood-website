@@ -12,6 +12,7 @@ import UploadModal from '../layout/UploadModal'
 import ImageGallery from 'react-image-gallery'
 import "react-image-gallery/styles/css/image-gallery.css"
 const Config = require('Config')
+import request from 'request'
 
 import MarginLayout from '../../helpers/MarginLayout'
 import TopBar from '../layout/TopBar'
@@ -60,9 +61,12 @@ export default class Home extends React.Component {
       label: 'Local Image Flow',
       nonInteraction: false
     })
+    // var req = request.post('/upload')
     acceptedFiles.forEach(file => {
-      this.props.anSelectedPhoto(file.preview)
+      // req.attach(file.name, file);
+      this.props.anSelectedPhoto(file)
     })
+    // req.end()
     this.props.router.push('image')
   }
   render() {
@@ -79,14 +83,14 @@ export default class Home extends React.Component {
             <Row>
               <div className="text-center">
                 {/*<Button onClick={this.handleClick.bind(this)}>Sign in with Instagram</Button>*/}
-                  <Button bsStyle="default" onClick={()=>this.setState({ showUploadModal: true })}>
-                    Upload Photo&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-open"></Glyphicon>
-                  </Button>
-                  <UploadModal
-                    onDrop={(acceptedFiles, rejectedFiles) => this.onDrop.bind(this)}
-                    show={this.state.showUploadModal}
-                    onHide={hideUploadModal}
-                  />
+                <Button bsStyle="default" onClick={()=>this.setState({ showUploadModal: true })}>
+                  Upload Photo&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-open"></Glyphicon>
+                </Button>
+                <UploadModal
+                  onDrop={(acceptedFiles, rejectedFiles) => this.onDrop.bind(this)}
+                  show={this.state.showUploadModal}
+                  onHide={hideUploadModal}
+                />
               </div>
             </Row>
           </Grid>

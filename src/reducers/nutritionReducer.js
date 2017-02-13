@@ -24,8 +24,12 @@ const initialState = {
   full: '',
   index: 0,
   rawData: '',
+  title: '',
+  dietary: '',
+  allergen: '',
   parsedData: [],
-  recipeFlag: false
+  recipeFlag: false,
+  file: ''
 }
 export default function nutrition(state = initialState, action) {
   switch (action.type) {
@@ -44,8 +48,12 @@ export default function nutrition(state = initialState, action) {
         full: '',
         index: 0,
         rawData: '',
+        title: '',
+        dietary: '',
+        allergen: '',
         parsedData: [],
-        recipeFlag: false
+        recipeFlag: false,
+        file: ''
       }
     case ADD_CAPTION:
       return {
@@ -56,7 +64,8 @@ export default function nutrition(state = initialState, action) {
       return {
         ...state,
         anonymous: true,
-        picture: action.photo,
+        file: action.photo,
+        picture: action.photo.preview,
         link: '',
         username: 'anonymous',
       }
@@ -92,7 +101,10 @@ export default function nutrition(state = initialState, action) {
         ...state,
         parsedData: action.parsedData,
         rawData: action.rawData,
-        recipeFlag: action.recipeFlag
+        recipeFlag: action.recipeFlag,
+        title: action.title,
+        dietary: action.dietary,
+        allergen: action.allergen
       }
     default:
       return state

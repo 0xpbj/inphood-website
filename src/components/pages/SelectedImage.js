@@ -19,7 +19,7 @@ import Chip from 'react-toolbox/lib/chip'
 import MarginLayout from '../../helpers/MarginLayout'
 import TopBar from '../layout/TopBar'
 
-const FieldGroup = ({ id, label, help, ...props }) => {
+const FieldGroup = ({ id, label, ...props }) => {
   return (
     <FormGroup controlId={id}>
       <ControlLabel>{label}</ControlLabel>

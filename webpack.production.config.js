@@ -67,7 +67,7 @@ module.exports = {
     }),
     'react': 'React',
     'react-dom': 'ReactDOM',
-    // 'aws-sdk': 'AWS',
+    'aws-sdk': 'AWS',
     'firebase': 'firebase',
     'react-redux': 'ReactRedux'
   },

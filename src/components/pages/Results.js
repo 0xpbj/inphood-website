@@ -133,7 +133,7 @@ export default class Results extends React.Component {
                   Share URL&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-share"></Glyphicon>
                 </Button>
               </CopyToClipboard>
-              {this.state.copied ? <span style={{color: 'red'}}>&nbsp;Copied.</span> : null}
+              {this.state.copied ? <div style={{marginTop: "20px"}}><pre>{path}</pre><span style={{color: 'red'}}>&nbsp;Copied.</span></div> : null}
               <div style={containerStyle} />
               <CopyToClipboard text={embedMsg}
                 onCopy={() => this.setState({ecopied: true, copied: false})}>
@@ -141,7 +141,7 @@ export default class Results extends React.Component {
                   Embed URL&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-edit"></Glyphicon>
                 </Button>
               </CopyToClipboard>
-              {this.state.ecopied ? <span style={{color: 'red'}}>&nbsp;Copied.</span> : null}
+              {this.state.ecopied ? <div style={{marginTop: "20px"}}><pre>{embedMsg}</pre><span style={{color: 'red'}}>&nbsp;Copied.</span></div> : null}
               </div>
             </Col>
           </Row>

@@ -189,7 +189,9 @@ export default function modelFun(state = initialState, action) {
         // Clear the match data to prevent populating it twice on 'back' button actions etc.
         let localMatchData = state.matchData
         if (action.foodName in localMatchData) {
-          return
+          return {
+            ...state
+          }
         }
         
         localMatchData[action.foodName] = []
@@ -201,8 +203,7 @@ export default function modelFun(state = initialState, action) {
 
         return {
           ...state,
-          matchData: localMatchData,
-          userSearch: action.userSearch
+          matchData: localMatchData
         }
       }
     case LAZY_FETCH_FIREBASE:
@@ -288,7 +289,8 @@ export default function modelFun(state = initialState, action) {
 
       return {
         ...state,
-        matchData: localMatchData
+        matchData: localMatchData,
+        userSearch: action.userSearch
       }
     }
     case SELECTED_TAGS:

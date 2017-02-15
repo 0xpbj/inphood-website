@@ -92,6 +92,8 @@ module.exports = {
       DEBUG: true,
       ELASTIC_LAMBDA_URL: 'https://tah21v2noa.execute-api.us-west-2.amazonaws.com/prod/ingredients',
       SCRAPER_LAMBDA_URL: 'https://3cv8ktguzh.execute-api.us-west-2.amazonaws.com/prod/url',
+      CLARIFAI_CLIENT_ID: 'Gk0xpb23IWIY4vRMbHlgQdUxSjlUPBcySEd_gbXN',
+      CLARIFAI_CLIENT_SECRET: 'MwkyjpQgC30xwvW6wzext0FyqXle32BcuGX3ZUEe',
       fastDevelopNutritionPage: false
     }),
     'react': 'React',

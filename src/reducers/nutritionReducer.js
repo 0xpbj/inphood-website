@@ -29,7 +29,8 @@ const initialState = {
   allergen: '',
   parsedData: [],
   recipeFlag: false,
-  file: ''
+  file: '',
+  missingData: []
 }
 export default function nutrition(state = initialState, action) {
   switch (action.type) {
@@ -53,7 +54,8 @@ export default function nutrition(state = initialState, action) {
         allergen: '',
         parsedData: [],
         recipeFlag: false,
-        file: ''
+        file: '',
+        missingData: []
       }
     case ADD_CAPTION:
       return {
@@ -104,7 +106,8 @@ export default function nutrition(state = initialState, action) {
         recipeFlag: action.recipeFlag,
         title: action.title,
         dietary: action.dietary,
-        allergen: action.allergen
+        allergen: action.allergen,
+        missingData: action.missingData
       }
     default:
       return state

@@ -1,5 +1,6 @@
 import {
   IG_UPLOAD_PHOTO,
+  AN_SELECTED_PHOTO,
   POST_LABEL_ID,
   RESULT_URL,
   SEND_SERIALIZED_DATA,
@@ -15,10 +16,58 @@ import {
 
 import * as db from './firebaseCommands'
 import { call, fork, put, select, take, takeLatest } from 'redux-saga/effects'
-const firebase = require('firebase')
 import request from 'request'
+const firebase = require('firebase')
 const Config = require('Config')
 const S3 = require('aws-sdk').S3
+const clarifai = require('clarifai')
+const vision = new clarifai.App(
+  Config.CLARIFAI_CLIENT_ID,
+  Config.CLARIFAI_CLIENT_SECRET
+)
+
+const getTags = (response) => {
+  const {concepts} = response.response.data.outputs[0].data
+  let tags = ''
+  for (let id in concepts) {
+    if (concepts[id].value > 0.80) {
+      if (tags === '') {
+        tags = concepts[id].name
+      }
+      else {
+        tags = tags + ', ' + concepts[id].name
+      }
+    }
+  }
+  return tags
+}
+
+const getCVData = (data) => {
+  return vision.models.predict(clarifai.FOOD_MODEL, {base64: data})
+  .then(response => ({ response }))
+}
+
+const get64Data = (file) => {
+  var reader = new FileReader()
+  reader.readAsDataURL(file)
+  reader.onloadend = () => {
+    return reader.result
+  }
+  reader.onerror = error => {
+    console.log('Error: ', error);
+  }
+}
+
+function* loadCVData() {
+  if (!Config.DEBUG) {
+    const {file} = yield select(state => state.nutritionReducer)
+    const data64 = yield call(get64Data, file)
+    // const response = yield call(getCVData, data64)
+    // console.log('Response: ', response)
+    // const tags = yield call(getTags, response)
+    // console.log('Tags: ', tags)
+  }
+}
 
 const firebaseLogin = () => {
   return firebase.auth().signInAnonymously()
@@ -104,26 +153,28 @@ function* uploadImageToS3(file, key, username, thumbnail, parsedData, rawData, t
 }
 
 function* loadAWSPut() {
-  const {profile} = yield select(state => state.userReducer)
-  const {link, picture, username, parsedData, rawData, title, dietary, allergen, file} = yield select(state => state.nutritionReducer)
-  const slink = link.slice(0, link.length - 1)
-  yield call (firebaseLogin)
-  let key = ''
-  let thumbnail = ''
-  if (!profile) {
-    key = firebase.database().ref('/global/nutritionLabel/anonymous').push().key
+  if (!Config.DEBUG) {
+    const {profile} = yield select(state => state.userReducer)
+    const {link, picture, username, parsedData, rawData, title, dietary, allergen, file} = yield select(state => state.nutritionReducer)
+    const slink = link.slice(0, link.length - 1)
+    yield call (firebaseLogin)
+    let key = ''
+    let thumbnail = ''
+    if (!profile) {
+      key = firebase.database().ref('/global/nutritionLabel/anonymous').push().key
+    }
+    else {
+      key = slink.substring(slink.lastIndexOf('/')+1)
+      thumbnail = profile.thumbnail
+    }
+    // yield call (sendToLambdaScraper, picture, key, username, thumbnail, parsedData, rawData, title, dietary, allergen)
+    yield call (uploadImageToS3, file, key, username, thumbnail, parsedData, rawData, title, dietary, allergen)
+    const url = "http://www.inphood.com/" + key
+    if (profile)
+      yield put ({type: RESULT_URL, url, key, anonymous: false})
+    else
+      yield put ({type: RESULT_URL, url, key, anonymous: true})
   }
-  else {
-    key = slink.substring(slink.lastIndexOf('/')+1)
-    thumbnail = profile.thumbnail
-  }
-  // yield call (sendToLambdaScraper, picture, key, username, thumbnail, parsedData, rawData, title, dietary, allergen)
-  yield call (uploadImageToS3, file, key, username, thumbnail, parsedData, rawData, title, dietary, allergen)
-  const url = "http://www.inphood.com/" + key
-  if (profile)
-    yield put ({type: RESULT_URL, url, key, anonymous: false})
-  else
-    yield put ({type: RESULT_URL, url, key, anonymous: true})
 }
 
 function* loadSerializedData() {
@@ -142,13 +193,19 @@ function* loadSerializedData() {
   }
 }
 
-function* getDataFromFireBase(foodName, ingredient, key, index) {
+function* getDataFromFireBase(foodName, ingredient, key, index, userSearch) {
   const path = 'global/nutritionInfo/' + key
-  const data = (yield call(db.getPath, path)).val()
-  if (index)
-    yield put ({type: LAZY_LOAD_FIREBASE, foodName, ingredient, index, data})
+  const flag = (yield call(db.getPath, path)).exists()
+  if (flag) {
+    const data = (yield call(db.getPath, path)).val()
+    if (index)
+      yield put ({type: LAZY_LOAD_FIREBASE, foodName, ingredient, index, data})
+    else {
+      yield put ({type: INGREDIENT_FIREBASE_DATA, foodName, ingredient, data, userSearch})
+    }
+  }
   else {
-    yield put ({type: INGREDIENT_FIREBASE_DATA, foodName, ingredient, data})
+    yield put ({type: INGREDIENT_FIREBASE_DATA, foodName, ingredient, data: [], userSearch})
   }
 }
 
@@ -210,11 +267,12 @@ function* callElasticSearchLambda(searchTerm, foodName, userSearch) {
     sortedData.sort(function(a, b) {
       return a.distance - b.distance;
     })
-    yield put ({type: INITIALIZE_FIREBASE_DATA, foodName, data: sortedData, userSearch})
-    yield fork(getDataFromFireBase, foodName, sortedData[0].info._source.Description, sortedData[0].info._id, 0)
+    yield put ({type: INITIALIZE_FIREBASE_DATA, foodName, data: sortedData})
+    yield fork(getDataFromFireBase, foodName, sortedData[0].info._source.Description, sortedData[0].info._id, 0, userSearch)
   }
   else {
-    yield put ({type: INITIALIZE_FIREBASE_DATA, foodName, data: [], userSearch})
+    yield put ({type: INITIALIZE_FIREBASE_DATA, foodName, data: []})
+    yield put ({type: INGREDIENT_FIREBASE_DATA, foodName, ingredient: '', data: [], userSearch})
   }
 }
 
@@ -270,7 +328,8 @@ function* processParseForLabel() {
       yield fork(callElasticSearchLambda, foodWords[0].data, foodName, false)
     }
     else {
-      yield put ({type: INITIALIZE_FIREBASE_DATA, foodName, data: [], userSearch: false})
+      yield put ({type: INITIALIZE_FIREBASE_DATA, foodName, data: []})
+      yield put ({type: INGREDIENT_FIREBASE_DATA, foodName, ingredient: '', data: [], userSearch: false})
     }
   }
 }
@@ -283,7 +342,8 @@ function* userSearchIngredient() {
       yield fork(callElasticSearchLambda, foodWords[0].data, searchIngredient, true)
     }
     else {
-      yield put ({type: INITIALIZE_FIREBASE_DATA, foodName: searchIngredient, data: [], userSearch: true})
+      yield put ({type: INITIALIZE_FIREBASE_DATA, foodName: searchIngredient, data: []})
+      yield put ({type: INGREDIENT_FIREBASE_DATA, foodName: searchIngredient, ingredient: '', data: [], userSearch: true})
     }
   }
 }
@@ -328,5 +388,6 @@ export default function* root() {
   yield fork(takeLatest, SELECTED_TAGS, updateFirebaseTags)
   yield fork(takeLatest, SEND_SERIALIZED_DATA, loadSerializedData)
   yield fork(takeLatest, IG_UPLOAD_PHOTO, loadAWSPut)
+  yield fork(takeLatest, AN_SELECTED_PHOTO, loadCVData)
   yield fork(takeLatest, STORE_PARSED_DATA, processParseForLabel)
 }

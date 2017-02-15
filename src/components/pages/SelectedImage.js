@@ -65,7 +65,7 @@ export default class SelectedImage extends React.Component {
     else {
       const {ingredients, title, dietary, allergen} = this.state
       let data = parseRecipe(ingredients)
-      this.props.storeParsedData(data, ingredients, title, dietary, allergen)
+      this.props.storeParsedData(data.found, data.missing, ingredients, title, dietary, allergen)
       this.props.router.push('nutrition')
     }
   }

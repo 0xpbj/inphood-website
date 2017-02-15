@@ -173,7 +173,7 @@ export default class Nutrition extends React.Component {
     // //console.log('');
     //console.log('Complete data received from firebase');
     //console.log(nextProps.nutrition);
-    const {parsedData} = this.props.nutrition
+    const {parsedData, missingData} = this.props.nutrition
     const {matchData} = this.props.model
     // TODO: refactor and compbine
     // Tuple offsets for firebase data in nutrition reducer:
@@ -192,13 +192,8 @@ export default class Nutrition extends React.Component {
       }
     }
     let selectedTags = []
-    let unmatchedTags = []
     for (let tag in matchData) {
       const tagMatches = matchData[tag]
-      if (tagMatches.length === 0) {
-        unmatchedTags.push(tag)
-        continue
-      }
       // We use the first value in the list (assumes elastic search returns results
       // in closest match order)
       //const key = tagMatches[0][keyOffset]
@@ -282,7 +277,7 @@ export default class Nutrition extends React.Component {
     this.props.nutritionModelSetServings(servingControls['value'], servingControls['unit'])
     this.props.selectedTags(selectedTags)
     this.setState({
-      unmatchedTags: unmatchedTags,
+      unmatchedTags: missingData,
       progress: 1
     })
     this.props.nutritionModelSetup(true)

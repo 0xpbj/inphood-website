@@ -71,19 +71,57 @@ export function parseCaption(caption) {
   return ingredients
 }
 
+function combineData(data) {
+  let ret = []
+  let names = []
+  for (let i of data) {
+    let index = names.indexOf(i.name)
+    if (index === -1) {
+      names.push(i.name)
+      ret.push(i)
+    }
+    else {
+      let info1 = {
+        name: i.name,
+        amount: i.amount,
+        unit: i.unit,
+      }
+      let info2 = {
+        name: data[index].name,
+        amount: data[index].amount,
+        unit: data[index].unit
+      }
+      console.log('Need to combine: ', info1, info2);
+    }
+  }
+  return ret
+}
+
 export function parseRecipe(data) {
   const regex = /[^\r\n]+/g
   const sRegex = /([^\-\.\*:><^#~ ] ?)([a-zA-Z1-9½⅓⅔¼¾⅕⅖⅗⅘⅙⅚⅛⅜⅝⅞/, ()]+)/g
   let phrases = data.match(regex)
   var ingp = require('../algorithms/parser/ingredientparser')
   let parsedData = []
+  let missingData = []
   if (!phrases)
     return
+  const file = require("raw-loader!../data/ingredients.txt")
+  const fileWords = new Set(file.match(regex))
   for (let i of phrases) {
     let reg = i.match(sRegex)
     let clean = reg ? removeSpecialChars(reg[0]) : removeSpecialChars(i)
     let parsed = ingp.parse(clean)
-    parsedData.push(parsed)
+    let flag = false
+    for (let i of fileWords) {
+      if (parsed.name.indexOf(i) !== -1) {
+        parsedData.push(parsed)
+        flag = true
+        break
+      }
+    }
+    if (!flag)
+      missingData.push(parsed.name)
   }
-  return parsedData
+  return {missing: missingData, found: combineData(parsedData)}
 }

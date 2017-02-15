@@ -25,7 +25,7 @@ export default class App extends React.Component {
           <Route path='about' name='about' component={About}></Route>
           <Route path='image' name='image' component={SelectedImage}></Route>
           <Route path='nutrition' name='nutrition' component={Nutrition}></Route>
-          <Route path='result/:userId/:labelId' name='label' component={Results}></Route>
+          <Route path='result' name='label' component={Results}></Route>
           <Route path='*' component={NoMatch}/>
         </Route>
       </Router>

@@ -153,7 +153,7 @@ function* uploadImageToS3(file, key, username, thumbnail, parsedData, rawData, t
 }
 
 function* loadAWSPut() {
-  if (!Config.DEBUG) {
+  // if (!Config.DEBUG) {
     const {profile} = yield select(state => state.userReducer)
     const {link, picture, username, parsedData, rawData, title, dietary, allergen, file} = yield select(state => state.nutritionReducer)
     const slink = link.slice(0, link.length - 1)
@@ -174,7 +174,7 @@ function* loadAWSPut() {
       yield put ({type: RESULT_URL, url, key, anonymous: false})
     else
       yield put ({type: RESULT_URL, url, key, anonymous: true})
-  }
+  // }
 }
 
 function* loadSerializedData() {

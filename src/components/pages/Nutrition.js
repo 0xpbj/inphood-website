@@ -285,12 +285,9 @@ export default class Nutrition extends React.Component {
   //////////////////////////////////////////////////////////////////////////////
   // Action Handlers:
   //////////////////////////////////////////////////////////////////////////////
-  transitionToLabelPage(flag, composite, full, labelOnly) {
-    if (flag)
-      this.props.postLabelId(this.props.nutrition.key, this.props.nutrition.resultUrl)
+  transitionToLabelPage(composite, full) {
     this.props.sendSerializedData(composite, full)
-    if (!labelOnly)
-      this.props.router.push('result/'+this.props.nutrition.username + '/' + this.props.nutrition.key)
+    this.props.router.push('result?label='+ this.props.nutrition.key)
   }
   handleServingValuesChange(servingValue) {
     let servingControls = this.state.servingControls
@@ -586,7 +583,7 @@ export default class Nutrition extends React.Component {
     )
     const shareResultsButton = (
       <Button bsStyle="success"
-              onClick={this.transitionToLabelPage.bind(this, false, composite, full, false)}>
+              onClick={this.transitionToLabelPage.bind(this, composite, full)}>
         Share Results
       </Button>
     )

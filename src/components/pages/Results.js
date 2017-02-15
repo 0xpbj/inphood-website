@@ -23,7 +23,8 @@ export default class Results extends React.Component {
     }
   }
   componentWillMount() {
-    this.props.getLabelId(this.props.params.userId, this.props.params.labelId)
+    const {label} = this.props.location.query
+    this.props.getLabelId('anonymous', label)
   }
   // From https://toddmotto.com/methods-to-determine-if-an-object-has-a-given-property/
   //  - addresses limitations of IE and other issues related to checking if an object
@@ -31,8 +32,6 @@ export default class Results extends React.Component {
   //
   hasProp(object, property) {
     return Object.prototype.hasOwnProperty.call(object, property)
-  }
-  loadTags() {
   }
   render() {
     const containerStyle = {
@@ -49,6 +48,8 @@ export default class Results extends React.Component {
       )
     }
     else {
+      const {label} = this.props.location.query
+      const user = 'anonymous'
       const socialContainerStyle = {
         marginTop: "20px",
         border: "2px solid black",
@@ -61,25 +62,25 @@ export default class Results extends React.Component {
         padding: "5px",
         margin: "10px",
       }
-      const image = this.props.params.userId === 'anonymous'
-      ? <Image src={this.props.results.data.oUrl} responsive rounded/>
-      : (
-          <Link to={'http://www.instagram.com/p/' + this.props.results.data.key} target="_blank">
-            <Tooltip placement="top" className="in" id="tooltip-top">
-              @{this.props.params.userId}
-            </Tooltip>
-            <Image src={this.props.results.data.oUrl} responsive rounded/>
-          </Link>
-      )
-      const credit = this.props.params.userId === 'anaonymous' ? (
-        <div style={socialContainerStyle}>
-          Picture Credit: Anonymous
-        </div>
-      ) : ( 
-        <div style={socialContainerStyle}>
-          Picture Credit: <Link to={'http://www.instagram.com/' + this.props.params.userId} target="_blank">{this.props.params.userId}</Link>
-        </div>
-      )
+      // const image = this.props.params.userId === 'anonymous'
+      // ? <Image src={this.props.results.data.oUrl} responsive rounded/>
+      // : (
+      //     <Link to={'http://www.instagram.com/p/' + this.props.results.data.key} target="_blank">
+      //       <Tooltip placement="top" className="in" id="tooltip-top">
+      //         @{this.props.params.userId}
+      //       </Tooltip>
+      //       <Image src={this.props.results.data.oUrl} responsive rounded/>
+      //     </Link>
+      // )
+      // const credit = this.props.params.userId === 'anaonymous' ? (
+      //   <div style={socialContainerStyle}>
+      //     Picture Credit: Anonymous
+      //   </div>
+      // ) : ( 
+      //   <div style={socialContainerStyle}>
+      //     Picture Credit: <Link to={'http://www.instagram.com/' + this.props.params.userId} target="_blank">{this.props.params.userId}</Link>
+      //   </div>
+      // )
       let textLabel = ''
       // If we've received the data for the Nutrition label, deserialize it for
       // rendering, otherwise display a loading message.
@@ -100,8 +101,9 @@ export default class Results extends React.Component {
                     '\nSodium       : ' + ingredient.getSodium() + ' ' + ingredient.getSodumUnit()
         nutritionLabel = <Label ingredientComposite={ingredient}/>
       }
-      const path = 'http://www.label.inphood.com/?user=' + this.props.params.userId + '&label=' + this.props.params.labelId + '&embed=false'
-      const epath = 'http://www.label.inphood.com/?user=' + this.props.params.userId + '&label=' + this.props.params.labelId + '&embed=true'
+      const path = 'http://www.label.inphood.com/?user=' + user + '&label=' + label + '&embed=false'
+      const epath = 'http://www.label.inphood.com/?user=' + user + '&label=' + label + '&embed=true'
+      const embedMsg = '<embed src=' + epath + ' height=600 width=400>'
       const recipe = <pre>{this.props.results.data.rawData}</pre>
       const {selectedTags} = this.props.results.data
       const tags = selectedTags ? (
@@ -110,7 +112,7 @@ export default class Results extends React.Component {
           tagName={'Ingredient Tags:'}
           clean={true}
         /> ) : null
-      const label = (
+      const labelDisplay = (
         <Grid>
           <div>
           <Row className="show-grid">
@@ -133,7 +135,7 @@ export default class Results extends React.Component {
               </CopyToClipboard>
               {this.state.copied ? <span style={{color: 'red'}}>&nbsp;Copied.</span> : null}
               <div style={containerStyle} />
-              <CopyToClipboard text={epath}
+              <CopyToClipboard text={embedMsg}
                 onCopy={() => this.setState({ecopied: true, copied: false})}>
                 <Button className="btn-primary-spacing" bsStyle="success">
                   Embed URL&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-edit"></Glyphicon>
@@ -146,7 +148,7 @@ export default class Results extends React.Component {
           </div>
         </Grid>
       )
-      return label
+      return labelDisplay
     }
   }
 }

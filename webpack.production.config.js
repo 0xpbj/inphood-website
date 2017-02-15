@@ -63,6 +63,8 @@ module.exports = {
       AWS_SECRET_KEY: 'v5m0WbHnJVkpN4RB9fzgofrbcc4n4MNT05nGp7nf',
       ELASTIC_LAMBDA_URL: 'https://xmucc9zjlh.execute-api.us-west-2.amazonaws.com/prod/ingredients',
       SCRAPER_LAMBDA_URL: 'https://ay402153tg.execute-api.us-west-2.amazonaws.com/prod/url',
+      CLARIFAI_CLIENT_ID: 'Gk0xpb23IWIY4vRMbHlgQdUxSjlUPBcySEd_gbXN',
+      CLARIFAI_CLIENT_SECRET: 'MwkyjpQgC30xwvW6wzext0FyqXle32BcuGX3ZUEe',
       DEBUG: false,
     }),
     'react': 'React',

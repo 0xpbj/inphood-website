@@ -388,6 +388,6 @@ export default function* root() {
   yield fork(takeLatest, SELECTED_TAGS, updateFirebaseTags)
   yield fork(takeLatest, SEND_SERIALIZED_DATA, loadSerializedData)
   yield fork(takeLatest, IG_UPLOAD_PHOTO, loadAWSPut)
-  yield fork(takeLatest, AN_SELECTED_PHOTO, loadCVData)
+  // yield fork(takeLatest, AN_SELECTED_PHOTO, loadCVData)
   yield fork(takeLatest, STORE_PARSED_DATA, processParseForLabel)
 }

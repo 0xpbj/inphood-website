@@ -89,12 +89,11 @@ module.exports = {
       FIREBASE_STORAGE_BUCKET:'inphooddb-e0dfd.appspot.com',
       AWS_ACCESS_ID: 'AKIAI25XHNISG4KDDM3Q',
       AWS_SECRET_KEY: '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',
-      DEBUG: true,
       ELASTIC_LAMBDA_URL: 'https://tah21v2noa.execute-api.us-west-2.amazonaws.com/prod/ingredients',
       SCRAPER_LAMBDA_URL: 'https://3cv8ktguzh.execute-api.us-west-2.amazonaws.com/prod/url',
       CLARIFAI_CLIENT_ID: 'Gk0xpb23IWIY4vRMbHlgQdUxSjlUPBcySEd_gbXN',
       CLARIFAI_CLIENT_SECRET: 'MwkyjpQgC30xwvW6wzext0FyqXle32BcuGX3ZUEe',
-      fastDevelopNutritionPage: false
+      DEBUG: true
     }),
     'react': 'React',
     'react-dom': 'ReactDOM',

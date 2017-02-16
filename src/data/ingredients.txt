@@ -89,7 +89,6 @@ dandelion
 dough
 eggplant
 egg
-eggs
 endive
 fats
 fava beans
@@ -436,8 +435,7 @@ teff
 triticale
 wheat
 wheat germ
-wheat
-flour
+wheat flour
 whole wheat flour
 wild rice
 zoomall-purpose flour

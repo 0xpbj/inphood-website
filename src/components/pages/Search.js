@@ -77,7 +77,7 @@ export default class Search extends React.Component {
                     label="Text"
                     value={this.state.searchIngredient}
                     onChange={this.getData.bind(this)}
-                    placeholder="Search & add (e.g: green onions)"
+                    placeholder="Search & add (e.g: onions)"
                   />
                 </FormGroup>
               {/*</form>*/}

@@ -260,7 +260,7 @@ function* callElasticSearchLambda(searchTerm, foodName, userSearch) {
     //console.log('First word: ', res[0]);
     //console.log('Foodname: ', foodName);
     //console.log('Ingredient: ', searchTerm);
-    let d = levenshtein.get(searchTerm, res[0].toLowerCase())
+    let d = levenshtein.get(searchTerm, res[0])
     sortedData.push({info: i, distance: d})
   }
   if (sortedData[0]) {

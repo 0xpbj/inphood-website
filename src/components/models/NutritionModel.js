@@ -69,7 +69,6 @@ export class NutritionModel {
   // throws if setRecipeAmount blows up
   // throws if a duplicate tag is specified
   addIngredient(tag, anIngredient, quantity, unit, append) {
-    debugger
     if (tag in this._scaledIngredients && !append) {
       throw new Error('tag already exists in nutrition model: ' + tag)
     }

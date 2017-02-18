@@ -280,7 +280,9 @@ function* callElasticSearchLambda(searchTerm, foodName, size, userSearch, append
 function* fetchMoreData() {
   while (true) {
     const {foodName, size} = yield take(GET_MORE_DATA)
-    yield fork(callElasticSearchLambda, foodName, foodName, size+10, false, true)
+    const foodWords = filterOutNonFoodWords(foodName)
+    if (foodWords[0])
+      yield fork(callElasticSearchLambda, foodWords[0].data, foodName, size+10, false, true)
   }
 }
 

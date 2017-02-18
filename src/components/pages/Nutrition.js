@@ -82,7 +82,7 @@ export default class Nutrition extends React.Component {
     //    TODO: in MVP3, re-architect this properly to work with the redux store
     //
     const {parsedData} = nextProps.nutrition
-    const {modelSetup, matchData, lazyLoadOperation, userSearch} = nextProps.model
+    const {modelSetup, matchData, lazyLoadOperation, userSearch, append, tag} = nextProps.model
     if (lazyLoadOperation.status === 'done') {
       this.completeMatchDropdownChange(lazyLoadOperation.tag, lazyLoadOperation.value)
       this.props.resetLazyLoadOperation()
@@ -94,6 +94,36 @@ export default class Nutrition extends React.Component {
     else if (userSearch) {
       this.changesFromSearch(nextProps)
     }
+    else if (append) {
+      this.changesFromAppend(tag)
+    }
+  }
+  changesFromAppend(tag) {
+    const descriptionOffset = 0
+    const keyOffset = 1
+    const dataObjOffset = 2
+    let tagMatches = this.props.model.matchData[tag]
+    // TODO: A lot of this is common to componentWillMount. Refactor
+    // 1. Add this tag to:
+    //    - this.state.nutritionModel
+    //    - ingredientControlModels
+    const description = tagMatches[0][descriptionOffset]
+    const dataForKey = tagMatches[0][dataObjOffset]
+    let ingredientModel = new IngredientModel()
+    ingredientModel.initializeSingle(description, tag, dataForKey)
+    const measureQuantity = ingredientModel.getMeasureQuantity()
+    const measureUnit = ingredientModel.getMeasureUnit()
+    this.props.nutritionModelAddIng(
+      tag, ingredientModel, measureQuantity, measureUnit, true)
+    let ingredientControlModel =
+      new IngredientControlModel(
+            measureQuantity,
+            this.getPossibleUnits(measureUnit),
+            measureUnit,
+            tupleHelper.getListOfTupleOffset(tagMatches, descriptionOffset),
+            description)
+    this.props.ingredientAddModel(tag, ingredientControlModel)
+    this.props.resetAppendData()
   }
   //TODO: this can be cleaned & merged with the recipe code
   changesFromSearch(nextProps) {
@@ -395,7 +425,10 @@ export default class Nutrition extends React.Component {
     if (dataForKey === undefined) {   // Lazy loading from FB
       let index = tupleHelper.getIndexForDescription(tagMatches, value)
       let tuple = tagMatches[index]
-      this.props.lazyFetchFirebase(value, tag, tuple[keyOffset], index)
+      if (value === '.....')
+        this.props.getMoreData(tag, tagMatches.length)
+      else
+        this.props.lazyFetchFirebase(value, tag, tuple[keyOffset], index)
     } else {
       this.completeMatchDropdownChange(tag, value)
     }

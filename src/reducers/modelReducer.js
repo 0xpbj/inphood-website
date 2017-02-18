@@ -19,7 +19,9 @@ import {
   RESET_LAZY_LOAD_STATUS,
   SEARCH_INGREDIENT,
   RESET_SEARCH_FLAG,
-  SELECTED_TAGS
+  SELECTED_TAGS,
+  GET_MORE_DATA,
+  RESET_APPEND_DATA
 } from '../constants/ActionTypes'
 
 import {NutritionModel} from '../components/models/NutritionModel'
@@ -36,7 +38,9 @@ const initialState = {
   modelSetup: false,
   userSearch: false,
   searchIngredient: '',
-  selectedTags: []
+  selectedTags: [],
+  append: false,
+  tag: ''
 }
 
 export default function modelFun(state = initialState, action) {
@@ -55,7 +59,9 @@ export default function modelFun(state = initialState, action) {
         modelSetup: false,
         userSearch: false,
         searchIngredient: '',
-        selectedTags: []
+        selectedTags: [],
+        append: false,
+        tag: ''
       }
     }
     case NM_SETUP:
@@ -68,7 +74,7 @@ export default function modelFun(state = initialState, action) {
     case NM_ADD_INGREDIENT: 
     {
       let {nutritionModel} = state
-      nutritionModel.addIngredient(action.tag, action.ingredientModel, action.quantity, action.unit)
+      nutritionModel.addIngredient(action.tag, action.ingredientModel, action.quantity, action.unit, action.append)
       return {
         ...state,
         nutritionModel: nutritionModel
@@ -179,7 +185,23 @@ export default function modelFun(state = initialState, action) {
 
         return {
           ...state,
+          tag: '',
           matchData: localMatchData
+        }
+      }
+    case RESET_APPEND_DATA:
+      {
+        return {
+          ...state,
+          append: false,
+          tag: ''
+        }
+      }
+    case GET_MORE_DATA:
+      {
+        return {
+          ...state,
+          tag: action.foodName
         }
       }
     case INITIALIZE_FIREBASE_DATA:
@@ -188,19 +210,20 @@ export default function modelFun(state = initialState, action) {
         // containing the description, ndbNo and undefined:
         // Clear the match data to prevent populating it twice on 'back' button actions etc.
         let localMatchData = state.matchData
-        if (action.foodName in localMatchData) {
+        if (action.foodName in localMatchData && !action.append) {
           return {
             ...state
           }
         }
-        
         localMatchData[action.foodName] = []
-
         for (let obj of action.data) {
           let dataEntry = [obj.info._source.Description, obj.info._id, undefined]
           localMatchData[action.foodName].push(dataEntry)
         }
-
+        if (action.data.length !== 0) {
+          let dataEntry = ['.....', '-1', undefined]
+          localMatchData[action.foodName].push(dataEntry)
+        }
         return {
           ...state,
           matchData: localMatchData
@@ -270,7 +293,6 @@ export default function modelFun(state = initialState, action) {
       // key (ndbNo) returned from elastic search:
       const descriptionOffset = 0
       const dataObjOffset = 2
-
       let localMatchData = state.matchData
       if (action.foodName in localMatchData) {
         let foodNameArr = localMatchData[action.foodName]
@@ -290,7 +312,8 @@ export default function modelFun(state = initialState, action) {
       return {
         ...state,
         matchData: localMatchData,
-        userSearch: action.userSearch
+        userSearch: action.userSearch,
+        append: action.append
       }
     }
     case SELECTED_TAGS:

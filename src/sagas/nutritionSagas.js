@@ -11,7 +11,8 @@ import {
   LAZY_FETCH_FIREBASE,
   LAZY_LOAD_FIREBASE,
   SEARCH_INGREDIENT,
-  SELECTED_TAGS
+  SELECTED_TAGS,
+  GET_MORE_DATA
 } from '../constants/ActionTypes'
 
 import * as db from './firebaseCommands'
@@ -153,7 +154,7 @@ function* uploadImageToS3(file, key, username, thumbnail, parsedData, rawData, t
 }
 
 function* loadAWSPut() {
-  // if (!Config.DEBUG) {
+  if (!Config.DEBUG) {
     const {profile} = yield select(state => state.userReducer)
     const {link, picture, username, parsedData, rawData, title, dietary, allergen, file} = yield select(state => state.nutritionReducer)
     const slink = link.slice(0, link.length - 1)
@@ -174,7 +175,7 @@ function* loadAWSPut() {
       yield put ({type: RESULT_URL, url, key, anonymous: false})
     else
       yield put ({type: RESULT_URL, url, key, anonymous: true})
-  // }
+  }
 }
 
 function* loadSerializedData() {
@@ -193,7 +194,7 @@ function* loadSerializedData() {
   }
 }
 
-function* getDataFromFireBase(foodName, ingredient, key, index, userSearch) {
+function* getDataFromFireBase(foodName, ingredient, key, index, userSearch, append) {
   const path = 'global/nutritionInfo/' + key
   const flag = (yield call(db.getPath, path)).exists()
   if (flag) {
@@ -201,11 +202,11 @@ function* getDataFromFireBase(foodName, ingredient, key, index, userSearch) {
     if (index)
       yield put ({type: LAZY_LOAD_FIREBASE, foodName, ingredient, index, data})
     else {
-      yield put ({type: INGREDIENT_FIREBASE_DATA, foodName, ingredient, data, userSearch})
+      yield put ({type: INGREDIENT_FIREBASE_DATA, foodName, ingredient, data, userSearch, append})
     }
   }
   else {
-    yield put ({type: INGREDIENT_FIREBASE_DATA, foodName, ingredient, data: [], userSearch})
+    yield put ({type: INGREDIENT_FIREBASE_DATA, foodName, ingredient, data: [], userSearch, append})
   }
 }
 
@@ -223,7 +224,7 @@ const elasticSearchFetch = (request) => {
   })
 }
 
-function* callElasticSearchLambda(searchTerm, foodName, userSearch) {
+function* callElasticSearchLambda(searchTerm, foodName, size, userSearch, append) {
   // Call elastic search (effectively this curl request):
   //
   // curl Config.ELASTIC_LAMBDA_URL
@@ -235,7 +236,7 @@ function* callElasticSearchLambda(searchTerm, foodName, userSearch) {
 
   const search = {
     'query': {'match' : {'Description': searchTerm}},
-    'size': 10
+    'size': size
   }
 
   let myHeaders = new Headers()
@@ -267,14 +268,22 @@ function* callElasticSearchLambda(searchTerm, foodName, userSearch) {
     sortedData.sort(function(a, b) {
       return a.distance - b.distance;
     })
-    yield put ({type: INITIALIZE_FIREBASE_DATA, foodName, data: sortedData})
-    yield fork(getDataFromFireBase, foodName, sortedData[0].info._source.Description, sortedData[0].info._id, 0, userSearch)
+    yield put ({type: INITIALIZE_FIREBASE_DATA, foodName, data: sortedData, append})
+    yield fork(getDataFromFireBase, foodName, sortedData[0].info._source.Description, sortedData[0].info._id, 0, userSearch, append)
   }
   else {
-    yield put ({type: INITIALIZE_FIREBASE_DATA, foodName, data: []})
-    yield put ({type: INGREDIENT_FIREBASE_DATA, foodName, ingredient: '', data: [], userSearch})
+    yield put ({type: INITIALIZE_FIREBASE_DATA, foodName, data: [], append})
+    yield put ({type: INGREDIENT_FIREBASE_DATA, foodName, ingredient: '', data: [], userSearch, append})
   }
 }
+
+function* fetchMoreData() {
+  while (true) {
+    const {foodName, size} = yield take(GET_MORE_DATA)
+    yield fork(callElasticSearchLambda, foodName, foodName, size+10, false, true)
+  }
+}
+
 
 function* lazyFetchFirebaseData() {
   while (true) {
@@ -325,10 +334,10 @@ function* processParseForLabel() {
     const foodWords = filterOutNonFoodWords(searchTerm)
     if (foodWords[0]) {
       yield put({type: CLEAR_FIREBASE_DATA})
-      yield fork(callElasticSearchLambda, foodWords[0].data, foodName, false)
+      yield fork(callElasticSearchLambda, foodWords[0].data, foodName, 10, false, false)
     }
     else {
-      yield put ({type: INITIALIZE_FIREBASE_DATA, foodName, data: []})
+      yield put ({type: INITIALIZE_FIREBASE_DATA, foodName, data: [], append: false})
       yield put ({type: INGREDIENT_FIREBASE_DATA, foodName, ingredient: '', data: [], userSearch: false})
     }
   }
@@ -339,11 +348,11 @@ function* userSearchIngredient() {
     const {searchIngredient} = yield take(SEARCH_INGREDIENT)
     const foodWords = filterOutNonFoodWords(searchIngredient)
     if (foodWords[0]) {
-      yield fork(callElasticSearchLambda, foodWords[0].data, searchIngredient, true)
+      yield fork(callElasticSearchLambda, foodWords[0].data, searchIngredient, 10, true, false)
     }
     else {
-      yield put ({type: INITIALIZE_FIREBASE_DATA, foodName: searchIngredient, data: []})
-      yield put ({type: INGREDIENT_FIREBASE_DATA, foodName: searchIngredient, ingredient: '', data: [], userSearch: true})
+      yield put ({type: INITIALIZE_FIREBASE_DATA, foodName: searchIngredient, data: [], append: false})
+      yield put ({type: INGREDIENT_FIREBASE_DATA, foodName: searchIngredient, ingredient: '', data: [], userSearch: true, append: false})
     }
   }
 }
@@ -385,6 +394,7 @@ export default function* root() {
   yield call(lambdaHack)
   yield fork(lazyFetchFirebaseData)
   yield fork(userSearchIngredient)
+  yield fork(fetchMoreData)
   yield fork(takeLatest, SELECTED_TAGS, updateFirebaseTags)
   yield fork(takeLatest, SEND_SERIALIZED_DATA, loadSerializedData)
   yield fork(takeLatest, IG_UPLOAD_PHOTO, loadAWSPut)

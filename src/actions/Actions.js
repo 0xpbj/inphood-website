@@ -30,7 +30,9 @@ import {
   IM_SET_DROPDOWN_UNITS,
   IM_REM_INGREDIENT_TAG,
   RESET_SEARCH_FLAG,
-  SELECTED_TAGS
+  SELECTED_TAGS,
+  GET_MORE_DATA,
+  RESET_APPEND_DATA
 } from '../constants/ActionTypes'
 
 export function igUploadPhoto() {
@@ -176,13 +178,14 @@ export function nutritionModelSetup(flag) {
   }
 }
 
-export function nutritionModelAddIng(tag, ingredientModel, quantity, unit) {
+export function nutritionModelAddIng(tag, ingredientModel, quantity, unit, append) {
   return {
     type: NM_ADD_INGREDIENT,
     tag,
     ingredientModel,
     quantity,
-    unit
+    unit,
+    append
   }
 }
 
@@ -267,5 +270,19 @@ export function selectedTags(tags) {
   return {
     type: SELECTED_TAGS,
     tags
+  }
+}
+
+export function getMoreData(foodName, size) {
+  return {
+    type: GET_MORE_DATA,
+    foodName,
+    size
+  }
+}
+
+export function resetAppendData() {
+  return {
+    type: RESET_APPEND_DATA
   }
 }

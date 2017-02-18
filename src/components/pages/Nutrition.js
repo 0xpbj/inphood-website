@@ -653,6 +653,9 @@ export default class Nutrition extends React.Component {
               </Col>
               <Col xs={12} sm={12} md={12} lg={5}>
                 <Row>
+                  <pre>{this.props.nutrition.rawData}</pre>
+                </Row>
+                <Row>
                   <div>
                     <text>&nbsp;</text>
                     <Label ingredientComposite={compositeModel}/>

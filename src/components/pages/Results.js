@@ -49,7 +49,6 @@ export default class Results extends React.Component {
     }
     else {
       const {label} = this.props.location.query
-      const user = 'anonymous'
       const socialContainerStyle = {
         marginTop: "20px",
         border: "2px solid black",
@@ -101,54 +100,61 @@ export default class Results extends React.Component {
                     '\nSodium       : ' + ingredient.getSodium() + ' ' + ingredient.getSodumUnit()
         nutritionLabel = <Label ingredientComposite={ingredient}/>
       }
-      const path = 'http://www.label.inphood.com/?user=' + user + '&label=' + label + '&embed=false'
-      const epath = 'http://www.label.inphood.com/?user=' + user + '&label=' + label + '&embed=true'
+      const path = 'http://www.label.inphood.com/?user=anonymous&label=' + label + '&embed=false'
+      const epath = 'http://www.label.inphood.com/?user=anonymous&label=' + label + '&embed=true'
       const embedMsg = '<embed src=' + epath + ' height=600 width=400>'
-      const recipe = <pre>{this.props.results.data.rawData}</pre>
-      const {selectedTags} = this.props.results.data
+      const {selectedTags, rawData, iUrl} = this.props.results.data
+      const recipe = <pre>{rawData}</pre>
       const tags = selectedTags ? (
         <TagController
           tags={selectedTags}
           tagName={'Ingredient Tags:'}
           clean={true}
         /> ) : null
-      const labelDisplay = (
-        <Grid>
+      return (
+        <Grid style={{marginTop: "20px"}}>
           <div>
           <Row className="show-grid">
             <Col xs={4} md={4}>
+              <div className="text-center"><ControlLabel>Meal Photo</ControlLabel></div>
+              <Image className="center-block" src={iUrl} responsive rounded />
+            </Col>
+            <Col xs={4} md={4}>
+              <div className="text-center"><ControlLabel>Nutrition Label</ControlLabel></div>
+              {nutritionLabel}
+            </Col>
+            <Col xs={4} md={4}>
               <div className="text-center"><ControlLabel>Text Label</ControlLabel></div>
               <pre>{textLabel}</pre>
-            </Col>
-            <Col xs={5} md={5}>
-              <div className="text-center"><ControlLabel>Nutrition Label</ControlLabel></div>
-                {nutritionLabel}
-            </Col>
-            <Col xs={3} md={3}>
-              <div className="text-center"><ControlLabel>Shareable Links</ControlLabel>
-              <div style={containerStyle} />
-              <CopyToClipboard text={path}
-                onCopy={() => this.setState({copied: true, ecopied: false})}>
-                <Button className="btn-primary-spacing" bsStyle="success">
-                  Share URL&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-share"></Glyphicon>
-                </Button>
-              </CopyToClipboard>
-              {this.state.copied ? <div style={{marginTop: "20px"}}><pre>{path}</pre><span style={{color: 'red'}}>&nbsp;Copied.</span></div> : null}
-              <div style={containerStyle} />
-              <CopyToClipboard text={embedMsg}
-                onCopy={() => this.setState({ecopied: true, copied: false})}>
-                <Button className="btn-primary-spacing" bsStyle="success">
-                  Embed URL&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-edit"></Glyphicon>
-                </Button>
-              </CopyToClipboard>
-              {this.state.ecopied ? <div style={{marginTop: "20px"}}><pre>{embedMsg}</pre><span style={{color: 'red'}}>&nbsp;Copied.</span></div> : null}
+              <div className="text-center" style={{marginTop: "30px"}}>
+                <Row style={{marginTop: "20px"}}>
+                  <Col xs={1} md={1} />
+                  <Col xs={5} md={5}>
+                    <CopyToClipboard text={path}
+                      onCopy={() => this.setState({copied: true, ecopied: false})}>
+                      <Button className="btn-primary-spacing" bsStyle="success">
+                        Share URL&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-share"></Glyphicon>
+                      </Button>
+                    </CopyToClipboard>
+                  </Col>
+                  <Col xs={5} md={5}>
+                    <CopyToClipboard text={embedMsg}
+                      onCopy={() => this.setState({ecopied: true, copied: false})}>
+                      <Button className="btn-primary-spacing" bsStyle="success">
+                        Embed URL&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-edit"></Glyphicon>
+                      </Button>
+                    </CopyToClipboard>
+                  </Col>
+                  <Col xs={1} md={1} />
+                </Row>
+                {this.state.copied ? <div style={{marginTop: "20px"}}><pre>{path}</pre><span style={{color: 'red'}}>&nbsp;Copied.</span></div> : null}
+                {this.state.ecopied ? <div style={{marginTop: "20px"}}><pre>{embedMsg}</pre><span style={{color: 'red'}}>&nbsp;Copied.</span></div> : null}
               </div>
             </Col>
           </Row>
           </div>
         </Grid>
       )
-      return labelDisplay
     }
   }
 }

@@ -52,20 +52,14 @@ export default class Nutrition extends React.Component {
     }
   }
   componentWillMount() {
-    if (!this.props.user.login && !this.props.user.anonymous) {
-      this.props.router.push('/')
+    if (this.props.nutrition.picture === '') {
+      this.props.router.push('/recipe')
     }
     else {
       ReactGA.event({
         category: 'User',
         action: 'Get nutrition information for image',
         nonInteraction: false
-      });
-      this.props.igUploadPhoto()
-      ReactGA.event({
-        category: 'User',
-        action: 'Uploading image to AWS',
-        nonInteraction: true
       });
     }
   }
@@ -563,16 +557,7 @@ export default class Nutrition extends React.Component {
   render() {
     const numIngredients = Object.keys(this.props.nutrition.parsedData).length
     const loadedIngredients = Object.keys(this.props.model.matchData).length
-    if (!this.props.user.login && !this.props.user.anonymous) {
-      return (
-        <Alert bsStyle="danger" onDismiss={() => this.props.router.push('/')}>
-          <h4>Oh snap! Login Error!</h4>
-          <p>
-            <Button bsStyle="danger" onClick={() => this.props.router.push('/')}>Go Home</Button>
-          </p>
-        </Alert>
-      )
-    } else if (loadedIngredients < numIngredients) {
+    if (loadedIngredients < numIngredients) {
       const progress = (100.0 * loadedIngredients) / numIngredients
       //console.log('\n\n\nProgress: ', progress)
       return (

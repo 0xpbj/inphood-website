@@ -1,5 +1,5 @@
 import {
-  IG_UPLOAD_PHOTO,
+  UPLOAD_PHOTO,
   AN_SELECTED_PHOTO,
   POST_LABEL_ID,
   RESULT_URL,
@@ -399,7 +399,7 @@ export default function* root() {
   yield fork(fetchMoreData)
   yield fork(takeLatest, SELECTED_TAGS, updateFirebaseTags)
   yield fork(takeLatest, SEND_SERIALIZED_DATA, loadSerializedData)
-  yield fork(takeLatest, IG_UPLOAD_PHOTO, loadAWSPut)
+  yield fork(takeLatest, UPLOAD_PHOTO, loadAWSPut)
   // yield fork(takeLatest, AN_SELECTED_PHOTO, loadCVData)
   yield fork(takeLatest, STORE_PARSED_DATA, processParseForLabel)
 }

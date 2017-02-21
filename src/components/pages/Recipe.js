@@ -15,6 +15,7 @@ import ControlLabel from 'react-bootstrap/lib/ControlLabel'
 import DropdownButton from 'react-bootstrap/lib/DropdownButton'
 import {parseRecipe, parseCaption} from '../../helpers/parseRecipe'
 import Chip from 'react-toolbox/lib/chip'
+import UploadModal from '../layout/UploadModal'
 
 import MarginLayout from '../../helpers/MarginLayout'
 import TopBar from '../layout/TopBar'
@@ -41,50 +42,61 @@ export default class SelectedImage extends React.Component {
       title: '',
       ingredients: '',
       recipeError: false,
+      pictureError: false,
+      picturePopoverFlag: false,
       captionPopoverFlag: false,
-      recipePopoverFlag: false
+      recipePopoverFlag: false,
+      showUploadModal: false
     }
   }
   componentWillMount() {
-    if (!this.props.user.login && !this.props.user.anonymous) {
-      this.props.router.push('/')
-    }
-    else {
-      this.props.nutritionModelReset()
-      ReactGA.event({
-        category: 'User',
-        action: 'Go to image page',
-        nonInteraction: false
-      });
-    }
+    this.props.nutritionModelReset()
+    ReactGA.event({
+      category: 'User',
+      action: 'Go to image page',
+      nonInteraction: false
+    });
   }
   recipeFlow() {
     if (this.state.ingredients === '') {
       this.setState({recipeError: true})
     }
+    else if (this.props.nutrition.picture === '') {
+      this.setState({pictureError: true})
+    }
     else {
       const {ingredients, title, dietary, allergen} = this.state
       let data = parseRecipe(ingredients)
       this.props.storeParsedData(data.found, data.missing, ingredients, title, dietary, allergen)
+      this.props.uploadPhoto()
+      ReactGA.event({
+        category: 'User',
+        action: 'Uploading image to AWS',
+        nonInteraction: true
+      });
       this.props.router.push('nutrition')
     }
   }
+  onDrop(acceptedFiles, rejectedFiles) {
+    ReactGA.event({
+      category: 'User',
+      action: 'Image upload flow initiated',
+      label: 'Local Image Flow',
+      nonInteraction: false
+    })
+    acceptedFiles.forEach(file => {
+      this.props.anSelectedPhoto(file)
+    })
+  }
   render() {
-    if (!this.props.user.login && !this.props.user.anonymous) {
-      return (
-        <Alert bsStyle="danger" onDismiss={() => this.props.router.push('/')}>
-          <h4>Oh snap! Login Error!</h4>
-          <p>
-            <Button bsStyle="danger" onClick={() => this.props.router.push('/')}>Go Home</Button>
-          </p>
-        </Alert>
-      )
-    }
-    const caption = this.props.user.anonymous ? null : <pre>{this.props.user.photos.data[this.props.nutrition.index].caption.text}</pre>
     const recipeAlert = (this.state.recipeError) ? (
       <Alert bsStyle="danger">
-        <h4>Oh snap! You forgot to enter a recipe!</h4>.
-
+        <h4>Oh snap! You forgot to enter a recipe!</h4>
+      </Alert>
+    ) : null
+    const pictureAlert = (this.state.pictureError) ? (
+      <Alert bsStyle="danger">
+        <h4>Oh snap! You forgot to add a picture of your meal!</h4>
       </Alert>
     ) : null
     const recipePopover = this.state.recipePopoverFlag ? (
@@ -100,6 +112,19 @@ export default class SelectedImage extends React.Component {
         </Popover>
       </div>
     ) : null
+    const picturePopover = this.state.picturePopoverFlag ? (
+      <div style={{ width: 300 }}>
+        <Popover
+          id="popover-basic"
+          placement="right"
+          positionLeft={20}
+          positionTop={-40}
+          title="Picture Help"
+        >
+          Add a meal photo to highlight recipe details
+        </Popover>
+      </div>
+    ) : null
     const captionPopover = this.state.captionPopoverFlag ? (
       <Popover
         id="popover-basic"
@@ -108,65 +133,53 @@ export default class SelectedImage extends React.Component {
         Extract ingredients from social media caption
       </Popover>
     ) : null
-    let socialCaption = null
-    let instagramButton = null
     let textRows = 9
-    if (this.props.user.anonymous === false) {
-      socialCaption = (
-        <div>
-          <ControlLabel>Instagram Caption</ControlLabel>
-          {/*<Glyphicon onClick={()=>this.setState({captionPopoverFlag: !this.state.captionPopoverFlag})} style={{marginLeft: 10}} glyph="glyphicon glyphicon-info-sign">
-            {captionPopover}
-          </Glyphicon>*/}
-          <section>
-            {caption}
-          </section>
-        </div>
-      )
-      instagramButton = (
-        <Button className="btn-primary-spacing"
-                onClick={() => this.captionFlow()}>
-          Extract Recipe
-        </Button>
-      )
-      textRows = this.props.user.photos.data[this.props.nutrition.index].caption.text.split(/\n/).length
-      if (textRows < 5) {
-        textRows = 9
-      }
-    }
-    else {
-      socialCaption = (
-        <div>
-          <FieldGroup
-            id="formControlsText"
-            type="text"
-            label="Recipe Title"
-            placeholder="Pumpkin Waffles"
-            onChange={(e) => this.setState({title: e.target.value})}
-          />
-          <FieldGroup
-            id="formControlsText"
-            type="text"
-            label="Dietary Information"
-            placeholder="Paleo, Vegan, etc..."
-            onChange={(e) => this.setState({dietary: e.target.value})}
-          />
-          <FieldGroup
-            id="formControlsText"
-            type="text"
-            label="Allergen Information"
-            placeholder="Peanut, Gluten, etc..."
-            onChange={(e) => this.setState({allergen: e.target.value})}
-          />
-        </div>
-      )
-    }
-    const image = this.props.user.anonymous ? (
+    let recipeForm = (
+      <div>
+        <FieldGroup
+          id="formControlsText"
+          type="text"
+          label="Recipe Title"
+          placeholder="Pumpkin Waffles"
+          onChange={(e) => this.setState({title: e.target.value})}
+        />
+        <FieldGroup
+          id="formControlsText"
+          type="text"
+          label="Dietary Information"
+          placeholder="Paleo, Vegan, etc..."
+          onChange={(e) => this.setState({dietary: e.target.value})}
+        />
+        <FieldGroup
+          id="formControlsText"
+          type="text"
+          label="Allergen Information"
+          placeholder="Peanut, Gluten, etc..."
+          onChange={(e) => this.setState({allergen: e.target.value})}
+        />
+      </div>
+    )
+    const image = this.props.nutrition.picture ? (
       <Image className="center-block" src={this.props.nutrition.picture} responsive rounded/>
     ) : (
-      <Image className="center-block" src={this.props.user.photos.data[this.props.nutrition.index].picture} responsive rounded/>
+      <div className="text-center">
+        {pictureAlert}
+        <Button bsStyle="default" onClick={()=>this.setState({ showUploadModal: true })}>
+          Upload Meal Photo&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-open"></Glyphicon>
+        </Button>
+        <Glyphicon
+          onClick={()=>this.setState({picturePopoverFlag: !this.state.picturePopoverFlag})}
+          style={{marginLeft: 10}}
+          glyph="glyphicon glyphicon-info-sign">
+          {picturePopover}
+        </Glyphicon>
+        <UploadModal
+          onDrop={(acceptedFiles, rejectedFiles) => this.onDrop.bind(this)}
+          show={this.state.showUploadModal}
+          onHide={() => this.setState({showUploadModal: false})}
+        />
+      </div>
     )
-
     const ml = new MarginLayout()
     const useRecipeButton = (
       <Button className="btn-primary-spacing"
@@ -189,7 +202,7 @@ export default class SelectedImage extends React.Component {
                lg={ml.lgCol}>
             <Row>
               <Col xs={4} md={4}>
-                {socialCaption}
+                {recipeForm}
               </Col>
               <Col xs={8} md={8}>
                 <FormGroup controlId="formControlsTextarea">

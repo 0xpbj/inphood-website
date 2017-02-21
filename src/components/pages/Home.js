@@ -18,36 +18,11 @@ export default class Home extends React.Component {
   constructor() {
     super()
     this.state = {
-      showUploadModal: false,
       showHelp: false
     }
   }
-  componentWillMount() {
-    if (this.props.user.anonymous)
-      this.props.anClearData()
-  }
-  componentWillReceiveProps(nextProps) {
-    if (this.state.anonymous !== nextProps.user.anonymous)
-      this.setState({anonymous: nextProps.user.anonymous})
-  }
-  onDrop(acceptedFiles, rejectedFiles) {
-    ReactGA.event({
-      category: 'User',
-      action: 'Image upload flow initiated',
-      label: 'Local Image Flow',
-      nonInteraction: false
-    })
-    acceptedFiles.forEach(file => {
-      this.props.anSelectedPhoto(file)
-    })
-    this.props.router.push('image')
-  }
   render() {
     const images = [
-      { 
-        original: require('../../images/howto/select.jpg'),
-        description: 'Select a meal photo'
-      },
       { 
         original: require('../../images/howto/recipe.jpg'),
         description: 'Write recipe details'
@@ -55,9 +30,13 @@ export default class Home extends React.Component {
       { 
         original: require('../../images/howto/mixers.jpg'),
         description: 'Mix ingredient quantites'
+      },
+      { 
+        original: require('../../images/howto/select.jpg'),
+        description: 'Share your results'
       }
     ]
-    const {showHelp, showUploadModal, lightboxIsOpen} = this.state
+    const {showHelp} = this.state
     const jumbo = showHelp ? (
       <ImageGallery
         items={images}
@@ -88,15 +67,9 @@ export default class Home extends React.Component {
           <Jumbotron style={{}}>{jumbo}</Jumbotron>
           <Row>
             <div className="text-center">
-              {/*<Button onClick={this.handleClick.bind(this)}>Sign in with Instagram</Button>*/}
-              <Button bsStyle="default" onClick={()=>this.setState({ showUploadModal: true })}>
-                Upload Photo&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-open"></Glyphicon>
+              <Button bsStyle="default" onClick={() => this.props.router.push('recipe')}>
+                Get Started&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-send"></Glyphicon>
               </Button>
-              <UploadModal
-                onDrop={(acceptedFiles, rejectedFiles) => this.onDrop.bind(this)}
-                show={showUploadModal}
-                onHide={() => this.setState({showUploadModal: false})}
-              />
             </div>
           </Row>
         </Grid>

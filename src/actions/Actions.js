@@ -1,5 +1,5 @@
 import {
-  IG_UPLOAD_PHOTO,
+  UPLOAD_PHOTO,
   SELECTED_PHOTO,
   IG_LOGIN_REQUEST,
   IG_LOGOUT_REQUEST,
@@ -35,9 +35,9 @@ import {
   RESET_APPEND_DATA
 } from '../constants/ActionTypes'
 
-export function igUploadPhoto() {
+export function uploadPhoto() {
   return {
-    type: IG_UPLOAD_PHOTO,
+    type: UPLOAD_PHOTO,
   }
 }
 

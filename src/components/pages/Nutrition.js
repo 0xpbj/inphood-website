@@ -611,7 +611,7 @@ export default class Nutrition extends React.Component {
     )
     return (
       <div>
-        <TopBar step="3"
+        <TopBar step=""
                 stepText=""
                 altContent={searchWidget}
                 aButton={shareResultsButton}/>

@@ -5,6 +5,7 @@ import Grid from 'react-bootstrap/lib/Grid'
 import Alert from 'react-bootstrap/lib/Alert'
 import Image from 'react-bootstrap/lib/Image'
 import Button from 'react-bootstrap/lib/Button'
+import DropdownButton from 'react-bootstrap/lib/DropdownButton'
 import Tooltip from 'react-bootstrap/lib/Tooltip'
 import Glyphicon from 'react-bootstrap/lib/Glyphicon'
 import ControlLabel from 'react-bootstrap/lib/ControlLabel'
@@ -13,6 +14,7 @@ import {Link} from 'react-router'
 import {IngredientModel} from '../models/IngredientModel'
 import TagController from '../controllers/TagController'
 import CopyToClipboard from 'react-copy-to-clipboard';
+import TopBar from '../layout/TopBar'
 
 export default class Results extends React.Component {
   constructor() {
@@ -111,9 +113,38 @@ export default class Results extends React.Component {
           tagName={'Ingredient Tags:'}
           clean={true}
         /> ) : null
+      const shareButtons = (
+        <div className="text-center" style={{marginTop: "30px"}}>
+          <Row style={{marginTop: "20px"}}>
+            <Col xs={1} md={1} />
+            <Col xs={5} md={5}>
+              <CopyToClipboard text={path}
+                onCopy={() => this.setState({copied: true, ecopied: false})}>
+                <Button className="btn-primary-spacing" bsStyle="success">
+                  Share URL<Glyphicon glyph="glyphicon glyphicon-share"></Glyphicon>
+                </Button>
+              </CopyToClipboard>
+            </Col>
+            <Col xs={5} md={5}>
+              <CopyToClipboard text={embedMsg}
+                onCopy={() => this.setState({ecopied: true, copied: false})}>
+                <Button className="btn-primary-spacing" bsStyle="success">
+                  Embed URL<Glyphicon glyph="glyphicon glyphicon-edit"></Glyphicon>
+                </Button>
+              </CopyToClipboard>
+            </Col>
+            <Col xs={1} md={1} />
+          </Row>
+          {this.state.copied ? <div style={{marginTop: "20px"}}><pre>{path}</pre><span style={{color: 'red'}}>&nbsp;Copied.</span></div> : null}
+          {this.state.ecopied ? <div style={{marginTop: "20px"}}><pre>{embedMsg}</pre><span style={{color: 'red'}}>&nbsp;Copied.</span></div> : null}
+        </div>
+      )
       return (
-        <Grid style={{marginTop: "20px"}}>
-          <div>
+        <div>
+          <TopBar step=""
+                stepText=""
+                aButton={null}/>
+          <Grid>
           <Row className="show-grid">
             <Col xs={4} md={4}>
               <div className="text-center"><ControlLabel>Meal Photo</ControlLabel></div>
@@ -126,34 +157,11 @@ export default class Results extends React.Component {
             <Col xs={4} md={4}>
               <div className="text-center"><ControlLabel>Text Label</ControlLabel></div>
               <pre>{textLabel}</pre>
-              <div className="text-center" style={{marginTop: "30px"}}>
-                <Row style={{marginTop: "20px"}}>
-                  <Col xs={1} md={1} />
-                  <Col xs={5} md={5}>
-                    <CopyToClipboard text={path}
-                      onCopy={() => this.setState({copied: true, ecopied: false})}>
-                      <Button className="btn-primary-spacing" bsStyle="success">
-                        Share URL&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-share"></Glyphicon>
-                      </Button>
-                    </CopyToClipboard>
-                  </Col>
-                  <Col xs={5} md={5}>
-                    <CopyToClipboard text={embedMsg}
-                      onCopy={() => this.setState({ecopied: true, copied: false})}>
-                      <Button className="btn-primary-spacing" bsStyle="success">
-                        Embed URL&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-edit"></Glyphicon>
-                      </Button>
-                    </CopyToClipboard>
-                  </Col>
-                  <Col xs={1} md={1} />
-                </Row>
-                {this.state.copied ? <div style={{marginTop: "20px"}}><pre>{path}</pre><span style={{color: 'red'}}>&nbsp;Copied.</span></div> : null}
-                {this.state.ecopied ? <div style={{marginTop: "20px"}}><pre>{embedMsg}</pre><span style={{color: 'red'}}>&nbsp;Copied.</span></div> : null}
-              </div>
+              {shareButtons}
             </Col>
           </Row>
-          </div>
-        </Grid>
+          </Grid>
+        </div>
       )
     }
   }

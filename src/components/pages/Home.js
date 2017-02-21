@@ -10,7 +10,6 @@ import Jumbotron from 'react-bootstrap/lib/Jumbotron'
 import Glyphicon from 'react-bootstrap/lib/Glyphicon'
 import UploadModal from '../layout/UploadModal'
 import MarginLayout from '../../helpers/MarginLayout'
-import TopBar from '../layout/TopBar'
 import ImageGallery from 'react-image-gallery'
 import 'react-image-gallery/styles/css/image-gallery.css'
 const Config = require('Config')
@@ -32,7 +31,7 @@ export default class Home extends React.Component {
         description: 'Mix ingredient quantites'
       },
       { 
-        original: require('../../images/howto/select.jpg'),
+        original: require('../../images/howto/result.jpg'),
         description: 'Share your results'
       }
     ]

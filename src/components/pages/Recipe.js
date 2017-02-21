@@ -190,8 +190,8 @@ export default class SelectedImage extends React.Component {
     )
     return (
       <div>
-        <TopBar step="1"
-                stepText="Enter recipe information ..."
+        <TopBar step=""
+                stepText=""
                 aButton={useRecipeButton}/>
 
         <Row>

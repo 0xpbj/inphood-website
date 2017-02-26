@@ -1,9 +1,6 @@
 import {
-  AN_CLEAR_DATA,
-  ADD_CAPTION,
-  AN_SELECTED_PHOTO,
+  CLEAR_DATA,
   SELECTED_PHOTO,
-  IG_UPDATED_CAPTION,
   RESULT_URL,
   SEND_SERIALIZED_DATA,
   STORE_PARSED_DATA,
@@ -12,12 +9,7 @@ import {
 } from '../constants/ActionTypes'
 
 const initialState = {
-  link: '',
   picture: '',
-  caption: '',
-  updatedCaption: '',
-  username: '',
-  anonymous: false,
   resultUrl: '',
   key: '',
   composite: '',
@@ -35,14 +27,9 @@ const initialState = {
 export default function nutrition(state = initialState, action) {
   switch (action.type) {
     case CLEAN_REDUCERS:
-    case AN_CLEAR_DATA:
+    case CLEAR_DATA:
       return {
-        link: '',
         picture: '',
-        caption: '',
-        updatedCaption: '',
-        username: '',
-        anonymous: false,
         resultUrl: '',
         key: '',
         composite: '',
@@ -57,33 +44,11 @@ export default function nutrition(state = initialState, action) {
         file: '',
         missingData: []
       }
-    case ADD_CAPTION:
-      return {
-        ...state,
-        caption: action.caption
-      }
-    case AN_SELECTED_PHOTO:
-      return {
-        ...state,
-        anonymous: true,
-        file: action.photo,
-        picture: action.photo.preview,
-        link: '',
-        username: 'anonymous',
-      }
     case SELECTED_PHOTO:
       return {
         ...state,
-        index: action.index,
-        link: action.photo.link,
-        picture: action.photo.picture,
-        caption: action.photo.caption.text,
-        username: action.photo.user.username
-      }
-    case IG_UPDATED_CAPTION:
-      return {
-        ...state,
-        updatedCaption: action.caption
+        file: action.photo,
+        picture: action.photo.preview,
       }
     case RESULT_URL:
       return {

@@ -1,6 +1,5 @@
 import {
   UPLOAD_PHOTO,
-  AN_SELECTED_PHOTO,
   POST_LABEL_ID,
   RESULT_URL,
   SEND_SERIALIZED_DATA,
@@ -21,54 +20,6 @@ import request from 'request'
 const firebase = require('firebase')
 const Config = require('Config')
 const S3 = require('aws-sdk').S3
-const clarifai = require('clarifai')
-const vision = new clarifai.App(
-  Config.CLARIFAI_CLIENT_ID,
-  Config.CLARIFAI_CLIENT_SECRET
-)
-
-const getTags = (response) => {
-  const {concepts} = response.response.data.outputs[0].data
-  let tags = ''
-  for (let id in concepts) {
-    if (concepts[id].value > 0.80) {
-      if (tags === '') {
-        tags = concepts[id].name
-      }
-      else {
-        tags = tags + ', ' + concepts[id].name
-      }
-    }
-  }
-  return tags
-}
-
-const getCVData = (data) => {
-  return vision.models.predict(clarifai.FOOD_MODEL, {base64: data})
-  .then(response => ({ response }))
-}
-
-const get64Data = (file) => {
-  var reader = new FileReader()
-  reader.readAsDataURL(file)
-  reader.onloadend = () => {
-    return reader.result
-  }
-  reader.onerror = error => {
-    console.log('Error: ', error);
-  }
-}
-
-function* loadCVData() {
-  if (!Config.DEBUG) {
-    const {file} = yield select(state => state.nutritionReducer)
-    const data64 = yield call(get64Data, file)
-    // const response = yield call(getCVData, data64)
-    // console.log('Response: ', response)
-    // const tags = yield call(getTags, response)
-    // console.log('Tags: ', tags)
-  }
-}
 
 const firebaseLogin = () => {
   return firebase.auth().signInAnonymously()
@@ -83,7 +34,7 @@ const sendToS3 = (request) => {
     if(contentType && contentType.indexOf("application/json") !== -1) {
       return response.json().then(function(json) {
         return json
-      });
+      })
     } else {
       //console.log("Unexpected server response (non-JSON object returned)");
     }
@@ -123,8 +74,7 @@ function* sendToLambdaScraper(url, key, username, thumbnail, parsedData, rawData
   }
 }
 
-function* uploadImageToS3(file, key, username, thumbnail, parsedData, rawData, title, allergen, dietary) {
-  const extension = file.name.substr(file.name.lastIndexOf('.'))
+function* uploadImageToS3(file, key, username, extension) {
   const s3 = new S3({
     accessKeyId:     Config.AWS_ACCESS_ID,
     secretAccessKey: Config.AWS_SECRET_KEY,
@@ -137,61 +87,42 @@ function* uploadImageToS3(file, key, username, thumbnail, parsedData, rawData, t
     ContentType: 'image/jpeg',
     ACL: 'public-read'
   }
-  s3.upload(params, function(err, data) {
-    if (!err) {
-      firebase.database().ref('/global/nutritionLabel/'+username+'/'+key).update({
-        key,
-        user: username,
-        iUrl: 'http://www.image.inphood.com/'+username+'/'+key+extension,
-        rawData,
-        parsedData,
-        title,
-        dietary,
-        allergen
-      })
-    }
-  })
+  s3.upload(params, function(err, data) {})
 }
 
 function* loadAWSPut() {
-  if (!Config.DEBUG) {
-    const {profile} = yield select(state => state.userReducer)
-    const {link, picture, username, parsedData, rawData, title, dietary, allergen, file} = yield select(state => state.nutritionReducer)
-    const slink = link.slice(0, link.length - 1)
+  // if (!Config.DEBUG) {
+    const {parsedData, rawData, title, dietary, allergen, file} = yield select(state => state.nutritionReducer)
     yield call (firebaseLogin)
-    let key = ''
-    let thumbnail = ''
-    if (!profile) {
-      key = firebase.database().ref('/global/nutritionLabel/anonymous').push().key
-    }
-    else {
-      key = slink.substring(slink.lastIndexOf('/')+1)
-      thumbnail = profile.thumbnail
-    }
+    let key = firebase.database().ref('/global/nutritionLabel/anonymous').push().key
     // yield call (sendToLambdaScraper, picture, key, username, thumbnail, parsedData, rawData, title, dietary, allergen)
-    yield call (uploadImageToS3, file, key, username, thumbnail, parsedData, rawData, title, dietary, allergen)
+    let iUrl = ''
+    if (file) {
+      const extension = file.name.substr(file.name.lastIndexOf('.'))
+      yield call (uploadImageToS3, file, key, 'anonymous', extension)
+      iUrl = 'http://www.image.inphood.com/anonymous/'+key+extension
+    }
+    firebase.database().ref('/global/nutritionLabel/anonymous/'+key).update({
+      key,
+      user: 'anonymous',
+      iUrl,
+      rawData,
+      parsedData,
+      title,
+      dietary,
+      allergen
+    })
     const url = "http://www.inphood.com/" + key
-    if (profile)
-      yield put ({type: RESULT_URL, url, key, anonymous: false})
-    else
-      yield put ({type: RESULT_URL, url, key, anonymous: true})
-  }
+    yield put ({type: RESULT_URL, url, key, anonymous: true})
+  // }
 }
 
 function* loadSerializedData() {
-  const {composite, full, key, anonymous,username} = yield select(state => state.nutritionReducer)
-  if (anonymous) {
-    firebase.database().ref('/global/nutritionLabel/anonymous/'+key).update({
-      composite,
-      full
-    })
-  }
-  else if (username) {
-    firebase.database().ref('/global/nutritionLabel/'+username+'/'+key).update({
-      composite,
-      full
-    })
-  }
+  const {composite, full, key} = yield select(state => state.nutritionReducer)
+  firebase.database().ref('/global/nutritionLabel/anonymous/'+key).update({
+    composite,
+    full
+  })
 }
 
 function* getDataFromFireBase(foodName, ingredient, key, index, userSearch, append) {
@@ -332,8 +263,7 @@ function* processParseForLabel() {
   for (let i = 0; i < parsedData.length; i++) {
     const parseObj = parsedData[i]
     const foodName = parseObj['name']
-    let searchTerm = foodName
-    const foodWords = filterOutNonFoodWords(searchTerm)
+    const foodWords = filterOutNonFoodWords(foodName)
     if (foodWords[0]) {
       yield put({type: CLEAR_FIREBASE_DATA})
       yield fork(callElasticSearchLambda, foodWords[0].data, foodName, 10, false, false)
@@ -348,27 +278,14 @@ function* processParseForLabel() {
 function* userSearchIngredient() {
   while (true) {
     const {searchIngredient} = yield take(SEARCH_INGREDIENT)
-    const foodWords = filterOutNonFoodWords(searchIngredient)
-    if (foodWords[0]) {
-      yield fork(callElasticSearchLambda, foodWords[0].data, searchIngredient, 10, true, false)
+    // const foodWords = filterOutNonFoodWords(searchIngredient)
+    if (searchIngredient) {
+      yield fork(callElasticSearchLambda, searchIngredient, searchIngredient, 10, true, false)
     }
     else {
       yield put ({type: INITIALIZE_FIREBASE_DATA, foodName: searchIngredient, data: [], append: false})
       yield put ({type: INGREDIENT_FIREBASE_DATA, foodName: searchIngredient, ingredient: '', data: [], userSearch: true, append: false})
     }
-  }
-}
-
-function* updateFirebaseTags() {
-  const {selectedTags} = yield select(state => state.modelReducer)
-  const {profile} = yield select(state => state.userReducer)
-  if (profile) {
-    const {link, username} = yield select(state => state.nutritionReducer)
-    const slink = link.slice(0, link.length - 1)
-    const key = slink.substring(slink.lastIndexOf('/')+1)
-    firebase.database().ref('/global/nutritionLabel/'+username+'/'+key).update({
-      selectedTags: selectedTags
-    })
   }
 }
 
@@ -397,9 +314,7 @@ export default function* root() {
   yield fork(lazyFetchFirebaseData)
   yield fork(userSearchIngredient)
   yield fork(fetchMoreData)
-  yield fork(takeLatest, SELECTED_TAGS, updateFirebaseTags)
   yield fork(takeLatest, SEND_SERIALIZED_DATA, loadSerializedData)
   yield fork(takeLatest, UPLOAD_PHOTO, loadAWSPut)
-  // yield fork(takeLatest, AN_SELECTED_PHOTO, loadCVData)
   yield fork(takeLatest, STORE_PARSED_DATA, processParseForLabel)
 }

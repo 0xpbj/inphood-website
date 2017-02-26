@@ -29,7 +29,7 @@ const FieldGroup = ({ id, label, ...props }) => {
   )
 }
 
-export default class SelectedImage extends React.Component {
+export default class Recipe extends React.Component {
   constructor() {
     super()
     this.state = {
@@ -68,8 +68,7 @@ export default class SelectedImage extends React.Component {
       const {ingredients, title, dietary, allergen} = this.state
       let data = parseRecipe(ingredients)
       this.props.storeParsedData(data.found, data.missing, ingredients, title, dietary, allergen)
-      if (this.props.nutrition.picture !== '')
-        this.props.uploadPhoto()
+      this.props.uploadPhoto()
       ReactGA.event({
         category: 'User',
         action: 'Uploading image to AWS',
@@ -86,7 +85,7 @@ export default class SelectedImage extends React.Component {
       nonInteraction: false
     })
     acceptedFiles.forEach(file => {
-      this.props.anSelectedPhoto(file)
+      this.props.selectedPhoto(file)
     })
   }
   render() {

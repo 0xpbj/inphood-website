@@ -1,25 +1,8 @@
-// Instagram Flow Actions
-export const IG_LOGIN_REQUEST = 'IG_LOGIN_REQUEST'
-export const IG_LOGOUT_REQUEST = 'IG_LOGOUT_REQUEST'
-export const IG_REFRESH_REQUEST = 'IG_REFRESH_REQUEST'
-export const IG_LOGIN_SUCCESS = 'IG_LOGIN_SUCCESS'
-export const IG_LOGOUT_SUCCESS = 'IG_LOGOUT_SUCCESS'
-export const IG_LOGIN_ERROR = 'IG_LOGIN_ERROR'
-export const IG_LOGOUT_ERROR = 'IG_LOGOUT_ERROR'
-export const IG_PHOTOS_SUCCESS = 'IG_PHOTOS_SUCCESS'
-export const IG_PHOTOS_ERROR = 'IG_PHOTOS_ERROR'
-export const IG_PROFILE_SUCCESS = 'IG_PROFILE_SUCCESS'
-export const IG_PROFILE_ERROR = 'IG_PROFILE_ERROR'
-export const SELECTED_PHOTO = 'SELECTED_PHOTO'
-export const UPLOAD_PHOTO = 'UPLOAD_PHOTO'
-export const IG_UPDATED_CAPTION = 'IG_UPDATED_CAPTION'
-
-
-// Anonymous Flow Actions
-export const AN_CLEAR_DATA = 'AN_CLEAR_DATA'
+// User Flow Actions
+export const CLEAR_DATA = 'CLEAR_DATA'
 export const ADD_CAPTION = 'ADD_CAPTION'
-export const AN_UPLOAD_PHOTO = 'AN_UPLOAD_PHOTO'
-export const AN_SELECTED_PHOTO = 'AN_SELECTED_PHOTO'
+export const UPLOAD_PHOTO = 'UPLOAD_PHOTO'
+export const SELECTED_PHOTO = 'SELECTED_PHOTO'
 export const CLEAN_REDUCERS = 'CLEAN_REDUCERS'
 
 

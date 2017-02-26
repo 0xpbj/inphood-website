@@ -52,7 +52,7 @@ export default class Nutrition extends React.Component {
     }
   }
   componentWillMount() {
-    if (this.props.nutrition.picture === '') {
+    if (this.props.nutrition.rawData === '') {
       this.props.router.push('/recipe')
     }
     else {

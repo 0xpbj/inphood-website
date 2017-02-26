@@ -139,6 +139,12 @@ export default class Results extends React.Component {
           {this.state.ecopied ? <div style={{marginTop: "20px"}}><pre>{embedMsg}</pre><span style={{color: 'red'}}>&nbsp;Copied.</span></div> : null}
         </div>
       )
+      const mealPhoto = iUrl ? (
+        <Col xs={4} md={4}>
+          <div className="text-center"><ControlLabel>Meal Photo</ControlLabel></div>
+          <Image className="center-block" src={iUrl} responsive rounded />
+        </Col>
+      ) : null
       return (
         <div>
           <TopBar step=""
@@ -147,18 +153,15 @@ export default class Results extends React.Component {
           <Grid>
           <Row className="show-grid">
             <Col xs={4} md={4}>
-              <div className="text-center"><ControlLabel>Meal Photo</ControlLabel></div>
-              <Image className="center-block" src={iUrl} responsive rounded />
+              <div className="text-center"><ControlLabel>Text Label</ControlLabel></div>
+              <pre>{textLabel}</pre>
+              {shareButtons}
             </Col>
             <Col xs={4} md={4}>
               <div className="text-center"><ControlLabel>Nutrition Label</ControlLabel></div>
               {nutritionLabel}
             </Col>
-            <Col xs={4} md={4}>
-              <div className="text-center"><ControlLabel>Text Label</ControlLabel></div>
-              <pre>{textLabel}</pre>
-              {shareButtons}
-            </Col>
+            {mealPhoto}
           </Row>
           </Grid>
         </div>

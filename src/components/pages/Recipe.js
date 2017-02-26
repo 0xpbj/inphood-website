@@ -61,14 +61,15 @@ export default class SelectedImage extends React.Component {
     if (this.state.ingredients === '') {
       this.setState({recipeError: true})
     }
-    else if (this.props.nutrition.picture === '') {
-      this.setState({pictureError: true})
-    }
+    // else if (this.props.nutrition.picture === '') {
+    //   this.setState({pictureError: true})
+    // }
     else {
       const {ingredients, title, dietary, allergen} = this.state
       let data = parseRecipe(ingredients)
       this.props.storeParsedData(data.found, data.missing, ingredients, title, dietary, allergen)
-      this.props.uploadPhoto()
+      if (this.props.nutrition.picture !== '')
+        this.props.uploadPhoto()
       ReactGA.event({
         category: 'User',
         action: 'Uploading image to AWS',

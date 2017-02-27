@@ -83,9 +83,9 @@ export default class Search extends React.Component {
                 </FormGroup>
               </form>
             </Col>
-            <Col xs={1} md={1} style={{paddingLeft: 5}}>
+            {/*<Col xs={1} md={1} style={{paddingLeft: 5}}>
               <Button className="btn-primary-spacing" onClick={this.searchFlow.bind(this)}><Glyphicon glyph="glyphicon glyphicon-search"></Glyphicon></Button>
-            </Col>
+            </Col>*/}
           </Row>
         {/*</section>
         <div style={{marginBottom: 10}} />*/}

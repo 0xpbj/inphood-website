@@ -96,17 +96,18 @@ function* uploadImageToS3(file, key, username, extension) {
 function* loadAWSPut() {
   const {parsedData, rawData, title, dietary, allergen, file} = yield select(state => state.nutritionReducer)
   yield call (firebaseLogin)
-  let key = firebase.database().ref('/global/nutritionLabel/anonymous').push().key
+  let user = Config.DEBUG ? 'test' : 'anonymous'
+  let key = firebase.database().ref('/global/nutritionLabel/' + user).push().key
   // yield call (sendToLambdaScraper, picture, key, username, thumbnail, parsedData, rawData, title, dietary, allergen)
   let iUrl = ''
-  if (file) {
+  if (file && !Config.DEBUG) {
     const extension = file.name.substr(file.name.lastIndexOf('.'))
     yield call (uploadImageToS3, file, key, 'anonymous', extension)
     iUrl = 'http://www.image.inphood.com/anonymous/'+key+extension
   }
-  firebase.database().ref('/global/nutritionLabel/anonymous/'+key).update({
+  firebase.database().ref('/global/nutritionLabel/' + user + '/' + key).update({
     key,
-    user: 'anonymous',
+    user,
     iUrl,
     rawData,
     parsedData,

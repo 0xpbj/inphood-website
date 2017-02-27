@@ -19,8 +19,10 @@ export default class Footer extends React.Component {
   }
   onSubmit() {
     this.setState({ show: false })
-    this.props.initEmailFlow()
-    this.props.getEmailData(this.state.data)
+    if (this.state.data !== '') {
+      this.props.initEmailFlow()
+      this.props.getEmailData(this.state.data)
+    }
   }
   render() {
     const currentYear = new Date().getFullYear()
@@ -37,7 +39,7 @@ export default class Footer extends React.Component {
               <ul className="list-unstyled">
                 <li><i className="fa fa-envelope-o fa-fw"></i>
                   <Button bsStyle="info" onClick={open}>
-                    <Glyphicon glyph="glyphicon glyphicon-envelope" /> Contact Us
+                    Contact Us&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-envelope" /> 
                   </Button>
                   <Modal show={this.state.show} bsSize="small" aria-labelledby="contained-modal-title-sm">
                     <Modal.Header>

@@ -19,7 +19,7 @@ export default class NutritionEstimateJSX extends React.Component {
   }
   getGeneratedStatement(displayGeneratedStatement) {
     if (displayGeneratedStatement === true) {
-      return(<a href="http://www.inphood.com" className="text-center"><h6>Generated at {this.getInPhoodLogo()}</h6></a>)
+      return(<a href="http://www.inphood.com" className="text-center"><h6>Estimated at {this.getInPhoodLogo()}</h6></a>)
     } else {
       return
     }
@@ -48,7 +48,7 @@ export default class NutritionEstimateJSX extends React.Component {
       <div>
         <section style={myStyles.performanceFacts}>
           <header style={myStyles.performanceFactsHeader}>
-            <h1 style={myStyles.performanceFactsTitle}>Nutrition Estimate</h1>
+            <h1 style={myStyles.performanceFactsTitle}>Nutrition Facts</h1>
             <p style={myStyles.perfomanceFactsHeaderElementP}>
               Serving Size {ingredientComposite.getServingAmount()}{ingredientComposite.getServingUnit()}</p>
           </header>

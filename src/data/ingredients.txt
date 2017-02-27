@@ -173,8 +173,6 @@ rice flour
 rum
 salmon
 salt
-salt
-cod
 scallion
 seafood
 seeds
@@ -211,7 +209,6 @@ water
 watercress
 watermelon
 maitake mushroom
-mushroom
 xanthan gum
 yam
 yeast
@@ -228,7 +225,6 @@ goose
 goose liver
 grouse
 guinea hen
-liver
 organs
 ostrich
 partridge
@@ -244,7 +240,6 @@ calf liver
 caribou
 goat
 ham
-horse
 kangaroo
 lamb
 marrow
@@ -252,8 +247,6 @@ moose
 mutton
 opossum
 pork
-pork
-bacon
 rabbit
 snake
 squirrel
@@ -270,10 +263,8 @@ bluefish
 bullhead
 butterfish
 carp
-catfish
 chub
 clam
-cod
 conch
 crab
 croaker
@@ -297,7 +288,6 @@ mahi-mahi
 monkfish
 mullet
 muskellunge
-mussels
 ocean pout
 octopus
 opaleye
@@ -315,7 +305,6 @@ pompano
 porgy
 red snapper
 rosefish
-salmon
 sardine
 scallops
 scrod
@@ -325,7 +314,6 @@ shad
 shark
 sheepshead fish
 shrimp
-skate
 smelt
 snail
 escargot
@@ -338,10 +326,7 @@ sunfish
 swordfish
 tilapia
 tilefish
-trout
-tuna
 turbot
-turtle
 weakfish
 whitefish
 whiting
@@ -363,7 +348,6 @@ cassava
 cattail
 chia seed
 coix spp.
-corn
 cornmeal
 cous cous
 cream rice
@@ -379,7 +363,6 @@ fonio
 gluten flour
 gluten –free
 graham flour
-grains
 grains, sprouted
 granola
 grape nuts
@@ -388,12 +371,10 @@ hominy
 job’s tears
 kamut
 kasha
-kasha
 kudzu
 larch fiber
 lentil
 dahl
-maize
 malanga
 manioc
 manna bread
@@ -410,10 +391,7 @@ papadam
 polenta
 popcorn
 quinoa
-rice
 rice bran
-rice flour
-rice flour
 rye
 rye crisp
 rye flour
@@ -422,16 +400,12 @@ seven grain cereal
 soba
 sorghum
 soy
-soybean
 spelt
 pasta
-flour
 tannier
 tapioca
-taro
 tahitian
 poi
-teff
 triticale
 wheat
 wheat germ
@@ -445,9 +419,7 @@ almond essence
 amaretti
 anise
 apple juice
-artichoke
 artichoke heart
-asparagus
 asparagus spear
 baguette
 baked beans
@@ -457,7 +429,6 @@ bamboo
 banana
 bap
 bay leaf
-bay leaf
 bay leaves
 bbq sauce
 bean
@@ -466,12 +437,8 @@ beef mince
 beef stock
 berries
 berry
-berry
 bicarbonate
 biscuit
-biscuit
-olive
-pepper
 black-eyed peas
 bonnet chilli
 bouillon
@@ -482,10 +449,8 @@ brandy
 breadcrumbs
 brie
 brine
-rice
 sauce
 brown sugar
-sugar
 bun
 buttermilk
 butternut
@@ -499,7 +464,6 @@ caper
 caramel
 caraway seed
 cardamom
-carrot
 cashew
 caster sugar
 cereal
@@ -509,7 +473,6 @@ cherries
 cherry
 cherry tomatoe
 chestnut
-chicken
 chicken breast
 chicken drumstick
 chicken leg
@@ -522,13 +485,11 @@ chillies
 chip
 chipotle
 chive
-chive
 chop
 choy
 chutney
 ciabatta
 cider
-clarified butter
 clove
 cocoa
 coleslaw
@@ -565,7 +526,6 @@ goat's cheese
 golden syrup
 gorgonzola
 gouda
-grape
 grape
 grapefruit
 grapeseed
@@ -638,10 +598,8 @@ passion fruit
 pasta shell
 pastry
 pea
-pea
 peach
 peaches
-peanut
 peanut
 pecan
 pecorino
@@ -678,7 +636,6 @@ radicchio
 radishes
 rapeseed oil
 red onion
-red onion
 red pepper
 red wine vinegar
 relish
@@ -697,7 +654,6 @@ salad
 salami
 salmon flake
 salsa
-sauce
 sausage
 savoy cabbage
 scallop
@@ -735,7 +691,6 @@ sweet pepper
 sweets
 tangerine
 tarragon
-tartar
 tea
 tequila
 thyme
@@ -759,7 +714,6 @@ vinegar
 vodka
 waffle
 walnut
-rice
 wine vinegar
 wholegrain pasta
 wine
@@ -767,445 +721,711 @@ worcestershire sauce
 yellow pepper
 yoghurt
 yogurt
-allspice
-almond
 all-purpose flour
-amaretti
-anchovy
-anise
-apple juice
-artichoke
-artichoke heart
-artichoke
-asparagus
 asparagus spearasparagus
-aubergine
-avocado
-bacon
-baguette
-baked beans
-balsamic vinegar
-bamboo
-banana
-bap
-basil
-bay leaf
 bay leavesbay leaf
-bean
-beef
-beef mince
-beef brisket
-beef stock
-bell pepper
-berry
 berriesberry
 bicarbonate of soda
-biscuit
-biscuit
 black olive
 black pepper
-black-eyed peas
-blueberries
-blueberry
-bonnet chilli
-bouillon
-bourbon
-braising steak
-bran
-brandy
-bread
-breadcrumbs
-bbq sauce
-habanero sauce
 broth
-brie
-brine
-broccoli
 brown rice
 brown sauce
-brown sugar
-buckwheat
-buffalo
-bun
-butter
-buttermilk
-butternut
-butternut squash
-butterscotch
-cabbage
-cake
-candy
 candiescandy
-cannellini
-canola oil
-caper
-caramel
-caraway seed
-cardamom
-carrot
-carrot
-cashew
-caster sugar
-cayenne pepper
-celeriac
-celery
-cereal
-champagne
-chard
-cheddar cheese
-cheese
 cherriescherry
-cherry
-cherry tomatoe
-chestnut
-chicken
-chicken breast
-chicken drumstick
-chicken stock
-chicken thigh
-chicken leg
-chicken
-chickpea
-chicory
-chile
-chilli
-chillies
-chipotle
-chip
-chive
-chive
-chocolate
-chop
-choy
-chutney
-ciabatta
-cider
-cinnamon
-clam
-clarified butter
-clove
-cocoa
-coconut
-orange essence
-almond essence
-coconut milk
-cod
-coffee
-coleslaw
-condensed milk
-coriander
-coriander leaves
-corn
-cornflour
-cornmeal
-courgette
-couscous
-cranberries
-cranberry
-cranberry juice
-cream
-single cream
-double cream
-sour cream
 creme fraiche
-crisp
-crust
-creme de cassis
-cucumber
-cumin
-custard
-dijon mustard
-dill
-duck
-edamame bean
-egg
-espresso
-fennel
-feta
-fig
-fillet steak
-filo pastry
-fish
-flank
-flour
-focaccia
-foie gras
-fruit
-fudge
-garam masala
-garlic
-gelatine
-gin
-ginger
-glucose
-goat
-goat's cheese
-golden syrup
-gorgonzola
-gouda
-grape
-grapefruit
-grape
-grapeseed
-green olive
-green pepper
 green
-gruyere
-gruyere cheese
-haddock
-ham
-harissa
-herbs
-hoisin
-hoisin sauce
-honey
-honeydew melon
-horseradish
-iceberg lettuce
-icing sugar
-jalapeno pepper
-juice
-julienne
-kalamata olives
-ketchup
-kidney bean
-lager
-lamb
-lard
-lardons
-lasagne
-lavender
-leek
-lemon
-lemongrass
-lentil
-lettuce
-lime
-limoncello
-lobster
-loin
-lychee
-macadamia nut
-malt
-mangetout
-mango
 mangoesmango
-maple syrup
-marinara
-marshmallow
-marzano
-mascarpone
-mayonnaise
-meat
-melon
-milk
-mince
-mint
-miso soup
-molasses
-monterey jack
-mozzarella
-mushroom
-mustard
-new potato
-noodle
-nutella
-nutmeg
-nut
-oat
-oil
-okra
-olive oil
-olive
-onion
-onion ring
-orange
-orange juice
-oregano
-oyster
-pak choi
-pancetta
-panko
-papaya
-paprika
-parma ham
-parmesan
-parmigiano
 parmigiano reggiano
-parsley
-parsnip
-passion fruit
-pasta
 Pasta shell
-pastry
-pea
-peach
 peachespeach
-peanut
-peanut
-pear
-pea
-pecan
-pecorino
-penne
-penne pasta
-pepper
-peppercorn
-peppers
-pesto
-pickle
-pickled gherkin
-pickled onion
-pickled red onion
-pie
-pimento pepper
-pine nut
-pineapple
-pistachio
 pitapitta
-pitta
-pitted olive
-pizza
-plantain
-plum
-plum tomato
-plum tomatoes
-sun dried tomato
 sun-dried tomatoes
-poblano
-pod
-polenta
-pomegranate
-popcorn
-pork
 Pork chop
-porridge
-potato
 potatoespotato
-prawn
-prosciutto
-prosciutto ham
-provolone
-pumpkin
-quail
-radicchio
-radish
 radishesradish
-rapeseed oil
-raspberries
-raspberry
-red pepper
-red onion
-relish
-rhubarb
-rib
-rice
-ricotta
-rocket
-roll
-rose
-rosemary
-russet
-saffron
-sage
-sake
-salad
-salami
-salmon
-salmon flake
-salsa
-salt
-sauce
-sausage
-savoy cabbage
-scallop
-schnapps
-self raising flour
-semolina
-serrano ham
-shallot
-shaohsing
-sherry
-shiitake
-shiitake mushroom
-shortcrust pastry
-sirloin
-sirloin steak
-slaw
-smoky bacon
-snapper
-sourdough
-soy sauce
-spaghetti
-spice
-spinach
-sponge
-spring onion
-sprout
-squash
-squid
-sriracha
-steak
-stock
-stout
-strawberries
-strawberry
-stuffing
-sugar
-sultana
-sunflower oil
-sweet pepper
-sweetcorn
-sweets
-swordfish
-tangerine
-tapioca
-tarragon
-tartar
-tea
-tequila
-thyme
-toast
-toffee
-tofu
-tomatillos
-tomato
-tomato puree
-tomatoes
-tomato
-tortilla
-treacle
-tuna steak
-tuna
-turkey
-turkey breast
-turkey thigh
-turmeric
-turnip
-vanilla
-vanilla essence
-vanilla pod
-veal
-vegetable oil
-vermouth
-vinaigrette
-vinegar
 white wine vinegar
-red wine vinegar
-vodka
-waffle
-walnut
-watercress
-watermelon
 white rice
-wholegrain pasta
-wine
-worcestershire sauce
-yeast
-yellow pepper
-greek yoghurt
-natural yoghurt
-yoghurt
-yogurt
-red onion
 tabasco
+abiyuch
+acerola juice
+acerola
+alfalfa seeds
+amaranth grain
+amaranth leaves
+applesauce
+apricot nectar
+apricots
+arrowhead
+arrowroot flour
+arrowroot
+artichokes
+avocados
+bacon bits
+balsam-pear (bitter gourd)
+bamboo shoots
+bananas
+barley flour or meal
+barley malt flour
+beef composite
+beet greens
+beets
+beverage
+blackberry juice
+borage
+broadbeans (fava beans)
+broadbeans
+broccoli raab
+buckwheat flour
+buckwheat groats
+bulgur
+burdock root
+butter oil
+butterbur
+campbell's brown sugar and bacon flavored baked beans
+campbell's pork and beans
+campbell's
+canada goose
+canadian bacon
+carambola
+cardoon
+carissa
+carob flour
+carrot juice
+carrots
+catsup
+celtuce
+chayote
+cheese food
+cheese product
+cheese sauce
+cheese spread
+cheese substitute
+cherimoya
+chicken breast tenders
+chicken patty
+chickpea flour (besan)
+chickpeas (garbanzo beans
+chicory greens
+chicory roots
+chili with beans
+chrysanthemum leaves
+chrysanthemum
+clementines
+collards
+coriander (cilantro) leaves
+corn bran
+corn flour
+corn grain
+corn pudding
+corn with red and green peppers
+cornsalad
+cornstarch
+cowpeas (blackeyes)
+cowpeas
+crabapples
+cranberry juice blend
+cranberry sauce
+cranberry-orange relish
+cream substitute
+cress
+crustaceans
+currants
+dandelion greens
+dates
+dessert topping
+dock
+dove
+drumstick leaves
+drumstick pods
+dulce de leche
+durian
+edamame
+egg mix
+egg substitute
+eggnog
+eggs
+epazote
+eppaw
+escarole
+falafel
+fat free ice cream
+feijoa
+figs
+fireweed
+frankfurter
+frijoles rojos volteados (refried beans
+frog legs
+fruit cocktail
+fruit juice smoothie
+fruit salad
+fungi
+gardenburger black bean chipotle burger
+gardenburger flame grilled burger
+gardenburger original
+gardenburger savory portabella veggie burger
+gardenburger sun-dried tomato basil burger
+gardenburger veggie medley burger
+ginger root
+gourd
+grape juice
+grape leaves
+grapefruit juice
+grapes
+ground turkey
+groundcherries
+guanabana nectar
+guava nectar
+guava sauce
+guavas
+healthy request tomato juice
+hearts of palm
+hormel always tender
+hormel canadian style bacon
+hormel
+horned melon (kiwano)
+house foods premium firm tofu
+house foods premium soft tofu
+hummus
+hyacinth beans
+hyacinth-beans
+ice cream bar
+ice cream cone
+ice cream cookie sandwich
+ice cream sandwich
+ice cream
+imitation cheese
+jackfruit
+java-plum
+jerusalem-artichokes
+jew's ear
+jute
+kanpyo
+kiwifruit
+kumquats
+lambsquarters
+leeks
+lemon grass (citronella)
+lemon juice from concentrate
+lemon juice
+lemon peel
+lemons
+lima beans
+lime juice
+limes
+litchis
+loganberries
+loma linda big franks
+loma linda linketts
+loma linda little links
+loma linda low fat big franks
+loma linda redi-burger
+loma linda swiss stake with gravy
+loma linda tender bits
+loma linda tender rounds with gravy
+loma linda vege-burger
+longans
+loquats
+lotus root
+luncheon slices
+lupins
+macaroni
+malabar spinach
+mammy-apple
+mango nectar
+mangos
+mangosteen
+maraschino cherries
+meat extender
+meatballs
+melon balls
+melons
+milk dessert bar
+milk shakes
+milk substitutes
+millet flour
+miso
+mollusks
+mori-nu
+mothbeans
+mountain yam
+mulberries
+mung beans
+mungo beans
+mushrooms
+mustard greens
+mustard spinach
+nance
+naranjilla pulp
+natto
+nectarines
+new zealand spinach
+noodles
+nopales
+oheloberries
+okara
+olives
+onion rings
+onions
+orange peel
+orange pineapple juice blend
+orange-grapefruit juice
+papaya nectar
+papayas
+parmesan cheese topping
+parsnips
+passion-fruit juice
+passion-fruit
+pate de foie gras
+peach nectar
+peanut butter with omega-3
+peanut butter
+peanut flour
+peanut spread
+peanuts
+pear nectar
+pears
+peas and carrots
+peas and onions
+pepeao
+persimmons
+pickle relish
+pickles
+pigeon peas (red gram)
+pigeonpeas
+pimento
+pineapple juice
+pitanga
+plantains
+plums
+pokeberry shoots
+pomegranate juice
+pomegranates
+pork loin
+potato flour
+potato pancakes
+potato puffs
+potato salad
+prickly pears
+protein supplement
+prune juice
+prune puree
+prunes
+pummelo
+pumpkin flowers
+pumpkin leaves
+pumpkin pie mix
+purslane
+quinces
+radish seeds
+raisins
+rambutan
+reddi wip fat free whipped topping
+refried beans
+rice noodles
+roselle
+rowal
+ruby red grapefruit juice blend (grapefruit
+ruffed grouse
+rutabagas
+rye grain
+salsify
+sandwich spread
+sapodilla
+sapote
+sauerkraut
+seaweed
+sesbania flower
+shallots
+silk banana-strawberry soy yogurt
+silk black cherry soy yogurt
+silk blueberry soy yogurt
+silk chai
+silk chocolate
+silk coffee
+silk french vanilla creamer
+silk hazelnut creamer
+silk key lime soy yogurt
+silk light chocolate
+silk light plain
+silk light vanilla
+silk mocha
+silk nog
+silk original creamer
+silk peach soy yogurt
+silk plain soy yogurt
+silk plain
+silk plus fiber
+silk plus for bone health
+silk plus omega-3 dha
+silk raspberry soy yogurt
+silk strawberry soy yogurt
+silk unsweetened
+silk vanilla soy yogurt (family size)
+silk vanilla soy yogurt (single serving size)
+silk vanilla
+silk very vanilla
+sorghum flour
+sorghum grain
+sour dressing
+soursop
+soy flour
+soy meal
+soy protein concentrate
+soy protein isolate
+soy sauce made from hydrolyzed vegetable protein
+soy sauce made from soy (tamari)
+soy sauce made from soy and wheat (shoyu)
+soybeans
+soymilk (all flavors)
+soymilk
+spinach souffle
+succotash
+sugar-apples
+swamp cabbage (skunk  cabbage)
+swamp cabbage (skunk cabbage)
+swamp cabbage
+sweet potato leaves
+sweet potato puffs
+sweet potatoes
+tamarind nectar
+tamarinds
+tangerine juice
+tangerines
+taro leaves
+taro shoots
+tempeh
+tofu yogurt
+tomato and vegetable juice
+tomato juice
+tomato products
+tomato sauce
+tree fern
+triticale flour
+turkey and gravy
+turkey from whole
+turkey roast
+turkey sticks
+turnip greens and turnips
+turnip greens
+turnips
+usda commodity chicken
+usda commodity
+vegetable juice cocktail
+vegetable juice
+vegetable smoothie
+vegetarian fillets
+vegetarian meatloaf or patties
+veggie burgers or soyburgers
+vermicelli
+vitasoy usa azumaya
+vitasoy usa nasoya
+vitasoy usa organic nasoya sprouted
+vitasoy usa organic nasoya
+vitasoy usa
+wasabi
+waterchestnuts
+waxgourd
+wheat bran
+wheat flours
+whey
+whipped cream substitute
+whipped topping
+winged bean
+winged beans
+worthington chic-ketts
+worthington chili
+worthington choplets
+worthington diced chik
+worthington dinner roast
+worthington frichik original
+worthington fripats
+worthington leanies
+worthington low fat fri chik
+worthington low fat veja-links
+worthington meatless chicken roll
+worthington meatless corned beef roll
+worthington multigrain cutlets
+worthington prime stakes
+worthington prosage links
+worthington prosage roll
+worthington saucettes
+worthington smoked turkey roll
+worthington stakelets
+worthington stripples
+worthington super links
+worthington vegetable skallops
+worthington vegetable steaks
+worthington vegetarian burger
+worthington veja-links
+worthington wham (roll)
+yambean (jicama)
+yardlong bean
+yardlong beans
+yautia (tannier)
+yeast extract spread
+yokan
+alcoholic beverage
+alcoholic beverages
+andrea's
+animal fat
+archway home style cookies
+artificial blueberry muffin mix
+austin
+bacon and beef sticks
+bagels
+baking chocolate
+barbara dee
+barbecue loaf
+bear naked
+beef sausage
+beerwurst
+beverages
+biscuits
+blood sausage
+bockwurst
+bologna
+bratwurst
+braunschweiger (a liver sausage)
+bread crumbs
+bread sticks
+bread stuffing
+breakfast tart
+brotwurst
+butter replacement
+campbell's chunky microwavable bowls
+campbell's chunky soups
+campbell's chunky
+campbell's healthy request
+campbell's homestyle chicken with white  &  wild rice soup
+campbell's homestyle harvest tomato with basil soup
+campbell's homestyle healthy request chicken with whole grain pasta soup
+campbell's homestyle healthy request mexican style chicken tortilla
+campbell's homestyle italian-style wedding soup
+campbell's homestyle light italian-style wedding soup
+campbell's homestyle light new england clam chowder
+campbell's homestyle mexican style chicken tortilla soup
+campbell's homestyle microwaveable bowls
+campbell's homestyle minestrone soup
+campbell's homestyle new england clam chowder
+campbell's homestyle potato broccoli cheese soup
+campbell's homestyle vegetable medley soup
+campbell's low sodium soups
+campbell's red and white - microwaveable bowls
+campbell's red and white
+campbell's soup on the go
+capers
+carbonated beverage
+cereals ready-to-eat
+cereals
+cheesecake commercially prepared
+cheesecake prepared from mix
+cheesefurter
+chewing gum
+chicken spread
+chocolate-flavored hazelnut spread
+chokecherries
+chorizo
+cinnamon buns
+cocoa mix
+coffeecake
+continental mills
+cookie
+cookies
+corned beef loaf
+cracker meal
+crackers
+cranberry juice cocktail
+cream puff shell
+cream puff
+creamy dressing
+croissants
+croutons
+crunchmaster
+danish pastry
+desserts
+dip
+doughnuts
+dressing
+dutch brand loaf
+egg custards
+english muffins
+famous amos
+fat
+fish broth
+fish oil
+flan
+french toast
+frostings
+frozen novelties
+frozen yogurts
+fruit butters
+fruit syrup
+frybread
+game meat 
+game meat
+garlic bread
+gelatin desserts
+gelatins
+general mills
+george weston bakeries
+girl scouts
+glutino
+gravy
+gums
+ham and cheese loaf or roll
+ham and cheese spread
+ham salad spread
+hazelnuts
+headcheese
+healthy request
+heinz
+honey roll sausage
+hormel pillow pak sliced turkey pepperoni
+hush puppies
+ice cream cones
+ice creams
+incaparina
+interstate brands corp
+jackson's
+jams and preserves
+kashi
+keebler
+keikitos (muffins)
+kellogg's eggo lowfat blueberry nutri-grain waffles
+kellogg's
+kellogg
+kielbasa
+knackwurst
+kraft foods
+kraft
+lebanon bologna
+lemonade
+limeade
+liver cheese
+liver sausage
+liverwurst spread
+luncheon meat
+luncheon sausage
+luxury loaf
+macaroni and cheese loaf
+malt beverage
+margarine spread
+margarine
+margarine-like shortening
+margarine-like spread with yogurt
+margarine-like spread
+margarine-like vegetable-oil spread
+margarine-like
+marmalade
+martha white foods
+mary's gone crackers
+mayonnaise dressing
+mckee baking
+meat drippings (lard
+milk dessert
+mission foods
+mother's loaf
+mother's
+muffin
+muffins
+murray
+nabisco
+new england brand sausage
+olive loaf
+oscar mayer
+oven-roasted chicken breast roll
+p rego pasta
+pan dulce
+pancakes plain
+pancakes
+pastrami
+pate
+pectin
+peppered loaf
+pepperidge farm
+peppermint
+pepperoni
+phyllo dough
+pickle and pimiento loaf
+picnic loaf
+pie crust
+pie fillings
+piki bread
+pillsbury golden layer buttermilk biscuits
+pillsbury grands
+pillsbury
+polish sausage
+popovers
+pork and beef sausage
+pork and turkey sausage
+pork sausage rice links
+pork sausage
+potato soup
+poultry salad sandwich spread
+prairie turnips
+prego pasta
+pudding
+puddings
+puff pastry
+roast beef spread
+roast beef
+rolls
+rose hips
+rudi's
+sage valley
+salad dressing
+schar
+scrapple
+seasoning mix
+shake
+sherbet
+shortening bread
+shortening cake mix
+shortening confectionery
+shortening frying (heavy duty)
+shortening household soybean (hydrogenated) and palm
+shortening industrial
+shortening
+smart soup
+smoked link sausage
+snacks
+soup
+spearmint
+split pea soup
+split pea with ham soup
+stew
+stinging nettles
+strawberry-flavor beverage mix
+strudel
+sugars
+sunshine
+swanson broth
+sweet rolls
+sweetener
+swisswurst
+syrup
+syrups
+taco shells
+tamales (navajo)
+tamales
+thuringer
+toaster pastries
+toppings
+tortillas
+tostada shells
+turkey and pork sausage
+turkey bacon
+turkey ham
+turkey sausage
+udi's
+usda commodity food
+van's
+vanilla extract
+vegetable oil-butter spread
+waffles
+whale
+whiskey sour mix
+wocas
+wonton wrappers (includes egg roll wrappers)
+yachtwurst

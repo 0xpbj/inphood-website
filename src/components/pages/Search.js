@@ -19,7 +19,7 @@ export default class Search extends React.Component {
       results: []
     }
   }
-  searchFlow() {
+  searchFlow(event) {
     if (this.getValidationState() === 'error') {
       this.setState({results: []})
     }
@@ -32,6 +32,7 @@ export default class Search extends React.Component {
       this.props.searchIngredientData(this.state.searchIngredient)
       this.setState({searchIngredient: ''})
     }
+    event.preventDefault()
   }
   getData(e) {
     let searchIngredient = e.target.value.toLowerCase()
@@ -66,7 +67,7 @@ export default class Search extends React.Component {
         <section>*/}
           <Row>
             <Col xs={11} md={11} style={{paddingRight: 0}}>
-              {/*<form onSubmit={this.searchFlow.bind(this)}>*/}
+              <form onSubmit={(event) => this.searchFlow(event)}>
                 <FormGroup
                   style={{marginBottom:0}}
                   controlId="formBasicText"
@@ -80,7 +81,7 @@ export default class Search extends React.Component {
                     placeholder="Search & add (e.g: onions)"
                   />
                 </FormGroup>
-              {/*</form>*/}
+              </form>
             </Col>
             <Col xs={1} md={1} style={{paddingLeft: 5}}>
               <Button className="btn-primary-spacing" onClick={this.searchFlow.bind(this)}><Glyphicon glyph="glyphicon glyphicon-search"></Glyphicon></Button>

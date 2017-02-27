@@ -25,7 +25,9 @@ import {
   RESET_SEARCH_FLAG,
   SELECTED_TAGS,
   GET_MORE_DATA,
-  RESET_APPEND_DATA
+  RESET_APPEND_DATA,
+  INIT_EMAIL_FLOW,
+  GET_EMAIL_DATA
 } from '../constants/ActionTypes'
 
 export function uploadPhoto() {
@@ -231,5 +233,18 @@ export function getMoreData(foodName, size) {
 export function resetAppendData() {
   return {
     type: RESET_APPEND_DATA
+  }
+}
+
+export function initEmailFlow() {
+  return {
+    type: INIT_EMAIL_FLOW
+  }
+}
+
+export function getEmailData(data) {
+  return {
+    type: GET_EMAIL_DATA,
+    data
   }
 }

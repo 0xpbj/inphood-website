@@ -11,7 +11,9 @@ import {
   LAZY_LOAD_FIREBASE,
   SEARCH_INGREDIENT,
   SELECTED_TAGS,
-  GET_MORE_DATA
+  GET_MORE_DATA,
+  INIT_EMAIL_FLOW,
+  GET_EMAIL_DATA
 } from '../constants/ActionTypes'
 
 import * as db from './firebaseCommands'
@@ -20,6 +22,7 @@ import request from 'request'
 const firebase = require('firebase')
 const Config = require('Config')
 const S3 = require('aws-sdk').S3
+const SES = require('aws-sdk').SES
 
 const firebaseLogin = () => {
   return firebase.auth().signInAnonymously()
@@ -91,30 +94,28 @@ function* uploadImageToS3(file, key, username, extension) {
 }
 
 function* loadAWSPut() {
-  // if (!Config.DEBUG) {
-    const {parsedData, rawData, title, dietary, allergen, file} = yield select(state => state.nutritionReducer)
-    yield call (firebaseLogin)
-    let key = firebase.database().ref('/global/nutritionLabel/anonymous').push().key
-    // yield call (sendToLambdaScraper, picture, key, username, thumbnail, parsedData, rawData, title, dietary, allergen)
-    let iUrl = ''
-    if (file) {
-      const extension = file.name.substr(file.name.lastIndexOf('.'))
-      yield call (uploadImageToS3, file, key, 'anonymous', extension)
-      iUrl = 'http://www.image.inphood.com/anonymous/'+key+extension
-    }
-    firebase.database().ref('/global/nutritionLabel/anonymous/'+key).update({
-      key,
-      user: 'anonymous',
-      iUrl,
-      rawData,
-      parsedData,
-      title,
-      dietary,
-      allergen
-    })
-    const url = "http://www.inphood.com/" + key
-    yield put ({type: RESULT_URL, url, key, anonymous: true})
-  // }
+  const {parsedData, rawData, title, dietary, allergen, file} = yield select(state => state.nutritionReducer)
+  yield call (firebaseLogin)
+  let key = firebase.database().ref('/global/nutritionLabel/anonymous').push().key
+  // yield call (sendToLambdaScraper, picture, key, username, thumbnail, parsedData, rawData, title, dietary, allergen)
+  let iUrl = ''
+  if (file) {
+    const extension = file.name.substr(file.name.lastIndexOf('.'))
+    yield call (uploadImageToS3, file, key, 'anonymous', extension)
+    iUrl = 'http://www.image.inphood.com/anonymous/'+key+extension
+  }
+  firebase.database().ref('/global/nutritionLabel/anonymous/'+key).update({
+    key,
+    user: 'anonymous',
+    iUrl,
+    rawData,
+    parsedData,
+    title,
+    dietary,
+    allergen
+  })
+  const url = "http://www.inphood.com/" + key
+  yield put ({type: RESULT_URL, url, key, anonymous: true})
 }
 
 function* loadSerializedData() {
@@ -309,11 +310,53 @@ function* lambdaHack() {
   }
 }
 
+function* sendEmail () {
+  const {data} = yield take(GET_EMAIL_DATA)
+  var params = {
+    Destination: { /* required */
+      ToAddresses: [
+        'info@inphood.com',
+      ]
+    },
+    Message: { /* required */
+      Body: { /* required */
+        Html: {
+          Data: data, /* required */
+        },
+        Text: {
+          Data: data, /* required */
+        }
+      },
+      Subject: { /* required */
+        Data: 'Feedback Email', /* required */
+      }
+    },
+    Source: 'no-reply@inphood.com', /* required */
+    Tags: [
+      {
+        Name: 'STRING_VALUE', /* required */
+        Value: 'STRING_VALUE' /* required */
+      },
+    ]
+  }
+  const ses = new SES({
+    accessKeyId:     Config.AWS_ACCESS_ID,
+    secretAccessKey: Config.AWS_SECRET_KEY,
+    region: 'us-west-2',
+  })
+  ses.sendEmail(params, function(err, data) {
+    if(err) 
+      throw err
+    console.log('Email sent:', data);
+  })
+}
+
 export default function* root() {
   yield call(lambdaHack)
   yield fork(lazyFetchFirebaseData)
   yield fork(userSearchIngredient)
   yield fork(fetchMoreData)
+  yield fork(takeLatest, INIT_EMAIL_FLOW, sendEmail)
   yield fork(takeLatest, SEND_SERIALIZED_DATA, loadSerializedData)
   yield fork(takeLatest, UPLOAD_PHOTO, loadAWSPut)
   yield fork(takeLatest, STORE_PARSED_DATA, processParseForLabel)

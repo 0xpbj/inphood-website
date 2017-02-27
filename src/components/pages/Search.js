@@ -55,40 +55,21 @@ export default class Search extends React.Component {
     ) : null
     return (
       <div>
-        {/*<section>
-          <ControlLabel>Search for a ingredient</ControlLabel>
-          <Glyphicon
-            onClick={()=>this.setState({searchPopoverFlag: !this.state.searchPopoverFlag})}
-            style={{marginLeft: 10}}
-            glyph="glyphicon glyphicon-info-sign">
-            {searchPopover}
-          </Glyphicon>
-        </section>
-        <section>*/}
-          <Row>
-            <Col xs={11} md={11} style={{paddingRight: 0}}>
-              <form onSubmit={(event) => this.searchFlow(event)}>
-                <FormGroup
-                  style={{marginBottom:0}}
-                  controlId="formBasicText"
-                  validationState={this.getValidationState()}
-                >
-                  <FormControl
-                    type="text"
-                    label="Text"
-                    value={this.state.searchIngredient}
-                    onChange={this.getData.bind(this)}
-                    placeholder="Search & add (e.g: onions)"
-                  />
-                </FormGroup>
-              </form>
-            </Col>
-            {/*<Col xs={1} md={1} style={{paddingLeft: 5}}>
-              <Button className="btn-primary-spacing" onClick={this.searchFlow.bind(this)}><Glyphicon glyph="glyphicon glyphicon-search"></Glyphicon></Button>
-            </Col>*/}
-          </Row>
-        {/*</section>
-        <div style={{marginBottom: 10}} />*/}
+        <form onSubmit={(event) => this.searchFlow(event)}>
+          <FormGroup
+            style={{marginBottom:0}}
+            controlId="formBasicText"
+            validationState={this.getValidationState()}
+          >
+            <FormControl
+              type="text"
+              label="Text"
+              value={this.state.searchIngredient}
+              onChange={this.getData.bind(this)}
+              placeholder="Search & add (e.g: carrots)"
+            />
+          </FormGroup>
+        </form>
       </div>
     )
   }

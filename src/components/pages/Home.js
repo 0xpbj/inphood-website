@@ -20,6 +20,14 @@ export default class Home extends React.Component {
       showHelp: false
     }
   }
+  showHelp() {
+    ReactGA.event({
+      category: 'User',
+      action: 'User interacted with learn more dialogue',
+      nonInteraction: false
+    })
+    this.setState({showHelp: true})
+  }
   render() {
     const images = [
       { 
@@ -54,7 +62,7 @@ export default class Home extends React.Component {
         <h1 className="text-center">What's really in your food?</h1>
         <h3 className="text-center">Make nutrition labels in three easy steps!</h3>
         <p className="text-right">
-          <Button bsStyle="primary" onClick={() => this.setState({showHelp: true})}>
+          <Button bsStyle="primary" onClick={this.showHelp.bind(this)}>
             Learn more
           </Button>
         </p>

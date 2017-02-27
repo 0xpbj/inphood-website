@@ -71,7 +71,7 @@ export default class Recipe extends React.Component {
       this.props.uploadPhoto()
       ReactGA.event({
         category: 'User',
-        action: 'Uploading image to AWS',
+        action: 'User sending recipe',
         nonInteraction: true
       });
       this.props.router.push('nutrition')
@@ -80,8 +80,7 @@ export default class Recipe extends React.Component {
   onDrop(acceptedFiles, rejectedFiles) {
     ReactGA.event({
       category: 'User',
-      action: 'Image upload flow initiated',
-      label: 'Local Image Flow',
+      action: 'Image uploaded',
       nonInteraction: false
     })
     acceptedFiles.forEach(file => {

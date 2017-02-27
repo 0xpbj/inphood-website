@@ -1,4 +1,5 @@
 var React = require('react')
+import ReactGA from 'react-ga'
 import Col from 'react-bootstrap/lib/Col'
 import Row from 'react-bootstrap/lib/Row'
 import Grid from 'react-bootstrap/lib/Grid'
@@ -27,6 +28,11 @@ export default class About extends React.Component {
     )
   }
   render() {
+    ReactGA.event({
+      category: 'User',
+      action: 'User visited about page',
+      nonInteraction: false
+    });
     return (
       <Grid>
         <Row className="show-grid">

@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import EmailForm from '../components/pages/EmailForm'
+import Footer from '../components/layout/Footer'
 import * as actionCreators from '../actions/Actions'
 
 function mapStateToProps (state) {
@@ -14,4 +14,4 @@ function mapDispatchToProps (dispatch) {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(EmailForm)
+)(Footer)

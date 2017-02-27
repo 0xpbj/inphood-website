@@ -13,37 +13,24 @@ export default class EmailForm extends React.Component {
       data: ''
     }
   }
-  emailFlow() {
-    this.props.initEmailFlow()
-    this.props.getEmailData(this.state.data)
-    this.props.onSend
+  dataFlow(event) {
+    this.setState({data: event.target.value})
+    this.props.data(this.state.data)
+    event.preventDefault()
   }
   render() {
     return (
-      <Grid>
-        <Row>
-          <Col xs={4} md={4} />
-          <Col xs={4} md={4}>
-            <form horizontal>
-              <FormGroup controlId="formControlsTextarea">
-                <FormControl 
-                  rows={4} 
-                  componentClass="textarea" 
-                  placeholder="Your message..." 
-                  value={this.state.data}
-                  onChange={(e) => this.setState({data: e.target.value})}
-                />
-              </FormGroup>
-              <FormGroup>
-                <Button type="submit" bsStyle="info" onClick={() => this.emailFlow()}>
-                  Submit
-                </Button>
-              </FormGroup>
-            </form>
-          </Col>
-          <Col xs={4} md={4} />
-        </Row>
-      </Grid>
+      <form>
+        <FormGroup controlId="formControlsTextarea">
+          <FormControl 
+            rows={4} 
+            componentClass="textarea" 
+            placeholder="Your message..." 
+            value={this.state.data}
+            onChange={(event) => this.dataFlow(event)}
+          />
+        </FormGroup>
+      </form>
     )
   }
 }

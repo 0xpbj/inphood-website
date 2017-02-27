@@ -1,26 +1,31 @@
 var React = require('react')
+import Modal from 'react-bootstrap/lib/Modal'
 import Button from 'react-bootstrap/lib/Button'
 import Glyphicon from 'react-bootstrap/lib/Glyphicon'
-import EmailForm from '../../containers/EmailFormContainer'
+import EmailForm from '../pages/EmailForm'
 import {Link} from 'react-router'
 
 export default class Footer extends React.Component {
   constructor() {
     super()
     this.state = {
-      message: false
+      show: false,
+      data: ''
     }
   }
+  getData(data) {
+    this.setState({data})
+    event.preventDefault()
+  }
+  onSubmit() {
+    this.setState({ show: false })
+    this.props.initEmailFlow()
+    this.props.getEmailData(this.state.data)
+  }
   render() {
-    const containerStyle = {
-      marginTop: "60px"
-    }
     const currentYear = new Date().getFullYear()
-    const message = this.state.message ? <EmailForm onSend = {() => this.setState({message: false})} /> : (
-      <Button bsStyle="info" onClick={() => this.setState({message: true})}>
-        <Glyphicon glyph="glyphicon glyphicon-envelope" /> Contact Us
-      </Button>
-    )
+    let open  = () => this.setState({ show: true })
+    let close = () => this.setState({ show: false })
     return (
       <footer>
         <div>
@@ -30,9 +35,24 @@ export default class Footer extends React.Component {
               <h4><strong>inPhood Inc.,</strong>
               </h4>
               <ul className="list-unstyled">
-                  <li><i className="fa fa-envelope-o fa-fw"></i>
-                    {message}
-                  </li>
+                <li><i className="fa fa-envelope-o fa-fw"></i>
+                  <Button bsStyle="info" onClick={open}>
+                    <Glyphicon glyph="glyphicon glyphicon-envelope" /> Contact Us
+                  </Button>
+                  <Modal show={this.state.show} bsSize="small" aria-labelledby="contained-modal-title-sm">
+                    <Modal.Header>
+                      <Modal.Title id="contained-modal-title-sm">Contact Us</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                      <EmailForm 
+                        data={(data) => this.getData(data)}
+                      /> 
+                    </Modal.Body>
+                    <Modal.Footer>
+                      <Button onClick={this.onSubmit.bind(this)}>Submit</Button>
+                    </Modal.Footer>
+                  </Modal>
+                </li>
               </ul>
               <Link style={{marginRight: 10}} to="http://www.inphood.com/about">About Us</Link>
               <Link to="http://www.inphood.com/privacy_policy.pdf" target="_blank">Privacy Policy</Link>

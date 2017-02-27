@@ -1,6 +1,6 @@
 var React = require('react')
 
-import Footer from "../layout/Footer"
+import Footer from "../../containers/FooterContainer"
 // import Nav from "../layout/Nav"
 
 export default class Layout extends React.Component {

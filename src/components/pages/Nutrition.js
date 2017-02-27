@@ -58,7 +58,7 @@ export default class Nutrition extends React.Component {
     else {
       ReactGA.event({
         category: 'User',
-        action: 'Get nutrition information for image',
+        action: 'User in nutrition page',
         nonInteraction: false
       });
     }
@@ -134,6 +134,12 @@ export default class Nutrition extends React.Component {
     const tagMatches = matchData[tag]
     let unmatchedTags = []
     if (tagMatches.length === 0) {
+      ReactGA.event({
+        category: 'Nutrition Mixer',
+        action: 'No search results returned',
+        nonInteraction: false,
+        label: searchIngredient
+      });
       let {unmatchedTags} = this.state
       unmatchedTags.push(tag)
       this.setState({
@@ -174,6 +180,12 @@ export default class Nutrition extends React.Component {
     // for (let key in nutritionModel._scaledIngredients) {
       //console.log('key = ' + key);
     // }
+    ReactGA.event({
+      category: 'Nutrition Mixer',
+      action: 'Search results added to label',
+      nonInteraction: false,
+      label: searchIngredient
+    });
     let ingredientControlModel = new IngredientControlModel(
       tryQuantity,
       this.getPossibleUnits(tryUnit),
@@ -209,6 +221,12 @@ export default class Nutrition extends React.Component {
     const firstMatch = 0
     for (let tag in matchData) {
       if (matchData[tag].length === 0) {
+        ReactGA.event({
+          category: 'Nutrition Mixer',
+          action: 'Missing data for ingredient',
+          nonInteraction: false,
+          label: tag
+        });
         continue
       }
       if (matchData[tag][firstMatch][dataObjOffset] === undefined) {
@@ -223,6 +241,12 @@ export default class Nutrition extends React.Component {
       //const key = tagMatches[0][keyOffset]
       if(tagMatches.length === 0) {
         missingData.push(tag)
+        ReactGA.event({
+          category: 'Nutrition Mixer',
+          action: 'Missing data for ingredient',
+          nonInteraction: false,
+          label: tag
+        });
         continue
       }
       const description = tagMatches[0][descriptionOffset]
@@ -272,6 +296,12 @@ export default class Nutrition extends React.Component {
       }
       catch(err) {
         errorStr = err
+        ReactGA.event({
+          category: 'Nutrition Mixer',
+          action: 'Error adding ingredient',
+          nonInteraction: false,
+          label: tag
+        });
         //console.log(errorStr);
       }
       finally {
@@ -301,6 +331,11 @@ export default class Nutrition extends React.Component {
     }
     // Hackity hack hack--init the serving amount from the servingControls so they
     // match on presentation of the label
+    ReactGA.event({
+      category: 'Nutrition Mixer',
+      action: 'User recipe parsed',
+      nonInteraction: false,
+    });
     let servingControls = this.state.servingControls
     this.props.nutritionModelSetServings(servingControls['value'], servingControls['unit'])
     this.props.selectedTags(selectedTags)
@@ -314,10 +349,20 @@ export default class Nutrition extends React.Component {
   // Action Handlers:
   //////////////////////////////////////////////////////////////////////////////
   transitionToLabelPage(composite, full) {
+    ReactGA.event({
+      category: 'User',
+      action: 'User sharing results',
+      nonInteraction: false
+    });
     this.props.sendSerializedData(composite, full)
     this.props.router.push('result?label='+ this.props.nutrition.key)
   }
   handleServingValuesChange(servingValue) {
+    ReactGA.event({
+      category: 'Nutrition Mixer',
+      action: 'Servings value changed',
+      nonInteraction: false,
+    });
     let servingControls = this.state.servingControls
 
     servingControls['value'] = servingValue
@@ -345,8 +390,18 @@ export default class Nutrition extends React.Component {
     this.setState({
       servingControls: servingControls
     })
+    ReactGA.event({
+      category: 'Nutrition Mixer',
+      action: 'Servings value dropdown triggered',
+      nonInteraction: false,
+    });
   }
   handleSliderValuesChange(tag, value) {
+    ReactGA.event({
+      category: 'Nutrition Mixer',
+      action: 'Slider value changed',
+      nonInteraction: false,
+    });
     this.props.ingredientSetSliderValue(tag, value)
     this.props.nutritionModelScaleIng(tag, value, this.props.model.ingredientControlModels[tag].getDropdownUnitValue())
   }
@@ -400,6 +455,12 @@ export default class Nutrition extends React.Component {
     // 5. Remove the current IngredientModel from the NutritionModel:
     this.props.nutritionModelRemIng(tag)
     // 6. Add the new IngredientModel to the NutritionModel:
+    ReactGA.event({
+      category: 'Nutrition Mixer',
+      action: 'User added dropdown ingredient',
+      nonInteraction: false,
+      label: tag
+    });
     this.props.nutritionModelAddIng(tag,
                                  ingredientModel,
                                  newValue,
@@ -419,10 +480,24 @@ export default class Nutrition extends React.Component {
     if (dataForKey === undefined) {   // Lazy loading from FB
       let index = tupleHelper.getIndexForDescription(tagMatches, value)
       let tuple = tagMatches[index]
-      if (value === '.....')
+      if (value === '.....') {
+        ReactGA.event({
+          category: 'Nutrition Mixer',
+          action: 'User triggered elipses search',
+          nonInteraction: false,
+          label: tag
+        });
         this.props.getMoreData(tag, tagMatches.length)
-      else
+      }
+      else {
+        ReactGA.event({
+          category: 'Nutrition Mixer',
+          action: 'User triggered dropdown lazy firebase fetch',
+          nonInteraction: false,
+          label: tag
+        });
         this.props.lazyFetchFirebase(value, tag, tuple[keyOffset], index)
+      }
     } else {
       this.completeMatchDropdownChange(tag, value)
     }
@@ -436,6 +511,12 @@ export default class Nutrition extends React.Component {
     let ingredientModel = this.props.model.nutritionModel.getIngredientModel(tag)
     // TODO: catch the exception from here and mention that their current value
     // will be lost if we change to those units.
+    ReactGA.event({
+      category: 'Nutrition Mixer',
+      action: 'User changed units for ingredient',
+      nonInteraction: false,
+      label: tag
+    });
     let newValue = getIngredientValueInUnits(
       newUnit, ingredientModel, ingredientControlModel)
     this.props.ingredientSetSliderValue(tag, newValue)
@@ -470,6 +551,12 @@ export default class Nutrition extends React.Component {
     this.setState({
       deletedTags: deletedTags
     })
+    ReactGA.event({
+      category: 'Nutrition Mixer',
+      action: 'User deleted ingredient',
+      nonInteraction: false,
+      label: tag
+    });
   }
   handleChipAdd(tag) {
     //console.log('handleChipAdd    ------------------------------------------------');
@@ -519,6 +606,12 @@ export default class Nutrition extends React.Component {
     this.setState({
       deletedTags: deletedTags
     })
+    ReactGA.event({
+      category: 'Nutrition Mixer',
+      action: 'User added ingredient',
+      nonInteraction: false,
+      label: tag
+    });
   }
   //////////////////////////////////////////////////////////////////////////////
   // Miscellany:

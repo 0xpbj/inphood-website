@@ -113,6 +113,11 @@ export default class Results extends React.Component {
                     '\nSugars       : ' + ingredient.getSugars() + ' ' + ingredient.getSugarsUnit() +
                     '\nSodium       : ' + ingredient.getSodium() + ' ' + ingredient.getSodumUnit()
         nutritionLabel = <Label displayGeneratedStatement={true} ingredientComposite={ingredient}/>
+        ReactGA.event({
+          category: 'User',
+          action: 'User results composite found',
+          nonInteraction: false
+        });
       }
       const user = Config.DEBUG ? 'test' : 'anonymous'
       const path = 'http://www.label.inphood.com/?user=' + user + '&label=' + label + '&embed=false'

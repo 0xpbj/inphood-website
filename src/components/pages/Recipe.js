@@ -53,7 +53,7 @@ export default class Recipe extends React.Component {
     this.props.nutritionModelReset()
     ReactGA.event({
       category: 'User',
-      action: 'Go to image page',
+      action: 'User in recipe page',
       nonInteraction: false
     });
   }

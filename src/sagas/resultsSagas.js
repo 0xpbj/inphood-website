@@ -10,7 +10,6 @@ function* getLabelData() {
   while (true) {
     const {userId, labelId} = yield take (GET_LABEL_ID)
     const path = '/global/nutritionLabel/' + userId + '/' + labelId
-    console.log('Path: ', path);
     const data = (yield call(db.getPath, path)).val()
     yield put({type: LABEL_DATA, data})
   }

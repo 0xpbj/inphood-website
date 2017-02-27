@@ -77,7 +77,7 @@ export default class Results extends React.Component {
       //   <div style={socialContainerStyle}>
       //     Picture Credit: Anonymous
       //   </div>
-      // ) : ( 
+      // ) : (
       //   <div style={socialContainerStyle}>
       //     Picture Credit: <Link to={'http://www.instagram.com/' + this.props.params.userId} target="_blank">{this.props.params.userId}</Link>
       //   </div>
@@ -93,14 +93,14 @@ export default class Results extends React.Component {
         ingredient.initializeFromSerialization(ingredientData)
         console.log(ingredient)
         textLabel = 'Serving Size : ' + ingredient.getServingAmount() + ' ' + ingredient.getServingUnit() +
-                    '\nCalories     : ' + ingredient.getCalories() + 
-                    '\nFat          : ' + ingredient.getTotalFatPerServing() + ' ' +  ingredient.getTotalFatUnit() + 
+                    '\nCalories     : ' + ingredient.getCalories() +
+                    '\nFat          : ' + ingredient.getTotalFatPerServing() + ' ' +  ingredient.getTotalFatUnit() +
                     '\nCarbs        : ' + ingredient.getTotalCarbohydratePerServing() + ' ' + ingredient.getTotalCarbohydrateUnit() +
                     '\nFiber        : ' + ingredient.getDietaryFiber() + ' ' + ingredient.getDietaryFiberUnit() +
                     '\nProtein      : ' + ingredient.getTotalProteinPerServing() + ' ' + ingredient.getTotalProteinUnit() +
                     '\nSugars       : ' + ingredient.getSugars() + ' ' + ingredient.getSugarsUnit() +
                     '\nSodium       : ' + ingredient.getSodium() + ' ' + ingredient.getSodumUnit()
-        nutritionLabel = <Label ingredientComposite={ingredient}/>
+        nutritionLabel = <Label displayGeneratedStatement={true} ingredientComposite={ingredient}/>
       }
       const path = 'http://www.label.inphood.com/?user=anonymous&label=' + label + '&embed=false'
       const epath = 'http://www.label.inphood.com/?user=anonymous&label=' + label + '&embed=true'

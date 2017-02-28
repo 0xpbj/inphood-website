@@ -1,68 +1,68 @@
 const UnitSliderMap = {
   ml: {
     min: 0,
-    max: 500,
-    step: 10,
+    max: 100,
+    step: 5,
   },
   l: {
     min: 0,
-    max: 10,
-    step: 1,
+    max: 5,
+    step: 0.25,
   },
   tsp: {
     min: 0,
-    max: 20,
+    max: 5,
     step: 0.25,
   },
   tbsp: {
     min: 0,
-    max: 20,
+    max: 5,
     step: 0.25,
   },
   'fl-oz': {
     min: 0,
-    max: 32,
-    step: 1,
+    max: 10,
+    step: 0.5,
   },
   cup: {
     min: 0,
-    max: 20,
+    max: 5,
     step: 0.25,
   },
   pnt: {
     min: 0,
-    max: 10,
+    max: 5,
     step: 0.25,
   },
   qt: {
     min: 0,
-    max: 10,
+    max: 5,
     step: 0.25,
   },
   g: {
     min: 0,
-    max: 500,
-    step: 10,
+    max: 100,
+    step: 5,
   },
   kg: {
     min: 0,
     max: 5,
-    step: 0.125,
+    step: 0.25,
   },
   oz: {
     min: 0,
-    max: 32,
-    step: 0.25,
+    max: 10,
+    step: 0.5,
   },
   lb: {
     min: 0,
-    max: 10,
+    max: 5,
     step: 0.25,
   },
   other: {
     min: 0,
-    max: 20,
-    step: 0.25
+    max: 10,
+    step: .5,
   }
 }
 
@@ -77,6 +77,7 @@ export class IngredientControlModel {
 
     if (sliderValue != -1) {
       this._sliderValue = sliderValue
+      this.resetBoundsIfNecessary(this._sliderValue)
     } else {
       this._sliderValue = (this._sliderMax + this._sliderMin) / 2
     }
@@ -108,12 +109,38 @@ export class IngredientControlModel {
     return this._sliderValue
   }
 
+  resetBoundsIfNecessary(aValue) {
+    if ((aValue >= this._sliderMin) && (aValue <= this._sliderMax)) {
+      return
+    }
+
+    console.log('^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^');
+    console.log('resetBoundsIfNecessary:');
+    console.log('  aValue = ' + aValue);
+    console.log('  old _sliderMax = ' + this._sliderMax);
+    console.log('  old _sliderMin = ' + this._sliderMin);
+
+    // Set the maximum and minimum slider values to the extremes of 1/2 the number
+    // of max increments away from the ceiling of aValue:
+    const maxIncrements = 20
+    const aValueCeil = Math.ceil(aValue)
+    this._sliderMax = aValueCeil + ((maxIncrements * this._sliderStep) / 2)
+    this._sliderMin = aValueCeil - ((maxIncrements * this._sliderStep) / 2)
+
+    if (this._sliderMin < 0) {
+      this._sliderMin = 0
+    }
+
+    console.log('  new _sliderMax = ' + this._sliderMax);
+    console.log('  new _sliderMin = ' + this._sliderMin);
+  }
+
   setSliderValue(aValue) {
     this._sliderValue = aValue
-
-    // TODO: if this exceeds max, re-scale the Maximum to this value + 5 increments?
-    // (this will happen when we use our own edit box instead of the one with the
-    //  sliders)
+    if (this._sliderValue < 0) {
+      this._sliderValue = 0
+    }
+    this.resetBoundsIfNecessary(this._sliderValue)
   }
 
   getSliderMin() {

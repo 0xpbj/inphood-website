@@ -1,14 +1,49 @@
 var React = require('react')
 import Row from 'react-bootstrap/lib/Row'
 import Col from 'react-bootstrap/lib/Col'
+import FormGroup from 'react-bootstrap/lib/FormGroup'
+import FormControl from 'react-bootstrap/lib/FormControl'
 import 'react-widgets/lib/less/react-widgets.less'
 import Dropdownlist from 'react-widgets/lib/Dropdownlist'
 import Chip from 'react-toolbox/lib/chip'
 import Slider from 'react-toolbox/lib/slider'
+import {rationalToFloat} from '../../helpers/ConversionUtils'
 
 export default class IngredientController extends React.Component {
+  constructor() {
+    super()
+    this.state = {
+      editBoxValue: ""
+    }
+  }
+  componentWillMount() {
+    this.setState({editBoxValue: this.props.ingredientControlModel.getSliderValue()})
+  }
+  handleSliderValuesChangeInternal(value) {
+    let tag = this.props.tag
+    this.props.handleSliderValuesChange(tag, value)
+    this.setState({editBoxValue: value})
+  }
+  submitNewSliderValue(event) {
+    const tag = this.props.tag
+    const value = rationalToFloat(this.state.editBoxValue)
+    const units = this.props.ingredientControlModel.getDropdownUnitValue()
+    this.props.handleSliderValuesChangeEditBox(tag, value, units)
+
+    // This prevents the default behavior of a form submit which causes a full
+    // re-render / re-state!
+    event.preventDefault()
+  }
+  updateEditBoxValue(formObj) {
+    console.log('updateEditBoxValue = ' + formObj.target.value)
+    this.setState({editBoxValue: formObj.target.value})
+  }
   render() {
     const {tag, ingredientControlModel} = this.props
+    const formControlId = tag + "FormControlId"
+
+    let sliderValue = ingredientControlModel.getSliderValue()
+
     return (
       <div>
         {/* row 1 from above: */}
@@ -31,17 +66,32 @@ export default class IngredientController extends React.Component {
                      marginLeft: 10}}>
           {/* row 2 from above: */}
           <Row>
-            <Col xs={9} md={9} style={{paddingLeft: 5, paddingRight: 5}}>
+            <Col xs={8} md={8} style={{paddingLeft: 5, paddingRight: 5}}>
               <Slider
-                value={ingredientControlModel.getSliderValue()}
-                onChange={this.props.handleSliderValuesChange}
+                value={sliderValue}
+                onChange={this.handleSliderValuesChangeInternal.bind(this)}
                 min={ingredientControlModel.getSliderMin()}
                 max={ingredientControlModel.getSliderMax()}
                 step={ingredientControlModel.getSliderStep()}
-                editable
                 snaps/>
             </Col>
-            <Col xs={3} md={3} style={{paddingLeft: 0}}>
+            <Col xs={2} md={2} style={{paddingLeft: 0, paddingRight: 5}}>
+              <form
+                onSubmit={(event) => this.submitNewSliderValue(event)}>
+                <FormGroup
+                  controlId={formControlId}
+                  validationState={null}>
+                  <FormControl
+                    componentClass="input"
+                    className="text-right"
+                    type="text"
+                    label="Text"
+                    value={this.state.editBoxValue}
+                    onChange={this.updateEditBoxValue.bind(this)}/>
+                </FormGroup>
+              </form>
+            </Col>
+            <Col xs={2} md={2} style={{paddingLeft: 0}}>
               <Dropdownlist
                 data={ingredientControlModel.getDropdownUnits()}
                 value={ingredientControlModel.getDropdownUnitValue()}

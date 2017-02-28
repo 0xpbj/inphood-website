@@ -347,8 +347,20 @@ export default class Nutrition extends React.Component {
     })
   }
   handleSliderValuesChange(tag, value) {
+    console.log('-------------------------------------------------------------');
+    console.log('handleSliderValuesChange:');
+    console.log('tag = ' + tag);
+    console.log('value = ' + value);
     this.props.ingredientSetSliderValue(tag, value)
     this.props.nutritionModelScaleIng(tag, value, this.props.model.ingredientControlModels[tag].getDropdownUnitValue())
+  }
+  handleSliderValuesChangeEditBox(tag, value, units) {
+    console.log('------------------------------------------------------------');
+    console.log('handleSliderValuesChangeEditBox:');
+    console.log('tag = ' + tag);
+    console.log('value = ' + value);
+    this.props.ingredientSetSliderValue(tag, value)
+    this.props.nutritionModelScaleIng(tag, value, units)
   }
   completeMatchDropdownChange(tag, value) {
     //console.log('completeMatchDropdownChange ----------------------------------------');
@@ -582,9 +594,12 @@ export default class Nutrition extends React.Component {
           tag={tag}
           ingredientControlModel={this.props.model.ingredientControlModels[tag]}
           handleChipDelete={this.handleChipDelete.bind(this, tag)}
-          handleSliderValuesChange={this.handleSliderValuesChange.bind(this, tag)}
+          handleSliderValuesChange={(tag, value) => this.handleSliderValuesChange(tag, value)}
           handleUnitDropdownChange={this.handleUnitDropdownChange.bind(this, tag)}
           handleMatchDropdownChange={this.handleMatchDropdownChange.bind(this, tag)}
+          ingredientSetSliderValue={(tag, value)=>this.props.ingredientSetSliderValue(tag, value)}
+          nutritionModelScaleIng={(tag, value, units)=>this.props.nutritionModelScaleIng(tag, value, units)}
+          handleSliderValuesChangeEditBox={(tag, value, units)=>this.handleSliderValuesChangeEditBox(tag, value, units)}
         />
       )
     }

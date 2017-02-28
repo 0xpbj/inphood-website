@@ -111,7 +111,7 @@ export function parseRecipe(data) {
   for (let i of phrases) {
     // let reg = i.match(sRegex)
     // let clean = reg ? removeSpecialChars(reg[0]) : removeSpecialChars(i)
-    let parsed = ingp.parse(i)
+    let parsed = ingp.parse(i.toLowerCase())
     let flag = false
     for (let i of fileWords) {
       if (parsed.name.indexOf(i) !== -1) {

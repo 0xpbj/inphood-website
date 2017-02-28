@@ -121,7 +121,8 @@ function* loadAWSPut() {
 
 function* loadSerializedData() {
   const {composite, full, key} = yield select(state => state.nutritionReducer)
-  firebase.database().ref('/global/nutritionLabel/anonymous/'+key).update({
+  let user = Config.DEBUG ? 'test' : 'anonymous'
+  firebase.database().ref('/global/nutritionLabel/'+user+'/'+key).update({
     composite,
     full
   })

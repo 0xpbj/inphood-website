@@ -1,4 +1,5 @@
 var React = require('react')
+import ReactGA from 'react-ga'
 import Modal from 'react-bootstrap/lib/Modal'
 import Button from 'react-bootstrap/lib/Button'
 import Glyphicon from 'react-bootstrap/lib/Glyphicon'
@@ -20,6 +21,11 @@ export default class Footer extends React.Component {
   onSubmit() {
     this.setState({ show: false })
     if (this.state.data !== '') {
+      ReactGA.event({
+        category: 'User',
+        action: 'User sent email',
+        nonInteraction: false
+      });
       this.props.initEmailFlow()
       this.props.getEmailData(this.state.data)
     }

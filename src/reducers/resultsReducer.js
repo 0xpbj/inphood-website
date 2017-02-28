@@ -4,6 +4,7 @@ import {
 } from '../constants/ActionTypes'
 
 const initialState = {
+  userId: '',
   labelId: '',
   data: {}
 }
@@ -17,6 +18,7 @@ export default function results(state = initialState, action) {
     case GET_LABEL_ID:
       return {
         ...state,
+        userId: action.userId,
         labelId: action.labelId
       }
     default:

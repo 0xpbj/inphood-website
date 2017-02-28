@@ -20,6 +20,9 @@ export default class Home extends React.Component {
       showHelp: false
     }
   }
+  componentWillMount() {
+    this.props.clearData()
+  }
   showHelp() {
     ReactGA.event({
       category: 'User',

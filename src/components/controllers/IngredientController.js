@@ -16,6 +16,9 @@ export default class IngredientController extends React.Component {
       editBoxValue: ""
     }
   }
+  componentWillReceiveProps() {
+    this.setState({editBoxValue: this.props.ingredientControlModel.getSliderValue().toString()})
+  }
   componentWillMount() {
     this.setState({editBoxValue: this.props.ingredientControlModel.getSliderValue().toString()})
   }
@@ -45,8 +48,8 @@ export default class IngredientController extends React.Component {
     // re-render / re-state!
     event.preventDefault()
   }
-  updateEditBoxValue(formObj) {
-    console.log('updateEditBoxValue = ' + formObj.target.value);
+  updateEditBoxValueFromForm(formObj) {
+    console.log('updateEditBoxValueFromForm = ' + formObj.target.value);
     this.setState({editBoxValue: formObj.target.value})
   }
   render() {
@@ -98,7 +101,7 @@ export default class IngredientController extends React.Component {
                     type="text"
                     label="Text"
                     value={this.state.editBoxValue}
-                    onChange={this.updateEditBoxValue.bind(this)}/>
+                    onChange={this.updateEditBoxValueFromForm.bind(this)}/>
                 </FormGroup>
               </form>
             </Col>

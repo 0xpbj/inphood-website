@@ -21,6 +21,8 @@ var unitsOfMeasure = module.exports.unitsOfMeasure = {
   whole: [],
   half: [],
   can: [],
+  gram: ['g'],
+  kilogram: ['kg', 'Kg', 'Kilogram'],
   bottle: [],
   large: ['lg', 'LG', 'Lg'],
   'package': ['pkg', 'Pkg', 'PKG'],

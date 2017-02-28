@@ -4,14 +4,14 @@ const Convert = require('convert-units')
 const UnitTranslationMap = {
   Tbs: ['T', 'Tbs', 'tbs', 'tbsp.', 'Tbsp.', 'Tbsp', 'tbsp', 'TB', 'TBS', 'TBSP', 'tablespoon', 'Tablespoon'],
   tsp: ['t', 'Tsp', 'tsp', 'tsp.', 'Tsp.', 'TS', 'TSP', 'teaspoon', 'Teaspoon'],
-  cup: ['C', 'c', 'Cup', 'cups', 'Cups'],
+  cup: ['C', 'c', 'cup', 'Cup', 'cups', 'Cups'],
   pnt: ['pt', 'PT', 'Pt'],
   qt: ['QT', 'Qt', 'qt'],
-  gal: ['Gal', 'GAL', 'gal'],
-  'fl-oz': ['oz', 'Oz', 'OZ', 'oz.', 'Oz.', 'OZ.'],
-  ml: ['ml'],
-  l: ['L', 'l'],
-  lb: ['lb', 'Lb', 'LB', 'lb.', 'Lb.', 'LB.'],
+  gal: ['Gal', 'GAL', 'gal', 'gallon'],
+  'fl-oz': ['oz', 'Oz', 'OZ', 'oz.', 'Oz.', 'OZ.', 'ounce'],
+  ml: ['ml', 'Milliliter'],
+  l: ['L', 'l', 'liter', 'Liter'],
+  lb: ['lb', 'Lb', 'LB', 'lb.', 'Lb.', 'LB.', 'pound'],
   g: ['g', 'gram'],
   kg: ['kg', 'Kg', 'kilogram', 'Kilogram']
 }

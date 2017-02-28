@@ -17,25 +17,36 @@ export default class IngredientController extends React.Component {
     }
   }
   componentWillMount() {
-    this.setState({editBoxValue: this.props.ingredientControlModel.getSliderValue()})
+    this.setState({editBoxValue: this.props.ingredientControlModel.getSliderValue().toString()})
   }
   handleSliderValuesChangeInternal(value) {
     let tag = this.props.tag
     this.props.handleSliderValuesChange(tag, value)
-    this.setState({editBoxValue: value})
+    this.setState({editBoxValue: value.toString()})
+  }
+  getValidationState() {
+    let returnValue = 'success'
+    try {
+      const value = rationalToFloat(this.state.editBoxValue)
+    } catch(err) {
+      returnValue = 'error'
+    }
+    return returnValue
   }
   submitNewSliderValue(event) {
-    const tag = this.props.tag
-    const value = rationalToFloat(this.state.editBoxValue)
-    const units = this.props.ingredientControlModel.getDropdownUnitValue()
-    this.props.handleSliderValuesChangeEditBox(tag, value, units)
+    if (this.getValidationState() === 'success') {
+      const tag = this.props.tag
+      const value = rationalToFloat(this.state.editBoxValue)
+      const units = this.props.ingredientControlModel.getDropdownUnitValue()
+      this.props.handleSliderValuesChangeEditBox(tag, value, units)
+    }
 
     // This prevents the default behavior of a form submit which causes a full
     // re-render / re-state!
     event.preventDefault()
   }
   updateEditBoxValue(formObj) {
-    console.log('updateEditBoxValue = ' + formObj.target.value)
+    console.log('updateEditBoxValue = ' + formObj.target.value);
     this.setState({editBoxValue: formObj.target.value})
   }
   render() {
@@ -80,7 +91,7 @@ export default class IngredientController extends React.Component {
                 onSubmit={(event) => this.submitNewSliderValue(event)}>
                 <FormGroup
                   controlId={formControlId}
-                  validationState={null}>
+                  validationState={this.getValidationState()}>
                   <FormControl
                     componentClass="input"
                     className="text-right"

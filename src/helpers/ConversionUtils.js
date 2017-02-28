@@ -95,6 +95,10 @@ export function rationalToFloat(rational) {
     floatValue = parseFloat(rational)
   }
 
+  if (isNaN(floatValue)) {
+    throw new Error("Result of parseFloat is not a number.")
+  }
+
   return floatValue
 }
 

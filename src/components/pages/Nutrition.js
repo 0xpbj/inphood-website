@@ -424,7 +424,8 @@ export default class Nutrition extends React.Component {
     const {nutritionModel, ingredientControlModels} = this.props.model
     // 1. Save the current ingredient key for deletion at the end of this
     //    process:
-    let ingredientKeyToDelete = ingredientControlModels[tag].getDropdownMatchValue()
+    const ingredientControlModel = ingredientControlModels[tag]
+    let ingredientKeyToDelete = ingredientControlModel.getDropdownMatchValue()
     let ingredientModelToDelete = nutritionModel.getIngredientModel(tag)
     // 2. Create a new IngredientModel:
     let dataForKey = tupleHelper.getDataForDescription(this.props.model.matchData[tag], value)
@@ -441,28 +442,12 @@ export default class Nutrition extends React.Component {
     //    b. See if the current unit is within the new possibilies, if not
     //       then set to the FDA measure defaults
     //    (TODO: or perhaps fallback to the recipe amount/unit if they worked)
-    const currentValue = ingredientControlModels[tag].getSliderValue()
-    const currentUnit = ingredientControlModels[tag].getDropdownUnitValue()
-    let newValue = undefined
-    let newUnit = undefined
-    if (newUnits.includes(currentUnit)) {
-      newValue = currentValue
-      newUnit = currentUnit
-    } else {
-      //console.log('Ingredient change conversion--using grams to convert:');
-      //console.log('   ' + currentValue + currentUnit + ' to ' + newMeasureUnit);
-      // Convert current unit to grams, then convert grams to new measure unit
-      // for new ingredient
-      let valueInGrams = getValueInUnits(
-        currentValue, currentUnit, 'g', ingredientModelToDelete)
-      newValue = getValueInUnits(
-        valueInGrams, 'g', newMeasureUnit, ingredientModel)
+    const currentValue = ingredientControlModel.getSliderValue()
+    const currentUnit = ingredientControlModel.getDropdownUnitValue()
+    let newUnit = currentUnit
+    if (! newUnits.includes(currentUnit)) {
       newUnit = newMeasureUnit
-      this.props.ingredientSetSliderValue(tag, newValue)
       this.props.ingredientSetDropdownUnitsValue(tag, newUnit)
-      // TODO: possibly an alert to tell the user we've converted their number
-      //       to a new amount due to unit change and the old units are not
-      //       available.
     }
     // 5. Remove the current IngredientModel from the NutritionModel:
     this.props.nutritionModelRemIng(tag)
@@ -475,7 +460,7 @@ export default class Nutrition extends React.Component {
     });
     this.props.nutritionModelAddIng(tag,
                                  ingredientModel,
-                                 newValue,
+                                 currentValue,
                                  newUnit)
   }
   handleMatchDropdownChange(tag, value) {

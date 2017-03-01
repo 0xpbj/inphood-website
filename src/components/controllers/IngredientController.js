@@ -91,7 +91,8 @@ export default class IngredientController extends React.Component {
             </Col>
             <Col xs={2} md={2} style={{paddingLeft: 0, paddingRight: 5}}>
               <form
-                onSubmit={(event) => this.submitNewSliderValue(event)}>
+                onSubmit={(event) => this.submitNewSliderValue(event)}
+                autoComplete="off">
                 <FormGroup
                   controlId={formControlId}
                   validationState={this.getValidationState()}>

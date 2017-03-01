@@ -500,25 +500,21 @@ export default class Nutrition extends React.Component {
     }
   }
   handleUnitDropdownChange(tag, value) {
-    //console.log('handleUnitDropdownChange ----------------------------------------');
-    //console.log('tag = ' + tag);
-    //console.log('value = ' + value);
-    let newUnit = value
-    let ingredientControlModel = this.props.model.ingredientControlModels[tag]
-    let ingredientModel = this.props.model.nutritionModel.getIngredientModel(tag)
-    // TODO: catch the exception from here and mention that their current value
-    // will be lost if we change to those units.
     ReactGA.event({
       category: 'Nutrition Mixer',
       action: 'User changed units for ingredient',
       nonInteraction: false,
       label: tag
     });
-    let newValue = getIngredientValueInUnits(
-      newUnit, ingredientModel, ingredientControlModel)
-    this.props.ingredientSetSliderValue(tag, newValue)
+
+    //console.log('handleUnitDropdownChange ----------------------------------------');
+    //console.log('tag = ' + tag);
+    //console.log('value = ' + value);
+    let newUnit = value
+    let ingredientControlModel = this.props.model.ingredientControlModels[tag]
+    let sliderValue = ingredientControlModel.getSliderValue()
     this.props.ingredientSetDropdownUnitsValue(tag, newUnit)
-    this.props.ingredientAddModel(tag, ingredientControlModel)
+    this.props.nutritionModelScaleIng(tag, sliderValue, newUnit)
   }
   handleChipDelete(tag) {
     //console.log('handleChipDelete ------------------------------------------------');

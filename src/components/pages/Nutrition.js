@@ -691,7 +691,28 @@ export default class Nutrition extends React.Component {
       }
     }
     //
-    //  b. Now create the slider array:
+    //  b. Create a list of recipeLines for display
+    let recipeLines = {}
+    for (let i = 0; i < parsedData.length; i++) {
+      const amount = parsedData[i].amount
+      const unit = parsedData[i].unit
+      const name = parsedData[i].name
+
+      let recipeLine = ""
+
+      if (!isNaN(amount)) {
+        recipeLine = recipeLine + amount + " "
+      }
+
+      if ((unit !== undefined) && (unit !== "")) {
+        recipeLine = recipeLine + unit.toLowerCase() + " "
+      }
+
+      recipeLine = recipeLine + name
+      recipeLines[name] = recipeLine
+    }
+    //
+    //  c. Now create the slider array:
     for (let i = 0; i < tagsInOrder.length; i++) {
       const tag = tagsInOrder[i]
       if (! (tag in matchData)) {
@@ -701,9 +722,14 @@ export default class Nutrition extends React.Component {
         notFound = notFound + tag + " "
         continue
       }
+      let recipeLine = tag
+      if (tag in recipeLines) {
+        recipeLine = recipeLines[tag]
+      }
       sliders.push(
         <IngredientController
           tag={tag}
+          recipeLine={recipeLine}
           ingredientControlModel={this.props.model.ingredientControlModels[tag]}
           handleChipDelete={this.handleChipDelete.bind(this, tag)}
           handleSliderValuesChange={(tag, value) => this.handleSliderValuesChange(tag, value)}

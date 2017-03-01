@@ -53,7 +53,7 @@ export default class IngredientController extends React.Component {
     this.setState({editBoxValue: formObj.target.value})
   }
   render() {
-    const {tag, ingredientControlModel} = this.props
+    const {tag, recipeLine, ingredientControlModel} = this.props
     const formControlId = tag + "FormControlId"
 
     let sliderValue = ingredientControlModel.getSliderValue()
@@ -67,7 +67,7 @@ export default class IngredientController extends React.Component {
             <Chip
               onDeleteClick={this.props.handleChipDelete}
               deletable>
-              {tag}
+              {recipeLine}
             </Chip>
           </Col>
         </Row>

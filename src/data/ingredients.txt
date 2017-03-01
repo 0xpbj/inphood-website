@@ -281,6 +281,7 @@ halfmoon fish
 halibut
 harvest fish
 herring
+jelly
 jellyfish
 lobster
 mackerel
@@ -416,6 +417,7 @@ zoomall-purpose flour
 allspice
 almond
 almond essence
+almond butter
 amaretti
 anise
 apple juice
@@ -512,6 +514,7 @@ edamame bean
 espresso
 fennel
 feta
+feta cheese
 fig
 fillet steak
 filo pastry
@@ -844,6 +847,7 @@ edamame
 egg mix
 egg substitute
 eggnog
+egg
 eggs
 epazote
 eppaw
@@ -1429,3 +1433,4 @@ whiskey sour mix
 wocas
 wonton wrappers (includes egg roll wrappers)
 yachtwurst
+pinto beans

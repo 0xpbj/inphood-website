@@ -677,10 +677,27 @@ export default class Nutrition extends React.Component {
     let sliders = []
     let notFound = ""
     const {ingredientControlModels, matchData} = this.props.model
+    //
+    //  a. Order the tags so they appear in search + recipe order to the user:
     const parsedData = this.props.nutrition.parsedData
-
+    let tagsInOrder = []
     for (let i = 0; i < parsedData.length; i++) {
       const tag = parsedData[i].name
+      tagsInOrder.push(tag)
+    }
+    console.log('after generating tagsInOrder: -------------------------------')
+    console.log(tagsInOrder)
+    for (let tag in matchData) {
+      if ((tagsInOrder.indexOf(tag) === -1)) {
+        tagsInOrder.splice(0, 0, tag)
+        console.log('after splicing tagsInOrder: -------------------------------')
+        console.log(tagsInOrder)
+      }
+    }
+    //
+    //  b. Now create the slider array:
+    for (let i = 0; i < tagsInOrder.length; i++) {
+      const tag = tagsInOrder[i]
       if (! (tag in matchData)) {
         continue
       }

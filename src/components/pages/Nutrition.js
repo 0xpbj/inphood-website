@@ -677,7 +677,13 @@ export default class Nutrition extends React.Component {
     let sliders = []
     let notFound = ""
     const {ingredientControlModels, matchData} = this.props.model
-    for (let tag in matchData) {
+    const parsedData = this.props.nutrition.parsedData
+
+    for (let i = 0; i < parsedData.length; i++) {
+      const tag = parsedData[i].name
+      if (! (tag in matchData)) {
+        continue
+      }
       if (! (tag in ingredientControlModels)) {
         notFound = notFound + tag + " "
         continue

@@ -132,7 +132,6 @@ export default class Nutrition extends React.Component {
     const firstMatch = 0
     const tag = searchIngredient
     const tagMatches = matchData[tag]
-    let unmatchedTags = []
     if (tagMatches.length === 0) {
       ReactGA.event({
         category: 'Nutrition Mixer',
@@ -141,10 +140,12 @@ export default class Nutrition extends React.Component {
         label: searchIngredient
       });
       let {unmatchedTags} = this.state
-      unmatchedTags.push(tag)
-      this.setState({
-        unmatchedTags: unmatchedTags,
-      })
+      if (unmatchedTags.indexOf(tag) === -1) {
+        unmatchedTags.push(tag)
+        this.setState({
+          unmatchedTags: unmatchedTags,
+        })
+      }
       return
     }
     // We use the first value in the list (assumes elastic search returns results
@@ -239,14 +240,16 @@ export default class Nutrition extends React.Component {
       // We use the first value in the list (assumes elastic search returns results
       // in closest match order)
       //const key = tagMatches[0][keyOffset]
-      if(tagMatches.length === 0) {
-        missingData.push(tag)
-        ReactGA.event({
-          category: 'Nutrition Mixer',
-          action: 'Missing data for ingredient',
-          nonInteraction: false,
-          label: tag
-        });
+      if (tagMatches.length === 0) {
+        if (missingData.indexOf(tag) === -1) {
+          missingData.push(tag)
+          ReactGA.event({
+            category: 'Nutrition Mixer',
+            action: 'Missing data for ingredient',
+            nonInteraction: false,
+            label: tag
+          });
+        }
         continue
       }
       const description = tagMatches[0][descriptionOffset]
@@ -792,7 +795,7 @@ export default class Nutrition extends React.Component {
                 <Row>
                   <TagController
                     tags={this.state.unmatchedTags}
-                    tagName={'No match found for these tags:'}
+                    tagName={'No match found for these ingredients:'}
                     deletable={false}
                     handleChipAdd={this.handleChipAdd.bind(this)}
                   />

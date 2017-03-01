@@ -1,0 +1,10 @@
+salt and pepper -> salt, pepper
+egg, eggs -> eggs (W)
+sesame oil -> sesame oil (D)
+cilantro -> cilantro (W)
+spices -> proper powder (W)
+feta cheese -> feta cheese (D)
+jam -> jam (D)
+pepper -> black pepper (W)
+shrimp -> shrimp (W)
+bell pepper -> bell pepper (W)

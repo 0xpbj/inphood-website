@@ -102,6 +102,7 @@ fruit
 ful
 garam masala
 garlic
+garlic powder
 gem squash
 ghee
 giblets
@@ -494,6 +495,7 @@ ciabatta
 cider
 clove
 cocoa
+cocoa powder
 coleslaw
 condensed milk
 coriander leaves
@@ -506,6 +508,7 @@ crisp
 crust
 crﾏme fraiche
 custard
+crimini mushrooms
 dijon mustard
 dill
 dill weed
@@ -877,6 +880,7 @@ grape leaves
 grapefruit juice
 grapes
 ground turkey
+ground beef
 groundcherries
 guanabana nectar
 guava nectar
@@ -1103,6 +1107,7 @@ tofu yogurt
 tomato and vegetable juice
 tomato juice
 tomato products
+tomato paste
 tomato sauce
 tree fern
 triticale flour

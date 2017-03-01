@@ -685,13 +685,9 @@ export default class Nutrition extends React.Component {
       const tag = parsedData[i].name
       tagsInOrder.push(tag)
     }
-    console.log('after generating tagsInOrder: -------------------------------')
-    console.log(tagsInOrder)
     for (let tag in matchData) {
       if ((tagsInOrder.indexOf(tag) === -1)) {
         tagsInOrder.splice(0, 0, tag)
-        console.log('after splicing tagsInOrder: -------------------------------')
-        console.log(tagsInOrder)
       }
     }
     //

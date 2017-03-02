@@ -40,6 +40,8 @@ export default class Results extends React.Component {
     return Object.prototype.hasOwnProperty.call(object, property)
   }
 
+  // TODO: this should be a utility or a factory that constructs this from
+  //       an ingredient model--it doesn't belong in results
   getTextLabel(anIngredientModel) {
     let textLabel =
       'Serving Size : ' + anIngredientModel.getServingAmount() + ' ' + anIngredientModel.getServingUnit() + '\n' +
@@ -54,6 +56,8 @@ export default class Results extends React.Component {
     return textLabel
   }
 
+  // TODO: this should be a utility or a factory that constructs this from
+  //       a nutrition model--it doesn't belong in results
   getRecipeText(aNutritionModel) {
     let recipeText = ''
 
@@ -144,8 +148,9 @@ export default class Results extends React.Component {
       const {iUrl} = this.props.results.data
 
       const shareButtons = (
-        <div className="text-center" style={{marginTop: "30px"}}>
-          <Row style={{marginTop: "20px"}}>
+        <div className="text-center"
+             style={{marginTop: "15", marginBottom: "15"}}>
+          <Row>
             <Col xs={1} md={1} />
             <Col xs={5} md={5}>
               <CopyToClipboard text={path}
@@ -179,7 +184,6 @@ export default class Results extends React.Component {
         ) :
           null
 
-      // const placeHolder = iUrl ? null : <Col xs={0} sm={0} md={1} />
       const placeHolderCol = <Col xs={1} sm={1} md={1} lg={2}/>
 
       return (

@@ -8,3 +8,12 @@ jam -> jam (D)
 pepper -> black pepper (W)
 shrimp -> shrimp (W)
 bell pepper -> bell pepper (W)
+bacon -> bacon pork (W)
+chicken -> chicken wings (W)
+guacomole -> missing
+greek yogurt -> plain low fat greek yogurt
+almond milk -> almond milk
+maple syrup -> Syrups, maple
+protein
+red -> sweet onion
+breadcrumbs -> bread crumbs

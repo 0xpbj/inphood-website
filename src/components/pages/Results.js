@@ -143,7 +143,7 @@ export default class Results extends React.Component {
 
       const user = Config.DEBUG ? 'test' : 'anonymous'
       const path = 'http://www.label.inphood.com/?user=' + user + '&label=' + label + '&embed=false'
-      const epath = 'http://www.label.inphood.com/?user' + user + '&label=' + label + '&embed=true'
+      const epath = 'http://www.label.inphood.com/?user=' + user + '&label=' + label + '&embed=true'
       const embedMsg = '<embed src=' + epath + ' height=600 width=400>'
       const {iUrl} = this.props.results.data
 

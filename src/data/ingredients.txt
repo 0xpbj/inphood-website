@@ -66,6 +66,7 @@ chard
 cheese
 chicory
 chilli peppers
+chili powder
 chinese leaves
 chives
 chocolate
@@ -419,6 +420,8 @@ allspice
 almond
 almond essence
 almond butter
+almond milk
+almond flour
 amaretti
 anise
 apple juice
@@ -867,6 +870,7 @@ fruit cocktail
 fruit juice smoothie
 fruit salad
 fungi
+black beans
 gardenburger black bean chipotle burger
 gardenburger flame grilled burger
 gardenburger original
@@ -1015,6 +1019,7 @@ potato pancakes
 potato puffs
 potato salad
 prickly pears
+protein
 protein supplement
 prune juice
 prune puree
@@ -1196,6 +1201,7 @@ bockwurst
 bologna
 bratwurst
 braunschweiger (a liver sausage)
+breadcrumbs
 bread crumbs
 bread sticks
 bread stuffing
@@ -1224,6 +1230,7 @@ campbell's red and white - microwaveable bowls
 campbell's red and white
 campbell's soup on the go
 capers
+mexican cheese
 carbonated beverage
 cereals ready-to-eat
 cereals
@@ -1291,6 +1298,8 @@ healthy request
 heinz
 honey roll sausage
 hormel pillow pak sliced turkey pepperoni
+pepper jack cheese
+pepperjack cheese
 hush puppies
 ice cream cones
 ice creams

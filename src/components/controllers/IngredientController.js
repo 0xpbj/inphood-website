@@ -36,17 +36,22 @@ export default class IngredientController extends React.Component {
     }
     return returnValue
   }
-  submitNewSliderValue(event) {
+  updateReduxStoreIfValid() {
     if (this.getValidationState() === 'success') {
       const tag = this.props.tag
       const value = rationalToFloat(this.state.editBoxValue)
       const units = this.props.ingredientControlModel.getDropdownUnitValue()
       this.props.handleSliderValuesChangeEditBox(tag, value, units)
     }
-
+  }
+  submitNewSliderValue(event) {
+    this. updateReduxStoreIfValid()
     // This prevents the default behavior of a form submit which causes a full
     // re-render / re-state!
     event.preventDefault()
+  }
+  onEditBoxBlurred() {
+    this. updateReduxStoreIfValid()
   }
   updateEditBoxValueFromForm(formObj) {
     console.log('updateEditBoxValueFromForm = ' + formObj.target.value);
@@ -102,6 +107,7 @@ export default class IngredientController extends React.Component {
                     type="text"
                     label="Text"
                     value={this.state.editBoxValue}
+                    onBlur={this.onEditBoxBlurred.bind(this)}
                     onChange={this.updateEditBoxValueFromForm.bind(this)}/>
                 </FormGroup>
               </form>

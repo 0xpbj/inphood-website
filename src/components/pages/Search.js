@@ -55,7 +55,9 @@ export default class Search extends React.Component {
     ) : null
     return (
       <div>
-        <form onSubmit={(event) => this.searchFlow(event)}>
+        <form
+          onSubmit={(event) => this.searchFlow(event)}
+          autoComplete="off">
           <FormGroup
             style={{marginBottom:0}}
             controlId="formBasicText"

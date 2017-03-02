@@ -45,7 +45,7 @@ export default class NutritionEstimateJSX extends React.Component {
     }
 
     return(
-      <div>
+      <div className="center-block">
         <section style={myStyles.performanceFacts}>
           <header style={myStyles.performanceFactsHeader}>
             <h1 style={myStyles.performanceFactsTitle}>Nutrition Facts</h1>

@@ -18,6 +18,14 @@ class ScaledIngredient {
     return this._scale
   }
 
+  getQuantity() {
+    return this._recipeQuantity
+  }
+
+  getUnit() {
+    return this._recipeUnit
+  }
+
   setRecipeAmount(recipeQuantity, recipeUnit) {
     this._recipeQuantity = recipeQuantity
     this._recipeUnit = recipeUnit
@@ -50,14 +58,32 @@ export class NutritionModel {
     this._suggestedServingUnit = 'g'
   }
 
-  initializeFromSerialization(serialization) {
-    // TODO: check to make sure this has the right properties etc.
-    // let ingredients = serialization.NutritionModel.ingredients
-    // for (let key in ingredients) {
-    //   let ingredient = ingredients[key]
-    //   console.log("Key: " + key);
-    //   console.log(ingredient);
-    // }
+  initializeFromSerialization(serializedData) {
+    const nutritionData = serializedData.NutritionModel
+
+    this._suggestedServingValue = nutritionData._suggestedServingValue
+    this._suggestedServingUnit = nutritionData._suggestedServingUnit
+
+    const append = false
+    for (let tag in nutritionData._scaledIngredients) {
+      const scaledIngredient = nutritionData._scaledIngredients[tag]
+
+      const quantity = scaledIngredient._recipeQuantity
+      const unit = scaledIngredient._recipeUnit
+
+      const serializedIngredientData = {
+        Ingredient: scaledIngredient._ingredient
+      }
+      let ingredient = new IngredientModel()
+      ingredient.initializeFromSerialization(serializedIngredientData)
+
+      try {
+        this.addIngredient(tag, ingredient, quantity, unit, append)
+      } catch (error) {
+        // TODO ...
+        console.log('ERROR initializing ingredient, ' + tag + ', in nutrition model deserialization.');
+      }
+    }
   }
 
   serialize() {
@@ -87,6 +113,10 @@ export class NutritionModel {
         throw new Error(errorStr)
       }
     }
+  }
+
+  getTags() {
+    return (Object.keys(this._scaledIngredients))
   }
 
   getScaledIngredient(tag) {

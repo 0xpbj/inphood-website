@@ -219,8 +219,8 @@ export class IngredientModel {
   initializeFromSerialization(serializedData) {
     let ingredientData = serializedData.Ingredient
 
-    this._key = ""
-    this._tag = ""
+    this._key = ingredientData._key
+    this._tag = ingredientData._tag
 
     // Pull data from DB/JSON to initialize remainder of class instance:
     //

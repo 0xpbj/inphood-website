@@ -13,6 +13,7 @@ import ControlLabel from 'react-bootstrap/lib/ControlLabel'
 import Label from './NutritionEstimateJSX'
 import {Link} from 'react-router'
 import {IngredientModel} from '../models/IngredientModel'
+import {NutritionModel} from '../models/NutritionModel'
 import TagController from '../controllers/TagController'
 import CopyToClipboard from 'react-copy-to-clipboard';
 import TopBar from '../layout/TopBar'
@@ -38,6 +39,38 @@ export default class Results extends React.Component {
   hasProp(object, property) {
     return Object.prototype.hasOwnProperty.call(object, property)
   }
+
+  getTextLabel(anIngredientModel) {
+    let textLabel =
+      'Serving Size : ' + anIngredientModel.getServingAmount() + ' ' + anIngredientModel.getServingUnit() + '\n' +
+      'Calories     : ' + anIngredientModel.getCalories() + '\n' +
+      'Fat          : ' + anIngredientModel.getTotalFatPerServing() + ' ' +  anIngredientModel.getTotalFatUnit() + '\n' +
+      'Carbs        : ' + anIngredientModel.getTotalCarbohydratePerServing() + ' ' + anIngredientModel.getTotalCarbohydrateUnit() + '\n' +
+      'Fiber        : ' + anIngredientModel.getDietaryFiber() + ' ' + anIngredientModel.getDietaryFiberUnit() + '\n' +
+      'Protein      : ' + anIngredientModel.getTotalProteinPerServing() + ' ' + anIngredientModel.getTotalProteinUnit() + '\n' +
+      'Sugars       : ' + anIngredientModel.getSugars() + ' ' + anIngredientModel.getSugarsUnit() + '\n' +
+      'Sodium       : ' + anIngredientModel.getSodium() + ' ' + anIngredientModel.getSodumUnit() + '\n'
+
+    return textLabel
+  }
+
+  getRecipeText(aNutritionModel) {
+    let recipeText = ''
+
+    const nmTags = aNutritionModel.getTags()
+    for (let index in nmTags) {
+      const tag = nmTags[index]
+      const scaledIngredient = aNutritionModel.getScaledIngredient(tag)
+      recipeText = recipeText +
+                   scaledIngredient.getQuantity() + " " +
+                   scaledIngredient.getUnit() + " " +
+                   scaledIngredient.getIngredientModel().getKey() +
+                   "\n"
+    }
+
+    return recipeText
+  }
+
   render() {
     const containerStyle = {
       marginTop: "60px"
@@ -76,26 +109,8 @@ export default class Results extends React.Component {
         padding: "5px",
         margin: "10px",
       }
-      // const image = this.props.params.userId === 'anonymous'
-      // ? <Image src={this.props.results.data.oUrl} responsive rounded/>
-      // : (
-      //     <Link to={'http://www.instagram.com/p/' + this.props.results.data.key} target="_blank">
-      //       <Tooltip placement="top" className="in" id="tooltip-top">
-      //         @{this.props.params.userId}
-      //       </Tooltip>
-      //       <Image src={this.props.results.data.oUrl} responsive rounded/>
-      //     </Link>
-      // )
-      // const credit = this.props.params.userId === 'anaonymous' ? (
-      //   <div style={socialContainerStyle}>
-      //     Picture Credit: Anonymous
-      //   </div>
-      // ) : (
-      //   <div style={socialContainerStyle}>
-      //     Picture Credit: <Link to={'http://www.instagram.com/' + this.props.params.userId} target="_blank">{this.props.params.userId}</Link>
-      //   </div>
-      // )
       let textLabel = ''
+
       // If we've received the data for the Nutrition label, deserialize it for
       // rendering, otherwise display a loading message.
       //   - TODO: make the loading message suck less
@@ -104,14 +119,7 @@ export default class Results extends React.Component {
         let ingredientData = JSON.parse(this.props.results.data.composite)
         let ingredient = new IngredientModel()
         ingredient.initializeFromSerialization(ingredientData)
-        textLabel = 'Serving Size : ' + ingredient.getServingAmount() + ' ' + ingredient.getServingUnit() +
-                    '\nCalories     : ' + ingredient.getCalories() +
-                    '\nFat          : ' + ingredient.getTotalFatPerServing() + ' ' +  ingredient.getTotalFatUnit() +
-                    '\nCarbs        : ' + ingredient.getTotalCarbohydratePerServing() + ' ' + ingredient.getTotalCarbohydrateUnit() +
-                    '\nFiber        : ' + ingredient.getDietaryFiber() + ' ' + ingredient.getDietaryFiberUnit() +
-                    '\nProtein      : ' + ingredient.getTotalProteinPerServing() + ' ' + ingredient.getTotalProteinUnit() +
-                    '\nSugars       : ' + ingredient.getSugars() + ' ' + ingredient.getSugarsUnit() +
-                    '\nSodium       : ' + ingredient.getSodium() + ' ' + ingredient.getSodumUnit()
+        textLabel = this.getTextLabel(ingredient)
         nutritionLabel = <Label displayGeneratedStatement={true} ingredientComposite={ingredient}/>
         ReactGA.event({
           category: 'User',
@@ -119,18 +127,22 @@ export default class Results extends React.Component {
           nonInteraction: false
         });
       }
+
+      let recipeText = ''
+      if (this.hasProp(this.props.results.data, 'full')) {
+        let nutritionModelData = JSON.parse(this.props.results.data.full)
+        let nutritionModel = new NutritionModel()
+        nutritionModel.initializeFromSerialization(nutritionModelData)
+
+        recipeText = this.getRecipeText(nutritionModel)
+      }
+
       const user = Config.DEBUG ? 'test' : 'anonymous'
       const path = 'http://www.label.inphood.com/?user=' + user + '&label=' + label + '&embed=false'
       const epath = 'http://www.label.inphood.com/?user' + user + '&label=' + label + '&embed=true'
       const embedMsg = '<embed src=' + epath + ' height=600 width=400>'
-      const {selectedTags, rawData, iUrl} = this.props.results.data
-      const recipe = <pre>{rawData}</pre>
-      const tags = selectedTags ? (
-        <TagController
-          tags={selectedTags}
-          tagName={'Ingredient Tags:'}
-          clean={true}
-        /> ) : null
+      const {iUrl} = this.props.results.data
+
       const shareButtons = (
         <div className="text-center" style={{marginTop: "30px"}}>
           <Row style={{marginTop: "20px"}}>
@@ -157,35 +169,66 @@ export default class Results extends React.Component {
           {this.state.ecopied ? <div style={{marginTop: "20px"}}><pre>{embedMsg}</pre><span style={{color: 'red'}}>&nbsp;Copied.</span></div> : null}
         </div>
       )
-      const mealPhoto = iUrl ? (
-        <Col xs={4} md={4}>
-          <div className="text-center"><ControlLabel>Meal Photo</ControlLabel></div>
-          <Image className="center-block" src={iUrl} responsive rounded />
-        </Col>
-      ) : null
-      const placeHolder = iUrl ? null : <Col xs={1} md={1} />
+
+      const mealPhoto = iUrl ?
+        (
+          <div>
+            <div className="text-center"><ControlLabel>Meal Photo</ControlLabel></div>
+            <Image className="center-block" src={iUrl} responsive rounded />
+          </div>
+        ) :
+          null
+
+      // const placeHolder = iUrl ? null : <Col xs={0} sm={0} md={1} />
+      const placeHolderCol = <Col xs={1} sm={1} md={1} lg={2}/>
+
       return (
         <div>
-          <TopBar step=""
-                stepText=""
-                aButton={null}/>
+          <TopBar step="" stepText="" aButton={null}/>
           <Grid>
-          <Row className="show-grid">
-            {placeHolder}
-            <Col xs={4} md={4}>
-              <div className="text-center"><ControlLabel>Text Label</ControlLabel></div>
-              <pre>{textLabel}</pre>
-              {shareButtons}
-            </Col>
-            {placeHolder}
-            {placeHolder}
-            <Col xs={4} md={4}>
-              <div className="text-center"><ControlLabel>Nutrition Label</ControlLabel></div>
-              {nutritionLabel}
-            </Col>
-            {placeHolder}
-            {mealPhoto}
-          </Row>
+            <Row>
+
+              <Col xs={12} sm={7} md={6} lg={6}>
+                <Row>
+                  {placeHolderCol}
+                  <Col xs={10} sm={10} md={10} lg={8}>
+
+                    <Row>
+                      <div className="text-center"><ControlLabel>Nutrition Label</ControlLabel></div>
+                      {nutritionLabel}
+                    </Row>
+                    <Row>
+                      {shareButtons}
+                    </Row>
+
+                  </Col>
+                  {placeHolderCol}
+                </Row>
+              </Col>
+
+              <Col xs={12} sm={5} md={6} lg={6}>
+                <Row>
+                  {placeHolderCol}
+                  <Col xs={10} sm={10} md={10} lg={8}>
+
+                    <Row>
+                      <div className="text-center"><ControlLabel>Text Nutrition Label</ControlLabel></div>
+                      <pre>{textLabel}</pre>
+                    </Row>
+                    <Row>
+                      <div className="text-center"><ControlLabel>Recipe</ControlLabel></div>
+                      <pre>{recipeText}</pre>
+                    </Row>
+                    <Row>
+                      {mealPhoto}
+                    </Row>
+
+                  </Col>
+                  {placeHolderCol}
+                </Row>
+              </Col>
+
+            </Row>
           </Grid>
         </div>
       )

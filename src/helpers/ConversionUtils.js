@@ -12,7 +12,7 @@ const UnitTranslationMap = {
   ml: ['ml', 'Milliliter'],
   l: ['L', 'l', 'liter', 'Liter'],
   lb: ['lb', 'Lb', 'LB', 'lb.', 'Lb.', 'LB.', 'pound'],
-  g: ['g', 'gram'],
+  g: ['g', 'gram', 'Gram'],
   kg: ['kg', 'Kg', 'kilogram', 'Kilogram']
 }
 

@@ -235,7 +235,7 @@ function* callElasticSearchLambda(searchIngredient, foodName, size, userSearch, 
     yield fork(getDataFromFireBase, foodName, sortedData[0].info._source.Description, sortedData[0].info._id, 0, userSearch, append)
   }
   else if (fallback) {
-    yield fork(fallbackSearch, searchIngredient, foodName, 3, userSearch, append, fallback, tokenize, parse)
+    yield fork(fallbackSearch, searchIngredient, foodName, 5, userSearch, append, fallback, tokenize, parse)
   }
   else {
     yield put ({type: INITIALIZE_FIREBASE_DATA, foodName, data: [], append})

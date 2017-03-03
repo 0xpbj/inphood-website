@@ -80,26 +80,26 @@ function combineData(data) {
       names.push(i.name)
       ret.push(i)
     }
-    else {
-      let info1 = {
-        name: i.name,
-        amount: i.amount,
-        unit: i.unit,
-      }
-      let info2 = {
-        name: data[index].name,
-        amount: data[index].amount,
-        unit: data[index].unit
-      }
-      console.log('Need to combine: ', info1, info2);
-    }
+    // else {
+    //   let info1 = {
+    //     name: i.name,
+    //     amount: i.amount,
+    //     unit: i.unit,
+    //   }
+    //   let info2 = {
+    //     name: data[index].name,
+    //     amount: data[index].amount,
+    //     unit: data[index].unit
+    //   }
+    //   console.log('Need to combine: ', info1, info2);
+    // }
   }
   return ret
 }
 
 export function parseRecipe(data) {
   const regex = /[^\r\n]+/g
-  const sRegex = /([^\-\.\*:><^#~ ] ?)([a-zA-Z1-9½⅓⅔¼¾⅕⅖⅗⅘⅙⅚⅛⅜⅝⅞/, ()]+)/g
+  const sRegex = /([^\-\.\*:><^#~] ?)([a-zA-Z1-9½⅓⅔¼¾⅕⅖⅗⅘⅙⅚⅛⅜⅝⅞/, ()]+)/g
   let phrases = data.match(regex)
   var ingp = require('../algorithms/parser/ingredientparser')
   let parsedData = []
@@ -110,18 +110,42 @@ export function parseRecipe(data) {
   const fileWords = new Set(file.match(regex))
   for (let i of phrases) {
     let reg = i.match(sRegex)
-    let clean = reg ? removeSpecialChars(reg[0]) : i
+    let str = ''
+    for (let x of reg) {
+      str += x
+    }
+    let clean = str !== '' ? removeSpecialChars(str) : i
     let parsed = ingp.parse(clean.toLowerCase())
+    parsedData.push(parsed)
     let flag = false
+    let results = []
     for (let i of fileWords) {
       if (parsed.name.indexOf(i) !== -1) {
-        parsedData.push(parsed)
+        results.push(i)
         flag = true
-        break
       }
     }
-    if (!flag)
+    if (!flag){
       missingData.push(parsed.name)
+    }
+    else if (results.length > 1) {
+      const levenshtein = require('fast-levenshtein')
+      let sortedData = []
+      for (let i of results) {
+        let d = levenshtein.get(parsed.name, i)
+        sortedData.push({info: i, distance: d})
+      }
+      sortedData.sort(function(a, b) {
+        return a.distance - b.distance
+      })
+      parsed.clean = sortedData[0].info
+      parsedData.push(parsed)
+    }
+    else {
+      parsed.clean = results[0]
+      parsedData.push(parsed)
+    }
   }
   return {missing: missingData, found: combineData(parsedData)}
+  // return {missing: [], found: parsedData}
 }

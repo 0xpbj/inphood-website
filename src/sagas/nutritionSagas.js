@@ -192,10 +192,8 @@ function* callElasticSearchLambda(searchTerm, foodName, size, userSearch, append
   let sortedData = []
   for (let i of data) {
     var res = i._source.Description.split(",")
-    //console.log('First word: ', res[0]);
-    //console.log('Foodname: ', foodName);
-    //console.log('Ingredient: ', searchTerm);
-    let d = levenshtein.get(searchTerm, res[0])
+    var spr = res[0].split(" ")
+    let d = levenshtein.get(foodName, spr[0])
     sortedData.push({info: i, distance: d})
   }
   if (sortedData[0]) {
@@ -214,44 +212,15 @@ function* callElasticSearchLambda(searchTerm, foodName, size, userSearch, append
 function* fetchMoreData() {
   while (true) {
     const {foodName, size} = yield take(GET_MORE_DATA)
-    const foodWords = filterOutNonFoodWords(foodName)
-    if (foodWords[0])
-      yield fork(callElasticSearchLambda, foodWords[0].data, foodName, size+10, false, true)
+    yield fork(callElasticSearchLambda, foodName, foodName, size+10, false, true)
   }
 }
-
 
 function* lazyFetchFirebaseData() {
   while (true) {
     const {foodName, ingredient, key, index} = yield take(LAZY_FETCH_FIREBASE)
     yield fork(getDataFromFireBase, foodName, ingredient, key, index)
   }
-}
-
-function filterOutNonFoodWords(foodPhrase) {
-  const regex = /\w+/g
-  const regexIng = /[^\r\n]+/g
-  let words = foodPhrase.match(regex)
-  const listOfFoods = require("raw-loader!../data/ingredients.txt")
-  const foodWords = new Set(listOfFoods.match(regexIng))
-  const lowerFoodPhrase = foodPhrase.toLowerCase()
-  let searchTerm = []
-  for (let i of foodWords) {
-    if (lowerFoodPhrase.indexOf(i) !== -1)
-      searchTerm.push(i)
-  }
-  var levenshtein = require('fast-levenshtein')
-  let sortedData = []
-  for (let i of searchTerm) {
-    let d = levenshtein.get(i, lowerFoodPhrase)
-    sortedData.push({data: i, distance: d})
-  }
-  if (sortedData[0]) {
-    sortedData.sort(function(a, b) {
-      return a.distance - b.distance;
-    })
-  }
-  return sortedData
 }
 
 function* processParseForLabel() {
@@ -266,22 +235,15 @@ function* processParseForLabel() {
   for (let i = 0; i < parsedData.length; i++) {
     const parseObj = parsedData[i]
     const foodName = parseObj['name']
-    const foodWords = filterOutNonFoodWords(foodName)
-    if (foodWords[0]) {
-      yield put({type: CLEAR_FIREBASE_DATA})
-      yield fork(callElasticSearchLambda, foodWords[0].data, foodName, 10, false, false)
-    }
-    else {
-      yield put ({type: INITIALIZE_FIREBASE_DATA, foodName, data: [], append: false})
-      yield put ({type: INGREDIENT_FIREBASE_DATA, foodName, ingredient: '', data: [], userSearch: false})
-    }
+    const searchTerm = parseObj['clean'] ? parseObj['clean'] : foodName
+    yield put({type: CLEAR_FIREBASE_DATA})
+    yield fork(callElasticSearchLambda, searchTerm, foodName, 10, false, false)
   }
 }
 
 function* userSearchIngredient() {
   while (true) {
     const {searchIngredient} = yield take(SEARCH_INGREDIENT)
-    // const foodWords = filterOutNonFoodWords(searchIngredient)
     if (searchIngredient) {
       yield fork(callElasticSearchLambda, searchIngredient, searchIngredient, 10, true, false)
     }

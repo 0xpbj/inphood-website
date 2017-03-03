@@ -17,3 +17,6 @@ maple syrup -> Syrups, maple
 protein
 red -> sweet onion
 breadcrumbs -> bread crumbs
+bell pepper -> pepper sweet green
+tomato -> tomatoes
+adding s to veggies

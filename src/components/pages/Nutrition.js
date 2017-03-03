@@ -684,7 +684,9 @@ export default class Nutrition extends React.Component {
 
       let recipeLine = ""
 
-      if (!isNaN(amount)) {
+      //too strict, doesn't allow fractions
+      // if (!isNaN(amount)) {}
+      if (amount) {
         recipeLine = recipeLine + amount + " "
       }
 

@@ -109,9 +109,10 @@ export function parseRecipe(data) {
   const file = require("raw-loader!../data/ingredients.txt")
   const fileWords = new Set(file.match(regex))
   for (let i of phrases) {
-    // let reg = i.match(sRegex)
-    // let clean = reg ? removeSpecialChars(reg[0]) : removeSpecialChars(i)
-    let parsed = ingp.parse(i.toLowerCase())
+    let reg = i.match(sRegex)
+    debugger
+    let clean = reg ? removeSpecialChars(reg[0]) : i
+    let parsed = ingp.parse(clean.toLowerCase())
     let flag = false
     for (let i of fileWords) {
       if (parsed.name.indexOf(i) !== -1) {

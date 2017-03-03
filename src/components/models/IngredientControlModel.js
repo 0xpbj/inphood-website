@@ -82,6 +82,8 @@ export class IngredientControlModel {
       this._sliderValue = (this._sliderMax + this._sliderMin) / 2
     }
 
+    this._editBoxValue = this._sliderValue
+
 
     this._dropdownUnits = units
     this._dropdownUnitValue = currentUnit
@@ -107,6 +109,10 @@ export class IngredientControlModel {
 
   getSliderValue() {
     return this._sliderValue
+  }
+
+  getEditBoxValue() {
+    return this._editBoxValue
   }
 
   resetBoundsIfNecessary(aValue) {
@@ -141,6 +147,12 @@ export class IngredientControlModel {
       this._sliderValue = 0
     }
     this.resetBoundsIfNecessary(this._sliderValue)
+
+    this._editBoxValue = this._sliderValue
+  }
+
+  setEditBoxValue(aValue) {
+    this._editBoxValue = aValue
   }
 
   getSliderMin() {

@@ -10,36 +10,41 @@ import Slider from 'react-toolbox/lib/slider'
 import {rationalToFloat} from '../../helpers/ConversionUtils'
 
 export default class IngredientController extends React.Component {
-  constructor() {
-    super()
-    this.state = {
-      editBoxValue: ""
-    }
-  }
-  componentWillReceiveProps() {
-    this.setState({editBoxValue: this.props.ingredientControlModel.getSliderValue().toString()})
-  }
-  componentWillMount() {
-    this.setState({editBoxValue: this.props.ingredientControlModel.getSliderValue().toString()})
-  }
   handleSliderValuesChangeInternal(value) {
     let tag = this.props.tag
     this.props.handleSliderValuesChange(tag, value)
-    this.setState({editBoxValue: value.toString()})
   }
+  
   getValidationState() {
-    let returnValue = 'success'
-    try {
-      const value = rationalToFloat(this.state.editBoxValue)
-    } catch(err) {
-      returnValue = 'error'
+    const {ingredientControlModel} = this.props
+    const editBoxValue = ingredientControlModel.getEditBoxValue()
+
+    // Check to see if editBoxValue is a number--if so, return success because
+    // rationalToFloat expects a string. This also helps to catch things like
+    // "" and " " which evaluate to numbers (isNan===false) with the second
+    // predicate checking for string type.
+    if (! isNaN(editBoxValue)) {
+      if ((typeof editBoxValue) !== "string") {
+        return 'success'
+      }
     }
-    return returnValue
+
+    // Try and convert to a rational number from a variety of string
+    // representations (i.e. "1/2" "024" etc.), failing that, return error.
+    try {
+      const value = rationalToFloat(editBoxValue)
+    } catch(err) {
+      return 'error'
+    }
+
+    return 'success'
   }
+
   updateReduxStoreIfValid() {
     if (this.getValidationState() === 'success') {
       const tag = this.props.tag
-      const value = rationalToFloat(this.state.editBoxValue)
+      const {ingredientControlModel} = this.props
+      const value = rationalToFloat(ingredientControlModel.getEditBoxValue())
       const units = this.props.ingredientControlModel.getDropdownUnitValue()
       this.props.handleSliderValuesChangeEditBox(tag, value, units)
     }
@@ -51,17 +56,18 @@ export default class IngredientController extends React.Component {
     event.preventDefault()
   }
   onEditBoxBlurred() {
-    this. updateReduxStoreIfValid()
+    this.updateReduxStoreIfValid()
   }
   updateEditBoxValueFromForm(formObj) {
     console.log('updateEditBoxValueFromForm = ' + formObj.target.value);
-    this.setState({editBoxValue: formObj.target.value})
+    this.props.handleEditBoxValueChange(this.props.tag, formObj.target.value)
   }
   render() {
     const {tag, recipeLine, ingredientControlModel} = this.props
     const formControlId = tag + "FormControlId"
 
     let sliderValue = ingredientControlModel.getSliderValue()
+    let editBoxValue = ingredientControlModel.getEditBoxValue()
 
     return (
       <div>
@@ -106,7 +112,7 @@ export default class IngredientController extends React.Component {
                     className="text-right"
                     type="text"
                     label="Text"
-                    value={this.state.editBoxValue}
+                    value={editBoxValue}
                     onBlur={this.onEditBoxBlurred.bind(this)}
                     onChange={this.updateEditBoxValueFromForm.bind(this)}/>
                 </FormGroup>

@@ -18,6 +18,7 @@ import {
   NM_SCALE_INGREDIENT,
   IM_ADD_CONTROL_MODEL,
   IM_SET_SLIDER_VALUE,
+  IM_SET_EDIT_BOX_VALUE,
   IM_SET_DROPDOWN_MATCH_VALUE,
   IM_SET_DROPDOWN_UNITS_VALUE,
   IM_SET_DROPDOWN_UNITS,
@@ -173,6 +174,14 @@ export function ingredientAddModel(tag, ingredientControlModel) {
 export function ingredientSetSliderValue(tag, value) {
   return {
     type: IM_SET_SLIDER_VALUE,
+    tag,
+    value
+  }
+}
+
+export function ingredientSetEditBoxValue(tag, value) {
+  return {
+    type: IM_SET_EDIT_BOX_VALUE,
     tag,
     value
   }

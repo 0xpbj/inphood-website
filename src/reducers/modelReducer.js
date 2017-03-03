@@ -7,6 +7,7 @@ import {
   NM_SCALE_INGREDIENT,
   IM_ADD_CONTROL_MODEL,
   IM_SET_SLIDER_VALUE,
+  IM_SET_EDIT_BOX_VALUE,
   IM_SET_DROPDOWN_MATCH_VALUE,
   IM_SET_DROPDOWN_UNITS,
   IM_SET_DROPDOWN_UNITS_VALUE,
@@ -71,7 +72,7 @@ export default function modelFun(state = initialState, action) {
         modelSetup: action.flag
       }
     }
-    case NM_ADD_INGREDIENT: 
+    case NM_ADD_INGREDIENT:
     {
       let {nutritionModel} = state
       nutritionModel.addIngredient(action.tag, action.ingredientModel, action.quantity, action.unit, action.append)
@@ -80,7 +81,7 @@ export default function modelFun(state = initialState, action) {
         nutritionModel: nutritionModel
       }
     }
-    case NM_REM_INGREDIENT: 
+    case NM_REM_INGREDIENT:
     {
       let {nutritionModel} = state
       nutritionModel.removeIngredient(action.tag)
@@ -89,7 +90,7 @@ export default function modelFun(state = initialState, action) {
         nutritionModel: nutritionModel
       }
     }
-    case NM_SET_SERVINGS: 
+    case NM_SET_SERVINGS:
     {
       let {nutritionModel} = state
       nutritionModel.setSuggestedServingAmount(action.value, action.units)
@@ -98,7 +99,7 @@ export default function modelFun(state = initialState, action) {
         nutritionModel: nutritionModel
       }
     }
-    case NM_SCALE_INGREDIENT: 
+    case NM_SCALE_INGREDIENT:
     {
       let {nutritionModel} = state
       nutritionModel.scaleIngredientToUnit(action.tag, action.value, action.units)
@@ -120,6 +121,15 @@ export default function modelFun(state = initialState, action) {
     {
       let {ingredientControlModels} = state
       ingredientControlModels[action.tag].setSliderValue(action.value)
+      return {
+        ...state,
+        ingredientControlModels: ingredientControlModels
+      }
+    }
+    case IM_SET_EDIT_BOX_VALUE:
+    {
+      let {ingredientControlModels} = state
+      ingredientControlModels[action.tag].setEditBoxValue(action.value)
       return {
         ...state,
         ingredientControlModels: ingredientControlModels

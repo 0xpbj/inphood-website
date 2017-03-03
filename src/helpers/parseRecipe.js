@@ -110,7 +110,6 @@ export function parseRecipe(data) {
   const fileWords = new Set(file.match(regex))
   for (let i of phrases) {
     let reg = i.match(sRegex)
-    debugger
     let clean = reg ? removeSpecialChars(reg[0]) : i
     let parsed = ingp.parse(clean.toLowerCase())
     let flag = false

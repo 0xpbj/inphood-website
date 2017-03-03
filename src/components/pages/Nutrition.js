@@ -97,6 +97,15 @@ export default class Nutrition extends React.Component {
     const keyOffset = 1
     const dataObjOffset = 2
     let tagMatches = this.props.model.matchData[tag]
+    if (tagMatches.length === 0) {
+      ReactGA.event({
+        category: 'Nutrition Mixer',
+        action: 'No ellipses results returned',
+        nonInteraction: false,
+        label: tag
+      });
+      return
+    }
     // TODO: A lot of this is common to componentWillMount. Refactor
     // 1. Add this tag to:
     //    - this.state.nutritionModel

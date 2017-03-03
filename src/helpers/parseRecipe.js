@@ -146,6 +146,6 @@ export function parseRecipe(data) {
     //   parsedData.push(parsed)
     // }
   }
-  // return {missing: missingData, found: combineData(parsedData)}
-  return {missing: [], found: parsedData}
+  return {missing: missingData, found: combineData(parsedData)}
+  // return {missing: [], found: parsedData}
 }

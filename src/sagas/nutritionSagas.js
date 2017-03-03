@@ -251,7 +251,7 @@ function* fetchMoreData() {
     const fallback = false
     const tokenize = false
     const parse = false
-    yield fork(callElasticSearchLambda, foodName, foodName, size+10, userSearch, append, fallback, tokenize, parse)
+    yield fork(callElasticSearchLambda, foodName, foodName, size+5, userSearch, append, fallback, tokenize, parse)
   }
 }
 
@@ -278,7 +278,7 @@ function* processParseForLabel() {
     const userSearch = false
     const append = false
     const fallback = true
-    const size = 10
+    const size = 5
     const tokenize = true
     const parse = true
     yield fork(callElasticSearchLambda, foodName, foodName, size, userSearch, append, fallback, tokenize, parse)
@@ -292,7 +292,7 @@ function* userSearchIngredient() {
     const append = false
     const fallback = true
     if (searchIngredient) {
-      const size = 10
+      const size = 5
       const tokenize = false
       const parse = false
       yield fork(callElasticSearchLambda, searchIngredient, searchIngredient, size, userSearch, append, fallback, tokenize, parse)

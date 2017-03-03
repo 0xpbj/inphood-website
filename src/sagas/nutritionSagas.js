@@ -235,9 +235,8 @@ function* processParseForLabel() {
   for (let i = 0; i < parsedData.length; i++) {
     const parseObj = parsedData[i]
     const foodName = parseObj['name']
-    const searchTerm = parseObj['clean'] ? parseObj['clean'] : foodName
     yield put({type: CLEAR_FIREBASE_DATA})
-    yield fork(callElasticSearchLambda, searchTerm, foodName, 10, false, false)
+    yield fork(callElasticSearchLambda, foodName, foodName, 10, false, false)
   }
 }
 

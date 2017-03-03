@@ -67,8 +67,6 @@ export default class Recipe extends React.Component {
     else {
       const {ingredients, title, dietary, allergen} = this.state
       let data = parseRecipe(ingredients)
-      console.log('****************\nData found: ', data.found)
-      console.log('&&&&&&&&&&&&&&&&\nData missing: ', data.missing)
       this.props.storeParsedData(data.found, data.missing, ingredients, title, dietary, allergen)
       this.props.uploadPhoto()
       ReactGA.event({

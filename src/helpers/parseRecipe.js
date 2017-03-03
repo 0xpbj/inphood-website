@@ -99,15 +99,15 @@ function combineData(data) {
 
 export function parseRecipe(data) {
   const regex = /[^\r\n]+/g
-  const sRegex = /([^\-\.\*:><^#~] ?)([a-zA-Z0-9½⅓⅔¼¾⅕⅖⅗⅘⅙⅚⅛⅜⅝⅞/, ()]+)/g
+  const sRegex = /([^\.\*:><^#~] ?)([a-zA-Z0-9½⅓⅔¼¾⅕⅖⅗⅘⅙⅚⅛⅜⅝⅞/, ()]+)/g
   let phrases = data.match(regex)
   var ingp = require('../algorithms/parser/ingredientparser')
   let parsedData = []
   let missingData = []
   if (!phrases)
     return
-  const file = require("raw-loader!../data/ingredients.txt")
-  const fileWords = new Set(file.match(regex))
+  // const file = require("raw-loader!../data/ingredients.txt")
+  // const fileWords = new Set(file.match(regex))
   for (let i of phrases) {
     let reg = i.match(sRegex)
     let str = ''
@@ -117,35 +117,35 @@ export function parseRecipe(data) {
     let clean = str !== '' ? removeSpecialChars(str) : i
     let parsed = ingp.parse(clean.toLowerCase())
     parsedData.push(parsed)
-    let flag = false
-    let results = []
-    for (let i of fileWords) {
-      if (parsed.name.indexOf(i) !== -1) {
-        results.push(i)
-        flag = true
-      }
-    }
-    if (!flag){
-      missingData.push(parsed.name)
-    }
-    else if (results.length > 1) {
-      const levenshtein = require('fast-levenshtein')
-      let sortedData = []
-      for (let i of results) {
-        let d = levenshtein.get(parsed.name, i)
-        sortedData.push({info: i, distance: d})
-      }
-      sortedData.sort(function(a, b) {
-        return a.distance - b.distance
-      })
-      parsed.clean = sortedData[0].info
-      parsedData.push(parsed)
-    }
-    else {
-      parsed.clean = results[0]
-      parsedData.push(parsed)
-    }
+    // let flag = false
+    // let results = []
+    // for (let i of fileWords) {
+    //   if (parsed.name.indexOf(i) !== -1) {
+    //     results.push(i)
+    //     flag = true
+    //   }
+    // }
+    // if (!flag){
+    //   missingData.push(parsed.name)
+    // }
+    // else if (results.length > 1) {
+    //   const levenshtein = require('fast-levenshtein')
+    //   let sortedData = []
+    //   for (let i of results) {
+    //     let d = levenshtein.get(parsed.name, i)
+    //     sortedData.push({info: i, distance: d})
+    //   }
+    //   sortedData.sort(function(a, b) {
+    //     return a.distance - b.distance
+    //   })
+    //   parsed.clean = sortedData[0].info
+    //   parsedData.push(parsed)
+    // }
+    // else {
+    //   parsed.clean = results[0]
+    //   parsedData.push(parsed)
+    // }
   }
-  return {missing: missingData, found: combineData(parsedData)}
-  // return {missing: [], found: parsedData}
+  // return {missing: missingData, found: combineData(parsedData)}
+  return {missing: [], found: parsedData}
 }

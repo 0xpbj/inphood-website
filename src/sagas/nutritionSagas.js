@@ -158,18 +158,19 @@ const elasticSearchFetch = (request) => {
   })
 }
 
-function* fallbackSearch(foodName, size, userSearch, append, fallback, tokenize, parse) {
+function* fallbackSearch(searchIngredient, foodName, size, userSearch, append, fallback, tokenize, parse) {
   const token = foodName.split(",")
   if (token[0] && tokenize) {
-    yield fork(callElasticSearchLambda, token[0], size, userSearch, append, true, false, true)
+    yield fork(callElasticSearchLambda, token[0], foodName, size, userSearch, append, true, false, true)
   }
   else if (parse) {
-    const file = require("raw-loader!../data/ingredients.txt")
     const regex = /[^\r\n]+/g
+    const file = require("raw-loader!../data/ingredients.txt")
     const fileWords = new Set(file.match(regex))
     let results = []
     for (let i of fileWords) {
-      if (foodName.indexOf(i) !== -1) {
+      const str = searchIngredient + '.?'
+      if (i.match(str)) {
         results.push(i)
       }
     }
@@ -183,7 +184,7 @@ function* fallbackSearch(foodName, size, userSearch, append, fallback, tokenize,
       sortedData.sort(function(a, b) {
         return a.distance - b.distance
       })
-      yield fork(callElasticSearchLambda, sortedData[0].info, size, userSearch, append, false, false, false)
+      yield fork(callElasticSearchLambda, sortedData[0].info, foodName, size, userSearch, append, false, false, false)
     }
     else {
       yield put ({type: INITIALIZE_FIREBASE_DATA, foodName, data: [], append})
@@ -192,7 +193,7 @@ function* fallbackSearch(foodName, size, userSearch, append, fallback, tokenize,
   }
 }
 
-function* callElasticSearchLambda(foodName, size, userSearch, append, fallback, tokenize, parse) {
+function* callElasticSearchLambda(searchIngredient, foodName, size, userSearch, append, fallback, tokenize, parse) {
   // Call elastic search (effectively this curl request):
   //
   // curl Config.ELASTIC_LAMBDA_URL
@@ -202,7 +203,7 @@ function* callElasticSearchLambda(foodName, size, userSearch, append, fallback, 
   //
   const url = Config.ELASTIC_LAMBDA_URL
   const search = {
-    'query': {'match' : {'Description': foodName}},
+    'query': {'match' : {'Description': searchIngredient}},
     'size': size
   }
   let myHeaders = new Headers()
@@ -235,7 +236,7 @@ function* callElasticSearchLambda(foodName, size, userSearch, append, fallback, 
     yield fork(getDataFromFireBase, foodName, sortedData[0].info._source.Description, sortedData[0].info._id, 0, userSearch, append)
   }
   else if (fallback) {
-    yield fork(fallbackSearch, foodName, size, userSearch, append, fallback, tokenize, parse)
+    yield fork(fallbackSearch, searchIngredient, foodName, 3, userSearch, append, fallback, tokenize, parse)
   }
   else {
     yield put ({type: INITIALIZE_FIREBASE_DATA, foodName, data: [], append})
@@ -251,7 +252,7 @@ function* fetchMoreData() {
     const fallback = false
     const tokenize = false
     const parse = false
-    yield fork(callElasticSearchLambda, foodName, size+10, userSearch, append, fallback, tokenize, parse)
+    yield fork(callElasticSearchLambda, foodName, foodName, size+10, userSearch, append, fallback, tokenize, parse)
   }
 }
 
@@ -281,7 +282,7 @@ function* processParseForLabel() {
     const size = 10
     const tokenize = true
     const parse = true
-    yield fork(callElasticSearchLambda, foodName, size, userSearch, append, fallback, tokenize, parse)
+    yield fork(callElasticSearchLambda, foodName, foodName, size, userSearch, append, fallback, tokenize, parse)
   }
 }
 
@@ -295,7 +296,7 @@ function* userSearchIngredient() {
       const size = 10
       const tokenize = false
       const parse = false
-      yield fork(callElasticSearchLambda, searchIngredient, size, userSearch, append, fallback, tokenize, parse)
+      yield fork(callElasticSearchLambda, searchIngredient, searchIngredient, size, userSearch, append, fallback, tokenize, parse)
     }
     else {
       yield put ({type: INITIALIZE_FIREBASE_DATA, foodName: searchIngredient, data: [], append})

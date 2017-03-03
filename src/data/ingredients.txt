@@ -671,7 +671,7 @@ serrano ham
 shaohsing
 sherry
 shiitake
-shiitake mushroom
+shiitake mushrooms
 shortcrust pastry
 single cream
 sirloin
@@ -813,7 +813,7 @@ cherimoya
 chicken breast tenders
 chicken patty
 chickpea flour (besan)
-chickpeas (garbanzo beans
+chickpeas (garbanzo beans)
 chicory greens
 chicory roots
 chili with beans
@@ -863,7 +863,7 @@ feijoa
 figs
 fireweed
 frankfurter
-frijoles rojos volteados (refried beans
+frijoles rojos volteados (refried beans)
 frog legs
 fruit cocktail
 fruit juice smoothie
@@ -1037,7 +1037,7 @@ refried beans
 rice noodles
 roselle
 rowal
-ruby red grapefruit juice blend (grapefruit
+ruby red grapefruit juice blend (grapefruit)
 ruffed grouse
 rutabagas
 rye grain
@@ -1339,7 +1339,7 @@ martha white foods
 mary's gone crackers
 mayonnaise dressing
 mckee baking
-meat drippings (lard
+meat drippings (lard)
 milk dessert
 mission foods
 mother's loaf

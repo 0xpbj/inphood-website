@@ -169,8 +169,7 @@ function* fallbackSearch(searchIngredient, foodName, size, userSearch, append, f
     const fileWords = new Set(file.match(regex))
     let results = []
     for (let i of fileWords) {
-      const str = searchIngredient + '.?'
-      if (i.match(str)) {
+      if (i.match(searchIngredient + '.?') || searchIngredient.indexOf(i) !== -1) {
         results.push(i)
       }
     }

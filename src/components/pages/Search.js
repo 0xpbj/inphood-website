@@ -64,6 +64,7 @@ export default class Search extends React.Component {
             validationState={this.getValidationState()}
           >
             <FormControl
+              spellcheck={true}
               type="text"
               label="Text"
               value={this.state.searchIngredient}

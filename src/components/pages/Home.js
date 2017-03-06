@@ -28,8 +28,7 @@ export default class Home extends React.Component {
       const {label} = this.props.location.query
       this.props.getLabelId(user, label)
     }
-    this.props.clearData()
-    if (!Config.DEBUG && !developer) {
+    if (!developer) {
       ReactGA.initialize('UA-88850545-2', {
         debug: Config.DEBUG,
         titleCase: false,
@@ -38,6 +37,7 @@ export default class Home extends React.Component {
         }
       })
     }
+    this.props.clearData()
   }
   showHelp() {
     ReactGA.event({

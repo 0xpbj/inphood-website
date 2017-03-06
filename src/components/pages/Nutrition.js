@@ -367,7 +367,7 @@ export default class Nutrition extends React.Component {
       nonInteraction: false
     });
     this.props.sendSerializedData(composite, full)
-    this.props.router.push('result?label='+ this.props.nutrition.key)
+    this.props.router.push('/?label='+ this.props.nutrition.key)
   }
   handleServingValuesChange(servingValue) {
     ReactGA.event({

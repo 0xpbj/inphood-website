@@ -9,7 +9,6 @@ import About from './pages/About'
 import Layout from './pages/Layout'
 import NoMatch from './pages/NoMatch'
 import Home from '../containers/HomeContainer'
-import Results from '../containers/ResultsContainer'
 import Nutrition from '../containers/NutritionContainer'
 import Recipe from '../containers/RecipeContainer'
 
@@ -25,7 +24,7 @@ export default class App extends React.Component {
           <Route path='about' name='about' component={About}></Route>
           <Route path='recipe' name='recipe' component={Recipe}></Route>
           <Route path='nutrition' name='nutrition' component={Nutrition}></Route>
-          <Route path='result' name='label' component={Results}></Route>
+          {/*<Route path='result' name='label' component={Results}></Route>*/}
           <Route path='*' component={NoMatch}/>
         </Route>
       </Router>

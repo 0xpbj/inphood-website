@@ -204,10 +204,16 @@ export default class Nutrition extends React.Component {
 
       let recipeLine = ""
 
-      //too strict, doesn't allow fractions
-      // if (!isNaN(amount)) {}
       if (amount) {
-        recipeLine = recipeLine + amount + " "
+        if (Object.prototype.hasOwnProperty.call(amount, 'min') && Object.prototype.hasOwnProperty.call(amount, 'max')) {
+          const parseMinQuantity = rationalToFloat(amount.min)
+          const parseMaxQuantity = rationalToFloat(amount.max)
+          const parseQuantity = (parseMinQuantity + parseMaxQuantity) / 2.0
+          recipeLine = recipeLine + parseQuantity + " "
+        }
+        else {
+          recipeLine = recipeLine + amount + " "
+        }
       }
 
       if ((unit !== undefined) && (unit !== "")) {

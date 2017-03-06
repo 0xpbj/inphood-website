@@ -184,7 +184,7 @@ export default class Recipe extends React.Component {
       <Button className="btn-primary-spacing"
               bsStyle="success"
               onClick={() => this.recipeFlow()}>
-        Use Recipe
+        Next: Parse Recipe
       </Button>
     )
     return (
@@ -214,7 +214,6 @@ export default class Recipe extends React.Component {
                     {recipePopover}
                   </Glyphicon>
                   <FormControl
-                    spellcheck={true}
                     componentClass="textarea"
                     rows={textRows}
                     value={this.state.ingredients}

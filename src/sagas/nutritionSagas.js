@@ -13,7 +13,8 @@ import {
   SELECTED_TAGS,
   GET_MORE_DATA,
   INIT_EMAIL_FLOW,
-  GET_EMAIL_DATA
+  GET_EMAIL_DATA,
+  REMOVE_ELLIPSES
 } from '../constants/ActionTypes'
 
 import * as db from './firebaseCommands'
@@ -231,8 +232,16 @@ function* callElasticSearchLambda(searchIngredient, foodName, size, userSearch, 
     sortedData.sort(function(a, b) {
       return a.distance - b.distance;
     })
-    yield put ({type: INITIALIZE_FIREBASE_DATA, foodName, data: sortedData, append})
-    yield fork(getDataFromFireBase, foodName, sortedData[0].info._source.Description, sortedData[0].info._id, 0, userSearch, append)
+    const {matchData} = yield select(state => state.modelReducer)
+    const length = matchData[foodName] ? matchData[foodName].length : 0
+    if (sortedData.length > length) {
+      yield put ({type: INITIALIZE_FIREBASE_DATA, foodName, data: sortedData, append})
+      yield fork(getDataFromFireBase, foodName, sortedData[0].info._source.Description, sortedData[0].info._id, 0, userSearch, append)
+    }
+    else {
+      console.log('REMOVING ELLIPSES')
+      yield put ({type: REMOVE_ELLIPSES, foodName})
+    }
   }
   else if (fallback) {
     yield fork(fallbackSearch, searchIngredient, foodName, 5, userSearch, append, fallback, tokenize, parse)

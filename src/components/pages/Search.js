@@ -15,7 +15,6 @@ export default class Search extends React.Component {
     super()
     this.state = {
       searchIngredient: '',
-      searchPopoverFlag: false,
       results: []
     }
   }
@@ -27,9 +26,10 @@ export default class Search extends React.Component {
       ReactGA.event({
         category: 'User',
         action: 'User searching for missing ingredients',
-        nonInteraction: false
+        nonInteraction: false,
+        label: this.state.searchIngredient
       });
-      this.props.searchIngredientData(this.state.searchIngredient)
+      this.props.searchIngredientData(this.state.searchIngredient, true)
       this.setState({searchIngredient: ''})
     }
     event.preventDefault()
@@ -46,13 +46,6 @@ export default class Search extends React.Component {
       return 'error'
   }
   render() {
-    const searchPopover = this.state.searchPopoverFlag ? (
-      <Popover
-        id="popover-basic"
-        title="Search Flow">
-        Enter ingredient to search for
-      </Popover>
-    ) : null
     return (
       <div>
         <form

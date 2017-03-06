@@ -22,7 +22,8 @@ import {
   RESET_SEARCH_FLAG,
   SELECTED_TAGS,
   GET_MORE_DATA,
-  RESET_APPEND_DATA
+  RESET_APPEND_DATA,
+  REMOVE_ELLIPSES
 } from '../constants/ActionTypes'
 
 import {NutritionModel} from '../components/models/NutritionModel'
@@ -213,6 +214,24 @@ export default function modelFun(state = initialState, action) {
           ...state,
           tag: action.foodName
         }
+      }
+    case REMOVE_ELLIPSES:
+      {
+        let localMatchData = state.matchData
+        let data = localMatchData[action.foodName]
+        debugger
+        let last = data[data.length - 1]
+        if (last[0] === '.....') {
+          localMatchData[action.foodName].splice(data.length-1, 1)
+          return {
+            ...state,
+            matchData: localMatchData
+          }
+        }
+        else
+          return {
+            ...state
+          }
       }
     case INITIALIZE_FIREBASE_DATA:
       {

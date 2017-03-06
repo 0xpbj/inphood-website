@@ -767,7 +767,7 @@ export default class Nutrition extends React.Component {
     const shareResultsButton = (
       <Button bsStyle="success"
               onClick={this.transitionToLabelPage.bind(this, composite, full)}>
-        Share Results
+        Next: Share Results
       </Button>
     )
     return (

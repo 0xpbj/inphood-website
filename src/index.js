@@ -1,13 +1,13 @@
 var React = require('react')
 var ReactDOM = require('react-dom')
 import { Provider } from 'react-redux'
-import App from './components/App'
-
+import ReactGA from 'react-ga'
 import { createStore, applyMiddleware } from 'redux'
 import createSagaMiddleware from 'redux-saga'
 import rootReducer from './reducers'
 import rootSaga from './sagas'
 import './index.css'
+import App from './components/App'
 
 const Config = require('Config')
 
@@ -21,15 +21,6 @@ const fbConfig = {
 if (firebase.apps.length === 0) {
   firebase.initializeApp(fbConfig)
 }
-
-import ReactGA from 'react-ga'
-ReactGA.initialize('UA-88850545-2', {
-  debug: Config.DEBUG,
-  titleCase: false,
-  gaOptions: {
-    userId: 'websiteUser'
-  }
-})
 
 import sagaMonitor from './sagas/sagaMonitor'
 const sagaMiddleware = Config.DEBUG ? createSagaMiddleware({sagaMonitor}) : createSagaMiddleware()

@@ -27,11 +27,6 @@ export default class Results extends React.Component {
       ecopied: false
     }
   }
-  componentWillMount() {
-    const user = Config.DEBUG ? 'test' : 'anonymous'
-    const {label} = this.props.location.query
-    this.props.getLabelId(user, label)
-  }
   // From https://toddmotto.com/methods-to-determine-if-an-object-has-a-given-property/
   //  - addresses limitations of IE and other issues related to checking if an object
   //    has a property.
@@ -39,7 +34,6 @@ export default class Results extends React.Component {
   hasProp(object, property) {
     return Object.prototype.hasOwnProperty.call(object, property)
   }
-
   // TODO: this should be a utility or a factory that constructs this from
   //       an ingredient model--it doesn't belong in results
   getTextLabel(anIngredientModel) {
@@ -55,7 +49,6 @@ export default class Results extends React.Component {
 
     return textLabel
   }
-
   // TODO: this should be a utility or a factory that constructs this from
   //       a nutrition model--it doesn't belong in results
   getRecipeText(aNutritionModel) {
@@ -71,10 +64,8 @@ export default class Results extends React.Component {
                    scaledIngredient.getIngredientModel().getKey() +
                    "\n"
     }
-
     return recipeText
   }
-
   render() {
     const containerStyle = {
       marginTop: "60px"
@@ -100,7 +91,7 @@ export default class Results extends React.Component {
         action: 'User in results page',
         nonInteraction: false
       });
-      const {label} = this.props.location.query
+      const {label} = this.props.label
       const socialContainerStyle = {
         marginTop: "20px",
         border: "2px solid black",
@@ -114,7 +105,6 @@ export default class Results extends React.Component {
         margin: "10px",
       }
       let textLabel = ''
-
       // If we've received the data for the Nutrition label, deserialize it for
       // rendering, otherwise display a loading message.
       //   - TODO: make the loading message suck less
@@ -131,22 +121,18 @@ export default class Results extends React.Component {
           nonInteraction: false
         });
       }
-
       let recipeText = ''
       if (this.hasProp(this.props.results.data, 'full')) {
         let nutritionModelData = JSON.parse(this.props.results.data.full)
         let nutritionModel = new NutritionModel()
         nutritionModel.initializeFromSerialization(nutritionModelData)
-
         recipeText = this.getRecipeText(nutritionModel)
       }
-
       const user = Config.DEBUG ? 'test' : 'anonymous'
       const path = 'http://www.label.inphood.com/?user=' + user + '&label=' + label + '&embed=false'
       const epath = 'http://www.label.inphood.com/?user=' + user + '&label=' + label + '&embed=true'
       const embedMsg = '<embed src=' + epath + ' height=600 width=400>'
       const {iUrl} = this.props.results.data
-
       const shareButtons = (
         <div className="text-center"
              style={{marginTop: "15", marginBottom: "15"}}>
@@ -174,29 +160,23 @@ export default class Results extends React.Component {
           {this.state.ecopied ? <div style={{marginTop: "20px"}}><pre>{embedMsg}</pre><span style={{color: 'red'}}>&nbsp;Copied.</span></div> : null}
         </div>
       )
-
       const mealPhoto = iUrl ?
         (
           <div>
             <div className="text-center"><ControlLabel>Meal Photo</ControlLabel></div>
             <Image className="center-block" src={iUrl} responsive rounded />
           </div>
-        ) :
-          null
-
+        ) : null
       const placeHolderCol = <Col xs={1} sm={1} md={1} lg={2}/>
-
       return (
         <div>
           <TopBar step="" stepText="" aButton={null}/>
           <Grid>
             <Row>
-
               <Col xs={12} sm={7} md={6} lg={6}>
                 <Row>
                   {placeHolderCol}
                   <Col xs={10} sm={10} md={10} lg={8}>
-
                     <Row>
                       <div className="text-center"><ControlLabel>Nutrition Label</ControlLabel></div>
                       {nutritionLabel}
@@ -204,17 +184,14 @@ export default class Results extends React.Component {
                     <Row>
                       {shareButtons}
                     </Row>
-
                   </Col>
                   {placeHolderCol}
                 </Row>
               </Col>
-
               <Col xs={12} sm={5} md={6} lg={6}>
                 <Row>
                   {placeHolderCol}
                   <Col xs={10} sm={10} md={10} lg={8}>
-
                     <Row>
                       <div className="text-center"><ControlLabel>Text Nutrition Label</ControlLabel></div>
                       <pre>{textLabel}</pre>
@@ -226,12 +203,10 @@ export default class Results extends React.Component {
                     <Row>
                       {mealPhoto}
                     </Row>
-
                   </Col>
                   {placeHolderCol}
                 </Row>
               </Col>
-
             </Row>
           </Grid>
         </div>

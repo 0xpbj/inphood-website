@@ -15,7 +15,6 @@ export default class Search extends React.Component {
     super()
     this.state = {
       searchIngredient: '',
-      searchPopoverFlag: false,
       results: []
     }
   }
@@ -27,9 +26,10 @@ export default class Search extends React.Component {
       ReactGA.event({
         category: 'User',
         action: 'User searching for missing ingredients',
-        nonInteraction: false
+        nonInteraction: false,
+        label: this.state.searchIngredient
       });
-      this.props.searchIngredientData(this.state.searchIngredient)
+      this.props.searchIngredientData(this.state.searchIngredient, true)
       this.setState({searchIngredient: ''})
     }
     event.preventDefault()
@@ -40,19 +40,14 @@ export default class Search extends React.Component {
   }
   getValidationState() {
     const length = this.state.searchIngredient.length
-    if (length > 0)
-      return 'success'
-    else if (length === 0)
+    if (length === 0)
       return 'error'
+    else if (length > 100)
+      return 'error'
+    else if (length > 0)
+      return 'success'
   }
   render() {
-    const searchPopover = this.state.searchPopoverFlag ? (
-      <Popover
-        id="popover-basic"
-        title="Search Flow">
-        Enter ingredient to search for
-      </Popover>
-    ) : null
     return (
       <div>
         <form
@@ -64,6 +59,7 @@ export default class Search extends React.Component {
             validationState={this.getValidationState()}
           >
             <FormControl
+              spellcheck={true}
               type="text"
               label="Text"
               value={this.state.searchIngredient}

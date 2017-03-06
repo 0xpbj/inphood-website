@@ -22,7 +22,7 @@ import TopBar from '../layout/TopBar'
 
 const FieldGroup = ({ id, label, ...props }) => {
   return (
-    <FormGroup controlId={id}>
+    <FormGroup controlId={id} validationState={props.validationState}>
       <ControlLabel>{label}</ControlLabel>
       <FormControl {...props} />
     </FormGroup>
@@ -61,14 +61,15 @@ export default class Recipe extends React.Component {
     if (this.state.ingredients === '') {
       this.setState({recipeError: true})
     }
+    else if (this.state.ingredients.length > 5000) {
+      this.setState({recipeLengthError: true})
+    }
     // else if (this.props.nutrition.picture === '') {
     //   this.setState({pictureError: true})
     // }
     else {
       const {ingredients, title, dietary, allergen} = this.state
       let data = parseRecipe(ingredients)
-      console.log('****************\nData found: ', data.found)
-      console.log('&&&&&&&&&&&&&&&&\nData missing: ', data.missing)
       this.props.storeParsedData(data.found, data.missing, ingredients, title, dietary, allergen)
       this.props.uploadPhoto()
       ReactGA.event({
@@ -78,6 +79,27 @@ export default class Recipe extends React.Component {
       });
       this.props.router.push('nutrition')
     }
+  }
+  getTitleValidationState() {
+    const length = this.state.title.length
+    if (length === 1 || length > 100)
+      return 'error'
+    else if (length > 0)
+      return 'success'
+  }
+  getDietaryValidationState() {
+    const length = this.state.dietary.length
+    if (length === 1 || length > 100)
+      return 'error'
+    else if (length > 0)
+      return 'success'
+  }
+  getAllergenValidationState() {
+    const length = this.state.allergen.length
+    if (length === 1 || length > 100)
+      return 'error'
+    else if (length > 0)
+      return 'success'
   }
   onDrop(acceptedFiles, rejectedFiles) {
     ReactGA.event({
@@ -142,6 +164,7 @@ export default class Recipe extends React.Component {
           type="text"
           label="Recipe Title"
           placeholder="Pumpkin Waffles"
+          validationState={this.getTitleValidationState()}
           onChange={(e) => this.setState({title: e.target.value})}
         />
         <FieldGroup
@@ -149,6 +172,7 @@ export default class Recipe extends React.Component {
           type="text"
           label="Dietary Information"
           placeholder="Paleo, Vegan, etc..."
+          validationState={this.getDietaryValidationState()}
           onChange={(e) => this.setState({dietary: e.target.value})}
         />
         <FieldGroup
@@ -156,6 +180,7 @@ export default class Recipe extends React.Component {
           type="text"
           label="Allergen Information"
           placeholder="Peanut, Gluten, etc..."
+          validationState={this.getAllergenValidationState()}
           onChange={(e) => this.setState({allergen: e.target.value})}
         />
       </div>
@@ -186,7 +211,7 @@ export default class Recipe extends React.Component {
       <Button className="btn-primary-spacing"
               bsStyle="success"
               onClick={() => this.recipeFlow()}>
-        Use Recipe
+        Next: Parse Recipe
       </Button>
     )
     return (

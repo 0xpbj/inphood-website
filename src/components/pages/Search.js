@@ -40,10 +40,12 @@ export default class Search extends React.Component {
   }
   getValidationState() {
     const length = this.state.searchIngredient.length
-    if (length > 0)
-      return 'success'
-    else if (length === 0)
+    if (length === 0)
       return 'error'
+    else if (length > 100)
+      return 'error'
+    else if (length > 0)
+      return 'success'
   }
   render() {
     return (

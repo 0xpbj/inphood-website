@@ -1,7 +1,4 @@
 import {
-  UPLOAD_PHOTO,
-  POST_LABEL_ID,
-  RESULT_URL,
   SEND_SERIALIZED_DATA,
   STORE_PARSED_DATA,
   CLEAR_FIREBASE_DATA,
@@ -9,15 +6,9 @@ import {
   INGREDIENT_FIREBASE_DATA,
   LAZY_FETCH_FIREBASE,
   LAZY_LOAD_FIREBASE,
-  SEARCH_INGREDIENT,
   SELECTED_TAGS,
-  GET_MORE_DATA,
-  INIT_EMAIL_FLOW,
-  GET_EMAIL_DATA,
-  REMOVE_ELLIPSES,
   NM_ADD_INGREDIENT,
   IM_ADD_CONTROL_MODEL,
-  RESET_APPEND_DATA,
   NM_REM_INGREDIENT,
   IM_SET_DROPDOWN_MATCH_VALUE,
   IM_SET_DROPDOWN_UNITS,
@@ -27,117 +18,20 @@ import {
 } from '../constants/ActionTypes'
 
 import ReactGA from 'react-ga'
-import * as db from './firebaseCommands'
+import {callElasticSearchLambda} from './elasticSagas'
 import { call, fork, put, select, take, takeLatest } from 'redux-saga/effects'
+import * as db from './firebaseCommands'
 import request from 'request'
 const firebase = require('firebase')
 const Config = require('Config')
 const S3 = require('aws-sdk').S3
-const SES = require('aws-sdk').SES
 import {IngredientModel} from '../components/models/IngredientModel'
 import {IngredientControlModel} from '../components/models/IngredientControlModel'
-import {getValueInUnits,
-        getIngredientValueInUnits,
-        mapToSupportedUnits,
+import {mapToSupportedUnits,
         mapToSupportedUnitsStrict,
         rationalToFloat,
         getPossibleUnits} from '../helpers/ConversionUtils'
 import * as tupleHelper from '../helpers/TupleHelpers'
-
-const firebaseLogin = () => {
-  return firebase.auth().signInAnonymously()
-  .then(user => ({ user }))
-  .catch(error => ({ error }))
-}
-
-const sendToS3 = (request) => {
-  return fetch(request)
-  .then(function(response) {
-    var contentType = response.headers.get("content-type");
-    if(contentType && contentType.indexOf("application/json") !== -1) {
-      return response.json().then(function(json) {
-        return json
-      })
-    } else {
-      //console.log("Unexpected server response (non-JSON object returned)");
-    }
-  })
-}
-
-function* sendToLambdaScraper(url, key, username, thumbnail, parsedData, rawData, title, allergen, dietary) {
-  const lUrl = Config.SCRAPER_LAMBDA_URL
-  let myHeaders = new Headers()
-  myHeaders.append('Content-Type', 'application/json')
-  const awsData = {
-    url,
-    username,
-    key
-  }
-  let request = new Request(lUrl, {
-    method: 'POST',
-    body: JSON.stringify(awsData),
-    headers: myHeaders,
-    mode: 'cors',
-    cache: 'default'
-  })
-  const response = yield call (sendToS3, request)
-  if (Object.prototype.hasOwnProperty.call(response, 'success')) {
-    firebase.database().ref('/global/nutritionLabel/'+username+'/'+key).update({
-      key,
-      user: username,
-      oUrl: url,
-      iUrl: 'http://www.image.inphood.com/' + username + '/' + key + '.jpg',
-      thumbnail,
-      rawData,
-      parsedData,
-      title,
-      dietary,
-      allergen
-    })
-  }
-}
-
-function* uploadImageToS3(file, key, username, extension) {
-  const s3 = new S3({
-    accessKeyId:     Config.AWS_ACCESS_ID,
-    secretAccessKey: Config.AWS_SECRET_KEY,
-    region: 'us-west-2',
-  })
-  const params = {
-    Bucket: 'inphoodlabelimagescdn',
-    Key: username +'/'+ key+extension,
-    Body: file,
-    ContentType: 'image/jpeg',
-    ACL: 'public-read'
-  }
-  s3.upload(params, function(err, data) {})
-}
-
-function* loadAWSPut() {
-  const {parsedData, rawData, title, dietary, allergen, file} = yield select(state => state.nutritionReducer)
-  yield call (firebaseLogin)
-  let user = Config.DEBUG ? 'test' : 'anonymous'
-  let key = firebase.database().ref('/global/nutritionLabel/' + user).push().key
-  // yield call (sendToLambdaScraper, picture, key, username, thumbnail, parsedData, rawData, title, dietary, allergen)
-  let iUrl = ''
-  if (file && !Config.DEBUG) {
-    const extension = file.name.substr(file.name.lastIndexOf('.'))
-    yield call (uploadImageToS3, file, key, 'anonymous', extension)
-    iUrl = 'http://www.image.inphood.com/anonymous/'+key+extension
-  }
-  firebase.database().ref('/global/nutritionLabel/' + user + '/' + key).update({
-    key,
-    user,
-    iUrl,
-    rawData,
-    parsedData,
-    title,
-    dietary,
-    allergen
-  })
-  const url = "http://www.inphood.com/" + key
-  yield put ({type: RESULT_URL, url, key, anonymous: true})
-}
 
 function* loadSerializedData() {
   const {composite, full, key} = yield select(state => state.nutritionReducer)
@@ -297,153 +191,6 @@ function* changesFromSearch() {
   yield put ({type: SELECTED_TAGS, tags: selectedTags})
 }
 
-function* getDataFromFireBase(foodName, ingredient, key, index, userSearch, append) {
-  const path = 'global/nutritionInfo/' + key
-  const flag = (yield call(db.getPath, path)).exists()
-  if (flag) {
-    const data = (yield call(db.getPath, path)).val()
-    if (index) {
-      yield put ({type: LAZY_LOAD_FIREBASE, foodName, ingredient, index, data})
-      yield put ({type: COMPLETE_DROPDOWN_CHANGE, tag: ingredient, value: foodName})
-    }
-    else {
-      yield put ({type: INGREDIENT_FIREBASE_DATA, foodName, ingredient, data, userSearch, append})
-      if (append)
-        yield call (changesFromAppend, foodName)
-      else if (userSearch)
-        yield call (changesFromSearch)
-    }
-  }
-  else {
-    yield put ({type: INGREDIENT_FIREBASE_DATA, foodName, ingredient, data: [], userSearch, append})
-  }
-}
-
-const elasticSearchFetch = (request) => {
-  return fetch(request)
-  .then(function(response) {
-    var contentType = response.headers.get("content-type");
-    if(contentType && contentType.indexOf("application/json") !== -1) {
-      return response.json().then(function(json) {
-        return json
-      });
-    } else {
-      //console.log("Unexpected server response (non-JSON object returned)");
-    }
-  })
-}
-
-function* fallbackSearch(searchIngredient, foodName, size, userSearch, append, fallback, tokenize, parse) {
-  const token = foodName.split(",")
-  if (token[0] && tokenize) {
-    yield fork(callElasticSearchLambda, token[0], foodName, size, userSearch, append, true, false, true)
-  }
-  else if (parse) {
-    const regex = /[^\r\n]+/g
-    const file = require("raw-loader!../data/ingredients.txt")
-    const fileWords = new Set(file.match(regex))
-    let results = []
-    for (let i of fileWords) {
-      if (i.match(searchIngredient + '.?') || searchIngredient.indexOf(i) !== -1) {
-        results.push(i)
-      }
-    }
-    if (results.length) {
-      const levenshtein = require('fast-levenshtein')
-      let sortedData = []
-      for (let i of results) {
-        let d = levenshtein.get(foodName, i)
-        sortedData.push({info: i, distance: d})
-      }
-      sortedData.sort(function(a, b) {
-        return a.distance - b.distance
-      })
-      yield fork(callElasticSearchLambda, sortedData[0].info, foodName, size, userSearch, append, false, false, false)
-    }
-    else {
-      yield put ({type: INITIALIZE_FIREBASE_DATA, foodName, data: [], append})
-      yield put ({type: INGREDIENT_FIREBASE_DATA, foodName, ingredient: '', data: [], userSearch, append})
-    }
-  }
-}
-
-function* callElasticSearchLambda(searchIngredient, foodName, size, userSearch, append, fallback, tokenize, parse) {
-  // Call elastic search (effectively this curl request):
-  //
-  // curl Config.ELASTIC_LAMBDA_URL
-  //      -X POST
-  //      -d '{"query": {"match": {"Description": "nutritional yeast"}}, "size": 10}'
-  //      --header 'content-type: application/json'
-  //
-  const url = Config.ELASTIC_LAMBDA_URL
-  const search = {
-    'query': {'match' : {'Description': searchIngredient}},
-    'size': size
-  }
-  let myHeaders = new Headers()
-  myHeaders.append('Content-Type', 'application/json')
-  // From MDN and here: https://github.com/matthew-andrews/isomorphic-fetch/issues/34
-  let request = new Request(url, {
-    method: 'POST',
-    body: JSON.stringify(search),
-    headers: myHeaders,
-    mode: 'cors',
-    cache: 'default'
-  })
-  const json = yield call (elasticSearchFetch, request)
-  // TODO: possibly need to preserve the order of the results (the parallel get and
-  // object construction in nutritionReducer destroys this.)
-  let {data} = json
-  var levenshtein = require('fast-levenshtein');
-  let sortedData = []
-  for (let i of data) {
-    var res = i._source.Description.split(",")
-    var spr = res[0].split(" ")
-    let d = levenshtein.get(foodName, spr[0])
-    sortedData.push({info: i, distance: d})
-  }
-  if (sortedData[0]) {
-    sortedData.sort(function(a, b) {
-      return a.distance - b.distance;
-    })
-    const {matchData} = yield select(state => state.modelReducer)
-    const length = matchData[foodName] ? matchData[foodName].length : 0
-    if (sortedData.length > length) {
-      yield put ({type: INITIALIZE_FIREBASE_DATA, foodName, data: sortedData, append})
-      yield fork(getDataFromFireBase, foodName, sortedData[0].info._source.Description, sortedData[0].info._id, 0, userSearch, append)
-    }
-    else {
-      yield put ({type: REMOVE_ELLIPSES, foodName})
-    }
-  }
-  else if (fallback) {
-    yield fork(fallbackSearch, searchIngredient, foodName, 5, userSearch, append, fallback, tokenize, parse)
-  }
-  else {
-    yield put ({type: INITIALIZE_FIREBASE_DATA, foodName, data: [], append})
-    yield put ({type: INGREDIENT_FIREBASE_DATA, foodName, ingredient: '', data: [], userSearch, append})
-  }
-}
-
-function* fetchMoreData() {
-  while (true) {
-    const {foodName, size} = yield take(GET_MORE_DATA)
-    const userSearch = false
-    const append = true
-    const fallback = false
-    const tokenize = false
-    const parse = false
-    yield fork(callElasticSearchLambda, foodName, foodName, size+5, userSearch, append, fallback, tokenize, parse)
-  }
-}
-
-function* lazyFetchFirebaseData() {
-  while (true) {
-    const {foodName, ingredient, key, index} = yield take(LAZY_FETCH_FIREBASE)
-    yield fork(getDataFromFireBase, foodName, ingredient, key, index)
-  }
-}
-
 function* changesFromRecipe() {
   const {parsedData} = yield select(state => state.nutritionReducer)
   const {matchData} = yield select(state => state.modelReducer)
@@ -574,6 +321,35 @@ function* changesFromRecipe() {
   }
 }
 
+export function* getDataFromFireBase(foodName, ingredient, key, index, userSearch, append) {
+  const path = 'global/nutritionInfo/' + key
+  const flag = (yield call(db.getPath, path)).exists()
+  if (flag) {
+    const data = (yield call(db.getPath, path)).val()
+    if (index) {
+      yield put ({type: LAZY_LOAD_FIREBASE, foodName, ingredient, index, data})
+      yield put ({type: COMPLETE_DROPDOWN_CHANGE, tag: ingredient, value: foodName})
+    }
+    else {
+      yield put ({type: INGREDIENT_FIREBASE_DATA, foodName, ingredient, data, userSearch, append})
+      if (append)
+        yield call (changesFromAppend, foodName)
+      else if (userSearch)
+        yield call (changesFromSearch)
+    }
+  }
+  else {
+    yield put ({type: INGREDIENT_FIREBASE_DATA, foodName, ingredient, data: [], userSearch, append})
+  }
+}
+
+function* lazyFetchFirebaseData() {
+  while (true) {
+    const {foodName, ingredient, key, index} = yield take(LAZY_FETCH_FIREBASE)
+    yield fork(getDataFromFireBase, foodName, ingredient, key, index)
+  }
+}
+
 function* processParseForLabel() {
   // Get the parse data out of the nutrition reducer and call elastic search on
   // it to build the following structure:
@@ -597,95 +373,10 @@ function* processParseForLabel() {
   }
 }
 
-function* userSearchIngredient() {
-  while (true) {
-    const {searchIngredient} = yield take(SEARCH_INGREDIENT)
-    const userSearch = true
-    const append = false
-    const fallback = true
-    if (searchIngredient) {
-      const size = 5
-      const tokenize = false
-      const parse = false
-      yield fork(callElasticSearchLambda, searchIngredient, searchIngredient, size, userSearch, append, fallback, tokenize, parse)
-    }
-    else {
-      yield put ({type: INITIALIZE_FIREBASE_DATA, foodName: searchIngredient, data: [], append})
-      yield put ({type: INGREDIENT_FIREBASE_DATA, foodName: searchIngredient, ingredient: '', data: [], userSearch, append})
-    }
-  }
-}
-
-function* lambdaHack() {
-  if (!Config.DEBUG) {
-    const url = Config.ELASTIC_LAMBDA_URL
-    const search = {
-      'query': {'match' : {'Description': 'kale'}},
-      'size': 1
-    }
-    let myHeaders = new Headers()
-    myHeaders.append('Content-Type', 'application/json')
-    let request = new Request(url, {
-      method: 'POST',
-      body: JSON.stringify(search),
-      headers: myHeaders,
-      mode: 'cors',
-      cache: 'default'
-    })
-    yield call (elasticSearchFetch, request)
-  }
-}
-
-function* sendEmail () {
-  const {data} = yield take(GET_EMAIL_DATA)
-  var params = {
-    Destination: { /* required */
-      ToAddresses: [
-        'info@inphood.com',
-      ]
-    },
-    Message: { /* required */
-      Body: { /* required */
-        Html: {
-          Data: data, /* required */
-        },
-        Text: {
-          Data: data, /* required */
-        }
-      },
-      Subject: { /* required */
-        Data: 'Feedback Email', /* required */
-      }
-    },
-    Source: 'no-reply@inphood.com', /* required */
-    Tags: [
-      {
-        Name: 'STRING_VALUE', /* required */
-        Value: 'STRING_VALUE' /* required */
-      },
-    ]
-  }
-  const ses = new SES({
-    accessKeyId:     Config.AWS_ACCESS_ID,
-    secretAccessKey: Config.AWS_SECRET_KEY,
-    region: 'us-west-2',
-  })
-  ses.sendEmail(params, function(err, data) {
-    if(err)
-      throw err
-    console.log('Email sent:', data);
-  })
-}
-
 export default function* root() {
-  yield call(lambdaHack)
   yield fork(lazyFetchFirebaseData)
-  yield fork(userSearchIngredient)
-  yield fork(fetchMoreData)
   yield fork(completeMatchDropdownChange)
   yield fork(takeLatest, INGREDIENT_FIREBASE_DATA, changesFromRecipe)
-  yield fork(takeLatest, INIT_EMAIL_FLOW, sendEmail)
   yield fork(takeLatest, SEND_SERIALIZED_DATA, loadSerializedData)
-  yield fork(takeLatest, UPLOAD_PHOTO, loadAWSPut)
   yield fork(takeLatest, STORE_PARSED_DATA, processParseForLabel)
 }

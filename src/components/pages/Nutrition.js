@@ -9,7 +9,7 @@ import {getValueInUnits,
         mapToSupportedUnitsStrict,
         rationalToFloat} from '../../helpers/ConversionUtils'
 import TagController from '../controllers/TagController'
-import ServingsController from '../controllers/ServingsController'
+import ServingsController from '../../containers/ServingsControllerContainer'
 import IngredientController from '../controllers/IngredientController'
 import Row from 'react-bootstrap/lib/Row'
 import Col from 'react-bootstrap/lib/Col'
@@ -40,13 +40,6 @@ export default class Nutrition extends React.Component {
       matchData: {},
       deletedTags: [],
       unmatchedTags: [],
-      servingControls: {
-        value: 2,
-        unit: 'people',
-        min: 1,
-        max: 24,
-        step: 1
-      },
       progress: 0,
       matchIndex: 0
     }
@@ -203,10 +196,10 @@ export default class Nutrition extends React.Component {
       tupleHelper.getListOfTupleOffset(tagMatches, descriptionOffset),
       description)
     this.props.ingredientAddModel(tag, ingredientControlModel)
-    // Hackity hack hack--init the serving amount from the servingControls so they
+    // Hackity hack hack--init the serving amount from the servingsControls so they
     // match on presentation of the label
-    let servingControls = this.state.servingControls
-    this.props.nutritionModelSetServings(servingControls['value'], servingControls['unit'])
+    const {servingsControls} = this.props
+    this.props.nutritionModelSetServings(servingsControls['value'], servingsControls['unit'])
     selectedTags.push(tag)
     this.props.selectedTags(selectedTags)
     this.props.resetSearchFlag()
@@ -341,15 +334,15 @@ export default class Nutrition extends React.Component {
       this.props.ingredientAddModel(tag, ingredientControlModel)
       selectedTags.push(tag)
     }
-    // Hackity hack hack--init the serving amount from the servingControls so they
+    // Hackity hack hack--init the serving amount from the servingsControls so they
     // match on presentation of the label
     ReactGA.event({
       category: 'Nutrition Mixer',
       action: 'User recipe parsed',
       nonInteraction: false,
     });
-    let servingControls = this.state.servingControls
-    this.props.nutritionModelSetServings(servingControls['value'], servingControls['unit'])
+    const {servingsControls} = this.props
+    this.props.nutritionModelSetServings(servingsControls['value'], servingsControls['unit'])
     this.props.selectedTags(selectedTags)
     this.setState({
       unmatchedTags: missingData,
@@ -368,45 +361,6 @@ export default class Nutrition extends React.Component {
     });
     this.props.sendSerializedData(composite, full)
     this.props.router.push('result?label='+ this.props.nutrition.key)
-  }
-  handleServingValuesChange(servingValue) {
-    ReactGA.event({
-      category: 'Nutrition Mixer',
-      action: 'Servings value changed',
-      nonInteraction: false,
-    });
-    let servingControls = this.state.servingControls
-
-    servingControls['value'] = servingValue
-    this.props.nutritionModelSetServings(servingValue, servingControls['unit'])
-
-    this.setState({
-      servingControls: servingControls
-    })
-  }
-  handleServingDropDownChange(servingUnit) {
-    let servingControls = this.state.servingControls
-    if (servingUnit === 'people') {
-      servingControls['min'] = 1
-      servingControls['max'] = 24
-      servingControls['step'] = 1
-      servingControls['value'] = 2
-    } else {
-      servingControls['min'] = 0
-      servingControls['max'] = 600
-      servingControls['step'] = 25
-      servingControls['value'] = 100
-    }
-    servingControls['unit'] = servingUnit
-    this.props.nutritionModelSetServings(servingControls['value'], servingUnit)
-    this.setState({
-      servingControls: servingControls
-    })
-    ReactGA.event({
-      category: 'Nutrition Mixer',
-      action: 'Servings value dropdown triggered',
-      nonInteraction: false,
-    });
   }
   handleSliderValuesChange(tag, value) {
     console.log('-------------------------------------------------------------');
@@ -729,12 +683,7 @@ export default class Nutrition extends React.Component {
       if (tag in recipeLines) {
         recipeLine = recipeLines[tag]
       }
-      // Removed following lines from <IngredientController:
-      //           ingredientSetSliderValue={(tag, value)=>this.props.ingredientSetSliderValue(tag, value)}
-      //           nutritionModelScaleIng={(tag, value, units)=>this.props.nutritionModelScaleIng(tag, value, units)}
-      //
-      // TODO: see what if anything can be deleted
-      //
+      
       sliders.push(
         <IngredientController
           tag={tag}
@@ -757,7 +706,6 @@ export default class Nutrition extends React.Component {
     const compositeModel = this.props.model.nutritionModel.getScaledCompositeIngredientModel()
     const composite = compositeModel.serialize()
     const eventKey = this.props.nutrition.anonymous === false ? "2" : "1"
-    const {servingControls} = this.state
 
     const ml = new MarginLayout()
     const searchWidget = (
@@ -786,15 +734,7 @@ export default class Nutrition extends React.Component {
                lg={ml.lgCol}>
             <Row>
               <Col xs={12} sm={12} md={12} lg={7}>
-                <ServingsController
-                  value={servingControls['value']}
-                  min={servingControls['min']}
-                  max={servingControls['max']}
-                  step={servingControls['step']}
-                  unit={servingControls['unit']}
-                  handleServingValuesChange={this.handleServingValuesChange.bind(this)}
-                  handleServingDropDownChange={this.handleServingDropDownChange.bind(this)}
-                />
+                <ServingsController/>
                 {sliders}
               </Col>
               <Col xs={12} sm={12} md={12} lg={5}>

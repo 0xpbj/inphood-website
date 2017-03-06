@@ -45,6 +45,9 @@ export const GET_MORE_DATA = 'GET_MORE_DATA'
 export const RESET_APPEND_DATA = 'RESET_APPEND_DATA'
 
 
+// ServingsController Actions
+export const SC_STORE_VALUES = 'SC_STORE_VALUES'
+
 // Email Actions
 export const INIT_EMAIL_FLOW = 'INIT_EMAIL_FLOW'
 export const GET_EMAIL_DATA = 'GET_EMAIL_DATA'

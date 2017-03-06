@@ -23,6 +23,7 @@ import {
   IM_SET_DROPDOWN_UNITS_VALUE,
   IM_SET_DROPDOWN_UNITS,
   IM_REM_INGREDIENT_TAG,
+  SC_STORE_VALUES,
   RESET_SEARCH_FLAG,
   SELECTED_TAGS,
   GET_MORE_DATA,
@@ -215,6 +216,13 @@ export function ingredientModelRemTag(tag) {
   return {
     type: IM_REM_INGREDIENT_TAG,
     tag
+  }
+}
+
+export function setServingsControllerValues(servingsControls) {
+  return {
+    type: SC_STORE_VALUES,
+    servingsControls
   }
 }
 

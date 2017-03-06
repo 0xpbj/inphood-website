@@ -1,12 +1,10 @@
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import Nutrition from '../components/pages/Nutrition'
+import ServingsController from '../components/controllers/ServingsController'
 import * as actionCreators from '../actions/Actions'
 
 function mapStateToProps (state) {
   return {
-    nutrition: state.nutritionReducer,
-    model: state.modelReducer,
     servingsControls: state.servingsControlsReducer
   }
 }
@@ -18,4 +16,4 @@ function mapDispatchToProps (dispatch) {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(Nutrition)
+)(ServingsController)

@@ -21,6 +21,7 @@ import {
   SEARCH_INGREDIENT,
   RESET_SEARCH_FLAG,
   SELECTED_TAGS,
+  UNUSED_TAGS,
   GET_MORE_DATA,
   RESET_APPEND_DATA,
   REMOVE_ELLIPSES
@@ -41,6 +42,7 @@ const initialState = {
   userSearch: false,
   searchIngredient: '',
   selectedTags: [],
+  unusedTags: [],
   append: false,
   tag: ''
 }
@@ -219,7 +221,6 @@ export default function modelFun(state = initialState, action) {
       {
         let localMatchData = state.matchData
         let data = localMatchData[action.foodName]
-        debugger
         let last = data[data.length - 1]
         if (last[0] === '.....') {
           localMatchData[action.foodName].splice(data.length-1, 1)
@@ -350,6 +351,13 @@ export default function modelFun(state = initialState, action) {
       return {
         ...state,
         selectedTags: action.tags
+      }
+    }
+    case UNUSED_TAGS:
+    {
+      return {
+        ...state,
+        unusedTags: action.tags
       }
     }
     default:

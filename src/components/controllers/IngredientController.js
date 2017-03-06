@@ -71,70 +71,8 @@ export default class IngredientController extends React.Component {
     this.updateReduxStore(tag, value, units)
   }
 
-  completeMatchDropdownChange(tag, value) {
-    //console.log('completeMatchDropdownChange ----------------------------------------');
-    //console.log('tag = ' + tag);
-    //console.log('value = ' + value);
-    const {nutritionModel, ingredientControlModels} = this.props.model
-
-    // 1. Save the current ingredient key for deletion at the end of this
-    //    process:
-    const ingredientControlModel = ingredientControlModels[tag]
-    let ingredientKeyToDelete = ingredientControlModel.getDropdownMatchValue()
-    let ingredientModelToDelete = nutritionModel.getIngredientModel(tag)
-
-    // 2. Create a new IngredientModel:
-    let dataForKey = tupleHelper.getDataForDescription(this.props.model.matchData[tag], value)
-    let ingredientModel = new IngredientModel()
-    ingredientModel.initializeSingle(value, tag, dataForKey)
-
-    // 3. Update the match value state for the dropdown:
-    this.props.ingredientSetDropdownMatchValue(tag,value)
-
-    // 4. Update the dropdown units and unit value:
-    //
-    //    a. Get the list of new measurement units that are possible:
-    let newMeasureUnit = mapToSupportedUnits(ingredientModel.getMeasureUnit())
-    let newUnits = getPossibleUnits(newMeasureUnit)
-    this.props.ingredientSetDropdownUnits(tag, newUnits)
-    //    b. See if the current unit is within the new possibilies, if not
-    //       then set to the FDA measure defaults
-    //    (TODO: or perhaps fallback to the recipe amount/unit if they worked)
-    const currentValue = ingredientControlModel.getSliderValue()
-    const currentUnit = ingredientControlModel.getDropdownUnitValue()
-    let newUnit = currentUnit
-    if (! newUnits.includes(currentUnit)) {
-      newUnit = newMeasureUnit
-      this.props.ingredientSetDropdownUnitsValue(tag, newUnit)
-    }
-
-    // 5. Remove the current IngredientModel from the NutritionModel:
-    this.props.nutritionModelRemIng(tag)
-
-    // 6. Add the new IngredientModel to the NutritionModel:
-    ReactGA.event({
-      category: 'Nutrition Mixer',
-      action: 'User added dropdown ingredient',
-      nonInteraction: false,
-      label: tag
-    });
-    this.props.nutritionModelAddIng(tag,
-                                 ingredientModel,
-                                 currentValue,
-                                 newUnit)
-
-    this.props.resetLazyLoadOperation()
-  }
-
   handleMatchDropdownChange(value) {
     const {tag} = this.props
-
-    //console.log('handleMatchDropdownChange ----------------------------------------');
-    //console.log('tag = ' + tag);
-    //console.log('value = ' + value);
-    // TODO: refactor and compbine
-    // Tuple offsets for firebase data in nutrition reducer:
-
     const descriptionOffset = 0
     const keyOffset = 1
     const dataObjOffset = 2
@@ -161,8 +99,10 @@ export default class IngredientController extends React.Component {
         });
         this.props.lazyFetchFirebase(value, tag, tuple[keyOffset], index)
       }
-    } else {
-      this.completeMatchDropdownChange(tag, value)
+    }
+    //
+    else {
+      this.props.completeMatchDropdownChange(tag, value)
     }
   }
 
@@ -227,8 +167,6 @@ export default class IngredientController extends React.Component {
   }
 
   render() {
-    console.log('&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&')
-    console.log(this.props)
     const {tag} = this.props
     const ingredientControlModel = this.props.model.ingredientControlModels[tag]
     const formControlId = tag + "FormControlId"

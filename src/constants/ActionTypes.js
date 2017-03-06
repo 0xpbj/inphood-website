@@ -24,6 +24,7 @@ export const SEARCH_RESULT = 'SEARCH_RESULT'
 export const SEARCH_ERROR = 'SEARCH_ERROR'
 export const RESET_SEARCH_FLAG = 'RESET_SEARCH_FLAG'
 export const SELECTED_TAGS = 'SELECTED_TAGS'
+export const UNUSED_TAGS = 'UNUSED_TAGS'
 
 
 // Model Actions
@@ -48,6 +49,7 @@ export const REMOVE_ELLIPSES = 'REMOVE_ELLIPSES'
 
 // ServingsController Actions
 export const SC_STORE_VALUES = 'SC_STORE_VALUES'
+export const COMPLETE_DROPDOWN_CHANGE = 'COMPLETE_DROPDOWN_CHANGE'
 
 // Email Actions
 export const INIT_EMAIL_FLOW = 'INIT_EMAIL_FLOW'

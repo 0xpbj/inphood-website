@@ -26,10 +26,12 @@ import {
   SC_STORE_VALUES,
   RESET_SEARCH_FLAG,
   SELECTED_TAGS,
+  UNUSED_TAGS,
   GET_MORE_DATA,
   RESET_APPEND_DATA,
   INIT_EMAIL_FLOW,
-  GET_EMAIL_DATA
+  GET_EMAIL_DATA,
+  COMPLETE_DROPDOWN_CHANGE
 } from '../constants/ActionTypes'
 
 export function uploadPhoto() {
@@ -239,6 +241,13 @@ export function selectedTags(tags) {
   }
 }
 
+export function unusedTags(tags) {
+  return {
+    type: UNUSED_TAGS,
+    tags
+  }
+}
+
 export function getMoreData(foodName, size) {
   return {
     type: GET_MORE_DATA,
@@ -263,5 +272,13 @@ export function getEmailData(data) {
   return {
     type: GET_EMAIL_DATA,
     data
+  }
+}
+
+export function completeMatchDropdownChange(tag, value) {
+  return {
+    type: COMPLETE_DROPDOWN_CHANGE,
+    tag,
+    value
   }
 }

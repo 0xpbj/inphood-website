@@ -17,7 +17,7 @@ export default class ServingsController extends React.Component {
       action: 'Servings value changed',
       nonInteraction: false,
     });
-    let {servingsControls} = this.props
+    let {servingsControls} = this.props.servings
 
     servingsControls['value'] = servingValue
     this.props.nutritionModelSetServings(servingValue, servingsControls['unit'])
@@ -26,7 +26,7 @@ export default class ServingsController extends React.Component {
   }
 
   handleServingDropDownChange(servingUnit) {
-    let {servingsControls} = this.props
+    let {servingsControls} = this.props.servings
     if (servingUnit === 'people') {
       servingsControls['min'] = 1
       servingsControls['max'] = 24
@@ -49,7 +49,7 @@ export default class ServingsController extends React.Component {
   }
 
   render() {
-    const {servingsControls} = this.props
+    const {servingsControls} = this.props.servings
     return (
       <div>
         <Row>

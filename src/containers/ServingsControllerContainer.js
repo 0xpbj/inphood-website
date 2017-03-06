@@ -5,7 +5,7 @@ import * as actionCreators from '../actions/Actions'
 
 function mapStateToProps (state) {
   return {
-    servingsControls: state.servingsControlsReducer
+    servings: state.servingsControlsReducer
   }
 }
 

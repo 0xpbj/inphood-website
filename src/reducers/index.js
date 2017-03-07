@@ -5,6 +5,7 @@ import resultsReducer from './resultsReducer'
 import servingsControlsReducer from './servingsControllerReducer'
 import ingredientControllerReducer from './ingredientControllerReducer'
 import fdaReducer from './fdaReducer'
+import searchReducer from './searchReducer'
 
 const appReducer = combineReducers({
     modelReducer,
@@ -12,7 +13,8 @@ const appReducer = combineReducers({
     resultsReducer,
     servingsControlsReducer,
     ingredientControllerReducer,
-    fdaReducer
+    fdaReducer,
+    searchReducer
 })
 
 const rootReducer = (state, action) => {

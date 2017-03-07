@@ -60,13 +60,6 @@ function* fallbackSearch(searchIngredient, foodName, size, userSearch, append, f
 }
 
 export function* callElasticSearchLambda(searchIngredient, foodName, size, userSearch, append, fallback, tokenize, parse) {
-  // Call elastic search (effectively this curl request):
-  //
-  // curl Config.ELASTIC_LAMBDA_URL
-  //      -X POST
-  //      -d '{"query": {"match": {"Description": "nutritional yeast"}}, "size": 10}'
-  //      --header 'content-type: application/json'
-  //
   const url = Config.ELASTIC_LAMBDA_URL
   const search = {
     'query': {'match' : {'Description': searchIngredient}},
@@ -83,8 +76,6 @@ export function* callElasticSearchLambda(searchIngredient, foodName, size, userS
     cache: 'default'
   })
   const json = yield call (elasticSearchFetch, request)
-  // TODO: possibly need to preserve the order of the results (the parallel get and
-  // object construction in nutritionReducer destroys this.)
   let {data} = json
   var levenshtein = require('fast-levenshtein');
   let sortedData = []
@@ -101,7 +92,7 @@ export function* callElasticSearchLambda(searchIngredient, foodName, size, userS
     const {matchData} = yield select(state => state.modelReducer)
     const length = matchData[foodName] ? matchData[foodName].length : 0
     if (sortedData.length > length) {
-      yield put ({type: INITIALIZE_FIREBASE_DATA, foodName, data: sortedData, append})
+      yield put ({type: INITIALIZE_FIREBASE_DATA, foodName, data: sortedData, userSearch, append})
       yield fork(getDataFromFireBase, foodName, sortedData[0].info._source.Description, sortedData[0].info._id, 0, userSearch, append)
     }
     else {
@@ -144,7 +135,7 @@ function* userSearchIngredient() {
     const append = false
     const fallback = true
     if (searchIngredient) {
-      const size = 5
+      const size = 10
       const tokenize = false
       const parse = false
       yield fork(callElasticSearchLambda, searchIngredient, searchIngredient, size, userSearch, append, fallback, tokenize, parse)

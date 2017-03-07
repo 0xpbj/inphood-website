@@ -23,7 +23,7 @@ import ControlLabel from 'react-bootstrap/lib/ControlLabel'
 import ProgressBar from 'react-bootstrap/lib/ProgressBar'
 import Chip from 'react-toolbox/lib/chip'
 
-import Search from './Search'
+import Search from '../../containers/SearchContainer'
 const Config = require('Config')
 const Convert = require('convert-units')
 import * as tupleHelper from '../../helpers/TupleHelpers'
@@ -48,7 +48,7 @@ export default class Nutrition extends React.Component {
   }
   componentWillMount() {
     if (this.props.nutrition.rawData === '') {
-      this.props.router.push('/recipe')
+      // this.props.router.push('/recipe')
     }
     else {
       ReactGA.event({
@@ -267,8 +267,7 @@ export default class Nutrition extends React.Component {
 
     const ml = new MarginLayout()
     const searchWidget = (
-      <Search
-        searchIngredientData={(ingredient) => this.props.searchIngredientData(ingredient)}/>
+      <Search />
     )
     const shareResultsButton = (
       <Button bsStyle="success"

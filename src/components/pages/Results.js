@@ -91,7 +91,7 @@ export default class Results extends React.Component {
         action: 'User in results page',
         nonInteraction: false
       });
-      const {label} = this.props.label
+      const {label} = this.props
       const socialContainerStyle = {
         marginTop: "20px",
         border: "2px solid black",

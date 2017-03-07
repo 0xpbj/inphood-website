@@ -186,7 +186,7 @@ function* changesFromSearch() {
     description)
   yield put ({type: IM_ADD_CONTROL_MODEL, tag, ingredientControlModel})
   const {servingsControls} = yield select(state => state.servingsControlsReducer)
-  yield put ({type: NM_SET_SERVINGS, value: servingsControls['value'], units: servingsControls['unit']})
+  yield put ({type: NM_SET_SERVINGS, servingsControlModel})
   selectedTags.push(tag)
   yield put ({type: SELECTED_TAGS, tags: selectedTags})
 }
@@ -314,8 +314,8 @@ function* changesFromRecipe() {
       action: 'User recipe parsed',
       nonInteraction: false,
     });
-    const {servingsControls} = yield select(state => state.servingsControlsReducer)
-    yield put ({type: NM_SET_SERVINGS, value: servingsControls['value'], units: servingsControls['unit']})
+    const {servingsControlModel} = yield select(state => state.servingsControlsReducer)
+    yield put ({type: NM_SET_SERVINGS, servingsControlModel})
     yield put ({type: SELECTED_TAGS, tags: selectedTags})
     yield put ({type: UNUSED_TAGS, tags: missingData})
   }

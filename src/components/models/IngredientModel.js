@@ -38,6 +38,13 @@ export class IngredientModel {
     this._suggestedServingUnit = 'g'
 
     //
+    // Display units & unit count (i.e. 2 tacos)
+    // WARNING: not included in original serialization (must check if object has
+    // these when read from serialization).
+    this._displayServingCount = 1
+    this._displayServingUnit = 'serving'
+
+    //
     //   Generic measures/Unit:
     this._servingAmount = 0
     this._servingUnit = 'g'
@@ -155,7 +162,10 @@ export class IngredientModel {
     this._measureString = dataForKey['Measure']
     this.setMeasurePropsFromString(this._measureString)
 
-    this.setServingAmount(100, 'g')
+    this.setServingAmount(100,
+                          'g',
+                          this._displayServingCount,
+                          this._displayServingUnit)
   }
 
   initializeComposite(scaledIngredients) {
@@ -228,6 +238,13 @@ export class IngredientModel {
     this._servingAmount = ingredientData._servingAmount
     this._servingUnit = ingredientData._servingUnit
     this._calories = ingredientData._calories
+    // Display Unit/Servings (i.e. 2 tacos) -- added after items were serialized,
+    // hence check for hasOwnProperty:
+    if (ingredientData.hasOwnProperty(_displayServingCount) &&
+        ingredientData.hasOwnProperty(_displayServingUnit)) {
+      this._displayServingCount = ingredientData._displayServingCount
+      this._displayServingUnit = ingredientData._displayServingUnit
+    }
     // 9 calories per gram of fat:
     this._caloriesFromFat = ingredientData._caloriesFromFat
     //
@@ -274,8 +291,11 @@ export class IngredientModel {
     this._measureMeta = ingredientData._measureMeta
 
     // sets member var and also scale factor
+    // (using the this values here b/c they've been vetted above with hasOwnProperty)
     this.setServingAmount(ingredientData._suggestedServingAmount,
-                          ingredientData._suggestedServingUnit)
+                          ingredientData._suggestedServingUnit,
+                          this._displayServingCount,
+                          this._displayServingUnit)
   }
 
   serialize() {
@@ -284,9 +304,16 @@ export class IngredientModel {
     return JSON.stringify(typeToInstance)
   }
 
-  setServingAmount(suggestedServingAmount, suggestedServingUnit) {
+  setServingAmount(suggestedServingAmount,
+                   suggestedServingUnit,
+                   displayServingCount,
+                   displayServingUnit) {
+
     this._suggestedServingAmount = suggestedServingAmount
     this._suggestedServingUnit = suggestedServingUnit
+
+    this._displayServingCount = displayServingCount
+    this._displayServingUnit = displayServingUnit
 
     // TODO:
     if (suggestedServingUnit === 'people') {
@@ -333,6 +360,22 @@ export class IngredientModel {
 
   getServingUnit() {
     return this._servingUnit
+  }
+
+  setDisplayServingCount(aDisplayServingCount) {
+    this._displayServingCount = aDisplayServingCount
+  }
+
+  getDisplayServingCount() {
+    return this._displayServingCount
+  }
+
+  setDisplayServingUnit(aDisplayServingUnit) {
+    this._displayServingUnit = aDisplayServingUnit
+  }
+
+  getDisplayServingUnit() {
+    return this._displayServingUnit
   }
 
   getCalories() {

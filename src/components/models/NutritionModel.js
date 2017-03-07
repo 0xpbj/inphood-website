@@ -56,6 +56,12 @@ export class NutritionModel {
     this._scaledIngredients = {}
     this._suggestedServingValue = 100
     this._suggestedServingUnit = 'g'
+
+    // WARNING: these two variables added after serialization had already occured,
+    // need to check that they exist when trying to set them in initializeFromSerialization:
+    //    (these are the values that put "2 tacos" on the nutrition label)
+    this._displayServingCount = 1
+    this._displayServingUnit = 'serving'
   }
 
   initializeFromSerialization(serializedData) {
@@ -63,6 +69,12 @@ export class NutritionModel {
 
     this._suggestedServingValue = nutritionData._suggestedServingValue
     this._suggestedServingUnit = nutritionData._suggestedServingUnit
+
+    if (nutritionData.hasOwnProperty(_displayServingCount) &&
+        nutritionData.hasOwnProperty(_displayServingUnit)) {
+      this._displayServingCount = nutritionData._displayServingCount
+      this._displayServingUnit = nutritionData._displayServingUnit
+    }
 
     const append = false
     for (let tag in nutritionData._scaledIngredients) {
@@ -150,15 +162,20 @@ export class NutritionModel {
     }
   }
 
-  setSuggestedServingAmount(value, unit) {
+  setSuggestedServingAmount(value, unit, displayServingCount, displayServingUnit) {
     this._suggestedServingValue = value
     this._suggestedServingUnit = unit
+    this._displayServingCount = displayServingCount
+    this._displayServingUnit = displayServingUnit
   }
 
   getScaledCompositeIngredientModel() {
     var compositeIngredient = new IngredientModel()
     compositeIngredient.initializeComposite(this._scaledIngredients)
-    compositeIngredient.setServingAmount(this._suggestedServingValue, this._suggestedServingUnit)
+    compositeIngredient.setServingAmount(this._suggestedServingValue,
+                                         this._suggestedServingUnit,
+                                         this._displayServingCount,
+                                         this._displayServingUnit)
     return compositeIngredient
   }
 }

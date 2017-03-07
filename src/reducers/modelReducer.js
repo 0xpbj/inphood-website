@@ -96,7 +96,11 @@ export default function modelFun(state = initialState, action) {
     case NM_SET_SERVINGS:
     {
       let {nutritionModel} = state
-      nutritionModel.setSuggestedServingAmount(action.value, action.units)
+      const servingsControlModel = action.servingsControlModel
+      nutritionModel.setSuggestedServingAmount(servingsControlModel.getValue(),
+                                               servingsControlModel.getUnit(),
+                                               servingsControlModel.getDisplayUnitCount(),
+                                               servingsControlModel.getDisplayUnit())
       return {
         ...state,
         nutritionModel: nutritionModel

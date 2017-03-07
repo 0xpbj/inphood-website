@@ -1,22 +1,18 @@
-import {SC_STORE_VALUES} from '../constants/ActionTypes'
+import {SC_STORE_MODEL} from '../constants/ActionTypes'
+
+import {ServingsControlModel} from '../components/models/ServingsControlModel'
 
 const initialState = {
-  servingsControls: {
-    value: 2,
-    unit: 'people',
-    min: 1,
-    max: 24,
-    step: 1
-  }
+  servingsControlModel: new ServingsControlModel()
 }
 
 export default function servingsControllerReducerLogic(state = initialState, action) {
   switch (action.type) {
-    case SC_STORE_VALUES:
+    case SC_STORE_MODEL:
     {
       return {
         ...state,
-        servingsControls: action.servingsControls
+        servingsControlModel: action.servingsControlModel
       }
     }
     default:

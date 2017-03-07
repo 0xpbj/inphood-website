@@ -186,11 +186,12 @@ export default class IngredientController extends React.Component {
           <Col xs={8} md={8} style={{paddingLeft: 5, paddingRight: 5}}>
             <Slider
               value={sliderValue}
-              onChange={this.handleSliderValuesChange.bind(this)}
               min={ingredientControlModel.getSliderMin()}
               max={ingredientControlModel.getSliderMax()}
               step={ingredientControlModel.getSliderStep()}
-              snaps/>
+              snaps
+              onChange={this.handleSliderValuesChange.bind(this)}
+            />
           </Col>
           <Col xs={2} md={2} style={{paddingLeft: 0, paddingRight: 5}}>
             <form

@@ -23,7 +23,7 @@ import {
   IM_SET_DROPDOWN_UNITS_VALUE,
   IM_SET_DROPDOWN_UNITS,
   IM_REM_INGREDIENT_TAG,
-  SC_STORE_VALUES,
+  SC_STORE_MODEL,
   RESET_SEARCH_FLAG,
   SELECTED_TAGS,
   UNUSED_TAGS,
@@ -149,11 +149,10 @@ export function nutritionModelRemIng(tag) {
   }
 }
 
-export function nutritionModelSetServings(value, units) {
+export function nutritionModelSetServings(servingsControlModel) {
   return {
     type: NM_SET_SERVINGS,
-    value,
-    units
+    servingsControlModel
   }
 }
 
@@ -221,10 +220,10 @@ export function ingredientModelRemTag(tag) {
   }
 }
 
-export function setServingsControllerValues(servingsControls) {
+export function setServingsControllerModel(servingsControlModel) {
   return {
-    type: SC_STORE_VALUES,
-    servingsControls
+    type: SC_STORE_MODEL,
+    servingsControlModel
   }
 }
 

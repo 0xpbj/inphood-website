@@ -48,7 +48,7 @@ export const REMOVE_ELLIPSES = 'REMOVE_ELLIPSES'
 
 
 // ServingsController Actions
-export const SC_STORE_VALUES = 'SC_STORE_VALUES'
+export const SC_STORE_MODEL = 'SC_STORE_MODEL'
 export const COMPLETE_DROPDOWN_CHANGE = 'COMPLETE_DROPDOWN_CHANGE'
 
 // Email Actions

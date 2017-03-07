@@ -51,6 +51,11 @@ export const REMOVE_ELLIPSES = 'REMOVE_ELLIPSES'
 export const SC_STORE_VALUES = 'SC_STORE_VALUES'
 export const COMPLETE_DROPDOWN_CHANGE = 'COMPLETE_DROPDOWN_CHANGE'
 
+
 // Email Actions
 export const INIT_EMAIL_FLOW = 'INIT_EMAIL_FLOW'
 export const GET_EMAIL_DATA = 'GET_EMAIL_DATA'
+
+
+// FDA Actions
+export const SET_FDA_RESULTS = 'SET_FDA_RESULTS'

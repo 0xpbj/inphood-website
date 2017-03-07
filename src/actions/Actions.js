@@ -31,7 +31,8 @@ import {
   RESET_APPEND_DATA,
   INIT_EMAIL_FLOW,
   GET_EMAIL_DATA,
-  COMPLETE_DROPDOWN_CHANGE
+  COMPLETE_DROPDOWN_CHANGE,
+  ADD_SEARCH_SELECTION
 } from '../constants/ActionTypes'
 
 export function uploadPhoto() {
@@ -279,5 +280,12 @@ export function completeMatchDropdownChange(tag, value) {
     type: COMPLETE_DROPDOWN_CHANGE,
     tag,
     value
+  }
+}
+
+export function addSearchSelection(match) {
+  return {
+    type: ADD_SEARCH_SELECTION,
+    match
   }
 }

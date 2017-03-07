@@ -240,8 +240,8 @@ export class IngredientModel {
     this._calories = ingredientData._calories
     // Display Unit/Servings (i.e. 2 tacos) -- added after items were serialized,
     // hence check for hasOwnProperty:
-    if (ingredientData.hasOwnProperty(_displayServingCount) &&
-        ingredientData.hasOwnProperty(_displayServingUnit)) {
+    if (ingredientData.hasOwnProperty('_displayServingCount') &&
+        ingredientData.hasOwnProperty('_displayServingUnit')) {
       this._displayServingCount = ingredientData._displayServingCount
       this._displayServingUnit = ingredientData._displayServingUnit
     }

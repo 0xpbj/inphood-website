@@ -79,8 +79,6 @@ export class ServingsControlModel {
   }
 
   setValueEditBox(aValue) {
-    console.log('ServingsControlModel ----------------------------------------')
-    console.log('  setValueEditBox(', aValue, ')')
     this._valueEditBox = aValue
   }
 

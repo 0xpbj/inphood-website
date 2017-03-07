@@ -212,7 +212,7 @@ function* getDataForSearchSelection() {
     tupleHelper.getListOfTupleOffset(matches, descriptionOffset),
     description)
   yield put ({type: IM_ADD_CONTROL_MODEL, tag: searchIngredient, ingredientControlModel})
-  const {servingsControls} = yield select(state => state.servingsControlsReducer)
+  const {servingsControlModel} = yield select(state => state.servingsControlsReducer)
   yield put ({type: NM_SET_SERVINGS, servingsControlModel})
   selectedTags.push(searchIngredient)
   yield put ({type: SELECTED_TAGS, tags: selectedTags})

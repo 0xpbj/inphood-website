@@ -70,8 +70,8 @@ export class NutritionModel {
     this._suggestedServingValue = nutritionData._suggestedServingValue
     this._suggestedServingUnit = nutritionData._suggestedServingUnit
 
-    if (nutritionData.hasOwnProperty(_displayServingCount) &&
-        nutritionData.hasOwnProperty(_displayServingUnit)) {
+    if (nutritionData.hasOwnProperty('_displayServingCount') &&
+        nutritionData.hasOwnProperty('_displayServingUnit')) {
       this._displayServingCount = nutritionData._displayServingCount
       this._displayServingUnit = nutritionData._displayServingUnit
     }

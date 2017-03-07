@@ -15,6 +15,7 @@ import {
   COMPLETE_DROPDOWN_CHANGE,
   UNUSED_TAGS,
   NM_SET_SERVINGS,
+  INIT_SUPER_SEARCH,
   SUPER_SEARCH_RESULTS,
   ADD_SEARCH_SELECTION
 } from '../constants/ActionTypes'
@@ -122,6 +123,7 @@ function* changesFromAppend(tag) {
 }
 
 function* changesFromSearch() {
+  yield put ({type: INIT_SUPER_SEARCH, flag: true})
   const {matchData, searchIngredient} = yield select(state => state.modelReducer)
   let {selectedTags, unmatchedTags} = yield select(state => state.modelReducer)
   // TODO: refactor and combine
@@ -145,6 +147,7 @@ function* changesFromSearch() {
       unmatchedTags.push(tag)
       yield put ({type: UNUSED_TAGS, tags: unmatchedTags})
     }
+    yield put ({type: INIT_SUPER_SEARCH, flag: false})
     return
   }
   else {
@@ -153,70 +156,66 @@ function* changesFromSearch() {
 }
 
 function* getDataForSearchSelection() {
-  // TODO: refactor and combine
-  // Tuple offsets for firebase data in nutrition reducer:
-  while (true) {
-    const {match} = yield take(ADD_SEARCH_SELECTION)
-    let {selectedTags} = yield select(state => state.modelReducer)
-    const descriptionOffset = 0
-    const keyOffset = 1
-    const dataObjOffset = 2
-    const {searchIngredient} = yield select(state => state.modelReducer)
-    const description = match[descriptionOffset]
-    let dataForKey = match[dataObjOffset]
-    if (!dataForKey) {
-      const path = 'global/nutritionInfo/' + match[keyOffset]
-      const flag = (yield call(db.getPath, path)).exists()
-      if (flag) {
-        dataForKey = (yield call(db.getPath, path)).val()
-        console.log('Data2: ', dataForKey)
-      }
-      else
-        return
+  const {match} = yield take(ADD_SEARCH_SELECTION)
+  let {selectedTags} = yield select(state => state.modelReducer)
+  const descriptionOffset = 0
+  const keyOffset = 1
+  const dataObjOffset = 2
+  const {searchIngredient} = yield select(state => state.modelReducer)
+  const description = match[descriptionOffset]
+  let dataForKey = match[dataObjOffset]
+  if (!dataForKey) {
+    const path = 'global/nutritionInfo/' + match[keyOffset]
+    const flag = (yield call(db.getPath, path)).exists()
+    if (flag) {
+      dataForKey = (yield call(db.getPath, path)).val()
+      console.log('Data2: ', dataForKey)
     }
-    let ingredientModel = new IngredientModel()
-    ingredientModel.initializeSingle(description, searchIngredient, dataForKey)
-    let measureQuantity = ingredientModel.getMeasureQuantity()
-    let measureUnit = ingredientModel.getMeasureUnit()
-    let tryQuantity = measureQuantity
-    let tryUnit = measureUnit
-    let errorStr = ''
-    try {
+    else
+      return
+  }
+  let ingredientModel = new IngredientModel()
+  ingredientModel.initializeSingle(description, searchIngredient, dataForKey)
+  let measureQuantity = ingredientModel.getMeasureQuantity()
+  let measureUnit = ingredientModel.getMeasureUnit()
+  let tryQuantity = measureQuantity
+  let tryUnit = measureUnit
+  let errorStr = ''
+  try {
+    yield put ({type: NM_ADD_INGREDIENT, tag: searchIngredient, ingredientModel, quantity: tryQuantity, unit: tryUnit, append: false})
+  }
+  catch(err) {
+    errorStr = err
+  }
+  finally {
+    // We failed to add the ingredient with the specified quantity/unit, so try
+    // using the FDA values (not try/catch--if this fails we have a serious internal
+    // error--i.e. this should always work.)
+    if (errorStr !== '') {
+      tryQuantity = measureQuantity
+      tryUnit = measureUnit
       yield put ({type: NM_ADD_INGREDIENT, tag: searchIngredient, ingredientModel, quantity: tryQuantity, unit: tryUnit, append: false})
     }
-    catch(err) {
-      errorStr = err
-    }
-    finally {
-      // We failed to add the ingredient with the specified quantity/unit, so try
-      // using the FDA values (not try/catch--if this fails we have a serious internal
-      // error--i.e. this should always work.)
-      if (errorStr !== '') {
-        tryQuantity = measureQuantity
-        tryUnit = measureUnit
-        yield put ({type: NM_ADD_INGREDIENT, tag: searchIngredient, ingredientModel, quantity: tryQuantity, unit: tryUnit, append: false})
-      }
-    }
-    ReactGA.event({
-      category: 'Nutrition Mixer',
-      action: 'Search results added to label',
-      nonInteraction: false,
-      label: searchIngredient
-    });
-    let matches = []
-    matches.push
-    let ingredientControlModel = new IngredientControlModel(
-      tryQuantity,
-      getPossibleUnits(tryUnit),
-      tryUnit,
-      tupleHelper.getListOfTupleOffset(matches, descriptionOffset),
-      description)
-    yield put ({type: IM_ADD_CONTROL_MODEL, tag: searchIngredient, ingredientControlModel})
-    const {servingsControls} = yield select(state => state.servingsControlsReducer)
-    yield put ({type: NM_SET_SERVINGS, value: servingsControls['value'], units: servingsControls['unit']})
-    selectedTags.push(searchIngredient)
-    yield put ({type: SELECTED_TAGS, tags: selectedTags})
   }
+  ReactGA.event({
+    category: 'Nutrition Mixer',
+    action: 'Search results added to label',
+    nonInteraction: false,
+    label: searchIngredient
+  });
+  let matches = []
+  matches.push
+  let ingredientControlModel = new IngredientControlModel(
+    tryQuantity,
+    getPossibleUnits(tryUnit),
+    tryUnit,
+    tupleHelper.getListOfTupleOffset(matches, descriptionOffset),
+    description)
+  yield put ({type: IM_ADD_CONTROL_MODEL, tag: searchIngredient, ingredientControlModel})
+  const {servingsControls} = yield select(state => state.servingsControlsReducer)
+  yield put ({type: NM_SET_SERVINGS, value: servingsControls['value'], units: servingsControls['unit']})
+  selectedTags.push(searchIngredient)
+  yield put ({type: SELECTED_TAGS, tags: selectedTags})
 }
 
 function* changesFromRecipe() {
@@ -404,7 +403,7 @@ function* processParseForLabel() {
 export default function* root() {
   yield fork(lazyFetchFirebaseData)
   yield fork(completeMatchDropdownChange)
-  yield fork(getDataForSearchSelection)
+  yield fork(takeLatest, INIT_SUPER_SEARCH, getDataForSearchSelection)
   yield fork(takeLatest, INGREDIENT_FIREBASE_DATA, changesFromRecipe)
   yield fork(takeLatest, SEND_SERIALIZED_DATA, loadSerializedData)
   yield fork(takeLatest, STORE_PARSED_DATA, processParseForLabel)

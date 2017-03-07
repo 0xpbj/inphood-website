@@ -12,6 +12,7 @@ import FormGroup from 'react-bootstrap/lib/FormGroup'
 import FormControl from 'react-bootstrap/lib/FormControl'
 import ControlLabel from 'react-bootstrap/lib/ControlLabel'
 import ListGroupItem from 'react-bootstrap/lib/ListGroupItem'
+import ProgressBar from 'react-toolbox/lib/progress_bar'
 
 export default class Search extends React.Component {
   constructor() {
@@ -51,8 +52,20 @@ export default class Search extends React.Component {
     event.preventDefault()
   }
   selectedListItem(match) {
-    this.props.addSearchSelection(match)
-    this.setState({show: false})
+    if (match[0] === '.....') {
+        ReactGA.event({
+          category: 'Nutrition Mixer',
+          action: 'User triggered elipses search',
+          nonInteraction: false,
+          label: ingredient
+        });
+      const {ingredient, matches} = this.props.search
+      this.props.getMoreData(ingredient, matches.length)
+    }
+    else {
+      this.props.addSearchSelection(match)
+      this.setState({show: false})
+    }
   }
   getSearchList() {
     const {ingredient, matches} = this.props.search
@@ -60,11 +73,20 @@ export default class Search extends React.Component {
     for (let i of matches) {
       items.push(<ListGroupItem onClick={this.selectedListItem.bind(this, i)}>{i[0]}</ListGroupItem>)
     }
-    return <ListGroup>{items}</ListGroup>
+    if (items.length) {
+      return <ListGroup>{items}</ListGroup>
+    }
+    else {
+      return <ListGroup>No matches found for {ingredient}</ListGroup>
+    }
   }
   render() {
     let close = () => this.setState({ show: false})
     let height = this.state.show ? 200 : 0
+    const {searching} = this.props.search
+    const modalBody = searching ? (
+      <ProgressBar mode='indeterminate' multicolor />
+    ) : this.getSearchList()
     return (
       <div className="modal-container" style={{height: height}}>
         <Modal
@@ -77,7 +99,7 @@ export default class Search extends React.Component {
             <Modal.Title id="contained-modal-title">Ingredient Super Search</Modal.Title>
           </Modal.Header>
           <Modal.Body className="text-left">
-            {this.getSearchList()}
+            {modalBody}
           </Modal.Body>
           <Modal.Footer>
             <Button onClick={close}>Close</Button>

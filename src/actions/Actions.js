@@ -32,7 +32,8 @@ import {
   INIT_EMAIL_FLOW,
   GET_EMAIL_DATA,
   COMPLETE_DROPDOWN_CHANGE,
-  ADD_SEARCH_SELECTION
+  ADD_SEARCH_SELECTION,
+  SEND_USER_GENERATED_DATA
 } from '../constants/ActionTypes'
 
 export function uploadPhoto() {
@@ -287,5 +288,14 @@ export function addSearchSelection(match) {
   return {
     type: ADD_SEARCH_SELECTION,
     match
+  }
+}
+
+export function sendUserGeneratedData(data, labelId, userId) {
+  return {
+    type: SEND_USER_GENERATED_DATA,
+    data,
+    labelId,
+    userId
   }
 }

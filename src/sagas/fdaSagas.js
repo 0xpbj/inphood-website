@@ -28,7 +28,7 @@ function* reportFDA(ndbnoInfo) {
 
 function* searchFDA() {
   while (true) {
-    const {searchIngredient} = yield take(SEARCH_INGREDIENT)
+    const {searchIngredient} = yield take([SEARCH_INGREDIENT])
     const fdaSearchUrl = Config.FDA_SEARCH_URL + '?format=json&q=' + searchIngredient + '&ds=Branded Food Products&sort=r&max=25&offset=0&api_key=' + Config.FDA_API_KEY 
     const requestNDBNO = new Request(fdaSearchUrl)
     const resultsNDBNO = yield call (fdaFetch, requestNDBNO)

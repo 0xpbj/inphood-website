@@ -129,31 +129,7 @@ export default class ServingsController extends React.Component {
 
     this.props.setServingsControllerModel(servingsControlModel)
   }
-
-
-  // handleServingDropDownChange(servingUnit) {
-  //   let {servingsControls} = this.props.servings
-  //   if (servingUnit === 'people') {
-  //     servingsControls['min'] = 1
-  //     servingsControls['max'] = 24
-  //     servingsControls['step'] = 1
-  //     servingsControls['value'] = 2
-  //   } else {
-  //     servingsControls['min'] = 0
-  //     servingsControls['max'] = 600
-  //     servingsControls['step'] = 25
-  //     servingsControls['value'] = 100
-  //   }
-  //   servingsControls['unit'] = servingUnit
-  //   this.props.nutritionModelSetServings(servingsControls['value'], servingUnit)
-  //   this.props.setServingsControllerModel(servingsControlModel)
-  //   ReactGA.event({
-  //     category: 'Nutrition Mixer',
-  //     action: 'Servings value dropdown triggered',
-  //     nonInteraction: false,
-  //   });
-  // }
-
+  //
   render() {
     const {servingsControlModel} = this.props.servings
 
@@ -172,11 +148,11 @@ export default class ServingsController extends React.Component {
                      marginRight: 10,
                      marginLeft: 10}}>
           <Row>
-            <Col xs={4} md={4}>
-              <text>Servings per recipe<br/>(i.e. serves 12 people)</text>
+            <Col xs={3} md={3} style={{paddingTop: 6, paddingRight: 0}}>
+              <text>Servings / recipe</text>
             </Col>
 
-            <Col xs={6} md={6} style={{paddingLeft: 5, paddingRight: 5}}>
+            <Col xs={7} md={7} style={{paddingLeft: 5, paddingRight: 5}}>
               <Slider
                 value={servingsControlModel.getValue()}
                 min={servingsControlModel.getMin()}
@@ -208,8 +184,8 @@ export default class ServingsController extends React.Component {
           </Row>
 
           <Row>
-            <Col xs={4} md={4}>
-              <text>Serving details:<br/>(i.e. 2 tacos)</text>
+            <Col xs={3} md={3} style={{paddingTop: 6, paddingRight: 0}}>
+              <text>Serving details</text>
             </Col>
 
             <Col xs={6} md={6} style={{paddingLeft: 5, paddingRight: 5}}>
@@ -218,12 +194,12 @@ export default class ServingsController extends React.Component {
                 min={1}
                 max={10}
                 step={1}
-                pinned snaps
+                pinned snaps editable
                 onChange={this.handleDisplayUnitCountSliderChange.bind(this)}
               />
             </Col>
 
-            <Col xs={2} md={2} style={{paddingLeft: 0}}>
+            <Col xs={3} md={3} style={{paddingLeft: 0}}>
               <form
                 onSubmit={(event) => this.submitNewDisplayUnit(event)}
                 autoComplete="off">

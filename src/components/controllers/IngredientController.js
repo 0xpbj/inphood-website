@@ -219,8 +219,7 @@ export default class IngredientController extends React.Component {
           </Col>
         </Row>
 
-        <Row
-          style={{marginTop: 10}}>
+        <Row>
           <Col xs={12} md={12}>
           <Dropdownlist
             data={ingredientControlModel.getDropdownMatches()}

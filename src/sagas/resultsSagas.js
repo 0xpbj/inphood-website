@@ -1,6 +1,7 @@
 import {
+  LABEL_DATA,
   GET_LABEL_ID,
-  LABEL_DATA
+  SEND_USER_GENERATED_DATA,
 } from '../constants/ActionTypes'
 
 import { call, fork, put, select, take } from 'redux-saga/effects'
@@ -15,6 +16,16 @@ function* getLabelData() {
   }
 }
 
+function* sendUserGeneratedData() {
+  while (true) {
+    const {data, labelId, userId} = yield take (SEND_USER_GENERATED_DATA)
+    firebase.database().ref('/global/nutritionLabel/'+userId+'/'+labelId).update({
+      userGeneratedData: data
+    })
+  }
+}
+
 export default function* root() {
   yield fork(getLabelData)
+  yield fork(sendUserGeneratedData)
 }

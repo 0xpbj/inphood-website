@@ -121,14 +121,16 @@ export default class Results extends React.Component {
           nonInteraction: false
         });
       }
+      const user = Config.DEBUG ? 'test' : 'anonymous'
       let recipeText = ''
       if (this.hasProp(this.props.results.data, 'full')) {
         let nutritionModelData = JSON.parse(this.props.results.data.full)
         let nutritionModel = new NutritionModel()
         nutritionModel.initializeFromSerialization(nutritionModelData)
         recipeText = this.getRecipeText(nutritionModel)
+        if (recipeText !== '')
+          this.props.sendUserGeneratedData(recipeText, label, user)
       }
-      const user = Config.DEBUG ? 'test' : 'anonymous'
       const path = 'http://www.label.inphood.com/?user=' + user + '&label=' + label + '&embed=false'
       const epath = 'http://www.label.inphood.com/?user=' + user + '&label=' + label + '&embed=true'
       const embedMsg = '<embed src=' + epath + ' height=600 width=400>'

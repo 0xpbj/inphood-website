@@ -20,3 +20,8 @@ breadcrumbs -> bread crumbs
 bell pepper -> pepper sweet green
 tomato -> tomatoes
 adding s to veggies
+mint -> spearmint
+spinach -> spinach raw
+onion(s) -> onions
+olive oil -> olive oil
+sticks butter -> butter

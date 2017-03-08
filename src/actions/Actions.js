@@ -33,7 +33,8 @@ import {
   GET_EMAIL_DATA,
   COMPLETE_DROPDOWN_CHANGE,
   ADD_SEARCH_SELECTION,
-  SEND_USER_GENERATED_DATA
+  SEND_USER_GENERATED_DATA,
+  INIT_SUPER_SEARCH
 } from '../constants/ActionTypes'
 
 export function uploadPhoto() {
@@ -288,6 +289,13 @@ export function addSearchSelection(match) {
   return {
     type: ADD_SEARCH_SELECTION,
     match
+  }
+}
+
+export function initSuperSearch(flag) {
+  return {
+    type: INIT_SUPER_SEARCH,
+    flag
   }
 }
 

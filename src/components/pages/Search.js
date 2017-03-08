@@ -40,6 +40,7 @@ export default class Search extends React.Component {
       this.setState({searchIngredient: ''})
     }
     else {
+      this.props.initSuperSearch(true)
       ReactGA.event({
         category: 'User',
         action: 'User searching for missing ingredients',
@@ -82,8 +83,7 @@ export default class Search extends React.Component {
   }
   render() {
     let close = () => this.setState({ show: false})
-    // const {searching} = this.props.search
-    const searching = true
+    const {searching} = this.props.search
     console.log('Search.js: searching = ' + searching)
     const modalBody = searching ?
       (

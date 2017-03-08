@@ -13,7 +13,9 @@ export default function matches(state = initialState, action) {
     case INIT_SUPER_SEARCH:
       return {
         ...state,
-        searching: action.flag
+        searching: action.flag,
+        ingredient: '',
+        matches: []
       }
     case SUPER_SEARCH_RESULTS:
       return {

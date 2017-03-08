@@ -123,7 +123,6 @@ function* changesFromAppend(tag) {
 }
 
 function* changesFromSearch() {
-  yield put ({type: INIT_SUPER_SEARCH, flag: true})
   const {matchData, searchIngredient} = yield select(state => state.modelReducer)
   let {selectedTags, unmatchedTags} = yield select(state => state.modelReducer)
   // TODO: refactor and combine

@@ -304,37 +304,42 @@ function* changesFromRecipe() {
           break
         }
       }
-      let errorStr = ''
+      let addIngredientErrorStr = ''
       try {
-        yield put ({type: NM_ADD_INGREDIENT, tag, ingredientModel, quantity: tryQuantity, unit: tryUnit, append: false})
-      }
-      catch(err) {
-        errorStr = err
+        yield put.resolve({type: NM_ADD_INGREDIENT, tag, ingredientModel, quantity: tryQuantity, unit: tryUnit, append: false})
+      } catch(err) {
+        addIngredientErrorStr = err
         ReactGA.event({
           category: 'Nutrition Mixer',
           action: 'Error adding ingredient',
           nonInteraction: false,
           label: tag
         });
-      }
-      finally {
+      } finally {
         // We failed to add the ingredient with the specified quantity/unit, so try
         // using the FDA values (not try/catch--if this fails we have a serious internal
         // error--i.e. this should always work.)
-        if (errorStr !== '') {
+        if (addIngredientErrorStr !== '') {
           tryQuantity = measureQuantity
           tryUnit = measureUnit
-          yield put ({type: NM_ADD_INGREDIENT, tag, ingredientModel, quantity: tryQuantity, unit: tryUnit, append: false})
+          try {
+            yield put.resolve({type: NM_ADD_INGREDIENT, tag, ingredientModel, quantity: tryQuantity, unit: tryUnit, append: false})
+          } catch(err2) {
+            addIngredientErrorStr += '\n' + err2
+            console.log('Second attempt to add ingrdient to model failed: ' + addIngredientErrorStr);
+          }
         }
       }
-      let ingredientControlModel = new IngredientControlModel(
-        tryQuantity,
-        getPossibleUnits(tryUnit),
-        tryUnit,
-        tupleHelper.getListOfTupleOffset(tagMatches, descriptionOffset),
-        description)
-      yield put ({type: IM_ADD_CONTROL_MODEL, tag, ingredientControlModel})
-      selectedTags.push(tag)
+      if (addIngredientErrorStr === '') {
+        let ingredientControlModel = new IngredientControlModel(
+          tryQuantity,
+          getPossibleUnits(tryUnit),
+          tryUnit,
+          tupleHelper.getListOfTupleOffset(tagMatches, descriptionOffset),
+          description)
+        yield put ({type: IM_ADD_CONTROL_MODEL, tag, ingredientControlModel})
+        selectedTags.push(tag)
+      }
     }
     ReactGA.event({
       category: 'Nutrition Mixer',

@@ -82,13 +82,22 @@ export default class Search extends React.Component {
   }
   render() {
     let close = () => this.setState({ show: false})
-    let height = this.state.show ? 200 : 0
-    const {searching} = this.props.search
-    const modalBody = searching ? (
-      <ProgressBar mode='indeterminate' multicolor />
-    ) : this.getSearchList()
+    // const {searching} = this.props.search
+    const searching = true
+    console.log('Search.js: searching = ' + searching)
+    const modalBody = searching ?
+      (
+        <Modal.Body className="text-center">
+          <ProgressBar type='circular' mode='indeterminate' multicolor={true} />
+        </Modal.Body>
+      ) :
+      (
+        <Modal.Body className="text-left">
+          {this.getSearchList()}
+        </Modal.Body>
+      )
     return (
-      <div className="modal-container" style={{height: height}}>
+      <div className="modal-container">
         <Modal
           show={this.state.show}
           onHide={close}
@@ -98,9 +107,7 @@ export default class Search extends React.Component {
           <Modal.Header closeButton>
             <Modal.Title id="contained-modal-title">Ingredient Super Search</Modal.Title>
           </Modal.Header>
-          <Modal.Body className="text-left">
-            {modalBody}
-          </Modal.Body>
+          {modalBody}
           <Modal.Footer>
             <Button onClick={close}>Close</Button>
           </Modal.Footer>

@@ -84,7 +84,6 @@ export default class Search extends React.Component {
   render() {
     let close = () => this.setState({ show: false})
     const {searching} = this.props.search
-    console.log('Search.js: searching = ' + searching)
     const modalBody = searching ?
       (
         <Modal.Body className="text-center">

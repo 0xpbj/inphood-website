@@ -168,7 +168,6 @@ function* getDataForSearchSelection() {
     const flag = (yield call(db.getPath, path)).exists()
     if (flag) {
       dataForKey = (yield call(db.getPath, path)).val()
-      console.log('Data2: ', dataForKey)
     }
     else
       return

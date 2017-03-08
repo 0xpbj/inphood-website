@@ -90,14 +90,9 @@ export function* callElasticSearchLambda(searchIngredient, foodName, size, userS
       return a.distance - b.distance;
     })
     const {matchData} = yield select(state => state.modelReducer)
-    const length = matchData[foodName] ? matchData[foodName].length : 0
-    if (sortedData.length > length) {
-      yield put ({type: INITIALIZE_FIREBASE_DATA, foodName, data: sortedData, userSearch, append})
-      yield fork(getDataFromFireBase, foodName, sortedData[0].info._source.Description, sortedData[0].info._id, 0, userSearch, append)
-    }
-    else {
-      yield put ({type: REMOVE_ELLIPSES, foodName})
-    }
+    const remEllipses = matchData[foodName] ? ((Object.keys(matchData[foodName]).length - 1 === Object.keys(sortedData).length) && append) : false
+    yield put ({type: INITIALIZE_FIREBASE_DATA, foodName, data: sortedData, userSearch, append, remEllipses})
+    yield fork(getDataFromFireBase, foodName, sortedData[0].info._source.Description, sortedData[0].info._id, 0, userSearch, append)
   }
   else if (fallback) {
     yield fork(fallbackSearch, searchIngredient, foodName, 5, userSearch, append, fallback, tokenize, parse)

@@ -221,23 +221,6 @@ export default function modelFun(state = initialState, action) {
           tag: action.foodName
         }
       }
-    case REMOVE_ELLIPSES:
-      {
-        let localMatchData = state.matchData
-        let data = localMatchData[action.foodName]
-        let last = data[data.length - 1]
-        if (last[0] === '.....') {
-          localMatchData[action.foodName].splice(data.length-1, 1)
-          return {
-            ...state,
-            matchData: localMatchData
-          }
-        }
-        else
-          return {
-            ...state
-          }
-      }
     case INITIALIZE_FIREBASE_DATA:
       {
         // Initializes our dictionary of match data with ordered arrays of tuples
@@ -254,7 +237,7 @@ export default function modelFun(state = initialState, action) {
           let dataEntry = [obj.info._source.Description, obj.info._id, undefined]
           localMatchData[action.foodName].push(dataEntry)
         }
-        if (action.data.length !== 0 && !action.userSearch) {
+        if (action.data.length !== 0 && !action.userSearch && !action.remEllipses) {
           let dataEntry = ['.....', '-1', undefined]
           localMatchData[action.foodName].push(dataEntry)
         }

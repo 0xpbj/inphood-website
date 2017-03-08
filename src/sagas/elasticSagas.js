@@ -131,8 +131,8 @@ function* userSearchIngredient() {
     const fallback = true
     if (searchIngredient) {
       const size = 10
-      const tokenize = false
-      const parse = false
+      const tokenize = true
+      const parse = true
       yield fork(callElasticSearchLambda, searchIngredient, searchIngredient, size, userSearch, append, fallback, tokenize, parse)
     }
     else {

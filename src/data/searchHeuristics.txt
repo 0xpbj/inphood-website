@@ -25,3 +25,4 @@ spinach -> spinach raw
 onion(s) -> onions
 olive oil -> olive oil
 sticks butter -> butter
+mango -> mangos

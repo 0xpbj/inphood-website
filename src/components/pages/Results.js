@@ -134,19 +134,21 @@ export default class Results extends React.Component {
       const path = 'http://www.label.inphood.com/?user=' + user + '&label=' + label + '&embed=false'
       const epath = 'http://www.label.inphood.com/?user=' + user + '&label=' + label + '&embed=true'
       const embedMsg = '<embed src=' + epath + ' height=600 width=400>'
-      const {iUrl} = this.props.results.data
+      const {iUrl, title} = this.props.results.data
+      let modTitle = ''
+      if (title !== '')
+        modTitle = ': ' + title
       const shareButtons = (
         <div className="text-center"
              style={{marginTop: "15", marginBottom: "15"}}>
           <Row>
             <Col xs={1} md={1} />
             <Col xs={5} md={5}>
-              <CopyToClipboard text={path}
-                onCopy={() => this.setState({copied: true, ecopied: false})}>
+              <Link style={{marginRight: 10}} to={path} target="_blank">
                 <Button className="btn-primary-spacing" bsStyle="success">
                   Share URL&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-share"></Glyphicon>
                 </Button>
-              </CopyToClipboard>
+              </Link>
             </Col>
             <Col xs={5} md={5}>
               <CopyToClipboard text={embedMsg}
@@ -199,7 +201,7 @@ export default class Results extends React.Component {
                       <pre>{textLabel}</pre>
                     </Row>
                     <Row>
-                      <div className="text-center"><ControlLabel>Recipe</ControlLabel></div>
+                      <div className="text-center"><ControlLabel>Recipe{modTitle}</ControlLabel></div>
                       <pre>{recipeText}</pre>
                     </Row>
                     <Row>

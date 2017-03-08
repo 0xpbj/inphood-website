@@ -217,7 +217,15 @@ function* getDataForSearchSelection() {
   yield put ({type: SELECTED_TAGS, tags: selectedTags})
 }
 
+// TODO: TODO: TODO:
+//  Refactor / clean this up
+//    - it's too long
+//    - it was written for synchronous execution
+//    - it's not pleasant to maintain
+//    - it's unclear what it's trying to do
+//
 function* changesFromRecipe() {
+  console.log('changesFromRecipe: --------------------------------------------');
   const {parsedData} = yield select(state => state.nutritionReducer)
   const {matchData} = yield select(state => state.modelReducer)
   if (Object.keys(matchData).length === Object.keys(parsedData).length) {
@@ -305,8 +313,10 @@ function* changesFromRecipe() {
       }
       let addIngredientErrorStr = ''
       try {
+        console.log('changesFromRecipe: addIngredient call #1 ', tag);
         yield put.resolve({type: NM_ADD_INGREDIENT, tag, ingredientModel, quantity: tryQuantity, unit: tryUnit, append: false})
       } catch(err) {
+        console.log('changesFromRecipe: addIngredient call #1 threw!');
         addIngredientErrorStr = err
         ReactGA.event({
           category: 'Nutrition Mixer',
@@ -319,12 +329,16 @@ function* changesFromRecipe() {
         // using the FDA values (not try/catch--if this fails we have a serious internal
         // error--i.e. this should always work.)
         if (addIngredientErrorStr !== '') {
+          const originalAddIngredientErrorStr = addIngredientErrorStr
+          addIngredientErrorStr = ''
           tryQuantity = measureQuantity
           tryUnit = measureUnit
           try {
+            console.log('changesFromRecipe: addIngredient call #2 ', tag);
             yield put.resolve({type: NM_ADD_INGREDIENT, tag, ingredientModel, quantity: tryQuantity, unit: tryUnit, append: false})
           } catch(err2) {
-            addIngredientErrorStr += '\n' + err2
+            console.log('changesFromRecipe: addIngredient call #2 threw!');
+            addIngredientErrorStr = err2 + '\n' + originalAddIngredientErrorStr
             console.log('Second attempt to add ingrdient to model failed: ' + addIngredientErrorStr);
           }
         }
@@ -338,6 +352,8 @@ function* changesFromRecipe() {
           description)
         yield put ({type: IM_ADD_CONTROL_MODEL, tag, ingredientControlModel})
         selectedTags.push(tag)
+      } else {
+        console.log('changesFromRecipe: unable to addIngredient');
       }
     }
     ReactGA.event({

@@ -4,6 +4,7 @@ import {
   REMOVE_ELLIPSES,
   SEARCH_INGREDIENT,
   GET_MORE_DATA,
+  SUPER_SEARCH_RESULTS
 } from '../constants/ActionTypes'
 
 import { call, fork, put, select, take, takeLatest } from 'redux-saga/effects'
@@ -53,6 +54,9 @@ function* fallbackSearch(searchIngredient, foodName, size, userSearch, append, f
       yield fork(callElasticSearchLambda, sortedData[0].info, foodName, size, userSearch, append, false, false, false)
     }
     else {
+      if (userSearch) {
+        yield put ({type: SUPER_SEARCH_RESULTS, matches: [], ingredient: searchIngredient})
+      }
       yield put ({type: INITIALIZE_FIREBASE_DATA, foodName, data: [], append})
       yield put ({type: INGREDIENT_FIREBASE_DATA, foodName, ingredient: '', data: [], userSearch, append})
     }
@@ -98,6 +102,9 @@ export function* callElasticSearchLambda(searchIngredient, foodName, size, userS
     yield fork(fallbackSearch, searchIngredient, foodName, 5, userSearch, append, fallback, tokenize, parse)
   }
   else {
+    if (userSearch) {
+      yield put ({type: SUPER_SEARCH_RESULTS, matches: [], ingredient: searchIngredient})
+    }
     yield put ({type: INITIALIZE_FIREBASE_DATA, foodName, data: [], append})
     yield put ({type: INGREDIENT_FIREBASE_DATA, foodName, ingredient: '', data: [], userSearch, append})
   }

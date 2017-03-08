@@ -78,7 +78,7 @@ export default class Search extends React.Component {
       return <ListGroup>{items}</ListGroup>
     }
     else {
-      return <ListGroup>No matches found for {ingredient}</ListGroup>
+      return <ListGroup>No matches found for {ingredient}!</ListGroup>
     }
   }
   render() {

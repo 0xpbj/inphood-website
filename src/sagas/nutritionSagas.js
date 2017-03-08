@@ -150,7 +150,7 @@ function* changesFromSearch() {
       unmatchedTags.push(tag)
       yield put ({type: UNUSED_TAGS, tags: unmatchedTags})
     }
-    yield put ({type: INIT_SUPER_SEARCH, flag: false})
+    yield put ({type: SUPER_SEARCH_RESULTS, matches: [], ingredient: searchIngredient})
     return
   }
   else {
@@ -389,6 +389,9 @@ export function* getDataFromFireBase(foodName, ingredient, key, index, userSearc
     }
   }
   else {
+    if (userSearch) {
+      yield put ({type: SUPER_SEARCH_RESULTS, matches: [], ingredient: searchIngredient})
+    }
     yield put ({type: INGREDIENT_FIREBASE_DATA, foodName, ingredient, data: [], userSearch, append})
   }
 }

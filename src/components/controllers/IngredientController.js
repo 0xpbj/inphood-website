@@ -183,7 +183,7 @@ export default class IngredientController extends React.Component {
                    marginLeft: 10}}>
 
         <Row>
-          <Col xs={8} md={8} style={{paddingLeft: 5, paddingRight: 5}}>
+          <Col xs={7} md={7} style={{paddingLeft: 5, paddingRight: 5}}>
             <Slider
               value={sliderValue}
               min={ingredientControlModel.getSliderMin()}
@@ -211,7 +211,7 @@ export default class IngredientController extends React.Component {
               </FormGroup>
             </form>
           </Col>
-          <Col xs={2} md={2} style={{paddingLeft: 0}}>
+          <Col xs={3} md={3} style={{paddingLeft: 0}}>
             <Dropdownlist
               data={ingredientControlModel.getDropdownUnits()}
               value={ingredientControlModel.getDropdownUnitValue()}

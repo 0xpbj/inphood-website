@@ -162,8 +162,10 @@ export default function modelFun(state = initialState, action) {
     }
     case IM_SET_DROPDOWN_UNITS_VALUE:
     {
+      // console.log('IM_SET_DROPDOWN_UNITS_VALUE -------------------------------')
+      // console.log('   setting dropdown unit value to ' + action.unit)
       let {ingredientControlModels} = state
-      ingredientControlModels[action.tag].setDropdownUnitValue(action.units)
+      ingredientControlModels[action.tag].setDropdownUnitValue(action.unit)
       return {
         ...state,
         ingredientControlModels: ingredientControlModels

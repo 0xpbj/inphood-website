@@ -12,6 +12,7 @@ import {
   NM_REM_INGREDIENT,
   IM_SET_DROPDOWN_MATCH_VALUE,
   IM_SET_DROPDOWN_UNITS,
+  IM_SET_DROPDOWN_UNITS_VALUE,
   COMPLETE_DROPDOWN_CHANGE,
   UNUSED_TAGS,
   NM_SET_SERVINGS,
@@ -60,13 +61,13 @@ function* completeMatchDropdownChange() {
     let ingredientModel = new IngredientModel()
     ingredientModel.initializeSingle(value, tag, dataForKey)
     // 3. Update the match value state for the dropdown:
-    yield put ({type: IM_SET_DROPDOWN_MATCH_VALUE, tag, value})
+    yield put.resolve({type: IM_SET_DROPDOWN_MATCH_VALUE, tag, value})
     // 4. Update the dropdown units and unit value:
     //
     //    a. Get the list of new measurement units that are possible:
     let newMeasureUnit = mapToSupportedUnits(ingredientModel.getMeasureUnit())
     let newUnits = getPossibleUnits(newMeasureUnit)
-    yield put ({type: IM_SET_DROPDOWN_UNITS, tag, units: newUnits})
+    yield put.resolve({type: IM_SET_DROPDOWN_UNITS, tag, units: newUnits})
     //    b. See if the current unit is within the new possibilies, if not
     //       then set to the FDA measure defaults
     //    (TODO: or perhaps fallback to the recipe amount/unit if they worked)
@@ -74,11 +75,14 @@ function* completeMatchDropdownChange() {
     const currentUnit = ingredientControlModel.getDropdownUnitValue()
     let newUnit = currentUnit
     if (! newUnits.includes(currentUnit)) {
+      // console.log('Incompatible unit found in completeMatchDropdownChange:');
+      // console.log('-----------------------------------------------------------');
+      // console.log('   setting dropdown unit value to ' + newMeasureUnit);
       newUnit = newMeasureUnit
-      yield put ({type: IM_SET_DROPDOWN_UNITS, tag, units: newUnit})
+      yield put.resolve({type: IM_SET_DROPDOWN_UNITS_VALUE, tag, unit: newUnit})
     }
     // 5. Remove the current IngredientModel from the NutritionModel:
-    yield put ({type: NM_REM_INGREDIENT, tag})
+    yield put.resolve({type: NM_REM_INGREDIENT, tag})
     // 6. Add the new IngredientModel to the NutritionModel:
     ReactGA.event({
       category: 'Nutrition Mixer',
@@ -86,7 +90,7 @@ function* completeMatchDropdownChange() {
       nonInteraction: false,
       label: tag
     });
-    yield put ({type: NM_ADD_INGREDIENT, tag, ingredientModel, quantity: currentValue, unit: newUnit, append: true})
+    yield put.resolve({type: NM_ADD_INGREDIENT, tag, ingredientModel, quantity: currentValue, unit: newUnit, append: true})
   }
 }
 

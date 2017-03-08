@@ -208,11 +208,11 @@ export function ingredientSetDropdownUnits(tag, units) {
   }
 }
 
-export function ingredientSetDropdownUnitsValue(tag, units) {
+export function ingredientSetDropdownUnitsValue(tag, unit) {
   return {
     type: IM_SET_DROPDOWN_UNITS_VALUE,
     tag,
-    units
+    unit
   }
 }
 

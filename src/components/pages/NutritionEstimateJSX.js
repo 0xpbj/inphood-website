@@ -68,7 +68,7 @@ export default class NutritionEstimateJSX extends React.Component {
     return(
       <div
         id="nutrition-label"
-        style={{backgroundColor:'white', padding:4}}>
+        style={{backgroundColor:'white', padding:2}}>
         <div style={{margin:0}}>
           <section style={myStyles.performanceFacts}>
             <header style={myStyles.performanceFactsHeader}>

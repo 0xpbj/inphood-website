@@ -192,7 +192,7 @@ export default class ServingsController extends React.Component {
               <Slider
                 value={servingsControlModel.getDisplayUnitCount()}
                 min={1}
-                max={10}
+                max={20}
                 step={1}
                 pinned snaps editable
                 onChange={this.handleDisplayUnitCountSliderChange.bind(this)}

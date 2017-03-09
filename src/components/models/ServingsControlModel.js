@@ -12,14 +12,14 @@ export class ServingsControlModel {
     //
     // _displayUnit and _displayUnitCount are solely for display purposes on the
     // label--i.e. 2 tacos.  The real math is done with this._value above.
-    this._displayUnit = 'serving'
+    this._displayUnit = 'plate'
     this._displayUnitCount = 1
     this._min = 1
     this._max = 20
     this._step = 1
 
     this._valueEditBox = '2'
-    this._displayUnitEditBox = 'serving'
+    this._displayUnitEditBox = this.getDisplayUnit()
   }
 
   rescaleMinAndMax(aValue) {

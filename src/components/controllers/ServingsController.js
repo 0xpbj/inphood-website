@@ -147,9 +147,46 @@ export default class ServingsController extends React.Component {
                      padding: 10,
                      marginRight: 10,
                      marginLeft: 10}}>
+
+          <Row>
+           <Col xs={3} md={3} style={{paddingTop: 6, paddingRight: 0}}>
+             <text>Serving Size</text>
+           </Col>
+
+           <Col xs={6} md={6} style={{paddingLeft: 5, paddingRight: 5}}>
+             <Slider
+               value={servingsControlModel.getDisplayUnitCount()}
+               min={1}
+               max={20}
+               step={1}
+               pinned snaps editable
+               onChange={this.handleDisplayUnitCountSliderChange.bind(this)}
+             />
+           </Col>
+
+           <Col xs={3} md={3} style={{paddingLeft: 0}}>
+             <form
+               onSubmit={(event) => this.submitNewDisplayUnit(event)}
+               autoComplete="off">
+               <FormGroup style={{marginBottom: 0}}
+                 controlId='servingsControlUnitEditBox'
+                 validationState={this.getDisplayUnitValidationState()}>
+                 <FormControl
+                   componentClass="input"
+                   className="text-right"
+                   type="text"
+                   label="Text"
+                   value={servingsControlModel.getDisplayUnitEditBox()}
+                   onBlur={this.handleDisplayUnitEditBoxBlurred.bind(this)}
+                   onChange={this.handleDisplayUnitEditBoxChange.bind(this)}/>
+               </FormGroup>
+             </form>
+           </Col>
+          </Row>
+
           <Row>
             <Col xs={3} md={3} style={{paddingTop: 6, paddingRight: 0}}>
-              <text>Servings / recipe</text>
+              <text>Servings Per Recipe</text>
             </Col>
 
             <Col xs={7} md={7} style={{paddingLeft: 5, paddingRight: 5}}>
@@ -183,42 +220,6 @@ export default class ServingsController extends React.Component {
             </Col>
           </Row>
 
-          <Row>
-            <Col xs={3} md={3} style={{paddingTop: 6, paddingRight: 0}}>
-              <text>Serving details</text>
-            </Col>
-
-            <Col xs={6} md={6} style={{paddingLeft: 5, paddingRight: 5}}>
-              <Slider
-                value={servingsControlModel.getDisplayUnitCount()}
-                min={1}
-                max={20}
-                step={1}
-                pinned snaps editable
-                onChange={this.handleDisplayUnitCountSliderChange.bind(this)}
-              />
-            </Col>
-
-            <Col xs={3} md={3} style={{paddingLeft: 0}}>
-              <form
-                onSubmit={(event) => this.submitNewDisplayUnit(event)}
-                autoComplete="off">
-                <FormGroup style={{marginBottom: 0}}
-                  controlId='servingsControlUnitEditBox'
-                  validationState={this.getDisplayUnitValidationState()}>
-                  <FormControl
-                    componentClass="input"
-                    className="text-right"
-                    type="text"
-                    label="Text"
-                    value={servingsControlModel.getDisplayUnitEditBox()}
-                    onBlur={this.handleDisplayUnitEditBoxBlurred.bind(this)}
-                    onChange={this.handleDisplayUnitEditBoxChange.bind(this)}/>
-                </FormGroup>
-              </form>
-            </Col>
-
-          </Row>
         </div>
       </div>
     )

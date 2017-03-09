@@ -74,7 +74,7 @@ export default class Results extends React.Component {
       const tag = nmTags[index]
       const scaledIngredient = aNutritionModel.getScaledIngredient(tag)
       recipeText = recipeText +
-                   scaledIngredient.getQuantity() + " " +
+                   scaledIngredient.getQuantity().toFixed(2) + " " +
                    scaledIngredient.getUnit() + " " +
                    scaledIngredient.getIngredientModel().getKey() +
                    "\n"

@@ -301,7 +301,7 @@ export default class Nutrition extends React.Component {
                 <Row>
                   <div>
                     <text>&nbsp;</text>
-                    <Label ingredientComposite={compositeModel}/>
+                    <Label id='nutritionLabel' ingredientComposite={compositeModel}/>
                   </div>
                 </Row>
                 {/* temporary hack to align top to adjacent slider */}

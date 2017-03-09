@@ -15,7 +15,8 @@ import {Link} from 'react-router'
 import {IngredientModel} from '../models/IngredientModel'
 import {NutritionModel} from '../models/NutritionModel'
 import TagController from '../controllers/TagController'
-import CopyToClipboard from 'react-copy-to-clipboard';
+import CopyToClipboard from 'react-copy-to-clipboard'
+import domtoimage from 'dom-to-image'
 import TopBar from '../layout/TopBar'
 const Config = require('Config')
 
@@ -144,11 +145,17 @@ export default class Results extends React.Component {
           <Row>
             <Col xs={1} md={1} />
             <Col xs={5} md={5}>
-              <Link style={{marginRight: 10}} to={path} target="_blank">
-                <Button className="btn-primary-spacing" bsStyle="success">
-                  Share URL&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-share"></Glyphicon>
-                </Button>
-              </Link>
+              <Button className="btn-primary-spacing" bsStyle="success" onClick={() => {
+                domtoimage.toJpeg(document.getElementById('root'), { quality: 0.95 })
+                .then(function (dataUrl) {
+                    var link = document.createElement('a');
+                    link.download = 'my-image-name.jpeg';
+                    link.href = dataUrl;
+                    link.click();
+                });
+              }}>
+                Save Image&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-share"></Glyphicon>
+              </Button>
             </Col>
             <Col xs={5} md={5}>
               <CopyToClipboard text={embedMsg}

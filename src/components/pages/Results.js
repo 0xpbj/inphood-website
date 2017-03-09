@@ -29,6 +29,11 @@ export default class Results extends React.Component {
     }
   }
   saveLabelToImage() {
+    ReactGA.event({
+      category: 'Share',
+      action: 'User saving label',
+      nonInteraction: false
+    });
     domtoimage.toPng(document.getElementById('nutrition-label'), { quality: 1.0 })
     .then(function (dataUrl) {
       var link = document.createElement('a');

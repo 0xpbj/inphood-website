@@ -29,14 +29,13 @@ export default class Results extends React.Component {
     }
   }
   saveLabelToImage() {
-    console.log('document.getElementById:')
-    console.log('-----------------------------------------------------------')
-    console.log(document.getElementById('nutrition-label'))
-
-    domtoimage.toJpeg(document.getElementById('nutrition-label'), { quality: 0.95 })
+    console.log('document.getElementById:');
+    console.log('-----------------------------------------------------------');
+    console.log(document.getElementById('nutrition-label'));
+    domtoimage.toPng(document.getElementById('nutrition-label'), { quality: 1.0 })
       .then(function (dataUrl) {
         var link = document.createElement('a');
-        link.download = 'nutrition-label.jpeg';
+        link.download = 'nutrition-label.png';
         link.href = dataUrl;
         link.click();
       });

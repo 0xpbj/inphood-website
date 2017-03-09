@@ -139,29 +139,32 @@ export default class Results extends React.Component {
       let modTitle = ''
       if (title !== '')
         modTitle = ': ' + title
+      const saveButton = (
+        <Button className="btn-primary-spacing" bsStyle="success" onClick={() => {
+          domtoimage.toJpeg(document.getElementById('root'), { quality: 0.95 })
+          .then(function (dataUrl) {
+              var link = document.createElement('a');
+              link.download = 'my-image-name.jpeg';
+              link.href = dataUrl;
+              link.click();
+          });
+        }}>
+          Save Label&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-save"></Glyphicon>
+        </Button>
+      )
       const shareButtons = (
         <div className="text-center"
              style={{marginTop: "15", marginBottom: "15"}}>
           <Row>
             <Col xs={1} md={1} />
             <Col xs={5} md={5}>
-              <Button className="btn-primary-spacing" bsStyle="success" onClick={() => {
-                domtoimage.toJpeg(document.getElementById('root'), { quality: 0.95 })
-                .then(function (dataUrl) {
-                    var link = document.createElement('a');
-                    link.download = 'my-image-name.jpeg';
-                    link.href = dataUrl;
-                    link.click();
-                });
-              }}>
-                Save Image&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-share"></Glyphicon>
-              </Button>
+              {saveButton}
             </Col>
             <Col xs={5} md={5}>
               <CopyToClipboard text={embedMsg}
                 onCopy={() => this.setState({ecopied: true, copied: false})}>
                 <Button className="btn-primary-spacing" bsStyle="success">
-                  Embed URL&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-edit"></Glyphicon>
+                  Embed Label&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-edit"></Glyphicon>
                 </Button>
               </CopyToClipboard>
             </Col>
@@ -175,13 +178,13 @@ export default class Results extends React.Component {
         (
           <div>
             <div className="text-center"><ControlLabel>Meal Photo</ControlLabel></div>
-            <Image className="center-block" src={iUrl} responsive rounded />
+            <Image className="center-block" src={iUrl} responsive rounded  style={{marginBottom: "20px"}}/>
           </div>
         ) : null
       const placeHolderCol = <Col xs={1} sm={1} md={1} lg={2}/>
       return (
         <div>
-          <TopBar step="" stepText="" aButton={null}/>
+          <TopBar step="" stepText="" aButton={saveButton}/>
           <Grid>
             <Row>
               <Col xs={12} sm={7} md={6} lg={6}>
@@ -193,7 +196,8 @@ export default class Results extends React.Component {
                       {nutritionLabel}
                     </Row>
                     <Row>
-                      {shareButtons}
+                      <div className="text-center"><ControlLabel>Text Nutrition Label</ControlLabel></div>
+                      <pre>{textLabel}</pre>
                     </Row>
                   </Col>
                   {placeHolderCol}
@@ -204,15 +208,11 @@ export default class Results extends React.Component {
                   {placeHolderCol}
                   <Col xs={10} sm={10} md={10} lg={8}>
                     <Row>
-                      <div className="text-center"><ControlLabel>Text Nutrition Label</ControlLabel></div>
-                      <pre>{textLabel}</pre>
+                      {mealPhoto}
                     </Row>
                     <Row>
                       <div className="text-center"><ControlLabel>Recipe{modTitle}</ControlLabel></div>
                       <pre>{recipeText}</pre>
-                    </Row>
-                    <Row>
-                      {mealPhoto}
                     </Row>
                   </Col>
                   {placeHolderCol}

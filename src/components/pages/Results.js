@@ -28,6 +28,19 @@ export default class Results extends React.Component {
       ecopied: false
     }
   }
+  saveLabelToImage() {
+    console.log('document.getElementById:')
+    console.log('-----------------------------------------------------------')
+    console.log(document.getElementById('nutrition-label'))
+
+    domtoimage.toJpeg(document.getElementById('nutrition-label'), { quality: 0.95 })
+      .then(function (dataUrl) {
+        var link = document.createElement('a');
+        link.download = 'nutrition-label.jpeg';
+        link.href = dataUrl;
+        link.click();
+      });
+  }
   // From https://toddmotto.com/methods-to-determine-if-an-object-has-a-given-property/
   //  - addresses limitations of IE and other issues related to checking if an object
   //    has a property.
@@ -139,21 +152,18 @@ export default class Results extends React.Component {
       let modTitle = ''
       if (title !== '')
         modTitle = ': ' + title
+
+
       const shareButtons = (
         <div className="text-center"
              style={{marginTop: "15", marginBottom: "15"}}>
           <Row>
             <Col xs={1} md={1} />
             <Col xs={5} md={5}>
-              <Button className="btn-primary-spacing" bsStyle="success" onClick={() => {
-                domtoimage.toJpeg(document.getElementById('root'), { quality: 0.95 })
-                .then(function (dataUrl) {
-                    var link = document.createElement('a');
-                    link.download = 'my-image-name.jpeg';
-                    link.href = dataUrl;
-                    link.click();
-                });
-              }}>
+              <Button
+                className="btn-primary-spacing"
+                bsStyle="success"
+                onClick={() => {this.saveLabelToImage()}}>
                 Save Image&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-share"></Glyphicon>
               </Button>
             </Col>
@@ -180,7 +190,7 @@ export default class Results extends React.Component {
         ) : null
       const placeHolderCol = <Col xs={1} sm={1} md={1} lg={2}/>
       return (
-        <div>
+        <div style={{backgroundColor: 'white'}}>
           <TopBar step="" stepText="" aButton={null}/>
           <Grid>
             <Row>

@@ -22,11 +22,10 @@ export default class Home extends React.Component {
     }
   }
   componentWillMount() {
-    const {label, developer} = this.props.location.query
+    const {label, user, developer} = this.props.location.query
     if (label && label !== '') {
-      const user = Config.DEBUG ? 'test' : 'anonymous'
-      const {label} = this.props.location.query
-      this.props.getLabelId(user, label)
+      const hUser = user ? user : Config.DEBUG ? 'test' : 'anonymous'
+      this.props.getLabelId(hUser, label)
     }
     if (!developer) {
       ReactGA.initialize('UA-88850545-2', {
@@ -48,9 +47,9 @@ export default class Home extends React.Component {
     this.setState({showHelp: true})
   }
   render() {
-    const {label} = this.props.location.query
+    const {label, user} = this.props.location.query
     if (label && label !== '') {
-      return <Results label={label}/>
+      return <Results label={label} user={user}/>
     }
     else {
       const images = [

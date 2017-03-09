@@ -92,7 +92,7 @@ export default class Results extends React.Component {
         action: 'User in results page',
         nonInteraction: false
       });
-      const {label} = this.props
+      const {label, user} = this.props
       const socialContainerStyle = {
         marginTop: "20px",
         border: "2px solid black",
@@ -122,7 +122,7 @@ export default class Results extends React.Component {
           nonInteraction: false
         });
       }
-      const user = Config.DEBUG ? 'test' : 'anonymous'
+      const rUser =  user ? user : Config.DEBUG ? 'test' : 'anonymous'
       let recipeText = ''
       if (this.hasProp(this.props.results.data, 'full')) {
         let nutritionModelData = JSON.parse(this.props.results.data.full)
@@ -130,10 +130,10 @@ export default class Results extends React.Component {
         nutritionModel.initializeFromSerialization(nutritionModelData)
         recipeText = this.getRecipeText(nutritionModel)
         if (recipeText !== '')
-          this.props.sendUserGeneratedData(recipeText, label, user)
+          this.props.sendUserGeneratedData(recipeText, label, rUser)
       }
-      const path = 'http://www.label.inphood.com/?user=' + user + '&label=' + label + '&embed=false'
-      const epath = 'http://www.label.inphood.com/?user=' + user + '&label=' + label + '&embed=true'
+      const path = 'http://www.label.inphood.com/?user=' + rUser + '&label=' + label + '&embed=false'
+      const epath = 'http://www.label.inphood.com/?user=' + rUser + '&label=' + label + '&embed=true'
       const embedMsg = '<embed src=' + epath + ' height=600 width=400>'
       const {iUrl, title} = this.props.results.data
       let modTitle = ''

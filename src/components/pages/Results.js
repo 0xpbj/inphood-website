@@ -202,10 +202,14 @@ export default class Results extends React.Component {
                   {placeHolderCol}
                   <Col xs={10} sm={10} md={10} lg={8}>
                     <Row>
-                      <div className="text-center"><ControlLabel>Nutrition Label</ControlLabel></div>
-                      {nutritionLabel}
+                      <Col xs={12}>
+                        <div className="text-center"><ControlLabel>Nutrition Label</ControlLabel></div>
+                      </Col>
+                      <Col xs={12} className="center-block">
+                        {nutritionLabel}
+                      </Col>
                     </Row>
-                    <Row>
+                    <Row style={{marginTop: 15}}>
                       <div className="text-center"><ControlLabel>Text Nutrition Label</ControlLabel></div>
                       <pre>{textLabel}</pre>
                     </Row>

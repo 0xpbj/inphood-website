@@ -55,6 +55,13 @@ export default class NutritionEstimateJSX extends React.Component {
       ingredientComposite.getDisplayServingCount() + " " + ingredientComposite.getDisplayServingUnit() +
       " (" + ingredientComposite.getServingAmount() + ingredientComposite.getServingUnit() + ")"
 
+    const showServingsPerContainer =
+      (ingredientComposite.getSuggestedServingUnit() === 'people')
+    const servingSection = (showServingsPerContainer === '') ?
+      (<p style={myStyles.performanceFactsHeaderElementP}>{servingSizeSentence}</p>) :
+      (<p style={myStyles.performanceFactsHeaderElementP}>{servingSizeSentence}<br/>
+        Servings Per Recipe about {ingredientComposite.getSuggestedServingAmount()}</p>)
+
     return(
       <div
         className="center-block"
@@ -63,7 +70,7 @@ export default class NutritionEstimateJSX extends React.Component {
         <section style={myStyles.performanceFacts}>
           <header style={myStyles.performanceFactsHeader}>
             <h1 style={myStyles.performanceFactsTitle}>Nutrition Facts</h1>
-            <p style={myStyles.perfomanceFactsHeaderElementP}>{servingSizeSentence}</p>
+            {servingSection}
           </header>
           <table style={myStyles.performanceFactsTable}>
             <thead>

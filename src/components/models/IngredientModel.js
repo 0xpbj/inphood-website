@@ -17,6 +17,24 @@ function getFloatFromDB(dataForKey, key) {
   return data
 }
 
+function throwIfUnitMismatch(category, mainUnit, otherUnit, otherTag, otherKey) {
+  if (mainUnit != undefined) {
+    if (mainUnit != otherUnit) {
+      throw "Ingredient " + otherTag + "(" + otherKey
+            + ") uses different Unit, " + otherUnit
+            + ", from other ingredients: " + mainUnit + " "
+            + category + "."
+    }
+  }
+}
+
+function throwIfUnexpectedUnit(metric, expectedUnit, actualUnit) {
+  if (expectedUnit !== actualUnit) {
+    throw 'Unexpected ' + metric
+          + ' unit: ' + actualUnit + ' (expected ' + expectedUnit + ')'
+  }
+}
+
 // from: https://www.dsld.nlm.nih.gov/dsld/dailyvalue.jsp
 var RDA2000Cal = {
   totalFat: 65,
@@ -31,7 +49,6 @@ export class IngredientModel {
   constructor() {
     this.decimalPlaces = 2
 
-    this._ndbno = -1
     this._scaleGettersTo = 1.0
 
     this._suggestedServingAmount = 0
@@ -181,7 +198,7 @@ export class IngredientModel {
       // Add the ingredients together to get a composite label
       //
       //   Generic measures/Unit:
-      this.throwIfUnitMismatch('serving size', this._servingUnit,
+      throwIfUnitMismatch('serving size', this._servingUnit,
         ingredient._servingUnit, ingredient._tag, ingredient._key)
       // Only need this assingment on the first ingredient, but in a hurry ...
       this._servingUnit = ingredient._servingUnit
@@ -192,7 +209,7 @@ export class IngredientModel {
       this._caloriesFromFat += ingredient._caloriesFromFat * scaleFactor
       //
       //   Fat measures/metrics:
-      this.throwIfUnitMismatch('total fat', this._totalFatUnit,
+      throwIfUnitMismatch('total fat', this._totalFatUnit,
         ingredient._totalFatUnit, ingredient._tag, ingredient._key)
       // Only need this assingment on the first ingredient, but in a hurry ...
       this._totalFatUnit = ingredient._totalFatUnit
@@ -298,6 +315,123 @@ export class IngredientModel {
                           this._displayServingUnit)
   }
 
+  initializeFromBrandedFdaObj(foodObject) {
+    if (!(foodObject.hasOwnProperty('desc')
+          && foodObject.desc.hasOwnProperty('ndbno'))) {
+      throw 'Unable to execute IngredientModel.initializeFromBrandedFdaObj. No ndbno data.'
+    }
+    this._ndbno = foodObject.desc.ndbno
+
+    // Initialize key metrics to NaN to prevent composite calculations from being
+    // done where data is unknown (i.e. 6 + unknown = unknown  or  NaN so we can
+    // exclude these metrics from the label):
+    //
+    //   Generic measures/Unit:
+    this._servingAmount = 100
+    this._calories = NaN
+    this._caloriesFromFat = NaN
+    //
+    //   Fat measures/metrics:
+    this._totalFatPerServing = NaN
+    this._totalFatRDA = NaN
+    this._saturatedFatPerServing = NaN
+    this._saturatedFatRDA = NaN
+    this._transFatPerServing = NaN
+    //
+    //   Cholesterol & Sodium measures/metrics:
+    this._cholesterol = NaN
+    this._cholesterolRDA = NaN
+    this._sodium = NaN
+    this._sodiumRDA = NaN
+    //
+    //   Carbohydrate measures/metrics:
+    this._totalCarbohydratePerServing = NaN
+    this._totalCarbohydrateRDA = NaN
+    this._dietaryFiber = NaN
+    this._dietaryFiberRDA = NaN
+    this._sugars = NaN
+    //
+    //   Protein measures/metrics:
+    this._totalProteinPerServing = NaN
+
+    if (!foodObject.hasOwnProperty('nutrients')) {
+      throw 'Unable to execute IngredientModel.initializeFromBrandedFdaObj. No nutritent data.'
+    }
+    const nutrients = foodObject.nutrients
+    for (let j = 0; j < nutrients.length; j++) {
+      const nutrient = nutrients[j]
+
+      if (!(nutrient.hasOwnProperty('name')
+            && nutrient.hasOwnProperty('unit')
+            && nutrient.hasOwnProperty('value'))) {
+        continue
+      }
+
+      // The following values should be per 100g
+      const nName = nutrient.name
+      const nUnit = nutrient.unit
+      const nValue = nutrient.value
+
+      switch(nName) {
+        case "Energy":
+          throwIfUnexpectedUnit("Energy", "kcal", nUnit)
+          this._calories = nValue
+          break
+        case "Protein":
+          throwIfUnexpectedUnit("Protein", "g", nUnit)
+          this._totalProteinPerServing = nValue
+          break
+        case "Total lipid (fat)":
+          throwIfUnexpectedUnit("Total lipid (fat)", "g", nUnit)
+          this._totalFatPerServing = nValue
+          this._totalFatRDA = 100.0 * this._totalFatPerServing / RDA2000Cal.totalFat
+          this._caloriesFromFat = 9 * this._totalFatPerServing
+          break
+        case "Carbohydrate, by difference":
+          throwIfUnexpectedUnit("Carbohydrate, by difference", "g", nUnit)
+          this._totalCarbohydratePerServing = nValue
+          this._totalCarbohydrateRDA = 100.0 * this._totalCarbohydratePerServing / RDA2000Cal.carbohydrate
+          break
+        case "Fiber, total dietary":
+          throwIfUnexpectedUnit("Fiber, total dietary", "g", nUnit)
+          this._dietaryFiber = nValue
+          this._dietaryFiberRDA = 100.0 * this._dietaryFiber / RDA2000Cal.fiber
+          break
+        case "Sodium, Na":
+          throwIfUnexpectedUnit("Sodium, Na", "mg", nUnit)
+          this._sodium = nValue
+          this._sodiumRDA = 100.0 * this._sodium / RDA2000Cal.sodium
+          break
+        case "Sugars, total":
+          throwIfUnexpectedUnit("Sugars, total", "g", nUnit)
+          this._sugars = nValue
+          break
+        case "Fatty acids, total saturated":
+          throwIfUnexpectedUnit("Fatty acids, total saturated", "g", nUnit)
+          this._saturatedFatPerServing = nValue
+          this._saturatedFatRDA = 100.0 * this._saturatedFatPerServing / RDA2000Cal.saturatedFat
+          break
+        case "Fatty acids, total trans":
+          throwIfUnexpectedUnit("Fatty acids, total trans", "g", nUnit)
+          this._transFatPerServing = nValue
+          break
+        case "Cholesterol":
+          throwIfUnexpectedUnit("Cholesterol", "mg", nUnit)
+          this._cholesterol = nValue
+          this._cholesterolRDA = 100.0 * this._cholesterol / RDA2000Cal.cholesterol
+
+        default:
+      }
+      // TODO:
+      // if (!foodObject.hasOwnProperty('measures')) {
+      //   const measures = nutrient.measures
+      //   for (let k = 0; k < measures.length; k++) {
+      //     const measure = measures[k]
+      //   }
+      // }
+    }
+  }
+
   serialize() {
     // Serialize nutritionModel for firebase storage
     var typeToInstance = {Ingredient: this}
@@ -360,6 +494,14 @@ export class IngredientModel {
 
   getServingUnit() {
     return this._servingUnit
+  }
+
+  getSuggestedServingAmount() {
+    return this._suggestedServingAmount
+  }
+
+  getSuggestedServingUnit() {
+    return this._suggestedServingUnit
   }
 
   setDisplayServingCount(aDisplayServingCount) {
@@ -496,16 +638,5 @@ export class IngredientModel {
 
   getMeasureMeta() {
     return this._measureMeta
-  }
-
-  throwIfUnitMismatch(category, mainUnit, otherUnit, otherTag, otherKey) {
-    if (mainUnit != undefined) {
-      if (mainUnit != otherUnit) {
-        throw "Ingredient " + otherTag + "(" + otherKey
-              + ") uses different Unit, " + otherUnit
-              + ", from other ingredients: " + mainUnit + " "
-              + category + "."
-      }
-    }
   }
 }

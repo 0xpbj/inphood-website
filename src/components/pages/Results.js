@@ -105,7 +105,7 @@ export default class Results extends React.Component {
         action: 'User in results page',
         nonInteraction: false
       });
-      const {label} = this.props
+      const {label, user} = this.props
       const socialContainerStyle = {
         marginTop: "20px",
         border: "2px solid black",
@@ -135,7 +135,7 @@ export default class Results extends React.Component {
           nonInteraction: false
         });
       }
-      const user = Config.DEBUG ? 'test' : 'anonymous'
+      const rUser =  user ? user : Config.DEBUG ? 'test' : 'anonymous'
       let recipeText = ''
       if (this.hasProp(this.props.results.data, 'full')) {
         let nutritionModelData = JSON.parse(this.props.results.data.full)
@@ -143,16 +143,24 @@ export default class Results extends React.Component {
         nutritionModel.initializeFromSerialization(nutritionModelData)
         recipeText = this.getRecipeText(nutritionModel)
         if (recipeText !== '')
-          this.props.sendUserGeneratedData(recipeText, label, user)
+          this.props.sendUserGeneratedData(recipeText, label, rUser)
       }
-      const path = 'http://www.label.inphood.com/?user=' + user + '&label=' + label + '&embed=false'
-      const epath = 'http://www.label.inphood.com/?user=' + user + '&label=' + label + '&embed=true'
+      const path = 'http://www.label.inphood.com/?user=' + rUser + '&label=' + label + '&embed=false'
+      const epath = 'http://www.label.inphood.com/?user=' + rUser + '&label=' + label + '&embed=true'
       const embedMsg = '<embed src=' + epath + ' height=600 width=400>'
       const {iUrl, title} = this.props.results.data
       let modTitle = ''
       if (title !== '')
         modTitle = ': ' + title
 
+      const saveButton = (
+        <Button
+          className="btn-primary-spacing"
+          bsStyle="success"
+          onClick={() => {this.saveLabelToImage()}}>
+          Save Label&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-save"></Glyphicon>
+        </Button>
+      )
 
       const shareButtons = (
         <div className="text-center"
@@ -160,18 +168,13 @@ export default class Results extends React.Component {
           <Row>
             <Col xs={1} md={1} />
             <Col xs={5} md={5}>
-              <Button
-                className="btn-primary-spacing"
-                bsStyle="success"
-                onClick={() => {this.saveLabelToImage()}}>
-                Save Image&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-share"></Glyphicon>
-              </Button>
+              {saveButton}
             </Col>
             <Col xs={5} md={5}>
               <CopyToClipboard text={embedMsg}
                 onCopy={() => this.setState({ecopied: true, copied: false})}>
                 <Button className="btn-primary-spacing" bsStyle="success">
-                  Embed URL&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-edit"></Glyphicon>
+                  Embed Label&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-edit"></Glyphicon>
                 </Button>
               </CopyToClipboard>
             </Col>
@@ -185,13 +188,13 @@ export default class Results extends React.Component {
         (
           <div>
             <div className="text-center"><ControlLabel>Meal Photo</ControlLabel></div>
-            <Image className="center-block" src={iUrl} responsive rounded />
+            <Image className="center-block" src={iUrl} responsive rounded  style={{marginBottom: "20px"}}/>
           </div>
         ) : null
       const placeHolderCol = <Col xs={1} sm={1} md={1} lg={2}/>
       return (
         <div style={{backgroundColor: 'white'}}>
-          <TopBar step="" stepText="" aButton={null}/>
+          <TopBar step="" stepText="" aButton={saveButton}/>
           <Grid>
             <Row>
               <Col xs={12} sm={7} md={6} lg={6}>
@@ -203,7 +206,8 @@ export default class Results extends React.Component {
                       {nutritionLabel}
                     </Row>
                     <Row>
-                      {shareButtons}
+                      <div className="text-center"><ControlLabel>Text Nutrition Label</ControlLabel></div>
+                      <pre>{textLabel}</pre>
                     </Row>
                   </Col>
                   {placeHolderCol}
@@ -214,15 +218,11 @@ export default class Results extends React.Component {
                   {placeHolderCol}
                   <Col xs={10} sm={10} md={10} lg={8}>
                     <Row>
-                      <div className="text-center"><ControlLabel>Text Nutrition Label</ControlLabel></div>
-                      <pre>{textLabel}</pre>
+                      {mealPhoto}
                     </Row>
                     <Row>
                       <div className="text-center"><ControlLabel>Recipe{modTitle}</ControlLabel></div>
                       <pre>{recipeText}</pre>
-                    </Row>
-                    <Row>
-                      {mealPhoto}
                     </Row>
                   </Col>
                   {placeHolderCol}

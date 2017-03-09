@@ -84,7 +84,7 @@ export function* callElasticSearchLambda(searchIngredient, foodName, size, userS
   var levenshtein = require('fast-levenshtein');
   let sortedData = []
   for (let i of data) {
-    var res = i._source.Description.split(",")
+    var res = i._source.inPhood001.split(",")
     var spr = res[0].split(" ")
     let d = levenshtein.get(foodName, spr[0])
     sortedData.push({info: i, distance: d})

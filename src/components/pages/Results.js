@@ -29,16 +29,13 @@ export default class Results extends React.Component {
     }
   }
   saveLabelToImage() {
-    console.log('document.getElementById:');
-    console.log('-----------------------------------------------------------');
-    console.log(document.getElementById('nutrition-label'));
     domtoimage.toPng(document.getElementById('nutrition-label'), { quality: 1.0 })
-      .then(function (dataUrl) {
-        var link = document.createElement('a');
-        link.download = 'nutrition-label.png';
-        link.href = dataUrl;
-        link.click();
-      });
+    .then(function (dataUrl) {
+      var link = document.createElement('a');
+      link.download = 'nutrition-label.png';
+      link.href = dataUrl;
+      link.click();
+    });
   }
   // From https://toddmotto.com/methods-to-determine-if-an-object-has-a-given-property/
   //  - addresses limitations of IE and other issues related to checking if an object

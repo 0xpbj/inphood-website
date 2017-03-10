@@ -247,10 +247,10 @@ export default function modelFun(state = initialState, action) {
           let dataEntry = [obj.info._source.Description, obj.info._id, undefined]
           localMatchData[action.foodName].push(dataEntry)
         }
-        if (action.data.length !== 0 && !action.userSearch && !action.remEllipses) {
-          let dataEntry = ['.....', '-1', undefined]
-          localMatchData[action.foodName].push(dataEntry)
-        }
+        // if (action.data.length !== 0 && !action.userSearch && !action.remEllipses) {
+          // let dataEntry = ['.....', '-1', undefined]
+          // localMatchData[action.foodName].push(dataEntry)
+        // }
         return {
           ...state,
           matchData: localMatchData

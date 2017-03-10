@@ -43,13 +43,9 @@ export default class IngredientController extends React.Component {
   handleEditBoxValueChange(formObject) {
     const {tag} = this.props
     const value = formObject.target.value
-
-    // console.log('------------------------------------------------------------');
-    // console.log('handleEditBoxValueChange:');
-    // console.log('tag = ' + tag);
-    // console.log('value = ' + value);
-
-    this.props.ingredientSetEditBoxValue(tag, value)
+    let ingredientControlModel = this.props.model.ingredientControlModels[tag]
+    ingredientControlModel.setEditBoxValue(value)
+    this.props.updateIngredientControlModel(tag, ingredientControlModel)
   }
 
   handleUnitDropdownChange(units) {
@@ -133,8 +129,10 @@ export default class IngredientController extends React.Component {
   }
 
   updateReduxStore(tag, value, units) {
-    this.props.ingredientSetSliderValue(tag, value)
-    this.props.ingredientSetDropdownUnitsValue(tag, units)
+    let ingredientControlModel = this.props.model.ingredientControlModels[tag]
+    ingredientControlModel.setSliderValue(value)
+    ingredientControlModel.setDropdownUnitValue(units)
+    this.props.updateIngredientControlModel(tag, ingredientControlModel)
     this.props.nutritionModelScaleIng(tag, value, units)
   }
 

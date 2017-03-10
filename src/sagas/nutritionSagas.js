@@ -8,11 +8,9 @@ import {
   LAZY_LOAD_FIREBASE,
   SELECTED_TAGS,
   NM_ADD_INGREDIENT,
-  IM_ADD_CONTROL_MODEL,
   NM_REM_INGREDIENT,
-  IM_SET_DROPDOWN_MATCH_VALUE,
-  IM_SET_DROPDOWN_UNITS,
-  IM_SET_DROPDOWN_UNITS_VALUE,
+  IM_ADD_CONTROL_MODEL,
+  IM_UPDATE_MODEL,
   COMPLETE_DROPDOWN_CHANGE,
   UNUSED_TAGS,
   NM_SET_SERVINGS,
@@ -52,7 +50,7 @@ function* completeMatchDropdownChange() {
     const {nutritionModel, ingredientControlModels, matchData} = yield select(state => state.modelReducer)
     // 1. Save the current ingredient key for deletion at the end of this
     //    process:
-    const ingredientControlModel = ingredientControlModels[tag]
+    let ingredientControlModel = ingredientControlModels[tag]
     let ingredientKeyToDelete = ingredientControlModel.getDropdownMatchValue()
     let ingredientModelToDelete = nutritionModel.getIngredientModel(tag)
     // 2. Create a new IngredientModel:
@@ -61,13 +59,13 @@ function* completeMatchDropdownChange() {
     let ingredientModel = new IngredientModel()
     ingredientModel.initializeSingle(value, tag, dataForKey)
     // 3. Update the match value state for the dropdown:
-    yield put.resolve({type: IM_SET_DROPDOWN_MATCH_VALUE, tag, value})
+    ingredientControlModel.setDropdownMatchValue(value)
     // 4. Update the dropdown units and unit value:
     //
     //    a. Get the list of new measurement units that are possible:
     let newMeasureUnit = mapToSupportedUnits(ingredientModel.getMeasureUnit())
     let newUnits = getPossibleUnits(newMeasureUnit)
-    yield put.resolve({type: IM_SET_DROPDOWN_UNITS, tag, units: newUnits})
+    ingredientControlModel.setDropdownUnits(newUnits)
     //    b. See if the current unit is within the new possibilies, if not
     //       then set to the FDA measure defaults
     //    (TODO: or perhaps fallback to the recipe amount/unit if they worked)
@@ -79,8 +77,11 @@ function* completeMatchDropdownChange() {
       // console.log('-----------------------------------------------------------');
       // console.log('   setting dropdown unit value to ' + newMeasureUnit);
       newUnit = newMeasureUnit
-      yield put.resolve({type: IM_SET_DROPDOWN_UNITS_VALUE, tag, unit: newUnit})
+      ingredientControlModel.setDropdownUnitValue(newUnit)
     }
+    // ?. Update the ingredient model from all the changes we've made above
+    //    (replaces all the individual previous calls)
+    yield put.resolve({type: IM_UPDATE_MODEL, tag, ingredientControlModel})
     // 5. Remove the current IngredientModel from the NutritionModel:
     yield put.resolve({type: NM_REM_INGREDIENT, tag})
     // 6. Add the new IngredientModel to the NutritionModel:

@@ -1,16 +1,11 @@
 import {
   NM_RESET,
-  NM_SETUP,
   NM_ADD_INGREDIENT,
   NM_REM_INGREDIENT,
   NM_SET_SERVINGS,
   NM_SCALE_INGREDIENT,
   IM_ADD_CONTROL_MODEL,
-  IM_SET_SLIDER_VALUE,
-  IM_SET_EDIT_BOX_VALUE,
-  IM_SET_DROPDOWN_MATCH_VALUE,
-  IM_SET_DROPDOWN_UNITS,
-  IM_SET_DROPDOWN_UNITS_VALUE,
+  IM_UPDATE_MODEL,
   IM_REM_INGREDIENT_TAG,
   CLEAR_FIREBASE_DATA,
   INITIALIZE_FIREBASE_DATA,
@@ -68,13 +63,6 @@ export default function modelFun(state = initialState, action) {
         tag: ''
       }
     }
-    case NM_SETUP:
-    {
-      return {
-        ...state,
-        modelSetup: action.flag
-      }
-    }
     case NM_ADD_INGREDIENT:
     {
       let {nutritionModel} = state
@@ -125,55 +113,10 @@ export default function modelFun(state = initialState, action) {
       }
     }
     // TODO: AC replace all the individual setters below with this
-    // case IM_UPDATE_MODEL:
-    // {
-    //   let {ingredientControlModels} = state
-    //   ingredientControlModels[action.tag] = action.ingredientControlModel
-    //   return {
-    //     ...state,
-    //     ingredientControlModels: ingredientControlModels
-    //   }
-    // }
-    case IM_SET_SLIDER_VALUE:
+    case IM_UPDATE_MODEL:
     {
       let {ingredientControlModels} = state
-      ingredientControlModels[action.tag].setSliderValue(action.value)
-      return {
-        ...state,
-        ingredientControlModels: ingredientControlModels
-      }
-    }
-    case IM_SET_EDIT_BOX_VALUE:
-    {
-      let {ingredientControlModels} = state
-      ingredientControlModels[action.tag].setEditBoxValue(action.value)
-      return {
-        ...state,
-        ingredientControlModels: ingredientControlModels
-      }
-    }
-    case IM_SET_DROPDOWN_MATCH_VALUE:
-    {
-      let {ingredientControlModels} = state
-      ingredientControlModels[action.tag].setDropdownMatchValue(action.value)
-      return {
-        ...state,
-        ingredientControlModels: ingredientControlModels
-      }
-    }
-    case IM_SET_DROPDOWN_UNITS:
-    {
-      let {ingredientControlModels} = state
-      ingredientControlModels[action.tag].setDropdownUnits(action.units)
-      return {
-        ...state,
-        ingredientControlModels: ingredientControlModels
-      }
-    }
-    case IM_SET_DROPDOWN_UNITS_VALUE:
-    {
-      let {ingredientControlModels} = state
-      ingredientControlModels[action.tag].setDropdownUnitValue(action.unit)
+      ingredientControlModels[action.tag] = action.ingredientControlModel
       return {
         ...state,
         ingredientControlModels: ingredientControlModels

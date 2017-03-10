@@ -11,17 +11,12 @@ import {
   CLEAN_REDUCERS,
   SEARCH_INGREDIENT,
   NM_RESET,
-  NM_SETUP,
   NM_ADD_INGREDIENT,
   NM_REM_INGREDIENT,
   NM_SET_SERVINGS,
   NM_SCALE_INGREDIENT,
   IM_ADD_CONTROL_MODEL,
-  IM_SET_SLIDER_VALUE,
-  IM_SET_EDIT_BOX_VALUE,
-  IM_SET_DROPDOWN_MATCH_VALUE,
-  IM_SET_DROPDOWN_UNITS_VALUE,
-  IM_SET_DROPDOWN_UNITS,
+  IM_UPDATE_MODEL,
   IM_REM_INGREDIENT_TAG,
   SC_STORE_MODEL,
   RESET_SEARCH_FLAG,
@@ -127,13 +122,6 @@ export function nutritionModelReset() {
   }
 }
 
-export function nutritionModelSetup(flag) {
-  return {
-    type: NM_SETUP,
-    flag
-  }
-}
-
 export function nutritionModelAddIng(tag, ingredientModel, quantity, unit, append) {
   return {
     type: NM_ADD_INGREDIENT,
@@ -176,43 +164,11 @@ export function ingredientAddModel(tag, ingredientControlModel) {
   }
 }
 
-export function ingredientSetSliderValue(tag, value) {
+export function updateIngredientControlModel(tag, ingredientControlModel) {
   return {
-    type: IM_SET_SLIDER_VALUE,
+    type: IM_UPDATE_MODEL,
     tag,
-    value
-  }
-}
-
-export function ingredientSetEditBoxValue(tag, value) {
-  return {
-    type: IM_SET_EDIT_BOX_VALUE,
-    tag,
-    value
-  }
-}
-
-export function ingredientSetDropdownMatchValue(tag, value) {
-  return {
-    type: IM_SET_DROPDOWN_MATCH_VALUE,
-    tag,
-    value
-  }
-}
-
-export function ingredientSetDropdownUnits(tag, units) {
-  return {
-    type: IM_SET_DROPDOWN_UNITS,
-    tag,
-    units
-  }
-}
-
-export function ingredientSetDropdownUnitsValue(tag, unit) {
-  return {
-    type: IM_SET_DROPDOWN_UNITS_VALUE,
-    tag,
-    unit
+    ingredientControlModel
   }
 }
 

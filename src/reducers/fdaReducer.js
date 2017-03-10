@@ -2,9 +2,12 @@ import {
   SET_FDA_RESULTS,
 } from '../constants/ActionTypes'
 
+import {IngredientModel} from '../components/models/IngredientModel'
+
 const initialState = {
   results: []
 }
+
 export default function results(state = initialState, action) {
   switch (action.type) {
     case SET_FDA_RESULTS:
@@ -16,42 +19,17 @@ export default function results(state = initialState, action) {
       //   for (let i = 0; i < fdaBrandedResults.count; i++) {
       //     const foodObject = foods[i]
       //
-      //     if (!(foodObject.hasOwnProperty('desc') &&
-      //         foodObject.desc.hasOwnProperty('name') &&
-      //         foodObject.desc.hasOwnProperty('ndbno'))) {
-      //       console.log('SKIPPING food object number ' + i + '(no desc/name/ndbno)')
+      //     if (!(foodObject.hasOwnProperty('desc')
+      //           && foodObject.desc.hasOwnProperty('name'))) {
       //       continue
       //     }
       //
-      //     const description = foodObject.desc.name
-      //     const ndbno = foodObject.desc.ndbno
-      //
-      //     if (!foodObject.hasOwnProperty('nutrients')) {
-      //       console.log('SKIPPING food object number ' + i + '(no nutrients)')
-      //       continue
-      //     }
-      //
-      //     console.log('')
-      //     console.log(description + "(" + ndbno + "):")
-      //     console.log('=======================================================')
-      //
-      //     const nutrients = foodObject.nutrients
-      //     for (let j = 0; j < nutrients.length; j++) {
-      //       const nutrient = nutrients[j]
-      //       console.log(nutrient.name + "(" + nutrient.unit + "):")
-      //
-      //       if (!foodObject.hasOwnProperty('measures')) {
-      //         const measures = nutrient.measures
-      //         for (let k = 0; k < measures.length; k++) {
-      //           const measure = measures[k]
-      //           console.log()
-      //         }
-      //       }
-      //     }
-      //
+      //     const name = foodObject.desc.name
+      //     let ingredientModel = new IngredientModel()
+      //     ingredientModel.initializeFromBrandedFdaObj(foodObject)
       //   }
       // }
-
+      //
       return {
         ...state,
         results: action.results

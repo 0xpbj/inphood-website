@@ -41,7 +41,6 @@ export default class Nutrition extends React.Component {
       labelRedirect: false,
       matchData: {},
       deletedTags: [],
-      unmatchedTags: [],
       progress: 0,
       matchIndex: 0
     }
@@ -179,7 +178,7 @@ export default class Nutrition extends React.Component {
     // 1. Generate a list of tags not found in our DB and build the array of
     //    sliders:
     let sliders = []
-    let notFound = ""
+    let notFound = []
     const {ingredientControlModels, matchData} = this.props.model
     //
     //  a. Order the tags so they appear in search + recipe order to the user:
@@ -231,7 +230,7 @@ export default class Nutrition extends React.Component {
         continue
       }
       if (! (tag in ingredientControlModels)) {
-        notFound = notFound + tag + " "
+        notFound.push(tag)
         continue
       }
       let recipeLine = tag
@@ -255,20 +254,12 @@ export default class Nutrition extends React.Component {
         </div>
       )
     }
-    if (notFound != "") {
-      notFound = "(No data for: " + notFound + ")"
-    }
-
     // 2. Serialize the nutrition model and composite ingreident model:
     const full = this.props.model.nutritionModel.serialize()
     const compositeModel = this.props.model.nutritionModel.getScaledCompositeIngredientModel()
     const composite = compositeModel.serialize()
-    const eventKey = this.props.nutrition.anonymous === false ? "2" : "1"
 
     const ml = new MarginLayout()
-    const searchWidget = (
-      <Search />
-    )
     const shareResultsButton = (
       <Button bsStyle="success"
               onClick={this.transitionToLabelPage.bind(this, composite, full)}>
@@ -279,16 +270,13 @@ export default class Nutrition extends React.Component {
       <div>
         <TopBar step=""
                 stepText=""
-                altContent={searchWidget}
+                altContent={(<Search />)}
                 aButton={shareResultsButton}/>
 
         {/*Serving size below: TODO refactor*/}
         <Row>
           {ml.marginCol}
-          <Col xs={ml.xsCol}
-               sm={ml.smCol}
-               md={ml.mdCol}
-               lg={ml.lgCol}>
+          <Col xs={ml.xsCol} sm={ml.smCol} md={ml.mdCol} lg={ml.lgCol}>
             <Row>
               <Col xs={12} sm={12} md={12} lg={7}>
                 <ServingsController/>
@@ -313,14 +301,14 @@ export default class Nutrition extends React.Component {
                     handleChipAdd={this.handleChipAdd.bind(this)}
                   />
                 </Row>
-                <Row>
+                {/* <Row>
                   <TagController
-                    tags={this.state.unmatchedTags}
+                    tags={notFound}
                     tagName={'No match found for these ingredients:'}
                     deletable={false}
                     handleChipAdd={this.handleChipAdd.bind(this)}
                   />
-                </Row>
+                </Row> */}
               </Col>
             </Row>
           </Col>

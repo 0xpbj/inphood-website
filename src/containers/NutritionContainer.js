@@ -7,6 +7,7 @@ function mapStateToProps (state) {
   return {
     nutrition: state.nutritionReducer,
     model: state.modelReducer,
+    fdaBrandedData: state.fdaReducer,
     servingsControls: state.servingsControlsReducer
   }
 }

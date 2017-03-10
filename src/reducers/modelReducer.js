@@ -124,6 +124,16 @@ export default function modelFun(state = initialState, action) {
         ingredientControlModels: ingredientControlModels
       }
     }
+    // TODO: AC replace all the individual setters below with this
+    // case IM_UPDATE_MODEL:
+    // {
+    //   let {ingredientControlModels} = state
+    //   ingredientControlModels[action.tag] = action.ingredientControlModel
+    //   return {
+    //     ...state,
+    //     ingredientControlModels: ingredientControlModels
+    //   }
+    // }
     case IM_SET_SLIDER_VALUE:
     {
       let {ingredientControlModels} = state
@@ -162,8 +172,6 @@ export default function modelFun(state = initialState, action) {
     }
     case IM_SET_DROPDOWN_UNITS_VALUE:
     {
-      // console.log('IM_SET_DROPDOWN_UNITS_VALUE -------------------------------')
-      // console.log('   setting dropdown unit value to ' + action.unit)
       let {ingredientControlModels} = state
       ingredientControlModels[action.tag].setDropdownUnitValue(action.unit)
       return {

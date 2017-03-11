@@ -14,7 +14,6 @@ import {getValueInUnits,
         rationalToFloat,
         getPossibleUnits} from '../../helpers/ConversionUtils'
 import Slider from 'react-toolbox/lib/slider'
-import * as tupleHelper from '../../helpers/TupleHelpers'
 
 export default class IngredientController extends React.Component {
   constructor(props) {
@@ -69,31 +68,30 @@ export default class IngredientController extends React.Component {
 
   handleMatchDropdownChange(value) {
     const {tag} = this.props
-    const descriptionOffset = 0
-    const keyOffset = 1
-    const dataObjOffset = 2
-    let tagMatches = this.props.model.matchData[tag]
-    let dataForKey = tupleHelper.getDataForDescription(tagMatches, value)
-    if (dataForKey === undefined) {   // Lazy loading from FB
-      let index = tupleHelper.getIndexForDescription(tagMatches, value)
-      let tuple = tagMatches[index]
+    const {matchResultsModel} = this.props.model
+    const searchResult = matchResultsModel.getSearchResultByDesc(tag, value)
+
+    if ((searchResult.getStandardRefDataObj() === undefined) &&
+        (searchResult.getBrandedDataObj() === undefined)) {
       if (value === '.....') {
+        // Ellipses search:
         ReactGA.event({
           category: 'Nutrition Mixer',
           action: 'User triggered elipses search',
           nonInteraction: false,
           label: tag
         });
-        this.props.getMoreData(tag, tagMatches.length)
-      }
-      else {
+        this.props.getMoreData(tag, matchResultsModel.getSearchResultsLength(tag))
+      } else {
+        // Firebase lazy fetch
         ReactGA.event({
           category: 'Nutrition Mixer',
           action: 'User triggered dropdown lazy firebase fetch',
           nonInteraction: false,
           label: tag
         });
-        this.props.lazyFetchFirebase(value, tag, tuple[keyOffset], index)
+        let index = matchResultsModel.getIndexForDescription(tag, value)
+        this.props.lazyFetchFirebase(value, tag, searchResult.getNdbNo(), index)
       }
     }
     //

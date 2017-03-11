@@ -33,7 +33,6 @@ import {mapToSupportedUnits,
         mapToSupportedUnitsStrict,
         rationalToFloat,
         getPossibleUnits} from '../helpers/ConversionUtils'
-import * as tupleHelper from '../helpers/TupleHelpers'
 
 function* loadSerializedData() {
   const {composite, full, key} = yield select(state => state.nutritionReducer)
@@ -47,17 +46,30 @@ function* loadSerializedData() {
 function* completeMatchDropdownChange() {
   while (true) {
     const {tag, value} = yield take(COMPLETE_DROPDOWN_CHANGE)
-    const {nutritionModel, ingredientControlModels, matchData} = yield select(state => state.modelReducer)
+    const {nutritionModel, ingredientControlModels, matchResultsModel} =
+      yield select(state => state.modelReducer)
+
     // 1. Save the current ingredient key for deletion at the end of this
     //    process:
     let ingredientControlModel = ingredientControlModels[tag]
     let ingredientKeyToDelete = ingredientControlModel.getDropdownMatchValue()
     let ingredientModelToDelete = nutritionModel.getIngredientModel(tag)
+    //
     // 2. Create a new IngredientModel:
-    let tTag = matchData[tag]
-    let dataForKey = tupleHelper.getDataForDescription(tTag, value)
+    const searchTerm = tag
+    const description = value
+    const searchResult =
+      matchResultsModel.getSearchResultByDesc(searchTerm, description)
+    if (searchResult === undefined) {
+      throw "Unable to get searchResult in completeMatchDropdownChange"
+    }
+    // TODO: expand this to handle searchResult.getBrandedDataObj() to support FDA
+    //       data objects
     let ingredientModel = new IngredientModel()
-    ingredientModel.initializeSingle(value, tag, dataForKey)
+    ingredientModel.initializeSingle(description,
+                                     searchTerm,
+                                     searchResult.getStandardRefDataObj())
+
     // 3. Update the match value state for the dropdown:
     ingredientControlModel.setDropdownMatchValue(value)
     // 4. Update the dropdown units and unit value:
@@ -96,12 +108,9 @@ function* completeMatchDropdownChange() {
 }
 
 function* changesFromAppend(tag) {
-  const descriptionOffset = 0
-  const keyOffset = 1
-  const dataObjOffset = 2
-  const {matchData} = yield select(state => state.modelReducer)
-  const tagMatches = matchData[tag]
-  if (tagMatches.length === 0) {
+  const {matchResultsModel} = yield select(state => state.modelReducer)
+  const searchTerm = tag
+  if (matchResultsModel.getSearchResultsLength(searchTerm) === 0) {
     ReactGA.event({
       category: 'Nutrition Mixer',
       action: 'No ellipses results returned',
@@ -110,10 +119,15 @@ function* changesFromAppend(tag) {
     });
     return
   }
-  const description = tagMatches[0][descriptionOffset]
-  const dataForKey = tagMatches[0][dataObjOffset]
+
+  const searchResult = matchResultsModel.getSearchResultByIndex(searchTerm)
+  const description = searchResult.getDescription()
+  // TODO: expand this to handle getBrandedDataObj() for FDA Branded results
   let ingredientModel = new IngredientModel()
-  ingredientModel.initializeSingle(description, tag, dataForKey)
+  ingredientModel.initializeSingle(description,
+                                   searchTerm,
+                                   searchResult.getStandardRefDataObj())
+
   const measureQuantity = ingredientModel.getMeasureQuantity()
   const measureUnit = ingredientModel.getMeasureUnit()
   yield put ({type: NM_ADD_INGREDIENT, tag, ingredientModel, quantity: measureQuantity, unit: measureUnit, append: true})
@@ -122,72 +136,81 @@ function* changesFromAppend(tag) {
           measureQuantity,
           getPossibleUnits(measureUnit),
           measureUnit,
-          tupleHelper.getListOfTupleOffset(tagMatches, descriptionOffset),
+          matchResultsModel.getSearchResultDescriptions(searchTerm),
           description)
   yield put ({type: IM_ADD_CONTROL_MODEL, tag, ingredientControlModel})
 }
 
 function* changesFromSearch() {
-  const {matchData, searchIngredient} = yield select(state => state.modelReducer)
+  const {matchResultsModel, searchIngredient} = yield select(state => state.modelReducer)
   let {selectedTags, unmatchedTags} = yield select(state => state.modelReducer)
-  // TODO: refactor and combine
-  // Tuple offsets for firebase data in nutrition reducer:
-  const descriptionOffset = 0
-  const keyOffset = 1
-  const dataObjOffset = 2
-  // Check that the first dataObject is not undefined (modified from non-lazy
-  // load where every match was checked)
-  const firstMatch = 0
-  const tag = searchIngredient
-  const tagMatches = matchData[tag]
-  if (tagMatches.length === 0) {
+
+  const searchTerm = searchIngredient
+  if (matchResultsModel.getSearchResultsLength(searchTerm) === 0) {
     ReactGA.event({
       category: 'Nutrition Mixer',
       action: 'No search results returned',
       nonInteraction: false,
       label: searchIngredient
     });
-    if (unmatchedTags.indexOf(tag) === -1) {
-      unmatchedTags.push(tag)
+    if (unmatchedTags.indexOf(searchTerm) === -1) {
+      unmatchedTags.push(searchTerm)
       yield put ({type: UNUSED_TAGS, tags: unmatchedTags})
     }
-    yield put ({type: SUPER_SEARCH_RESULTS, matches: [], ingredient: searchIngredient})
+    yield put ({type: SUPER_SEARCH_RESULTS,
+                matchResultsModel: new MatchResultsModel(),
+                ingredient: searchTerm})
     return
-  }
-  else {
-    yield put ({type: SUPER_SEARCH_RESULTS, matches: tagMatches, ingredient: searchIngredient})
+  } else {
+    yield put ({type: SUPER_SEARCH_RESULTS,
+                matchResultsModel: matchResultsModel,
+                ingredient: searchTerm})
   }
 }
 
+// TODO: PBJ look at why searchIngredient is coming in as blank '' from the
+//       modelReducer here.
 function* getDataForSearchSelection() {
-  const {match} = yield take(ADD_SEARCH_SELECTION)
   let {selectedTags} = yield select(state => state.modelReducer)
-  const descriptionOffset = 0
-  const keyOffset = 1
-  const dataObjOffset = 2
   const {searchIngredient} = yield select(state => state.modelReducer)
-  const description = match[descriptionOffset]
-  let dataForKey = match[dataObjOffset]
-  if (!dataForKey) {
-    const path = 'global/nutritionInfo/' + match[keyOffset]
+  const {searchResult} = yield take(ADD_SEARCH_SELECTION)
+
+  console.log('getDataForSearchSelection -------------------------------------');
+  console.log('   searchResult:');
+  console.log(searchResult)
+  const description = searchResult.getDescription()
+  // TODO: consider case with getBrandedDataObj
+  let stdRefObj = searchResult.getStandardRefDataObj()
+  if (stdRefObj === undefined) {
+    const path = 'global/nutritionInfo/' + searchResult.getNdbNo()
     const flag = (yield call(db.getPath, path)).exists()
     if (flag) {
-      dataForKey = (yield call(db.getPath, path)).val()
-    }
-    else
+      stdRefObj = (yield call(db.getPath, path)).val()
+    } else
       return
   }
+  console.log('   we made it past the return!  searchIngredient, description:');
+  console.log(searchIngredient);
+  console.log(description);
+
   let ingredientModel = new IngredientModel()
-  ingredientModel.initializeSingle(description, searchIngredient, dataForKey)
+  ingredientModel.initializeSingle(description, searchIngredient, stdRefObj)
   let measureQuantity = ingredientModel.getMeasureQuantity()
   let measureUnit = ingredientModel.getMeasureUnit()
   let tryQuantity = measureQuantity
   let tryUnit = measureUnit
   let errorStr = ''
   try {
-    yield put ({type: NM_ADD_INGREDIENT, tag: searchIngredient, ingredientModel, quantity: tryQuantity, unit: tryUnit, append: false})
+    yield put ({type: NM_ADD_INGREDIENT,
+                tag: searchIngredient,
+                ingredientModel,
+                quantity: tryQuantity,
+                unit: tryUnit,
+                append: false})
   }
   catch(err) {
+    console.log('   error adding ingredient (1st try)' + searchIngredient);
+    console.log(err);
     errorStr = err
   }
   finally {
@@ -195,9 +218,15 @@ function* getDataForSearchSelection() {
     // using the FDA values (not try/catch--if this fails we have a serious internal
     // error--i.e. this should always work.)
     if (errorStr !== '') {
+      console.log('   adding ingredient (2nd try)' + searchIngredient);
       tryQuantity = measureQuantity
       tryUnit = measureUnit
-      yield put ({type: NM_ADD_INGREDIENT, tag: searchIngredient, ingredientModel, quantity: tryQuantity, unit: tryUnit, append: false})
+      yield put ({type: NM_ADD_INGREDIENT,
+                  tag: searchIngredient,
+                  ingredientModel,
+                  quantity: tryQuantity,
+                  unit: tryUnit,
+                  append: false})
     }
   }
   ReactGA.event({
@@ -206,13 +235,12 @@ function* getDataForSearchSelection() {
     nonInteraction: false,
     label: searchIngredient
   });
-  let matches = []
-  matches.push
+
   let ingredientControlModel = new IngredientControlModel(
     tryQuantity,
     getPossibleUnits(tryUnit),
     tryUnit,
-    tupleHelper.getListOfTupleOffset(matches, descriptionOffset),
+    [description],
     description)
   yield put ({type: IM_ADD_CONTROL_MODEL, tag: searchIngredient, ingredientControlModel})
   const {servingsControlModel} = yield select(state => state.servingsControlsReducer)
@@ -231,53 +259,52 @@ function* getDataForSearchSelection() {
 function* changesFromRecipe() {
   console.log('changesFromRecipe: --------------------------------------------');
   const {parsedData} = yield select(state => state.nutritionReducer)
-  const {matchData} = yield select(state => state.modelReducer)
-  if (Object.keys(matchData).length === Object.keys(parsedData).length) {
+  const {matchResultsModel} = yield select(state => state.modelReducer)
+  if (matchResultsModel.getNumberOfSearches() === Object.keys(parsedData).length) {
     const {missingData} = yield select(state => state.nutritionReducer)
-    // TODO: refactor and combine
-    // Tuple offsets for firebase data in nutrition reducer:
-    const descriptionOffset = 0
-    const keyOffset = 1
-    const dataObjOffset = 2
+
     // Check that the first dataObject is not undefined (modified from non-lazy
-    // load where every match was checked)
-    const firstMatch = 0
-    for (let tag in matchData) {
-      if (matchData[tag].length === 0) {
+    // load where every match was checked):
+    for (let searchTerm in matchResultsModel.getSearches()) {
+      if (matchResultsModel.getSearchResultsLength(searchTerm) === 0) {
         ReactGA.event({
           category: 'Nutrition Mixer',
           action: 'Missing data for ingredient',
           nonInteraction: false,
-          label: tag
+          label: searchTerm
         });
         continue
       }
-      if (matchData[tag][firstMatch][dataObjOffset] === undefined) {
+      // TODO: may need to differentiate with getBrandedDataObj here
+      const searchResult = matchResultsModel.getSearchResultByIndex(searchTerm)
+      if (searchResult.getStandardRefDataObj() === undefined) {
         return
       }
     }
+
     let selectedTags = []
-    for (let tag in matchData) {
-      const tagMatches = matchData[tag]
-      // We use the first value in the list (assumes elastic search returns results
-      // in closest match order)
-      //const key = tagMatches[0][keyOffset]
-      if (tagMatches.length === 0) {
-        if (missingData.indexOf(tag) === -1) {
-          missingData.push(tag)
+
+    for (let searchTerm in matchResultsModel.getSearches()) {
+      if (matchResultsModel.getSearchResultsLength(searchTerm) === 0) {
+        if (missingData.indexOf(searchTerm) === -1) {
+          missingData.push(searchTerm)
           ReactGA.event({
             category: 'Nutrition Mixer',
             action: 'Missing data for ingredient',
             nonInteraction: false,
-            label: tag
+            label: searchTerm
           });
         }
         continue
       }
-      const description = tagMatches[0][descriptionOffset]
-      const dataForKey = tagMatches[0][dataObjOffset]
+
+      const searchResult = matchResultsModel.getSearchResultByIndex(searchTerm)
+      const description = searchResult.getDescription()
+      // TODO: need to consider the case for getBrandedDataObj as well
+      const stdRefObj = searchResult.getStandardRefDataObj()
       let ingredientModel = new IngredientModel()
-      ingredientModel.initializeSingle(description, tag, dataForKey)
+      ingredientModel.initializeSingle(description, searchTerm, stdRefObj)
+
       let measureQuantity = ingredientModel.getMeasureQuantity()
       let measureUnit = ingredientModel.getMeasureUnit()
       let tryQuantity = measureQuantity
@@ -287,7 +314,7 @@ function* changesFromRecipe() {
       for (let i = 0; i < parsedData.length; i++) {
         const parseObj = parsedData[i]
         const foodName = parseObj['name']
-        if (foodName === tag) {
+        if (foodName === searchTerm) {
           // Sometimes the parseObj returns things like 'toTaste=true' and no
           // amount or unit fields. TODO: we should probably exclude those tags/
           // ingredients from the label in MVP3 or put them in their own bucket.
@@ -315,10 +342,29 @@ function* changesFromRecipe() {
           break
         }
       }
+
+      // Delete the ingredient if it's already in the model because we're going to
+      // add it again below.
+      console.log('   Testing for ingredient in nutritionModel')
+      const {nutritionModel} = yield select(state => state.modelReducer)
+      const nmTags = nutritionModel.getTags()
+      for (let nmI = 0; nmI < nmTags.length; nmI++) {
+        console.log("  " + nmTags[nmI])
+      }
+      if (nutritionModel.getIngredientModel(searchTerm) !== null) {
+        console.log('   Deleting ingredient ' + searchTerm + ' from NutritionModel')
+        yield put.resolve({type: NM_REM_INGREDIENT, tag: searchTerm})
+      }
+
       let addIngredientErrorStr = ''
       try {
-        console.log('changesFromRecipe: addIngredient call #1 ', tag);
-        yield put.resolve({type: NM_ADD_INGREDIENT, tag, ingredientModel, quantity: tryQuantity, unit: tryUnit, append: false})
+        console.log('changesFromRecipe: addIngredient call #1 ', searchTerm);
+        yield put.resolve({type: NM_ADD_INGREDIENT,
+                           tag: searchTerm,
+                           ingredientModel,
+                           quantity: tryQuantity,
+                           unit: tryUnit,
+                           append: false})
       } catch(err) {
         console.log('changesFromRecipe: addIngredient call #1 threw!');
         addIngredientErrorStr = err
@@ -326,7 +372,7 @@ function* changesFromRecipe() {
           category: 'Nutrition Mixer',
           action: 'Error adding ingredient',
           nonInteraction: false,
-          label: tag
+          label: searchTerm
         });
       } finally {
         // We failed to add the ingredient with the specified quantity/unit, so try
@@ -338,8 +384,13 @@ function* changesFromRecipe() {
           tryQuantity = measureQuantity
           tryUnit = measureUnit
           try {
-            console.log('changesFromRecipe: addIngredient call #2 ', tag);
-            yield put.resolve({type: NM_ADD_INGREDIENT, tag, ingredientModel, quantity: tryQuantity, unit: tryUnit, append: false})
+            console.log('changesFromRecipe: addIngredient call #2 ', searchTerm);
+            yield put.resolve({type: NM_ADD_INGREDIENT,
+                               tag: searchTerm,
+                               ingredientModel,
+                               quantity: tryQuantity,
+                               unit: tryUnit,
+                               append: false})
           } catch(err2) {
             console.log('changesFromRecipe: addIngredient call #2 threw!');
             addIngredientErrorStr = err2 + '\n' + originalAddIngredientErrorStr
@@ -347,15 +398,20 @@ function* changesFromRecipe() {
           }
         }
       }
+
+      console.log('Adding ingredient control model ---------------------------');
+      console.log('   addIngredientErrorStr: ', addIngredientErrorStr);
+      console.log('   searchTerm: ', searchTerm);
       if (addIngredientErrorStr === '') {
         let ingredientControlModel = new IngredientControlModel(
           tryQuantity,
           getPossibleUnits(tryUnit),
           tryUnit,
-          tupleHelper.getListOfTupleOffset(tagMatches, descriptionOffset),
+          matchResultsModel.getSearchResultDescriptions(searchTerm),
           description)
-        yield put ({type: IM_ADD_CONTROL_MODEL, tag, ingredientControlModel})
-        selectedTags.push(tag)
+        console.log('   calling IM_ADD_CONTROL_MODEL', ingredientControlModel);
+        yield put ({type: IM_ADD_CONTROL_MODEL, tag: searchTerm, ingredientControlModel})
+        selectedTags.push(searchTerm)
       } else {
         console.log('changesFromRecipe: unable to addIngredient');
       }
@@ -391,7 +447,9 @@ export function* getDataFromFireBase(foodName, ingredient, key, index, userSearc
   }
   else {
     if (userSearch) {
-      yield put ({type: SUPER_SEARCH_RESULTS, matches: [], ingredient: searchIngredient})
+      yield put ({type: SUPER_SEARCH_RESULTS,
+                  matchResultsModel: new MatchResultsModel(),
+                  ingredient: searchIngredient})
     }
     yield put ({type: INGREDIENT_FIREBASE_DATA, foodName, ingredient, data: [], userSearch, append})
   }

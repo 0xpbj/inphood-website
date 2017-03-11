@@ -241,10 +241,10 @@ export function completeMatchDropdownChange(tag, value) {
   }
 }
 
-export function addSearchSelection(match) {
+export function addSearchSelection(searchResult) {
   return {
     type: ADD_SEARCH_SELECTION,
-    match
+    searchResult
   }
 }
 

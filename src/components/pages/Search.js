@@ -52,27 +52,34 @@ export default class Search extends React.Component {
     }
     event.preventDefault()
   }
-  selectedListItem(match) {
-    if (match[0] === '.....') {
-        ReactGA.event({
-          category: 'Nutrition Mixer',
-          action: 'User triggered elipses search',
-          nonInteraction: false,
-          label: ingredient
-        });
-      const {ingredient, matches} = this.props.search
-      this.props.getMoreData(ingredient, matches.length)
+  selectedListItem(aSearchResult) {
+    if (aSearchResult.getDescription() === '.....') {
+      const {ingredient, matchResultsModel} = this.props.search
+      ReactGA.event({
+        category: 'Nutrition Mixer',
+        action: 'User triggered elipses search',
+        nonInteraction: false,
+        label: ingredient
+      });
+
+      this.props.getMoreData(ingredient, matchResultsModel.getSearchResultsLength(ingredient))
     }
     else {
-      this.props.addSearchSelection(match)
+      this.props.addSearchSelection(aSearchResult)
       this.setState({show: false})
     }
   }
   getSearchList() {
-    const {ingredient, matches} = this.props.search
+    const {ingredient, matchResultsModel} = this.props.search
     let items = []
-    for (let i of matches) {
-      items.push(<ListGroupItem onClick={this.selectedListItem.bind(this, i)}>{i[0]}</ListGroupItem>)
+
+    if (matchResultsModel.getNumberOfSearches() > 0) {
+      for (let searchResult of matchResultsModel.getSearchResults(ingredient)) {
+        items.push(<ListGroupItem
+                      onClick={this.selectedListItem.bind(this, searchResult)}>
+                    {searchResult.getDescription()}
+                    </ListGroupItem>)
+      }
     }
     if (items.length) {
       return <ListGroup>{items}</ListGroup>

@@ -3,9 +3,11 @@ import {
   SUPER_SEARCH_RESULTS,
 } from '../constants/ActionTypes'
 
+import {MatchResultsModel} from '../components/models/MatchResultsModel'
+
 const initialState = {
   ingredient: '',
-  matches: [],
+  matchResultsModel: new MatchResultsModel(),
   searching: false
 }
 export default function matches(state = initialState, action) {
@@ -15,13 +17,13 @@ export default function matches(state = initialState, action) {
         ...state,
         searching: action.flag,
         ingredient: '',
-        matches: []
+        matchResultsModel: new MatchResultsModel()
       }
     case SUPER_SEARCH_RESULTS:
       return {
         ...state,
         ingredient: action.ingredient,
-        matches: action.matches,
+        matchResultsModel: action.matchResultsModel,
         searching: false
       }
     default:

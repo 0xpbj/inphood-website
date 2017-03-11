@@ -22,10 +22,11 @@ import {
   REMOVE_ELLIPSES
 } from '../constants/ActionTypes'
 
+import {MatchResultsModel, SearchResult} from '../components/models/MatchResultsModel'
 import {NutritionModel} from '../components/models/NutritionModel'
 
 const initialState = {
-  matchData: {},
+  matchResultsModel: new MatchResultsModel(),
   ingredientControlModels: {},
   nutritionModel: new NutritionModel(),
   lazyLoadOperation: {
@@ -47,7 +48,7 @@ export default function modelFun(state = initialState, action) {
     case NM_RESET:
     {
       return {
-        matchData: {},
+        matchResultsModel: new MatchResultsModel(),
         ingredientControlModels: {},
         nutritionModel: new NutritionModel(),
         lazyLoadOperation: {
@@ -131,32 +132,12 @@ export default function modelFun(state = initialState, action) {
         ingredientControlModels: ingredientControlModels
       }
     }
-    //
-    // FIREBASE DATA:
-    // Data structure:
-    //
-    //  matchData: {
-    //    searchTerm1: [
-    //      [description1, ndbNo1, dataObj1],
-    //      [description2, ndbNo2, dataObj2],
-    //      ...
-    //      ...
-    //    ],
-    //    searchTerm2: [
-    //      [descriptionM, ndbNoM, dataObjM],
-    //      [descriptionN, ndbNoN, dataObjN],
-    //      ...
-    //    ],
-    //    ...
-    //  }
     case CLEAR_FIREBASE_DATA:
       {
-        let localMatchData = {}
-
         return {
           ...state,
           tag: '',
-          matchData: localMatchData
+          matchResultsModel: new MatchResultsModel()
         }
       }
     case RESET_APPEND_DATA:
@@ -179,24 +160,31 @@ export default function modelFun(state = initialState, action) {
         // Initializes our dictionary of match data with ordered arrays of tuples
         // containing the description, ndbNo and undefined:
         // Clear the match data to prevent populating it twice on 'back' button actions etc.
-        let localMatchData = state.matchData
-        if (action.foodName in localMatchData && !action.append) {
+        let {matchResultsModel} = state
+        const searchTerm = action.foodName
+        if (matchResultsModel.hasResults(searchTerm) && !action.append) {
+          // TODO: can we just return and skip the ...state since nothing changes?
           return {
             ...state
           }
         }
-        localMatchData[action.foodName] = []
+
+        matchResultsModel.addSearch(searchTerm)
         for (let obj of action.data) {
-          let dataEntry = [obj.info._source.Description, obj.info._id, undefined]
-          localMatchData[action.foodName].push(dataEntry)
+          const description = obj.info._source.Description
+          const ndbNo = obj.info._id
+          const searchResult = new SearchResult(description, ndbNo)
+          matchResultsModel.appendSearchResult(searchTerm, searchResult)
         }
-        // if (action.data.length !== 0 && !action.userSearch && !action.remEllipses) {
-          // let dataEntry = ['.....', '-1', undefined]
-          // localMatchData[action.foodName].push(dataEntry)
-        // }
+        // Insert ellipses for ellipses search
+        if (action.data.length !== 0 && !action.userSearch && !action.remEllipses) {
+          const searchResult = new SearchResult('.....', '-1')
+          matchResultsModel.appendSearchResult(searchTerm, searchResult)
+        }
+
         return {
           ...state,
-          matchData: localMatchData
+          matchResultsModel
         }
       }
     case LAZY_FETCH_FIREBASE:
@@ -214,16 +202,15 @@ export default function modelFun(state = initialState, action) {
       }
     case LAZY_LOAD_FIREBASE:
       {
-        let {matchData} = state
-        const dataObjOffset = 2
-        matchData[action.ingredient][action.index][dataObjOffset] = action.data
-
-        let {lazyLoadOperation} = state
+        let {matchResultsModel, lazyLoadOperation} = state
+        matchResultsModel.defineSearchResultObject(action.ingredient,
+                                                   action.index,
+                                                   action.data)
         lazyLoadOperation.status = 'done'
 
         return {
           ...state,
-          matchData,
+          matchResultsModel,
           lazyLoadOperation: lazyLoadOperation
         }
       }
@@ -240,6 +227,7 @@ export default function modelFun(state = initialState, action) {
       }
     case RESET_SEARCH_FLAG:
       {
+        console.log('RESET_SEARCH_FLAG --------------------------------------');
         return {
           ...state,
           userSearch: false,
@@ -248,6 +236,7 @@ export default function modelFun(state = initialState, action) {
       }
     case SEARCH_INGREDIENT:
     {
+      console.log('SEARCH_INGREDIENT: ' + action.searchIngredient + '-------------');
       return {
         ...state,
         searchIngredient: action.searchIngredient
@@ -255,25 +244,14 @@ export default function modelFun(state = initialState, action) {
     }
     case INGREDIENT_FIREBASE_DATA:
     {
-      // console.log('nutritionReducer: INGREDIENT_FIREBASE_DATA --------------');
-      // console.log(action.foodName);
-      // console.log(action.json);
-
       // Performs an ordered insertion of the data returned by firebase for the
       // key (ndbNo) returned from elastic search:
-      const descriptionOffset = 0
-      const dataObjOffset = 2
-      let localMatchData = state.matchData
-      if (action.foodName in localMatchData) {
-        let foodNameArr = localMatchData[action.foodName]
-
-        for (let tupleIdx = 0; tupleIdx < foodNameArr.length; tupleIdx++) {
-          if (action.ingredient === foodNameArr[tupleIdx][descriptionOffset]) {
-            foodNameArr[tupleIdx][dataObjOffset] = action.data
-            break
-          }
-        }
-      } else {
+      const searchTerm = action.foodName
+      const description = action.ingredient
+      let {matchResultsModel} = state
+      if (!matchResultsModel.defineSearchResultObjectForDesc(searchTerm,
+                                                             description,
+                                                             action.data)) {
         console.log('nutritionReducer - error in INGREDIENT_FIREBASE_DATA');
         console.log(action.foodName);
         console.log(localMatchData.length);
@@ -281,7 +259,7 @@ export default function modelFun(state = initialState, action) {
 
       return {
         ...state,
-        matchData: localMatchData,
+        matchResultsModel,
         userSearch: action.userSearch,
         append: action.append
       }

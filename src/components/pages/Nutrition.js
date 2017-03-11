@@ -26,7 +26,6 @@ import Chip from 'react-toolbox/lib/chip'
 import Search from '../../containers/SearchContainer'
 const Config = require('Config')
 const Convert = require('convert-units')
-import * as tupleHelper from '../../helpers/TupleHelpers'
 
 import MarginLayout from '../../helpers/MarginLayout'
 import TopBar from '../layout/TopBar'
@@ -38,11 +37,7 @@ export default class Nutrition extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      labelRedirect: false,
-      matchData: {},
-      deletedTags: [],
-      progress: 0,
-      matchIndex: 0
+      deletedTags: []
     }
   }
   componentWillMount() {
@@ -104,50 +99,45 @@ export default class Nutrition extends React.Component {
       label: tag
     });
   }
+
   handleChipAdd(tag) {
-    //console.log('handleChipAdd    ------------------------------------------------');
-    //console.log('tag = ' + tag);
-    //console.log('selectedTags = ');
-    //console.log(this.state.selectedTags);
-    //console.log('deletedTags = ');
-    //console.log(this.state.deletedTags);
-    // TODO: refactor and compbine
-    // Tuple offsets for firebase data in nutrition reducer:
-    const descriptionOffset = 0
-    const keyOffset = 1
-    const dataObjOffset = 2
-    let tagMatches = this.props.model.matchData[tag]
     let selectedTags = this.props.model.selectedTags
     let deletedTags = this.state.deletedTags
-    // TODO: A lot of this is common to componentWillMount. Refactor
-    // 1. Add this tag to:
-    //    - this.state.nutritionModel
-    //    - ingredientControlModels
-    const description = tagMatches[0][descriptionOffset]
-    const dataForKey = tagMatches[0][dataObjOffset]
+
+    const searchTerm = tag
+    const {matchResultsModel} = this.props.model
+    const searchResult = matchResultsModel.getSearchResultByIndex(searchTerm)
+    const description = searchResult.getDescription()
+    // TODO: need to disambiguate from Branded results object here
+    const stdRefObj = searchResult.getStandardRefDataObj()
+    if (stdRefObj === undefined) {
+      throw 'Unable to get std ref obj in handle chip add'
+    }
+
     let ingredientModel = new IngredientModel()
-    ingredientModel.initializeSingle(description, tag, dataForKey)
+    ingredientModel.initializeSingle(description, searchTerm, stdRefObj)
     const measureQuantity = ingredientModel.getMeasureQuantity()
     const measureUnit = ingredientModel.getMeasureUnit()
     this.props.nutritionModelAddIng(
-      tag, ingredientModel, measureQuantity, measureUnit)
+      searchTerm, ingredientModel, measureQuantity, measureUnit)
     let ingredientControlModel =
       new IngredientControlModel(
             measureQuantity,
             getPossibleUnits(measureUnit),
             measureUnit,
-            tupleHelper.getListOfTupleOffset(tagMatches, descriptionOffset),
+            matchResultsModel.getSearchResultDescriptions(searchTerm),
             description)
-    this.props.ingredientAddModel(tag, ingredientControlModel)
+    this.props.ingredientAddModel(searchTerm, ingredientControlModel)
+
     // 2. Add the tag to selectedTags and remove it from deleted tags ...
     //
     for (let i = 0; i < deletedTags.length; i++) {
-      if (tag === deletedTags[i]) {
+      if (searchTerm === deletedTags[i]) {
         deletedTags.splice(i, 1)
         break
       }
     }
-    selectedTags.push(tag)
+    selectedTags.push(searchTerm)
     this.props.selectedTags(selectedTags)
     this.setState({
       deletedTags: deletedTags
@@ -156,18 +146,21 @@ export default class Nutrition extends React.Component {
       category: 'Nutrition Mixer',
       action: 'User added ingredient',
       nonInteraction: false,
-      label: tag
+      label: searchTerm
     });
   }
+
   //////////////////////////////////////////////////////////////////////////////
   // Miscellany:
   //////////////////////////////////////////////////////////////////////////////
   render() {
     const numIngredients = Object.keys(this.props.nutrition.parsedData).length
-    const loadedIngredients = Object.keys(this.props.model.matchData).length
+
+    const {matchResultsModel} = this.props.model
+    const loadedIngredients = matchResultsModel.getNumberOfSearches()
+
     if (loadedIngredients < numIngredients) {
       const progress = (100.0 * loadedIngredients) / numIngredients
-      //console.log('\n\n\nProgress: ', progress)
       return (
         <div className="text-center">
           <ProgressBar striped
@@ -175,11 +168,12 @@ export default class Nutrition extends React.Component {
         </div>
       )
     }
+
     // 1. Generate a list of tags not found in our DB and build the array of
     //    sliders:
     let sliders = []
     let notFound = []
-    const {ingredientControlModels, matchData} = this.props.model
+    const {ingredientControlModels} = this.props.model
     //
     //  a. Order the tags so they appear in search + recipe order to the user:
     const parsedData = this.props.nutrition.parsedData
@@ -188,11 +182,15 @@ export default class Nutrition extends React.Component {
       const tag = parsedData[i].name
       tagsInOrder.push(tag)
     }
-    for (let tag in matchData) {
-      if ((tagsInOrder.indexOf(tag) === -1)) {
+    //
+    const searchTerms = matchResultsModel.getSearchTerms()
+    for (let idx = 0; idx < searchTerms.length; idx++) {
+      const tag = searchTerms[idx]
+      if (tagsInOrder.indexOf(tag) === -1) {
         tagsInOrder.splice(0, 0, tag)
       }
     }
+
     //
     //  b. Create a list of recipeLines for display
     let recipeLines = {}
@@ -226,9 +224,10 @@ export default class Nutrition extends React.Component {
     //  c. Now create the slider array:
     for (let i = 0; i < tagsInOrder.length; i++) {
       const tag = tagsInOrder[i]
-      if (! (tag in matchData)) {
+      if (! matchResultsModel.hasSearchTerm(tag)) {
         continue
       }
+
       if (! (tag in ingredientControlModels)) {
         notFound.push(tag)
         continue
@@ -266,6 +265,7 @@ export default class Nutrition extends React.Component {
         Next: Share Results
       </Button>
     )
+
     return (
       <div>
         <TopBar step=""

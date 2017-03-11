@@ -7,6 +7,7 @@ import {
   SUPER_SEARCH_RESULTS
 } from '../constants/ActionTypes'
 
+import {MatchResultsModel} from '../components/models/MatchResultsModel'
 import { call, fork, put, select, take, takeLatest } from 'redux-saga/effects'
 import request from 'request'
 const Config = require('Config')
@@ -55,7 +56,9 @@ function* fallbackSearch(searchIngredient, foodName, size, userSearch, append, f
     }
     else {
       if (userSearch) {
-        yield put ({type: SUPER_SEARCH_RESULTS, matches: [], ingredient: searchIngredient})
+        yield put ({type: SUPER_SEARCH_RESULTS,
+                    matchResultsModel: new MatchResultsModel(),
+                    ingredient: searchIngredient})
       }
       yield put ({type: INITIALIZE_FIREBASE_DATA, foodName, data: [], append})
       yield put ({type: INGREDIENT_FIREBASE_DATA, foodName, ingredient: '', data: [], userSearch, append})
@@ -94,17 +97,26 @@ export function* callElasticSearchLambda(searchIngredient, foodName, size, userS
     sortedData.sort(function(a, b) {
       return a.distance - b.distance;
     })
-    const {matchData} = yield select(state => state.modelReducer)
-    const remEllipses = matchData[foodName] ? ((Object.keys(matchData[foodName]).length - 1 === Object.keys(sortedData).length) && append) : false
+    const {matchResultsModel} = yield select(state => state.modelReducer)
+    let remEllipses = false
+    if (matchResultsModel.hasSearchTerm(foodName)) {
+        remEllipses = append &&
+                      ((matchResultsModel.getSearchResultsLength(foodName) -1)
+                       === Object.keys(sortedData).length)
+    }
+
+    const info = sortedData[0].info
     yield put ({type: INITIALIZE_FIREBASE_DATA, foodName, data: sortedData, userSearch, append, remEllipses})
-    yield fork(getDataFromFireBase, foodName, sortedData[0].info._source.Description, sortedData[0].info._id, 0, userSearch, append)
+    yield fork(getDataFromFireBase, foodName, info._source.Description, info._id, 0, userSearch, append)
   }
   else if (fallback) {
     yield fork(fallbackSearch, searchIngredient, foodName, 5, userSearch, append, fallback, tokenize, parse)
   }
   else {
     if (userSearch) {
-      yield put ({type: SUPER_SEARCH_RESULTS, matches: [], ingredient: searchIngredient})
+      yield put ({type: SUPER_SEARCH_RESULTS,
+                  matchResultsModel: new matchResultsModel(),
+                  ingredient: searchIngredient})
     }
     yield put ({type: INITIALIZE_FIREBASE_DATA, foodName, data: [], append})
     yield put ({type: INGREDIENT_FIREBASE_DATA, foodName, ingredient: '', data: [], userSearch, append})

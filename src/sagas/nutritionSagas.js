@@ -173,8 +173,6 @@ function* changesFromSearch() {
   }
 }
 
-// TODO: PBJ look at why searchIngredient is coming in as blank '' from the
-//       modelReducer here.
 function* getDataForSearchSelection(searchIngredient, selectedTags) {
   console.log('getDataForSearchSelection -------------------------------------');
   console.log('   searchResult:');
@@ -445,6 +443,8 @@ export function* getDataFromFireBase(foodName, ingredient, key, index, userSearc
         yield call (changesFromAppend, foodName)
       else if (userSearch)
         yield call (changesFromSearch)
+      else
+        yield call (changesFromRecipe)
     }
   }
   else {
@@ -490,8 +490,6 @@ function* processParseForLabel() {
 export default function* root() {
   yield fork(lazyFetchFirebaseData)
   yield fork(completeMatchDropdownChange)
-  // yield fork(takeLatest, SUPER_SEARCH_RESULTS, getDataForSearchSelection)
-  yield fork(takeLatest, INGREDIENT_FIREBASE_DATA, changesFromRecipe)
   yield fork(takeLatest, SEND_SERIALIZED_DATA, loadSerializedData)
   yield fork(takeLatest, STORE_PARSED_DATA, processParseForLabel)
 }

@@ -47,6 +47,7 @@ export default class Search extends React.Component {
         nonInteraction: false,
         label: this.state.searchIngredient
       });
+      console.log('\n\n\n\n\n\n\n\n\n\n\n\nSEARCHING HERE************************\n\n\n\n\n\n\n', this.state.searchIngredient)
       this.props.searchIngredientData(this.state.searchIngredient)
       this.setState({searchIngredient: '', show: true})
     }
@@ -88,8 +89,12 @@ export default class Search extends React.Component {
       return <ListGroup>No matches found for {ingredient}!</ListGroup>
     }
   }
+  closeModal() {
+    this.setState({ show: false})
+    this.props.closeSearchModal()
+  }
   render() {
-    let close = () => this.setState({ show: false})
+    let close = () => this.closeModal()
     const {searching} = this.props.search
     const modalBody = searching ?
       (
@@ -110,7 +115,7 @@ export default class Search extends React.Component {
           container={this}
           aria-labelledby="contained-modal-title"
         >
-          <Modal.Header closeButton>
+          <Modal.Header closeButton onClick={close}>
             <Modal.Title id="contained-modal-title">Ingredient Super Search</Modal.Title>
           </Modal.Header>
           {modalBody}

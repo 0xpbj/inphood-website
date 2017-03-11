@@ -16,12 +16,13 @@ import {
   NM_SET_SERVINGS,
   INIT_SUPER_SEARCH,
   SUPER_SEARCH_RESULTS,
-  ADD_SEARCH_SELECTION
+  ADD_SEARCH_SELECTION,
+  CLOSE_SEARCH_MODAL
 } from '../constants/ActionTypes'
 
 import ReactGA from 'react-ga'
 import {callElasticSearchLambda} from './elasticSagas'
-import { call, fork, put, select, take, takeLatest } from 'redux-saga/effects'
+import { call, fork, put, select, take, takeLatest, race } from 'redux-saga/effects'
 import * as db from './firebaseCommands'
 import request from 'request'
 const firebase = require('firebase')
@@ -143,7 +144,7 @@ function* changesFromAppend(tag) {
 
 function* changesFromSearch() {
   const {matchResultsModel, searchIngredient} = yield select(state => state.modelReducer)
-  let {selectedTags, unmatchedTags} = yield select(state => state.modelReducer)
+  let {selectedTags, unmatchedTags, searchResult} = yield select(state => state.modelReducer)
 
   const searchTerm = searchIngredient
   if (matchResultsModel.getSearchResultsLength(searchTerm) === 0) {
@@ -165,19 +166,20 @@ function* changesFromSearch() {
     yield put ({type: SUPER_SEARCH_RESULTS,
                 matchResultsModel: matchResultsModel,
                 ingredient: searchTerm})
+    yield race({
+      response: call (getDataForSearchSelection, searchTerm, selectedTags),
+      cancel: take(CLOSE_SEARCH_MODAL)
+    })
   }
 }
 
 // TODO: PBJ look at why searchIngredient is coming in as blank '' from the
 //       modelReducer here.
-function* getDataForSearchSelection() {
-  let {selectedTags} = yield select(state => state.modelReducer)
-  const {searchIngredient} = yield select(state => state.modelReducer)
-  const {searchResult} = yield take(ADD_SEARCH_SELECTION)
-
+function* getDataForSearchSelection(searchIngredient, selectedTags) {
   console.log('getDataForSearchSelection -------------------------------------');
   console.log('   searchResult:');
   console.log(searchResult)
+  const {searchResult} = yield take(ADD_SEARCH_SELECTION)
   const description = searchResult.getDescription()
   // TODO: consider case with getBrandedDataObj
   let stdRefObj = searchResult.getStandardRefDataObj()
@@ -488,7 +490,7 @@ function* processParseForLabel() {
 export default function* root() {
   yield fork(lazyFetchFirebaseData)
   yield fork(completeMatchDropdownChange)
-  yield fork(takeLatest, INIT_SUPER_SEARCH, getDataForSearchSelection)
+  // yield fork(takeLatest, SUPER_SEARCH_RESULTS, getDataForSearchSelection)
   yield fork(takeLatest, INGREDIENT_FIREBASE_DATA, changesFromRecipe)
   yield fork(takeLatest, SEND_SERIALIZED_DATA, loadSerializedData)
   yield fork(takeLatest, STORE_PARSED_DATA, processParseForLabel)

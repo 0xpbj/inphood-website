@@ -106,7 +106,7 @@ export function* callElasticSearchLambda(searchIngredient, foodName, size, userS
     }
 
     const info = sortedData[0].info
-    yield put ({type: INITIALIZE_FIREBASE_DATA, foodName, data: sortedData, userSearch, append, remEllipses})
+    yield put.resolve ({type: INITIALIZE_FIREBASE_DATA, foodName, data: sortedData, userSearch, append, remEllipses})
     yield fork(getDataFromFireBase, foodName, info._source.Description, info._id, 0, userSearch, append)
   }
   else if (fallback) {

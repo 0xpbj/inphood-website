@@ -29,7 +29,8 @@ import {
   COMPLETE_DROPDOWN_CHANGE,
   ADD_SEARCH_SELECTION,
   SEND_USER_GENERATED_DATA,
-  INIT_SUPER_SEARCH
+  INIT_SUPER_SEARCH,
+  CLOSE_SEARCH_MODAL
 } from '../constants/ActionTypes'
 
 export function uploadPhoto() {
@@ -261,5 +262,11 @@ export function sendUserGeneratedData(data, labelId, userId) {
     data,
     labelId,
     userId
+  }
+}
+
+export function closeSearchModal() {
+  return {
+    type: CLOSE_SEARCH_MODAL
   }
 }

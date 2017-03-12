@@ -1,11 +1,23 @@
 import {
   LABEL_DATA,
   GET_LABEL_ID,
+  SEND_SERIALIZED_DATA,
   SEND_USER_GENERATED_DATA,
 } from '../constants/ActionTypes'
 
-import { call, fork, put, select, take } from 'redux-saga/effects'
+import { call, fork, put, select, take, takeLatest } from 'redux-saga/effects'
 import * as db from './firebaseCommands'
+const Config = require('Config')
+const firebase = require('firebase')
+
+function* loadSerializedData() {
+  const {composite, full, key} = yield select(state => state.nutritionReducer)
+  let user = Config.DEBUG ? 'test' : 'anonymous'
+  firebase.database().ref('/global/nutritionLabel/'+user+'/'+key).update({
+    composite,
+    full
+  })
+}
 
 function* getLabelData() {
   while (true) {
@@ -28,4 +40,5 @@ function* sendUserGeneratedData() {
 export default function* root() {
   yield fork(getLabelData)
   yield fork(sendUserGeneratedData)
+  yield fork(takeLatest, SEND_SERIALIZED_DATA, loadSerializedData)
 }

@@ -4,14 +4,17 @@ import {
   REMOVE_ELLIPSES,
   SEARCH_INGREDIENT,
   GET_MORE_DATA,
+  STORE_PARSED_DATA,
+  CLEAR_FIREBASE_DATA,
   SUPER_SEARCH_RESULTS
 } from '../constants/ActionTypes'
 
 import {MatchResultsModel} from '../components/models/MatchResultsModel'
 import { call, fork, put, select, take, takeLatest } from 'redux-saga/effects'
+import * as db from './firebaseCommands'
 import request from 'request'
 const Config = require('Config')
-import {getDataFromFireBase} from './nutritionSagas'
+import {changesFromAppend, changesFromSearch, changesFromRecipe} from './parserSagas'
 
 const elasticSearchFetch = (request) => {
   return fetch(request)
@@ -21,52 +24,37 @@ const elasticSearchFetch = (request) => {
       return response.json().then(function(json) {
         return json
       });
-    } else {
+    } 
+    // else {
       //console.log("Unexpected server response (non-JSON object returned)");
-    }
+    // }
   })
 }
 
-function* fallbackSearch(searchIngredient, foodName, size, userSearch, append, fallback, tokenize, parse) {
-  const token = foodName.split(",")
-  if (token[0] && tokenize) {
-    yield fork(callElasticSearchLambda, token[0], foodName, size, userSearch, append, true, false, true)
+function* getDataFromFireBase(foodName, ingredient, key, index, userSearch, append) {
+  const path = 'global/nutritionInfo/' + key
+  const flag = (yield call(db.getPath, path)).exists()
+  if (flag) {
+    const data = (yield call(db.getPath, path)).val()
+    yield put ({type: INGREDIENT_FIREBASE_DATA, foodName, ingredient, data, userSearch, append})
+    if (append)
+      yield fork (changesFromAppend, foodName)
+    else if (userSearch)
+      yield fork (changesFromSearch)
+    else
+      yield fork (changesFromRecipe)
   }
-  else if (parse) {
-    const regex = /[^\r\n]+/g
-    const file = require("raw-loader!../data/ingredients.txt")
-    const fileWords = new Set(file.match(regex))
-    let results = []
-    for (let i of fileWords) {
-      if (i.match(searchIngredient + '.?') || searchIngredient.indexOf(i) !== -1) {
-        results.push(i)
-      }
+  else {
+    if (userSearch) {
+      yield put ({type: SUPER_SEARCH_RESULTS,
+                  matchResultsModel: new MatchResultsModel(),
+                  ingredient: searchIngredient})
     }
-    if (results.length) {
-      const levenshtein = require('fast-levenshtein')
-      let sortedData = []
-      for (let i of results) {
-        let d = levenshtein.get(foodName, i)
-        sortedData.push({info: i, distance: d})
-      }
-      sortedData.sort(function(a, b) {
-        return a.distance - b.distance
-      })
-      yield fork(callElasticSearchLambda, sortedData[0].info, foodName, size, userSearch, append, false, false, false)
-    }
-    else {
-      if (userSearch) {
-        yield put ({type: SUPER_SEARCH_RESULTS,
-                    matchResultsModel: new MatchResultsModel(),
-                    ingredient: searchIngredient})
-      }
-      yield put ({type: INITIALIZE_FIREBASE_DATA, foodName, data: [], append})
-      yield put ({type: INGREDIENT_FIREBASE_DATA, foodName, ingredient: '', data: [], userSearch, append})
-    }
+    yield put ({type: INGREDIENT_FIREBASE_DATA, foodName, ingredient, data: [], userSearch, append})
   }
 }
 
-export function* callElasticSearchLambda(searchIngredient, foodName, size, userSearch, append, fallback, tokenize, parse) {
+function* callElasticSearchLambda(searchIngredient, foodName, size, userSearch, append) {
   const url = Config.ELASTIC_LAMBDA_URL
   const search = {
     'query': {'match' : {'Description': searchIngredient}},
@@ -74,7 +62,6 @@ export function* callElasticSearchLambda(searchIngredient, foodName, size, userS
   }
   let myHeaders = new Headers()
   myHeaders.append('Content-Type', 'application/json')
-  // From MDN and here: https://github.com/matthew-andrews/isomorphic-fetch/issues/34
   let request = new Request(url, {
     method: 'POST',
     body: JSON.stringify(search),
@@ -87,9 +74,6 @@ export function* callElasticSearchLambda(searchIngredient, foodName, size, userS
   var levenshtein = require('fast-levenshtein');
   let sortedData = []
   for (let i of data) {
-    // var res = i._source.inPhood001.split(",")
-    // var spr = res[0].split(" ")
-    // let d = levenshtein.get(foodName, spr[0])
     let d = levenshtein.get(foodName, i._source.inPhood001)
     sortedData.push({info: i, distance: d})
   }
@@ -104,13 +88,9 @@ export function* callElasticSearchLambda(searchIngredient, foodName, size, userS
                       ((matchResultsModel.getSearchResultsLength(foodName) -1)
                        === Object.keys(sortedData).length)
     }
-
     const info = sortedData[0].info
-    yield put.resolve ({type: INITIALIZE_FIREBASE_DATA, foodName, data: sortedData, userSearch, append, remEllipses})
+    yield put ({type: INITIALIZE_FIREBASE_DATA, foodName, data: sortedData, userSearch, append, remEllipses})
     yield fork(getDataFromFireBase, foodName, info._source.Description, info._id, 0, userSearch, append)
-  }
-  else if (fallback) {
-    yield fork(fallbackSearch, searchIngredient, foodName, 5, userSearch, append, fallback, tokenize, parse)
   }
   else {
     if (userSearch) {
@@ -120,6 +100,51 @@ export function* callElasticSearchLambda(searchIngredient, foodName, size, userS
     }
     yield put ({type: INITIALIZE_FIREBASE_DATA, foodName, data: [], append})
     yield put ({type: INGREDIENT_FIREBASE_DATA, foodName, ingredient: '', data: [], userSearch, append})
+  }
+}
+
+function* processParseForLabel() {
+  // Get the parse data out of the nutrition reducer and call elastic search on
+  // it to build the following structure:
+  //   [
+  //     'Green Onion' : ['dbKey1', 'dbKey2' ...],
+  //     'red bean' : ['dbKey1', ...],
+  //     'yakisoba' : []
+  //   ]
+  const {parsedData} = yield select(state => state.nutritionReducer)
+  for (let i = 0; i < parsedData.length; i++) {
+    const parseObj = parsedData[i]
+    const foodName = parseObj['name']
+    yield put({type: CLEAR_FIREBASE_DATA})
+    const userSearch = false
+    const append = false
+    const size = 5
+    yield fork(callElasticSearchLambda, foodName, foodName, size, userSearch, append)
+  }
+}
+
+function* userSearchIngredient() {
+  while (true) {
+    const {searchIngredient} = yield take(SEARCH_INGREDIENT)
+    const userSearch = true
+    const append = false
+    if (searchIngredient) {
+      const size = 10
+      yield fork(callElasticSearchLambda, searchIngredient, searchIngredient, size, userSearch, append)
+    }
+    else {
+      yield put ({type: INITIALIZE_FIREBASE_DATA, foodName: searchIngredient, data: [], append})
+      yield put ({type: INGREDIENT_FIREBASE_DATA, foodName: searchIngredient, ingredient: '', data: [], userSearch, append})
+    }
+  }
+}
+
+function* fetchMoreData() {
+  while (true) {
+    const {foodName, size} = yield take(GET_MORE_DATA)
+    const userSearch = false
+    const append = true
+    yield fork(callElasticSearchLambda, foodName, foodName, size+5, userSearch, append)
   }
 }
 
@@ -143,39 +168,9 @@ function* lambdaHack() {
   }
 }
 
-function* userSearchIngredient() {
-  while (true) {
-    const {searchIngredient} = yield take(SEARCH_INGREDIENT)
-    const userSearch = true
-    const append = false
-    const fallback = true
-    if (searchIngredient) {
-      const size = 10
-      const tokenize = true
-      const parse = true
-      yield fork(callElasticSearchLambda, searchIngredient, searchIngredient, size, userSearch, append, fallback, tokenize, parse)
-    }
-    else {
-      yield put ({type: INITIALIZE_FIREBASE_DATA, foodName: searchIngredient, data: [], append})
-      yield put ({type: INGREDIENT_FIREBASE_DATA, foodName: searchIngredient, ingredient: '', data: [], userSearch, append})
-    }
-  }
-}
-
-function* fetchMoreData() {
-  while (true) {
-    const {foodName, size} = yield take(GET_MORE_DATA)
-    const userSearch = false
-    const append = true
-    const fallback = false
-    const tokenize = false
-    const parse = false
-    yield fork(callElasticSearchLambda, foodName, foodName, size+5, userSearch, append, fallback, tokenize, parse)
-  }
-}
-
 export default function* root() {
   yield call(lambdaHack)
-  yield fork(userSearchIngredient)
   yield fork(fetchMoreData)
+  yield fork(userSearchIngredient)
+  yield fork(takeLatest, STORE_PARSED_DATA, processParseForLabel)
 }

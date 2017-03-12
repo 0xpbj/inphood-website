@@ -37,6 +37,7 @@ export const IM_REM_INGREDIENT_TAG = 'IM_REM_INGREDIENT_TAG'
 export const GET_MORE_DATA = 'GET_MORE_DATA'
 export const RESET_APPEND_DATA = 'RESET_APPEND_DATA'
 export const REMOVE_ELLIPSES = 'REMOVE_ELLIPSES'
+export const GET_FIREBASE_DATA = 'GET_FIREBASE_DATA'
 
 
 // ServingsController Actions

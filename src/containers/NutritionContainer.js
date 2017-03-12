@@ -5,9 +5,11 @@ import * as actionCreators from '../actions/Actions'
 
 function mapStateToProps (state) {
   return {
-    nutrition: state.nutritionReducer,
-    model: state.modelReducer,
+    tagModel: state.tagModelReducer,
     fdaBrandedData: state.fdaReducer,
+    nutrition: state.nutritionReducer,
+    ingredientModel: state.ingredientModelReducer,
+    nutritionModelRed: state.nutritionModelReducer,
     servingsControls: state.servingsControlsReducer
   }
 }

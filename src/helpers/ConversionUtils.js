@@ -10,7 +10,7 @@ const UnitTranslationMap = {
   gal: ['Gal', 'GAL', 'gal', 'gallon'],
   'fl-oz': ['fl-oz', 'fl-oz.', 'fluid-ounce', 'Fluid-Ounce'],
   'oz': ['oz', 'Oz', 'OZ', 'oz.', 'Oz.', 'OZ.', 'ounce', 'Ounce'],
-  ml: ['ml', 'Milliliter'],
+  ml: ['ml', 'milliliter', 'Milliliter'],
   l: ['L', 'l', 'liter', 'Liter'],
   lb: ['lb', 'Lb', 'LB', 'lb.', 'Lb.', 'LB.', 'pound'],
   g: ['g', 'gram', 'Gram'],

@@ -47,9 +47,9 @@ function* loadSerializedData() {
 function* completeMatchDropdownChange() {
   while (true) {
     const {tag, value} = yield take(COMPLETE_DROPDOWN_CHANGE)
-    const {nutritionModel, ingredientControlModels, matchResultsModel} =
-      yield select(state => state.modelReducer)
-
+    const {nutritionModel} = yield select(state => state.nutritionModelReducer)
+    const {matchResultsModel} = yield select(state => state.tagModelReducer)
+    const {ingredientControlModels} = yield select(state => state.ingredientModelReducer)
     // 1. Save the current ingredient key for deletion at the end of this
     //    process:
     let ingredientControlModel = ingredientControlModels[tag]
@@ -109,7 +109,7 @@ function* completeMatchDropdownChange() {
 }
 
 function* changesFromAppend(tag) {
-  const {matchResultsModel} = yield select(state => state.modelReducer)
+  const {matchResultsModel} = yield select(state => state.tagModelReducer)
   const searchTerm = tag
   if (matchResultsModel.getSearchResultsLength(searchTerm) === 0) {
     ReactGA.event({
@@ -143,8 +143,8 @@ function* changesFromAppend(tag) {
 }
 
 function* changesFromSearch() {
-  const {matchResultsModel, searchIngredient} = yield select(state => state.modelReducer)
-  let {selectedTags, unmatchedTags, searchResult} = yield select(state => state.modelReducer)
+  const {matchResultsModel, searchIngredient} = yield select(state => state.tagModelReducer)
+  let {selectedTags, unmatchedTags, searchResult} = yield select(state => state.tagModelReducer)
 
   const searchTerm = searchIngredient
   if (matchResultsModel.getSearchResultsLength(searchTerm) === 0) {
@@ -259,7 +259,7 @@ function* getDataForSearchSelection(searchIngredient, selectedTags) {
 function* changesFromRecipe() {
   console.log('changesFromRecipe: --------------------------------------------');
   const {parsedData} = yield select(state => state.nutritionReducer)
-  const {matchResultsModel} = yield select(state => state.modelReducer)
+  const {matchResultsModel} = yield select(state => state.tagModelReducer)
   if (matchResultsModel.getNumberOfSearches() === Object.keys(parsedData).length) {
     const {missingData} = yield select(state => state.nutritionReducer)
 
@@ -345,14 +345,14 @@ function* changesFromRecipe() {
 
       // Delete the ingredient if it's already in the model because we're going to
       // add it again below.
-      console.log('   Testing for ingredient in nutritionModel')
-      const {nutritionModel} = yield select(state => state.modelReducer)
+      console.log('   Testing for ingredient in nutritionModel');
+      const {nutritionModel} = yield select(state => state.nutritionModelReducer)
       const nmTags = nutritionModel.getTags()
       for (let nmI = 0; nmI < nmTags.length; nmI++) {
-        console.log("  " + nmTags[nmI])
+        console.log("  " + nmTags[nmI]);
       }
       if (nutritionModel.getIngredientModel(searchTerm) !== null) {
-        console.log('   Deleting ingredient ' + searchTerm + ' from NutritionModel')
+        console.log('   Deleting ingredient ' + searchTerm + ' from NutritionModel');
         yield put.resolve({type: NM_REM_INGREDIENT, tag: searchTerm})
       }
 

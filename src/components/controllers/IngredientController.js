@@ -22,7 +22,7 @@ export default class IngredientController extends React.Component {
 
   handleSliderValuesChange(value) {
     const {tag} = this.props
-    const ingredientControlModel = this.props.model.ingredientControlModels[tag]
+    const ingredientControlModel = this.props.ingredientModel.ingredientControlModels[tag]
     const units = ingredientControlModel.getDropdownUnitValue()
 
     // console.log('-------------------------------------------------------------');
@@ -42,14 +42,14 @@ export default class IngredientController extends React.Component {
   handleEditBoxValueChange(formObject) {
     const {tag} = this.props
     const value = formObject.target.value
-    let ingredientControlModel = this.props.model.ingredientControlModels[tag]
+    let ingredientControlModel = this.props.ingredientModel.ingredientControlModels[tag]
     ingredientControlModel.setEditBoxValue(value)
     this.props.updateIngredientControlModel(tag, ingredientControlModel)
   }
 
   handleUnitDropdownChange(units) {
     const {tag} = this.props
-    const ingredientControlModel = this.props.model.ingredientControlModels[tag]
+    const ingredientControlModel = this.props.ingredientModel.ingredientControlModels[tag]
     const value = ingredientControlModel.getSliderValue()
 
     ReactGA.event({
@@ -68,7 +68,7 @@ export default class IngredientController extends React.Component {
 
   handleMatchDropdownChange(value) {
     const {tag} = this.props
-    const {matchResultsModel} = this.props.model
+    const {matchResultsModel} = this.props.tagModel
     const searchResult = matchResultsModel.getSearchResultByDesc(tag, value)
 
     if ((searchResult.getStandardRefDataObj() === undefined) &&
@@ -102,7 +102,7 @@ export default class IngredientController extends React.Component {
 
   getValidationState() {
     const {tag} = this.props
-    const ingredientControlModel = this.props.model.ingredientControlModels[tag]
+    const ingredientControlModel = this.props.ingredientModel.ingredientControlModels[tag]
     const editBoxValue = ingredientControlModel.getEditBoxValue()
 
     // Check to see if editBoxValue is a number--if so, return success because
@@ -127,7 +127,7 @@ export default class IngredientController extends React.Component {
   }
 
   updateReduxStore(tag, value, units) {
-    let ingredientControlModel = this.props.model.ingredientControlModels[tag]
+    let ingredientControlModel = this.props.ingredientModel.ingredientControlModels[tag]
     ingredientControlModel.setSliderValue(value)
     ingredientControlModel.setDropdownUnitValue(units)
     this.props.updateIngredientControlModel(tag, ingredientControlModel)
@@ -137,7 +137,7 @@ export default class IngredientController extends React.Component {
   updateReduxStoreIfValid() {
     if (this.getValidationState() === 'success') {
       const {tag} = this.props
-      const ingredientControlModel = this.props.model.ingredientControlModels[tag]
+      const ingredientControlModel = this.props.ingredientModel.ingredientControlModels[tag]
 
       const editBoxValue = ingredientControlModel.getEditBoxValue()
       let value = editBoxValue
@@ -164,7 +164,7 @@ export default class IngredientController extends React.Component {
 
   render() {
     const {tag} = this.props
-    const ingredientControlModel = this.props.model.ingredientControlModels[tag]
+    const ingredientControlModel = this.props.ingredientModel.ingredientControlModels[tag]
     const formControlId = tag + "FormControlId"
     const sliderValue = ingredientControlModel.getSliderValue()
     const editBoxValue = ingredientControlModel.getEditBoxValue()

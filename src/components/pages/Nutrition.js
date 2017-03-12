@@ -75,7 +75,7 @@ export default class Nutrition extends React.Component {
     //    this.state..
     //    this.state.nutritionModel
     //    ingredientControlModels
-    let selectedTags = this.props.model.selectedTags
+    let selectedTags = this.props.tagModel.selectedTags
     let deletedTags = this.state.deletedTags
     this.props.nutritionModelRemIng(tag)
     this.props.ingredientModelRemTag(tag)
@@ -101,11 +101,11 @@ export default class Nutrition extends React.Component {
   }
 
   handleChipAdd(tag) {
-    let selectedTags = this.props.model.selectedTags
+    let selectedTags = this.props.tagModel.selectedTags
     let deletedTags = this.state.deletedTags
 
     const searchTerm = tag
-    const {matchResultsModel} = this.props.model
+    const {matchResultsModel} = this.props.tagModel
     const searchResult = matchResultsModel.getSearchResultByIndex(searchTerm)
     const description = searchResult.getDescription()
     // TODO: need to disambiguate from Branded results object here
@@ -156,7 +156,7 @@ export default class Nutrition extends React.Component {
   render() {
     const numIngredients = Object.keys(this.props.nutrition.parsedData).length
 
-    const {matchResultsModel} = this.props.model
+    const {matchResultsModel} = this.props.tagModel
     const loadedIngredients = matchResultsModel.getNumberOfSearches()
 
     if (loadedIngredients < numIngredients) {
@@ -173,7 +173,7 @@ export default class Nutrition extends React.Component {
     //    sliders:
     let sliders = []
     let notFound = []
-    const {ingredientControlModels} = this.props.model
+    const {ingredientControlModels} = this.props.ingredientModel
     //
     //  a. Order the tags so they appear in search + recipe order to the user:
     const parsedData = this.props.nutrition.parsedData
@@ -254,8 +254,8 @@ export default class Nutrition extends React.Component {
       )
     }
     // 2. Serialize the nutrition model and composite ingreident model:
-    const full = this.props.model.nutritionModel.serialize()
-    const compositeModel = this.props.model.nutritionModel.getScaledCompositeIngredientModel()
+    const full = this.props.nutritionModelRed.nutritionModel.serialize()
+    const compositeModel = this.props.nutritionModelRed.nutritionModel.getScaledCompositeIngredientModel()
     const composite = compositeModel.serialize()
 
     const ml = new MarginLayout()

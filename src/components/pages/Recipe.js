@@ -50,7 +50,7 @@ export default class Recipe extends React.Component {
     }
   }
   componentWillMount() {
-    this.props.nutritionModelReset()
+    this.props.modelReset()
     ReactGA.event({
       category: 'User',
       action: 'User in recipe page',

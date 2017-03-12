@@ -97,7 +97,7 @@ export function* callElasticSearchLambda(searchIngredient, foodName, size, userS
     sortedData.sort(function(a, b) {
       return a.distance - b.distance;
     })
-    const {matchResultsModel} = yield select(state => state.modelReducer)
+    const {matchResultsModel} = yield select(state => state.tagModelReducer)
     let remEllipses = false
     if (matchResultsModel.hasSearchTerm(foodName)) {
         remEllipses = append &&

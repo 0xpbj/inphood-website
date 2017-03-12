@@ -10,7 +10,7 @@ import {
   RESET_LAZY_LOAD_STATUS,
   CLEAN_REDUCERS,
   SEARCH_INGREDIENT,
-  NM_RESET,
+  MODEL_RESET,
   NM_ADD_INGREDIENT,
   NM_REM_INGREDIENT,
   NM_SET_SERVINGS,
@@ -117,9 +117,9 @@ export function searchIngredientData(searchIngredient) {
   }
 }
 
-export function nutritionModelReset() {
+export function modelReset() {
   return {
-    type: NM_RESET
+    type: MODEL_RESET
   }
 }
 

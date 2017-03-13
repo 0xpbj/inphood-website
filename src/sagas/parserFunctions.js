@@ -34,9 +34,9 @@ function* getDataForSearchSelection(searchIngredient, selectedTags) {
     } else
       return
   }
-  console.log('   we made it past the return!  searchIngredient, description:');
-  console.log(searchIngredient);
-  console.log(description);
+  //console.log('   we made it past the return!  searchIngredient, description:');
+  //console.log(searchIngredient);
+  //console.log(description);
 
   let ingredientModel = new IngredientModel()
   ingredientModel.initializeSingle(description, searchIngredient, stdRefObj)
@@ -54,8 +54,8 @@ function* getDataForSearchSelection(searchIngredient, selectedTags) {
                 append: false})
   }
   catch(err) {
-    console.log('   error adding ingredient (1st try)' + searchIngredient);
-    console.log(err);
+    //console.log('   error adding ingredient (1st try)' + searchIngredient);
+    //console.log(err);
     errorStr = err
   }
   finally {
@@ -63,7 +63,7 @@ function* getDataForSearchSelection(searchIngredient, selectedTags) {
     // using the FDA values (not try/catch--if this fails we have a serious internal
     // error--i.e. this should always work.)
     if (errorStr !== '') {
-      console.log('   adding ingredient (2nd try)' + searchIngredient);
+      //console.log('   adding ingredient (2nd try)' + searchIngredient);
       tryQuantity = measureQuantity
       tryUnit = measureUnit
       yield put ({type: NM_ADD_INGREDIENT,
@@ -234,19 +234,19 @@ export function* changesFromRecipe(parsedData, missingData, matchResultsModel) {
     }
     // Delete the ingredient if it's already in the model because we're going to
     // add it again below.
-    console.log('   Testing for ingredient in nutritionModel');
+    //console.log('   Testing for ingredient in nutritionModel');
     const {nutritionModel} = yield select(state => state.nutritionModelReducer)
     const nmTags = nutritionModel.getTags()
     for (let nmI = 0; nmI < nmTags.length; nmI++) {
-      console.log("  " + nmTags[nmI]);
+      //console.log("  " + nmTags[nmI]);
     }
     if (nutritionModel.getIngredientModel(searchTerm) !== null) {
-      console.log('   Deleting ingredient ' + searchTerm + ' from NutritionModel');
+      //console.log('   Deleting ingredient ' + searchTerm + ' from NutritionModel');
       yield put.resolve({type: NM_REM_INGREDIENT, tag: searchTerm})
     }
     let addIngredientErrorStr = ''
     try {
-      console.log('changesFromRecipe: addIngredient call #1 ', searchTerm);
+      //console.log('changesFromRecipe: addIngredient call #1 ', searchTerm);
       yield put.resolve({type: NM_ADD_INGREDIENT,
                          tag: searchTerm,
                          ingredientModel,
@@ -254,7 +254,7 @@ export function* changesFromRecipe(parsedData, missingData, matchResultsModel) {
                          unit: tryUnit,
                          append: false})
     } catch(err) {
-      console.log('changesFromRecipe: addIngredient call #1 threw!');
+      //console.log('changesFromRecipe: addIngredient call #1 threw!');
       addIngredientErrorStr = err
       ReactGA.event({
         category: 'Nutrition Mixer',
@@ -272,7 +272,7 @@ export function* changesFromRecipe(parsedData, missingData, matchResultsModel) {
         tryQuantity = measureQuantity
         tryUnit = measureUnit
         try {
-          console.log('changesFromRecipe: addIngredient call #2 ', searchTerm);
+          //console.log('changesFromRecipe: addIngredient call #2 ', searchTerm);
           yield put.resolve({type: NM_ADD_INGREDIENT,
                              tag: searchTerm,
                              ingredientModel,
@@ -280,15 +280,15 @@ export function* changesFromRecipe(parsedData, missingData, matchResultsModel) {
                              unit: tryUnit,
                              append: false})
         } catch(err2) {
-          console.log('changesFromRecipe: addIngredient call #2 threw!');
+          //console.log('changesFromRecipe: addIngredient call #2 threw!');
           addIngredientErrorStr = err2 + '\n' + originalAddIngredientErrorStr
-          console.log('Second attempt to add ingrdient to model failed: ' + addIngredientErrorStr);
+          //console.log('Second attempt to add ingrdient to model failed: ' + addIngredientErrorStr);
         }
       }
     }
-    console.log('Adding ingredient control model ---------------------------');
-    console.log('   addIngredientErrorStr: ', addIngredientErrorStr);
-    console.log('   searchTerm: ', searchTerm);
+    //console.log('Adding ingredient control model ---------------------------');
+    //console.log('   addIngredientErrorStr: ', addIngredientErrorStr);
+    //console.log('   searchTerm: ', searchTerm);
     if (addIngredientErrorStr === '') {
       let ingredientControlModel = new IngredientControlModel(
         tryQuantity,
@@ -296,11 +296,11 @@ export function* changesFromRecipe(parsedData, missingData, matchResultsModel) {
         tryUnit,
         matchResultsModel.getSearchResultDescriptions(searchTerm),
         description)
-      console.log('   calling IM_ADD_CONTROL_MODEL', ingredientControlModel);
+      //console.log('   calling IM_ADD_CONTROL_MODEL', ingredientControlModel);
       yield put ({type: IM_ADD_CONTROL_MODEL, tag: searchTerm, ingredientControlModel})
       selectedTags.push(searchTerm)
     } else {
-      console.log('changesFromRecipe: unable to addIngredient');
+      //console.log('changesFromRecipe: unable to addIngredient');
     }
   }
   ReactGA.event({

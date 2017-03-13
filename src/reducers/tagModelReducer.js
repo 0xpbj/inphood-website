@@ -172,7 +172,7 @@ export default function modelFun(state = initialState, action) {
       if (!matchResultsModel.defineSearchResultObjectForDesc(searchTerm,
                                                              description,
                                                              action.data)) {
-        console.log('nutritionReducer - error in INGREDIENT_FIREBASE_DATA');
+        console.log('error in INGREDIENT_FIREBASE_DATA');
         console.log(action.foodName);
       }
 

@@ -11,7 +11,7 @@ import {
 } from '../constants/ActionTypes'
 
 import {MatchResultsModel} from '../components/models/MatchResultsModel'
-import { call, fork, put, select, take, takeLatest } from 'redux-saga/effects'
+import { call, fork, put, select, take, takeEvery, takeLatest } from 'redux-saga/effects'
 import * as db from './firebaseCommands'
 import request from 'request'
 const Config = require('Config')
@@ -28,6 +28,7 @@ function* getDataFromFireBase() {
   }
   else {
     if (userSearch) {
+      const {searchIngredient} = yield select(state => state.tagModelReducer)
       yield put ({type: SUPER_SEARCH_RESULTS,
                   matchResultsModel: new MatchResultsModel(),
                   ingredient: searchIngredient})
@@ -40,8 +41,8 @@ function* getDataFromFireBase() {
   }
   else if (userSearch) {
     const {selectedTags, matchResultsModel, searchIngredient} = yield select(state => state.tagModelReducer)
-    let {unmatchedTags} = yield select(state => state.tagModelReducer)
-    yield fork (changesFromSearch, selectedTags, matchResultsModel, searchIngredient, unmatchedTags)
+    let {unusedTags} = yield select(state => state.tagModelReducer)
+    yield fork (changesFromSearch, selectedTags, matchResultsModel, searchIngredient, unusedTags)
   }
   else {
     const {parsedData} = yield select(state => state.nutritionReducer)
@@ -121,7 +122,7 @@ function* lambdaHack() {
 export default function* root() {
   yield call(lambdaHack)
   yield fork(appendData)
-  yield fork(takeLatest, INITIALIZE_FIREBASE_DATA, getDataFromFireBase)
+  yield fork(takeEvery, INITIALIZE_FIREBASE_DATA, getDataFromFireBase)
   yield fork(userSearchIngredient)
   yield fork(takeLatest, STORE_PARSED_DATA, processParseForLabel)
 }

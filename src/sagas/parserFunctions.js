@@ -125,7 +125,7 @@ export function* changesFromAppend(searchTerm, matchResultsModel) {
   yield put ({type: IM_ADD_CONTROL_MODEL, tag: searchTerm, ingredientControlModel})
 }
 
-export function* changesFromSearch(selectedTags, matchResultsModel, searchIngredient, unmatchedTags) {
+export function* changesFromSearch(selectedTags, matchResultsModel, searchIngredient, unusedTags) {
   if (matchResultsModel.getSearchResultsLength(searchIngredient) === 0) {
     ReactGA.event({
       category: 'Nutrition Mixer',
@@ -133,9 +133,9 @@ export function* changesFromSearch(selectedTags, matchResultsModel, searchIngred
       nonInteraction: false,
       label: searchIngredient
     });
-    if (unmatchedTags.indexOf(searchIngredient) === -1) {
-      unmatchedTags.push(searchIngredient)
-      yield put ({type: UNUSED_TAGS, tags: unmatchedTags})
+    if (unusedTags.indexOf(searchIngredient) === -1) {
+      unusedTags.push(searchIngredient)
+      yield put ({type: UNUSED_TAGS, tags: unusedTags})
     }
     yield put ({type: SUPER_SEARCH_RESULTS,
                 matchResultsModel: new MatchResultsModel(),

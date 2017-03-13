@@ -48,6 +48,7 @@ export default function modelFun(state = initialState, action) {
         userSearch: false,
         searchIngredient: '',
         selectedTags: [],
+        unusedTags: [],
         append: false,
         tag: ''
       }

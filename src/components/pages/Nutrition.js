@@ -301,14 +301,14 @@ export default class Nutrition extends React.Component {
                     handleChipAdd={this.handleChipAdd.bind(this)}
                   />
                 </Row>
-                {/* <Row>
+                <Row>
                   <TagController
                     tags={notFound}
                     tagName={'No match found for these ingredients:'}
                     deletable={false}
                     handleChipAdd={this.handleChipAdd.bind(this)}
                   />
-                </Row> */}
+                </Row>
               </Col>
             </Row>
           </Col>

@@ -66,7 +66,7 @@ export function* callElasticSearchLambda(searchIngredient, foodName, size, userS
   else {
     if (userSearch) {
       yield put ({type: SUPER_SEARCH_RESULTS,
-                  matchResultsModel: new matchResultsModel(),
+                  matchResultsModel: new MatchResultsModel(),
                   ingredient: searchIngredient})
     }
     yield put ({type: INITIALIZE_FIREBASE_DATA, foodName, data: [], append})

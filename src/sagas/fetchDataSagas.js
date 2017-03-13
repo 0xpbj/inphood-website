@@ -26,24 +26,6 @@ function* getDataFromFireBase() {
     if (flag) {
       const data = (yield call(db.getPath, path)).val()
       yield put ({type: INGREDIENT_FIREBASE_DATA, foodName, ingredient, data, userSearch, append})
-      if (append) {
-        const {matchResultsModel} = yield select(state => state.tagModelReducer)
-        yield fork (changesFromAppend, foodName, matchResultsModel)
-      }
-      else if (userSearch) {
-        const {selectedTags, matchResultsModel, searchIngredient} = yield select(state => state.tagModelReducer)
-        let {unmatchedTags} = yield select(state => state.tagModelReducer)
-        yield fork (changesFromSearch, selectedTags, matchResultsModel, searchIngredient, unmatchedTags)
-      }
-      else {
-        const {parsedData} = yield select(state => state.nutritionReducer)
-        const {missingData} = yield select(state => state.nutritionReducer)
-        const {matchResultsModel} = yield select(state => state.tagModelReducer)
-        console.log('\n\n\n\n\n\n************Comparison: ', matchResultsModel.getNumberOfSearches(), Object.keys(parsedData).length);
-        if (matchResultsModel.getNumberOfSearches() === Object.keys(parsedData).length) {
-          yield fork (changesFromRecipe, parsedData, missingData, matchResultsModel)
-        }
-      }
     }
     else {
       if (userSearch) {
@@ -52,6 +34,23 @@ function* getDataFromFireBase() {
                     ingredient: searchIngredient})
       }
       yield put ({type: INGREDIENT_FIREBASE_DATA, foodName, ingredient, data: [], userSearch, append})
+    }
+    if (append) {
+      const {matchResultsModel} = yield select(state => state.tagModelReducer)
+      yield fork (changesFromAppend, foodName, matchResultsModel)
+    }
+    else if (userSearch) {
+      const {selectedTags, matchResultsModel, searchIngredient} = yield select(state => state.tagModelReducer)
+      let {unmatchedTags} = yield select(state => state.tagModelReducer)
+      yield fork (changesFromSearch, selectedTags, matchResultsModel, searchIngredient, unmatchedTags)
+    }
+    else {
+      const {parsedData} = yield select(state => state.nutritionReducer)
+      const {missingData} = yield select(state => state.nutritionReducer)
+      const {matchResultsModel} = yield select(state => state.tagModelReducer)
+      if (matchResultsModel.getNumberOfSearches() === Object.keys(parsedData).length) {
+        yield fork (changesFromRecipe, parsedData, missingData, matchResultsModel)
+      }
     }
   }
 }

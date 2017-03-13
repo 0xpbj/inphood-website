@@ -101,7 +101,7 @@ export default class Nutrition extends React.Component {
   }
 
   handleChipAdd(tag) {
-    let selectedTags = this.props.tagModel.selectedTags
+    const {selectedTags} = this.props.tagModel
     let deletedTags = this.state.deletedTags
 
     const searchTerm = tag
@@ -158,6 +158,7 @@ export default class Nutrition extends React.Component {
 
     const {matchResultsModel} = this.props.tagModel
     const loadedIngredients = matchResultsModel.getNumberOfSearches()
+    const {unusedTags} = this.props.tagModel
 
     if (loadedIngredients < numIngredients) {
       const progress = (100.0 * loadedIngredients) / numIngredients
@@ -265,14 +266,12 @@ export default class Nutrition extends React.Component {
         Next: Share Results
       </Button>
     )
-
     return (
       <div>
         <TopBar step=""
                 stepText=""
                 altContent={(<Search />)}
                 aButton={shareResultsButton}/>
-
         {/*Serving size below: TODO refactor*/}
         <Row>
           {ml.marginCol}
@@ -303,7 +302,7 @@ export default class Nutrition extends React.Component {
                 </Row>
                 <Row>
                   <TagController
-                    tags={notFound}
+                    tags={unusedTags}
                     tagName={'No match found for these ingredients:'}
                     deletable={false}
                     handleChipAdd={this.handleChipAdd.bind(this)}

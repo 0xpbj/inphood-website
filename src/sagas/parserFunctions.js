@@ -17,6 +17,7 @@ import * as db from './firebaseCommands'
 import { call, fork, put, select, take, takeLatest, race } from 'redux-saga/effects'
 import {IngredientModel} from '../components/models/IngredientModel'
 import {IngredientControlModel} from '../components/models/IngredientControlModel'
+import {MatchResultsModel} from '../components/models/MatchResultsModel'
 import {mapToSupportedUnitsStrict,
         rationalToFloat,
         getPossibleUnits} from '../helpers/ConversionUtils'
@@ -253,7 +254,8 @@ export function* changesFromRecipe(parsedData, missingData, matchResultsModel) {
                          quantity: tryQuantity,
                          unit: tryUnit,
                          append: false})
-    } catch(err) {
+    } 
+    catch(err) {
       //console.log('changesFromRecipe: addIngredient call #1 threw!');
       addIngredientErrorStr = err
       ReactGA.event({
@@ -262,7 +264,8 @@ export function* changesFromRecipe(parsedData, missingData, matchResultsModel) {
         nonInteraction: false,
         label: searchTerm
       });
-    } finally {
+    } 
+    finally {
       // We failed to add the ingredient with the specified quantity/unit, so try
       // using the FDA values (not try/catch--if this fails we have a serious internal
       // error--i.e. this should always work.)

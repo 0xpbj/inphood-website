@@ -39,7 +39,7 @@ function* getDataFromFireBase() {
         const {parsedData} = yield select(state => state.nutritionReducer)
         const {missingData} = yield select(state => state.nutritionReducer)
         const {matchResultsModel} = yield select(state => state.tagModelReducer)
-        console.log('\n\n\n\n\n\n************Comparison: ', matchResultsModel.getNumberOfSearches(), Object.keys(parsedData).length)
+        console.log('\n\n\n\n\n\n************Comparison: ', matchResultsModel.getNumberOfSearches(), Object.keys(parsedData).length);
         if (matchResultsModel.getNumberOfSearches() === Object.keys(parsedData).length) {
           yield fork (changesFromRecipe, parsedData, missingData, matchResultsModel)
         }

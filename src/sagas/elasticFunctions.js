@@ -5,6 +5,7 @@ import {
   GET_FIREBASE_DATA,
 } from '../constants/ActionTypes'
 
+import {MatchResultsModel} from '../components/models/MatchResultsModel'
 import { call, fork, put, select, take, takeLatest } from 'redux-saga/effects'
 import request from 'request'
 const Config = require('Config')

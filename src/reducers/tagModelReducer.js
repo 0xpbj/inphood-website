@@ -174,6 +174,7 @@ export default function modelFun(state = initialState, action) {
                                                              action.data)) {
         console.log('error in INGREDIENT_FIREBASE_DATA');
         console.log(action.foodName);
+        console.log(matchResultsModel.toString());
       }
 
       return {

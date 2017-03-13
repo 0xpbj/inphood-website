@@ -18,7 +18,7 @@ const elasticSearchFetch = (request) => {
       return response.json().then(function(json) {
         return json
       });
-    } 
+    }
     // else {
       //console.log("Unexpected server response (non-JSON object returned)");
     // }
@@ -60,7 +60,7 @@ export function* callElasticSearchLambda(searchIngredient, foodName, size, userS
                        === Object.keys(sortedData).length)
     }
     const info = sortedData[0].info
-    yield put ({type: INITIALIZE_FIREBASE_DATA, foodName, data: sortedData, userSearch, append, remEllipses})
+    yield put.resolve({type: INITIALIZE_FIREBASE_DATA, foodName, data: sortedData, userSearch, append, remEllipses})
     yield put ({type: GET_FIREBASE_DATA, foodName, ingredient: info._source.Description, key: info._id, userSearch, append})
   }
   else {
@@ -69,7 +69,7 @@ export function* callElasticSearchLambda(searchIngredient, foodName, size, userS
                   matchResultsModel: new MatchResultsModel(),
                   ingredient: searchIngredient})
     }
-    yield put ({type: INITIALIZE_FIREBASE_DATA, foodName, data: [], append})
+    yield put.resolve({type: INITIALIZE_FIREBASE_DATA, foodName, data: [], append})
     yield put ({type: INGREDIENT_FIREBASE_DATA, foodName, ingredient: '', data: [], userSearch, append})
   }
 }

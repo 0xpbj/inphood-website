@@ -85,7 +85,7 @@ function* userSearchIngredient() {
       yield fork(callElasticSearchLambda, searchIngredient, searchIngredient, size, userSearch, append)
     }
     else {
-      yield put ({type: INITIALIZE_FIREBASE_DATA, foodName: searchIngredient, data: [], append})
+      yield put.resolve({type: INITIALIZE_FIREBASE_DATA, foodName: searchIngredient, data: [], append})
       yield put ({type: INGREDIENT_FIREBASE_DATA, foodName: searchIngredient, ingredient: '', data: [], userSearch, append})
     }
   }

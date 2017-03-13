@@ -197,4 +197,20 @@ export class MatchResultsModel {
 
     return -1
   }
+
+  toString() {
+    let objectStr = 'MatchResultsModel:\n'
+    for (let searchTerm in this._searches) {
+      objectStr += '   ' + searchTerm + ':\n'
+      for (let searchResult of this._searches[searchTerm]) {
+        objectStr += '   SearchResult:\n'
+        objectStr += '      description: ' + searchResult.getDescription() + '\n'
+        objectStr += '      ndbNo: ' + searchResult.getNdbNo() + '\n'
+        objectStr += '      stdRevDataObj: ' + searchResult.getStandardRefDataObj() + '\n'
+        objectStr += '      brandedDataObj: ' + searchResult.getBrandedDataObj() + '\n'
+      }
+    }
+    return objectStr
+  }
+
 }

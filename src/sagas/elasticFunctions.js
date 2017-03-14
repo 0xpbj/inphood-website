@@ -10,7 +10,7 @@ import { call, fork, put, select, take, takeLatest } from 'redux-saga/effects'
 import request from 'request'
 const Config = require('Config')
 
-const elasticSearchFetch = (request) => {
+export const elasticSearchFetch = (request) => {
   return fetch(request)
   .then(function(response) {
     var contentType = response.headers.get("content-type");

@@ -15,7 +15,7 @@ import { call, fork, put, select, take, takeEvery, takeLatest } from 'redux-saga
 import * as db from './firebaseCommands'
 import request from 'request'
 const Config = require('Config')
-import {callElasticSearchLambda} from './elasticFunctions'
+import {callElasticSearchLambda, elasticSearchFetch} from './elasticFunctions'
 import {changesFromAppend, changesFromSearch, changesFromRecipe} from './parserFunctions'
 
 function* getDataFromFireBase() {

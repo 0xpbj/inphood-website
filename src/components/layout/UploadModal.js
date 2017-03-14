@@ -1,4 +1,4 @@
-var React = require('react')
+const React = require('react')
 
 import Modal from 'react-bootstrap/lib/Modal'
 import Dropzone from 'react-dropzone'

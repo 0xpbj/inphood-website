@@ -1,4 +1,4 @@
-var React = require('react')
+const React = require('react')
 import Style from "../styles/NutritionEstimateStyles.js"
 import ProgressBar from 'react-bootstrap/lib/ProgressBar'
 

@@ -7,7 +7,6 @@ import nutritionReducer from './nutritionReducer'
 import nutritionModelReducer from './nutritionModelReducer'
 import ingredientModelReducer from './ingredientModelReducer'
 import servingsControlsReducer from './servingsControllerReducer'
-import ingredientControllerReducer from './ingredientControllerReducer'
 
 const appReducer = combineReducers({
     fdaReducer,
@@ -18,7 +17,6 @@ const appReducer = combineReducers({
     nutritionModelReducer,
     ingredientModelReducer,
     servingsControlsReducer,
-    ingredientControllerReducer
 })
 
 const rootReducer = (state, action) => {

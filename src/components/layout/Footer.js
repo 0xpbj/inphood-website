@@ -1,4 +1,4 @@
-var React = require('react')
+const React = require('react')
 import ReactGA from 'react-ga'
 import Modal from 'react-bootstrap/lib/Modal'
 import Button from 'react-bootstrap/lib/Button'

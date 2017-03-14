@@ -99,10 +99,12 @@ module.exports = {
       DEBUG: true
     }),
     'react': 'React',
-    'react-dom': 'ReactDOM',
     'aws-sdk': 'AWS',
     'firebase': 'firebase',
-    'react-redux': 'ReactRedux'
+    'react-dom': 'ReactDOM',
+    'react-redux': 'ReactRedux',
+    'react-addons-transition-group': {root: ['React','addons','TransitionGroup']},
+    'react-addons-css-transition-group': {root: ['React','addons','CSSTransitionGroup']}
   },
   node: {
     console: true,

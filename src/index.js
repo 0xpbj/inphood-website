@@ -1,5 +1,5 @@
-var React = require('react')
-var ReactDOM = require('react-dom')
+const React = require('react')
+const ReactDOM = require('react-dom')
 import { Provider } from 'react-redux'
 import ReactGA from 'react-ga'
 import { createStore, applyMiddleware } from 'redux'

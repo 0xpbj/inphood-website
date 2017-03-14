@@ -169,6 +169,37 @@ export class NutritionModel {
     this._displayServingUnit = displayServingUnit
   }
 
+  getSuggestedServingValue() {
+    return this._suggestedServingValue
+  }
+
+  getSuggestedServingUnit() {
+    return this._suggestedServingUnit
+  }
+
+  getDisplayServingCount() {
+    return this._displayServingCount
+  }
+
+  getDisplayServingUnit() {
+    return this._displayServingUnit
+  }
+
+  getIngredientScaledToServing(aTag) {
+    const scaledIngredient = this.getScaledIngredient(aTag)
+    let tempNM = new NutritionModel()
+    tempNM.addIngredient(aTag,
+                         scaledIngredient.getIngredientModel(),
+                         scaledIngredient.getQuantity(),
+                         scaledIngredient.getUnit(),
+                         false)
+    tempNM.setSuggestedServingAmount(this.getSuggestedServingValue(),
+                                     this.getSuggestedServingUnit(),
+                                     this.getDisplayServingCount(),
+                                     this.getDisplayServingUnit())
+    return tempNM.getScaledCompositeIngredientModel()
+  }
+
   getScaledCompositeIngredientModel() {
     var compositeIngredient = new IngredientModel()
     compositeIngredient.initializeComposite(this._scaledIngredients)

@@ -27,72 +27,65 @@ function* getDataForSearchSelection(searchIngredient, selectedTags) {
   const description = searchResult.getDescription()
   // TODO: consider case with getBrandedDataObj
   let stdRefObj = searchResult.getStandardRefDataObj()
-  if (stdRefObj === undefined) {
-    const path = 'global/nutritionInfo/' + searchResult.getNdbNo()
-    const flag = (yield call(db.getPath, path)).exists()
-    if (flag) {
-      stdRefObj = (yield call(db.getPath, path)).val()
-    } else
-      return
-  }
-  //console.log('   we made it past the return!  searchIngredient, description:');
-  //console.log(searchIngredient);
-  //console.log(description);
+  let brandedObj = searchResult.getBrandedDataObj()
 
   let ingredientModel = new IngredientModel()
-  ingredientModel.initializeSingle(description, searchIngredient, stdRefObj)
+  if ((brandedObj !== undefined) && (stdRefObj === undefined)) {
+    // Handle brandedObj (but only if the stdRefObj isn't defined because we
+    // prefer the stdRefObj):
+    ingredientModel.initializeFromBrandedFdaObj(description,
+                                                searchIngredient,
+                                                brandedObj)
+  } else {
+    if (stdRefObj === undefined) {
+      const path = 'global/nutritionInfo/' + searchResult.getNdbNo()
+      const flag = (yield call(db.getPath, path)).exists()
+      if (flag) {
+        stdRefObj = (yield call(db.getPath, path)).val()
+      } else {
+        return
+      }
+    }
+    ingredientModel.initializeSingle(description, searchIngredient, stdRefObj)
+  }
+
   let measureQuantity = ingredientModel.getMeasureQuantity()
   let measureUnit = ingredientModel.getMeasureUnit()
-  let tryQuantity = measureQuantity
-  let tryUnit = measureUnit
   let errorStr = ''
   try {
     yield put ({type: NM_ADD_INGREDIENT,
                 tag: searchIngredient,
                 ingredientModel,
-                quantity: tryQuantity,
-                unit: tryUnit,
+                quantity: measureQuantity,
+                unit: measureUnit,
                 append: false})
   }
   catch(err) {
-    //console.log('   error adding ingredient (1st try)' + searchIngredient);
-    //console.log(err);
+    console.log('Error adding ingredient. ------------------------------------');
+    console.log(err);
     errorStr = err
   }
-  finally {
-    // We failed to add the ingredient with the specified quantity/unit, so try
-    // using the FDA values (not try/catch--if this fails we have a serious internal
-    // error--i.e. this should always work.)
-    if (errorStr !== '') {
-      //console.log('   adding ingredient (2nd try)' + searchIngredient);
-      tryQuantity = measureQuantity
-      tryUnit = measureUnit
-      yield put ({type: NM_ADD_INGREDIENT,
-                  tag: searchIngredient,
-                  ingredientModel,
-                  quantity: tryQuantity,
-                  unit: tryUnit,
-                  append: false})
-    }
-  }
-  ReactGA.event({
-    category: 'Nutrition Mixer',
-    action: 'Search results added to label',
-    nonInteraction: false,
-    label: searchIngredient
-  });
 
-  let ingredientControlModel = new IngredientControlModel(
-    tryQuantity,
-    getPossibleUnits(tryUnit),
-    tryUnit,
-    [description],
-    description)
-  yield put ({type: IM_ADD_CONTROL_MODEL, tag: searchIngredient, ingredientControlModel})
-  const {servingsControlModel} = yield select(state => state.servingsControlsReducer)
-  yield put ({type: NM_SET_SERVINGS, servingsControlModel})
-  selectedTags.push(searchIngredient)
-  yield put ({type: SELECTED_TAGS, tags: selectedTags})
+  if (errorStr === '') {
+    let ingredientControlModel = new IngredientControlModel(
+      measureQuantity,
+      getPossibleUnits(measureUnit),
+      measureUnit,
+      [description],
+      description)
+    yield put ({type: IM_ADD_CONTROL_MODEL, tag: searchIngredient, ingredientControlModel})
+    const {servingsControlModel} = yield select(state => state.servingsControlsReducer)
+    yield put ({type: NM_SET_SERVINGS, servingsControlModel})
+    selectedTags.push(searchIngredient)
+    yield put ({type: SELECTED_TAGS, tags: selectedTags})
+
+    ReactGA.event({
+      category: 'Nutrition Mixer',
+      action: 'Search results added to label',
+      nonInteraction: false,
+      label: searchIngredient
+    });
+  }
 }
 
 export function* changesFromAppend(searchTerm, matchResultsModel) {
@@ -254,7 +247,7 @@ export function* changesFromRecipe(parsedData, missingData, matchResultsModel) {
                          quantity: tryQuantity,
                          unit: tryUnit,
                          append: false})
-    } 
+    }
     catch(err) {
       //console.log('changesFromRecipe: addIngredient call #1 threw!');
       addIngredientErrorStr = err
@@ -264,7 +257,7 @@ export function* changesFromRecipe(parsedData, missingData, matchResultsModel) {
         nonInteraction: false,
         label: searchTerm
       });
-    } 
+    }
     finally {
       // We failed to add the ingredient with the specified quantity/unit, so try
       // using the FDA values (not try/catch--if this fails we have a serious internal

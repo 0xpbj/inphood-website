@@ -1,5 +1,4 @@
 import { combineReducers } from 'redux'
-import fdaReducer from './fdaReducer'
 import searchReducer from './searchReducer'
 import resultsReducer from './resultsReducer'
 import tagModelReducer from './tagModelReducer'
@@ -10,7 +9,6 @@ import servingsControlsReducer from './servingsControllerReducer'
 import ingredientControllerReducer from './ingredientControllerReducer'
 
 const appReducer = combineReducers({
-    fdaReducer,
     searchReducer,
     resultsReducer,
     tagModelReducer,

@@ -84,6 +84,10 @@ export class MatchResultsModel {
   //    key - value pair is the searchTerm and SearchResult respectively.
   //)
   addSearch(aSearchTerm) {
+    if (aSearchTerm in this._searches) {
+      return
+    }
+
     this._searches[aSearchTerm] = []
   }
 

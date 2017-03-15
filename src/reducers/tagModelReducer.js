@@ -3,6 +3,7 @@ import {
   CLEAR_FIREBASE_DATA,
   INITIALIZE_FIREBASE_DATA,
   INGREDIENT_FIREBASE_DATA,
+  SET_FDA_RESULTS,
   LAZY_LOAD_FIREBASE,
   LAZY_FETCH_FIREBASE,
   RESET_LAZY_LOAD_STATUS,
@@ -183,6 +184,44 @@ export default function modelFun(state = initialState, action) {
         matchResultsModel,
         userSearch: action.userSearch,
         append: action.append
+      }
+    }
+    case SET_FDA_RESULTS:
+    {
+      console.log('tagModelReducer SET_FDA_RESULTS:');
+      console.log('-----------------------------------------------------------');
+
+      const fdaBrandedResults = action.results
+      if (fdaBrandedResults.hasOwnProperty('count') &&
+          fdaBrandedResults.hasOwnProperty('foods')) {
+
+        if (fdaBrandedResults.count > 0) {
+
+          const {matchResultsModel} = state
+          if (!matchResultsModel.hasSearchTerm(action.searchTerm)) {
+            matchResultsModel.addSearch(action.searchTerm)
+          }
+
+          for (const brandedFoodResult of fdaBrandedResults.foods) {
+            const foodObject = brandedFoodResult.food
+
+            if (!(foodObject.hasOwnProperty('desc')
+                  && foodObject.desc.hasOwnProperty('name')
+                  && foodObject.desc.hasOwnProperty('ndbno')
+                  && foodObject.hasOwnProperty('nutrients'))) {
+              continue
+            }
+
+            let searchResult = new SearchResult(foodObject.desc.name, foodObject.desc.ndbno)
+            searchResult.setBrandedDataObj(foodObject)
+            matchResultsModel.appendSearchResult(action.searchTerm, searchResult)
+          }
+        }
+      }
+
+      return {
+        ...state,
+        results: action.results
       }
     }
     case SELECTED_TAGS:

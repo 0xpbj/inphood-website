@@ -35,6 +35,11 @@ function throwIfUnexpectedUnit(metric, expectedUnit, actualUnit) {
   }
 }
 
+function zeroIfNaN(aValue) {
+  return isNaN(aValue) ? 0 : aValue
+}
+
+
 // from: https://www.dsld.nlm.nih.gov/dsld/dailyvalue.jsp
 var RDA2000Cal = {
   totalFat: 65,
@@ -202,38 +207,39 @@ export class IngredientModel {
         ingredient._servingUnit, ingredient._tag, ingredient._key)
       // Only need this assingment on the first ingredient, but in a hurry ...
       this._servingUnit = ingredient._servingUnit
-      this._servingAmount += ingredient._servingAmount * scaleFactor
+      this._servingAmount += zeroIfNaN(ingredient._servingAmount) * scaleFactor
       // TODO: pretty sure this works for calories (everything is linear
       // I believe). Need to confirm.
-      this._calories += ingredient._calories * scaleFactor
-      this._caloriesFromFat += ingredient._caloriesFromFat * scaleFactor
+      this._calories += zeroIfNaN(ingredient._calories) * scaleFactor
+      this._caloriesFromFat += zeroIfNaN(ingredient._caloriesFromFat) * scaleFactor
       //
       //   Fat measures/metrics:
       throwIfUnitMismatch('total fat', this._totalFatUnit,
         ingredient._totalFatUnit, ingredient._tag, ingredient._key)
       // Only need this assingment on the first ingredient, but in a hurry ...
       this._totalFatUnit = ingredient._totalFatUnit
-      this._totalFatPerServing += ingredient._totalFatPerServing * scaleFactor
-      this._totalFatRDA += ingredient._totalFatRDA * scaleFactor
-      this._saturatedFatPerServing += ingredient._saturatedFatPerServing * scaleFactor
-      this._saturatedFatRDA += ingredient._saturatedFatRDA * scaleFactor
-      this._transFatPerServing += ingredient._transFatPerServing * scaleFactor
+      this._totalFatPerServing += zeroIfNaN(ingredient._totalFatPerServing) * scaleFactor
+      this._totalFatRDA += zeroIfNaN(ingredient._totalFatRDA) * scaleFactor
+      this._saturatedFatPerServing += zeroIfNaN(ingredient._saturatedFatPerServing) * scaleFactor
+      this._saturatedFatRDA += zeroIfNaN(ingredient._saturatedFatRDA) * scaleFactor
+      this._transFatPerServing += zeroIfNaN(ingredient._transFatPerServing) * scaleFactor
       //
       //   Cholesterol & Sodium measures/metrics:
-      this._cholesterol += ingredient._cholesterol * scaleFactor
-      this._cholesterolRDA += ingredient._cholesterolRDA * scaleFactor
-      this._sodium += ingredient._sodium * scaleFactor
-      this._sodiumRDA += ingredient._sodiumRDA * scaleFactor
+      this._cholesterol += zeroIfNaN(ingredient._cholesterol) * scaleFactor
+      this._cholesterolRDA += zeroIfNaN(ingredient._cholesterolRDA) * scaleFactor
+      this._sodium += zeroIfNaN(ingredient._sodium) * scaleFactor
+      this._sodiumRDA += zeroIfNaN(ingredient._sodiumRDA) * scaleFactor
       //
       //   Carbohydrate measures/metrics:
-      this._totalCarbohydratePerServing += ingredient._totalCarbohydratePerServing * scaleFactor
-      this._totalCarbohydrateRDA += ingredient._totalCarbohydrateRDA * scaleFactor
-      this._dietaryFiber += ingredient._dietaryFiber * scaleFactor
-      this._dietaryFiberRDA += ingredient._dietaryFiber * scaleFactor
-      this._sugars += ingredient._sugars * scaleFactor
+      this._totalCarbohydratePerServing += zeroIfNaN(ingredient._totalCarbohydratePerServing) * scaleFactor
+      this._totalCarbohydrateRDA += zeroIfNaN(ingredient._totalCarbohydrateRDA) * scaleFactor
+      this._dietaryFiber += zeroIfNaN(ingredient._dietaryFiber) * scaleFactor
+      this._dietaryFiberRDA += zeroIfNaN(ingredient._dietaryFiber) * scaleFactor
+      this._sugars += zeroIfNaN(ingredient._sugars) * scaleFactor
       //
       //   Protein measures/metrics:
-      this._totalProteinPerServing += ingredient._totalProteinPerServing * scaleFactor
+      this._totalProteinPerServing += zeroIfNaN(ingredient._totalProteinPerServing) * scaleFactor
+
 
       // console.log('   ' + key);
       // console.log('   scaleFactor:          ' + scaleFactor);
@@ -315,12 +321,15 @@ export class IngredientModel {
                           this._displayServingUnit)
   }
 
-  initializeFromBrandedFdaObj(foodObject) {
+  initializeFromBrandedFdaObj(description, searchTerm, foodObject) {
     if (!(foodObject.hasOwnProperty('desc')
           && foodObject.desc.hasOwnProperty('ndbno'))) {
       throw 'Unable to execute IngredientModel.initializeFromBrandedFdaObj. No ndbno data.'
     }
     this._ndbno = foodObject.desc.ndbno
+
+    this._key = description
+    this._tag = searchTerm
 
     // Initialize key metrics to NaN to prevent composite calculations from being
     // done where data is unknown (i.e. 6 + unknown = unknown  or  NaN so we can
@@ -422,13 +431,38 @@ export class IngredientModel {
 
         default:
       }
-      // TODO:
-      // if (!foodObject.hasOwnProperty('measures')) {
-      //   const measures = nutrient.measures
-      //   for (let k = 0; k < measures.length; k++) {
-      //     const measure = measures[k]
-      //   }
-      // }
+
+      // The FDA Branded database has an array of nutrients for each food item.
+      // Within this array is another array of measurements for each nutrient.
+      // We need to add support for this to support alternate measurements, like
+      // 'crackers' or 'fl-oz'.
+      //
+      //  Here is a sample of the format for Mary's gone crackers:
+      //
+      // nutrients : Array[17]
+      //   0 : Object
+      //     group : "Proximates"
+      //     measures : Array[1]
+      //       0 : Object
+      //         eqv : 30
+      //         eunit : "g"
+      //         label : "g"
+      //         qty : 30
+      //         value : "140"
+      //     length : 1
+      //   name : "Energy"
+      //   nutrient_id : "208"
+      //   unit : "kcal"
+      //   value : "467"
+      //
+      // TODO: support this in MVP5 or greater. (Look at some of the crackers
+      //       data)
+      //
+      // Workaround: for now we'll just set _measureQuantity and _measureUnit to
+      //             workout to 100g.
+      this._measureQuantity = 100
+      this._measureUnit = 'g'
+      this._measureWeight_g = 100
     }
   }
 

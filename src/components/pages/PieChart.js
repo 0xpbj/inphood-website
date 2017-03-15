@@ -53,12 +53,13 @@ export default class NutritionChart extends React.Component {
     }
     if (ingredientModel) {
       const measure = ingredientModel.getMeasureUnit()
+      const calories = ingredientModel.getCalories()
       return (
         <div>
           <Button onClick={()=>this.setState({ showNutritionModal: true })}><Glyphicon glyph="glyphicon glyphicon-signal" /></Button>
           <Modal show={showNutritionModal} bsSize="medium" aria-labelledby="contained-modal-title-md">
             <Modal.Header closeButton onClick={()=>this.setState({ showNutritionModal: false })}>
-              <Modal.Title id="contained-modal-title-lg">Nutrition Facts for 1 {measure} of {tag}</Modal.Title>
+              <Modal.Title id="contained-modal-title-lg">Nutrition Facts: 1 {measure} of <i>{tag}</i> has <b>{calories}</b> calories</Modal.Title>
             </Modal.Header>
             <Modal.Body>
               <RadialBarChart width={500} height={300} cx={150} cy={150} innerRadius={20} outerRadius={140} barSize={10} data={this.getLabelData(ingredientModel)}>

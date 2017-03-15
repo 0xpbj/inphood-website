@@ -168,6 +168,7 @@ export default class Nutrition extends React.Component {
         </div>
       )
     }
+
     // 1. Generate a list of tags not found in our DB and build the array of
     //    sliders:
     let sliders = []

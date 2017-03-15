@@ -192,12 +192,11 @@ export default function modelFun(state = initialState, action) {
       console.log('-----------------------------------------------------------');
 
       const fdaBrandedResults = action.results
+      const {matchResultsModel} = state
       if (fdaBrandedResults.hasOwnProperty('count') &&
           fdaBrandedResults.hasOwnProperty('foods')) {
 
         if (fdaBrandedResults.count > 0) {
-
-          const {matchResultsModel} = state
           if (!matchResultsModel.hasSearchTerm(action.searchTerm)) {
             matchResultsModel.addSearch(action.searchTerm)
           }
@@ -221,6 +220,7 @@ export default function modelFun(state = initialState, action) {
 
       return {
         ...state,
+        matchResultsModel,
         results: action.results
       }
     }

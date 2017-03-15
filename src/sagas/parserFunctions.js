@@ -119,6 +119,7 @@ export function* changesFromAppend(searchTerm, matchResultsModel) {
 }
 
 export function* changesFromSearch(selectedTags, matchResultsModel, searchIngredient, unusedTags) {
+  console.log('changesFromSearch --------------------------------------------');
   if (matchResultsModel.getSearchResultsLength(searchIngredient) === 0) {
     ReactGA.event({
       category: 'Nutrition Mixer',
@@ -153,6 +154,7 @@ export function* changesFromSearch(selectedTags, matchResultsModel, searchIngred
 //    - it's unclear what it's trying to do
 //
 export function* changesFromRecipe(parsedData, missingData, matchResultsModel) {
+  console.log('changesFromRecipe ---------------------------------------------');
   for (let searchTerm in matchResultsModel.getSearches()) {
     if (matchResultsModel.getSearchResultsLength(searchTerm) === 0) {
       ReactGA.event({
@@ -163,9 +165,9 @@ export function* changesFromRecipe(parsedData, missingData, matchResultsModel) {
       });
       continue
     }
-    // TODO: may need to differentiate with getBrandedDataObj here
     const searchResult = matchResultsModel.getSearchResultByIndex(searchTerm)
-    if (searchResult.getStandardRefDataObj() === undefined) {
+    if ((searchResult.getStandardRefDataObj() === undefined) &&
+        (searchResult.getBrandedDataObj() === undefined)) {
       return
     }
   }
@@ -185,10 +187,17 @@ export function* changesFromRecipe(parsedData, missingData, matchResultsModel) {
     }
     const searchResult = matchResultsModel.getSearchResultByIndex(searchTerm)
     const description = searchResult.getDescription()
-    // TODO: need to consider the case for getBrandedDataObj as well
-    const stdRefObj = searchResult.getStandardRefDataObj()
+
     let ingredientModel = new IngredientModel()
-    ingredientModel.initializeSingle(description, searchTerm, stdRefObj)
+    // Prefer the standard ref obj if it exists
+    const stdRefObj = searchResult.getStandardRefDataObj()
+    const brandedObj = searchResult.getBrandedDataObj()
+    if (stdRefObj) {
+      ingredientModel.initializeSingle(description, searchTerm, stdRefObj)
+    } else { // brandedObj
+      ingredientModel.initializeFromBrandedFdaObj(description, searchTerm, brandedObj)
+    }
+
     let measureQuantity = ingredientModel.getMeasureQuantity()
     let measureUnit = ingredientModel.getMeasureUnit()
     let tryQuantity = measureQuantity

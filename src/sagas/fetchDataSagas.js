@@ -20,6 +20,8 @@ import {changesFromAppend, changesFromSearch, changesFromRecipe} from './parserF
 
 function* getDataFromFireBase() {
   const {foodName, ingredient, key, userSearch, append} = yield take(GET_FIREBASE_DATA)
+  console.log('getDataFromFireBase ------------------------------------------');
+
   const path = 'global/nutritionInfo/' + key
   const flag = (yield call(db.getPath, path)).exists()
   if (flag) {

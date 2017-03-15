@@ -4,7 +4,7 @@ import {
   SEARCH_INGREDIENT_COMMERCIAL
 } from '../constants/ActionTypes'
 
-import {changesFromSearch} from './parserFunctions'
+import {changesFromSearch, changesFromRecipe} from './parserFunctions'
 
 import { call, fork, put, select, take, takeLatest } from 'redux-saga/effects'
 import request from 'request'
@@ -22,36 +22,64 @@ const fdaFetch = (request) => {
   })
 }
 
-function* reportFDA(searchIngredient, ndbnoInfo) {
-  const fdaReportUrl = Config.FDA_REPORT_URL + '?' + ndbnoInfo + '&api_key=' + Config.FDA_API_KEY
+function* reportFDA(searchIngredient, ndbnoInfo, searchMode) {
+  console.log('reportFDA ---------------------------------------------------');
+  const fdaReportUrl = Config.FDA_REPORT_URL +
+    '?' + ndbnoInfo + '&api_key=' + Config.FDA_API_KEY
   const requestReport = new Request(fdaReportUrl)
   const resultsReport = yield call (fdaFetch, requestReport)
   yield put.resolve({type: SET_FDA_RESULTS,
                      searchTerm: searchIngredient,
                     results: resultsReport})
 
-  const {selectedTags, matchResultsModel, unusedTags} = yield select(state => state.tagModelReducer)
-  yield fork (changesFromSearch, selectedTags, matchResultsModel, searchIngredient, unusedTags)
+  const {selectedTags, matchResultsModel, unusedTags} =
+    yield select(state => state.tagModelReducer)
+
+  if (searchMode === 'recipe') {
+    const {missingData, parsedData} = yield select(state => state.nutritionReducer)
+    yield fork (changesFromRecipe, parsedData, missingData, matchResultsModel)
+  } else if (searchMode === 'user') {
+    yield fork (changesFromSearch, selectedTags, matchResultsModel, searchIngredient, unusedTags)
+  }
 }
 
-function* searchFDA() {
-  while (true) {
-    const {searchIngredient} = yield take([SEARCH_INGREDIENT, SEARCH_INGREDIENT_COMMERCIAL])
-    const fdaSearchUrl = Config.FDA_SEARCH_URL + '?format=json&q=' + searchIngredient + '&ds=Branded Food Products&sort=r&max=25&offset=0&api_key=' + Config.FDA_API_KEY
-    const requestNDBNO = new Request(fdaSearchUrl)
-    const resultsNDBNO = yield call (fdaFetch, requestNDBNO)
-    if (resultsNDBNO && resultsNDBNO.list) {
-      const items = resultsNDBNO.list.item
-      let ndbnoInfo = ''
-      for (let i of items) {
-        ndbnoInfo += '&ndbno=' + i.ndbno
-      }
-      if (ndbnoInfo !== '')
-        yield call (reportFDA, searchIngredient, ndbnoInfo)
+function* searchFDA(searchIngredient, searchMode = 'recipe') {
+  console.log('searchFDA (', searchMode, ') --------------------------------');
+  const fdaSearchUrl = Config.FDA_SEARCH_URL +
+    '?format=json&q=' +
+    searchIngredient +
+    '&ds=Branded Food Products&sort=r&max=25&offset=0&api_key=' +
+    Config.FDA_API_KEY
+  const requestNDBNO = new Request(fdaSearchUrl)
+  const resultsNDBNO = yield call (fdaFetch, requestNDBNO)
+  if (resultsNDBNO && resultsNDBNO.list) {
+    const items = resultsNDBNO.list.item
+    let ndbnoInfo = ''
+    for (let i of items) {
+      ndbnoInfo += '&ndbno=' + i.ndbno
     }
+    if (ndbnoInfo !== '')
+      yield call (reportFDA, searchIngredient, ndbnoInfo, searchMode)
+  }
+}
+
+// TODO: might make more sense to combine these functions and pass in an
+//       argument indicating what type of search, 'user' or 'recipe'
+function* fdaUserSearch() {
+  while (true) {
+    const {searchIngredient} = yield take(SEARCH_INGREDIENT)
+    yield call (searchFDA, searchIngredient, 'user')
+  }
+}
+
+function* fdaRecipeSearch() {
+  while (true) {
+    const {searchIngredient} = yield take(SEARCH_INGREDIENT_COMMERCIAL)
+    yield call (searchFDA, searchIngredient)
   }
 }
 
 export default function* root() {
-  yield fork(searchFDA)
+  yield fork(fdaUserSearch)
+  yield fork(fdaRecipeSearch)
 }

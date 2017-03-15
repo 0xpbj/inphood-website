@@ -24,7 +24,7 @@ function* getDataFromFireBase() {
   const flag = (yield call(db.getPath, path)).exists()
   if (flag) {
     const data = (yield call(db.getPath, path)).val()
-    yield put.resolve ({type: INGREDIENT_FIREBASE_DATA, foodName, ingredient, data, userSearch, append})
+    yield put ({type: INGREDIENT_FIREBASE_DATA, foodName, ingredient, data, userSearch, append})
   }
   else {
     if (userSearch) {
@@ -33,7 +33,7 @@ function* getDataFromFireBase() {
                   matchResultsModel: new MatchResultsModel(),
                   ingredient: searchIngredient})
     }
-    yield put.resolve ({type: INGREDIENT_FIREBASE_DATA, foodName, ingredient, data: [], userSearch, append})
+    yield put ({type: INGREDIENT_FIREBASE_DATA, foodName, ingredient, data: [], userSearch, append})
   }
   if (append) {
     const {matchResultsModel} = yield select(state => state.tagModelReducer)
@@ -84,7 +84,7 @@ function* userSearchIngredient() {
       yield fork(callElasticSearchLambda, searchIngredient, searchIngredient, size, userSearch, append)
     }
     else {
-      yield put.resolve({type: INITIALIZE_FIREBASE_DATA, foodName: searchIngredient, data: [], append})
+      yield put ({type: INITIALIZE_FIREBASE_DATA, foodName: searchIngredient, data: [], append})
       yield put ({type: INGREDIENT_FIREBASE_DATA, foodName: searchIngredient, ingredient: '', data: [], userSearch, append})
     }
   }

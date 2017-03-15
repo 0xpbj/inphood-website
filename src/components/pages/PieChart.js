@@ -22,31 +22,27 @@ export default class NutritionChart extends React.Component {
     }
   }
   getLabelData(ingredientModel) {
-    const calories = ingredientModel.getCalories()
-    const protien = ingredientModel.getTotalProteinPerServing()
+    const cholestrol = ingredientModel.getCholestorol()
+    const protein = ingredientModel.getTotalProteinPerServing()
     const carbs = ingredientModel.getTotalCarbohydratePerServing()
     const fat = ingredientModel.getTotalFatPerServing()
-    const sodium = ingredientModel.getSodium()
+    const sodium = ingredientModel.getSodium()/1000
     const sugar = ingredientModel.getSugars()
+    const fiber = ingredientModel.getDietaryFiber()
     return [
-      {name: 'Calories', uv: calories, fill: '#8884d8'},
-      {name: 'Protien', uv: protien, fill: '#83a6ed'},
-      {name: 'Carbs', uv: carbs, fill: '#8dd1e1'},
-      {name: 'Fat', uv: fat, fill: '#82ca9d'},
-      {name: 'Sodium', uv: sodium, fill: '#a4de6c'},
-      {name: 'Sugar', uv: sugar, fill: '#ffc658'},
+      {name: 'Protein (g)', uv: protein, fill: '#8dd1e1'},
+      {name: 'Carbs (g)', uv: carbs, fill: '#8884d8'},
+      {name: 'Fat (g)', uv: fat, fill: '#00C49F'},
+      {name: 'Fiber (g)', uv: fiber, fill: 'teal'},
+      {name: 'Cholestrol (g)', uv: cholestrol, fill: '#FFBB28'},
+      {name: 'Sodium (g)', uv: sodium, fill: '#FF8042'},
+      {name: 'Sugar (g)', uv: sugar, fill: 'red'},
     ]
   }
   render () {
     const {nutritionModel, tag} = this.props
     const {showNutritionModal} = this.state
-    const ingredientModel = nutritionModel.getIngredientScaledToServing(tag)
-    const scaledIngredient = nutritionModel.getScaledIngredient(tag)
-    const quantity = scaledIngredient.getQuantity() / nutritionModel.getSuggestedServingValue()
-    if (nutritionModel.getSuggestedServingUnit() !== 'people') {
-      throw "Unable to scale ingredient for indvidual display"
-    }
-    const measure = scaledIngredient.getUnit()
+    const ingredientModel = nutritionModel.getIngredientModel(tag)
     if (showNutritionModal) {
       ReactGA.event({
         category: 'User',
@@ -56,16 +52,17 @@ export default class NutritionChart extends React.Component {
       });
     }
     if (ingredientModel) {
+      const measure = ingredientModel.getMeasureUnit()
       return (
         <div>
           <Button onClick={()=>this.setState({ showNutritionModal: true })}><Glyphicon glyph="glyphicon glyphicon-signal" /></Button>
           <Modal show={showNutritionModal} bsSize="medium" aria-labelledby="contained-modal-title-md">
             <Modal.Header closeButton onClick={()=>this.setState({ showNutritionModal: false })}>
-              <Modal.Title id="contained-modal-title-lg">Nutrition Facts for {quantity} {measure} of {tag}</Modal.Title>
+              <Modal.Title id="contained-modal-title-lg">Nutrition Facts for 1 {measure} of {tag}</Modal.Title>
             </Modal.Header>
             <Modal.Body>
               <RadialBarChart width={500} height={300} cx={150} cy={150} innerRadius={20} outerRadius={140} barSize={10} data={this.getLabelData(ingredientModel)}>
-                <RadialBar startAngle={90} endAngle={-90} minAngle={15} label background clockWise={true} dataKey='uv'/>
+                <RadialBar minAngle={15} label background clockWise={true} dataKey='uv'/>
                 <Legend iconSize={10} width={120} height={140} layout='vertical' verticalAlign='middle' align="right" wrapperStyle={style}/>
                 <Tooltip />
               </RadialBarChart>

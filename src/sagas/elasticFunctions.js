@@ -60,7 +60,7 @@ export function* callElasticSearchLambda(searchIngredient, foodName, size, userS
                        === Object.keys(sortedData).length)
     }
     const info = sortedData[0].info
-    yield put.resolve({type: INITIALIZE_FIREBASE_DATA, foodName, data: sortedData, userSearch, append, remEllipses})
+    yield put ({type: INITIALIZE_FIREBASE_DATA, foodName, data: sortedData, userSearch, append, remEllipses})
     yield put ({type: GET_FIREBASE_DATA, foodName, ingredient: info._source.Description, key: info._id, userSearch, append})
   }
   else {
@@ -69,8 +69,7 @@ export function* callElasticSearchLambda(searchIngredient, foodName, size, userS
                   matchResultsModel: new MatchResultsModel(),
                   ingredient: searchIngredient})
     }
-    yield put.resolve({type: INITIALIZE_FIREBASE_DATA, foodName, data: [], append})
-    // yield put.resolve ({type: INGREDIENT_FIREBASE_DATA, foodName, ingredient: '', data: [], userSearch, append})
+    yield put ({type: INITIALIZE_FIREBASE_DATA, foodName, data: [], append})
     yield put ({type: GET_FIREBASE_DATA, foodName, ingredient: foodName, key: 'undefined', userSearch, append})
   }
 }

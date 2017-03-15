@@ -1,6 +1,7 @@
 import {
+  SET_FDA_RESULTS,
   SEARCH_INGREDIENT,
-  SET_FDA_RESULTS
+  SEARCH_INGREDIENT_COMMERCIAL
 } from '../constants/ActionTypes'
 
 import {changesFromSearch} from './parserFunctions'
@@ -35,7 +36,7 @@ function* reportFDA(searchIngredient, ndbnoInfo) {
 
 function* searchFDA() {
   while (true) {
-    const {searchIngredient} = yield take([SEARCH_INGREDIENT])
+    const {searchIngredient} = yield take([SEARCH_INGREDIENT, SEARCH_INGREDIENT_COMMERCIAL])
     const fdaSearchUrl = Config.FDA_SEARCH_URL + '?format=json&q=' + searchIngredient + '&ds=Branded Food Products&sort=r&max=25&offset=0&api_key=' + Config.FDA_API_KEY
     const requestNDBNO = new Request(fdaSearchUrl)
     const resultsNDBNO = yield call (fdaFetch, requestNDBNO)

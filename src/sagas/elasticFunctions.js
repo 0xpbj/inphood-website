@@ -3,6 +3,7 @@ import {
   INGREDIENT_FIREBASE_DATA,
   SUPER_SEARCH_RESULTS,
   GET_FIREBASE_DATA,
+  SEARCH_INGREDIENT_COMMERCIAL
 } from '../constants/ActionTypes'
 
 import {MatchResultsModel} from '../components/models/MatchResultsModel'
@@ -69,6 +70,7 @@ export function* callElasticSearchLambda(searchIngredient, foodName, size, userS
                   matchResultsModel: new MatchResultsModel(),
                   ingredient: searchIngredient})
     }
+    yield put ({type: SEARCH_INGREDIENT_COMMERCIAL, searchIngredient})
     yield put ({type: INITIALIZE_FIREBASE_DATA, foodName, data: [], append})
     yield put ({type: GET_FIREBASE_DATA, foodName, ingredient: foodName, key: 'undefined', userSearch, append})
   }

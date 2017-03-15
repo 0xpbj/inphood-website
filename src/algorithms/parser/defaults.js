@@ -3,8 +3,8 @@ module.exports = {};
 var reOptional = module.exports.reOptional = /^(optional|\(\W*optional\W*\)$)/i;
 
 var unitsOfMeasure = module.exports.unitsOfMeasure = {
-  tablespoon: ['T', 'Tbs', 'tbs', 'tbsp.', 'Tbsp.', 'Tbsp', 'tbsp', 'TB', 'TBS', 'TBSP'],
-  teaspoon: ['t', 'Tsp', 'tsp', 'tsp.', 'Tsp.', 'TS', 'TSP'],
+  tablespoon: ['T', 'Tbs', 'tbs', 'tb', 'tbsp.', 'Tbsp.', 'Tbsp', 'tbsp', 'TB', 'TBS', 'TBSP'],
+  teaspoon: ['t', 'Tsp', 'tsp', 'ts', 'tsp.', 'Tsp.', 'TS', 'TSP'],
   cup: ['C', 'c'],
   pint: ['pt', 'PT', 'Pt'],
   quart: ['QT', 'Qt', 'qt'],
@@ -39,5 +39,5 @@ var fluidicWords = module.exports.fluidicWords = [
 var reToWords = module.exports.reToWords = / *(to([ 0-9]+)|- *)/i;
 
 var noiseWords = module.exports.noiseWords = [
-  'a', 'of'
+  'a', 'of', 'small', 'medium', 'large', 'Small', 'Medium', 'Large'
 ];

@@ -7,12 +7,12 @@ const UnitTranslationMap = {
   cup: ['C', 'c', 'cup', 'Cup', 'cups', 'Cups'],
   pnt: ['pt', 'PT', 'Pt'],
   qt: ['QT', 'Qt', 'qt'],
-  gal: ['Gal', 'GAL', 'gal', 'gallon'],
+  gal: ['Gal', 'GAL', 'gal', 'gallon', 'Gallon'],
   'fl-oz': ['fl-oz', 'fl-oz.', 'fluid-ounce', 'Fluid-Ounce'],
   'oz': ['oz', 'Oz', 'OZ', 'oz.', 'Oz.', 'OZ.', 'ounce', 'Ounce'],
   ml: ['ml', 'milliliter', 'Milliliter'],
   l: ['L', 'l', 'liter', 'Liter'],
-  lb: ['lb', 'Lb', 'LB', 'lb.', 'Lb.', 'LB.', 'pound'],
+  lb: ['lb', 'Lb', 'LB', 'lb.', 'Lb.', 'LB.', 'pound', 'Pound'],
   g: ['g', 'gram', 'Gram'],
   kg: ['kg', 'Kg', 'kilogram', 'Kilogram']
 }

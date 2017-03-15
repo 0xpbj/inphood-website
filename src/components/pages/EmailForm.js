@@ -1,4 +1,4 @@
-var React = require('react')
+const React = require('react')
 import Col from 'react-bootstrap/lib/Col'
 import Row from 'react-bootstrap/lib/Row'
 import Grid from 'react-bootstrap/lib/Grid'

@@ -1,4 +1,4 @@
-var React = require('react')
+const React = require('react')
 import ReactGA from 'react-ga'
 import Label from './NutritionEstimateJSX'
 import {IngredientModel} from '../models/IngredientModel'
@@ -18,11 +18,12 @@ import Grid from 'react-bootstrap/lib/Grid'
 import Alert from 'react-bootstrap/lib/Alert'
 import MenuItem from 'react-bootstrap/lib/MenuItem'
 import Button from 'react-bootstrap/lib/Button'
+import Glyphicon from 'react-bootstrap/lib/Glyphicon'
 import FormControl from 'react-bootstrap/lib/FormControl'
 import ControlLabel from 'react-bootstrap/lib/ControlLabel'
 import ProgressBar from 'react-bootstrap/lib/ProgressBar'
 import Chip from 'react-toolbox/lib/chip'
-
+import PieChart from './PieChart'
 import Search from '../../containers/SearchContainer'
 const Config = require('Config')
 const Convert = require('convert-units')
@@ -155,11 +156,9 @@ export default class Nutrition extends React.Component {
   //////////////////////////////////////////////////////////////////////////////
   render() {
     const numIngredients = Object.keys(this.props.nutrition.parsedData).length
-
     const {matchResultsModel} = this.props.tagModel
     const loadedIngredients = matchResultsModel.getNumberOfSearches()
     const {unusedTags} = this.props.tagModel
-
     if (loadedIngredients < numIngredients) {
       const progress = (100.0 * loadedIngredients) / numIngredients
       return (
@@ -169,7 +168,6 @@ export default class Nutrition extends React.Component {
         </div>
       )
     }
-
     // 1. Generate a list of tags not found in our DB and build the array of
     //    sliders:
     let sliders = []
@@ -191,7 +189,6 @@ export default class Nutrition extends React.Component {
         tagsInOrder.splice(0, 0, tag)
       }
     }
-
     //
     //  b. Create a list of recipeLines for display
     let recipeLines = {}
@@ -199,9 +196,7 @@ export default class Nutrition extends React.Component {
       const amount = parsedData[i].amount
       const unit = parsedData[i].unit
       const name = parsedData[i].name
-
       let recipeLine = ""
-
       if (amount) {
         if (Object.prototype.hasOwnProperty.call(amount, 'min') && Object.prototype.hasOwnProperty.call(amount, 'max')) {
           const parseMinQuantity = rationalToFloat(amount.min)
@@ -213,22 +208,20 @@ export default class Nutrition extends React.Component {
           recipeLine = recipeLine + amount + " "
         }
       }
-
       if ((unit !== undefined) && (unit !== "")) {
         recipeLine = recipeLine + unit.toLowerCase() + " "
       }
-
       recipeLine = recipeLine + name
       recipeLines[name] = recipeLine
     }
     //
     //  c. Now create the slider array:
+    const {nutritionModel} = this.props.nutritionModelRed
     for (let i = 0; i < tagsInOrder.length; i++) {
       const tag = tagsInOrder[i]
       if (! matchResultsModel.hasSearchTerm(tag)) {
         continue
       }
-
       if (! (tag in ingredientControlModels)) {
         notFound.push(tag)
         continue
@@ -237,26 +230,33 @@ export default class Nutrition extends React.Component {
       if (tag in recipeLines) {
         recipeLine = recipeLines[tag]
       }
-
       sliders.push(
-        <div>
+        <div key={tag}>
           <Row
             style={{marginTop: 20}}>
             <Col xs={12} md={12}>
-              <Chip onDeleteClick={this.handleChipDelete.bind(this, tag)} deletable>
-                {recipeLine}
-              </Chip>
+              <div>
+                <Row>
+                  <Col xs={6} md={6}>
+                    <Chip onDeleteClick={this.handleChipDelete.bind(this, tag)} deletable>
+                      {recipeLine}
+                    </Chip>
+                  </Col>
+                  <Col xs={4} md={4} />
+                  <Col xs={2} md={2}>
+                    <PieChart nutritionModel={nutritionModel} tag={tag} />
+                  </Col>
+                </Row>
+              </div>
             </Col>
           </Row>
-
           <IngredientController tag={tag}/>
-
         </div>
       )
     }
     // 2. Serialize the nutrition model and composite ingreident model:
-    const full = this.props.nutritionModelRed.nutritionModel.serialize()
-    const compositeModel = this.props.nutritionModelRed.nutritionModel.getScaledCompositeIngredientModel()
+    const full = nutritionModel.serialize()
+    const compositeModel = nutritionModel.getScaledCompositeIngredientModel()
     const composite = compositeModel.serialize()
 
     const ml = new MarginLayout()

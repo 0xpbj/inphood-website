@@ -6,6 +6,7 @@ var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var WebpackCleanupPlugin = require('webpack-cleanup-plugin');
 var WebpackStripLoader = require('strip-loader');
+// var BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 require('whatwg-fetch');
 
 loaders.push({
@@ -71,10 +72,12 @@ module.exports = {
       DEBUG: false,
     }),
     'react': 'React',
-    'react-dom': 'ReactDOM',
     'aws-sdk': 'AWS',
     'firebase': 'firebase',
-    'react-redux': 'ReactRedux'
+    'react-dom': 'ReactDOM',
+    'react-redux': 'ReactRedux',
+    'react-addons-transition-group': {root: ['React','addons','TransitionGroup']},
+    'react-addons-css-transition-group': {root: ['React','addons','CSSTransitionGroup']}
   },
   node: {
     console: true,
@@ -83,6 +86,7 @@ module.exports = {
     tls: 'empty'
   },
 	plugins: [
+    // new BundleAnalyzerPlugin(),
 		new WebpackCleanupPlugin(),
 		new webpack.DefinePlugin({
 			'process.env': {

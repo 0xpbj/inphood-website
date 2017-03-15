@@ -1,4 +1,4 @@
-var React = require('react')
+const React = require('react')
 
 import Footer from "../../containers/FooterContainer"
 // import Nav from "../layout/Nav"

@@ -1,4 +1,4 @@
-var React = require('react')
+const React = require('react')
 import ReactGA from 'react-ga'
 import Row from 'react-bootstrap/lib/Row'
 import Col from 'react-bootstrap/lib/Col'
@@ -132,7 +132,7 @@ export default class Search extends React.Component {
             validationState={this.getValidationState()}
           >
             <FormControl
-              spellcheck={true}
+              spellCheck={true}
               type="text"
               label="Text"
               value={this.state.searchIngredient}

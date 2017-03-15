@@ -1,4 +1,4 @@
-var React = require('react')
+const React = require('react')
 import { Link } from "react-router"
 
 export default class Nav extends React.Component {

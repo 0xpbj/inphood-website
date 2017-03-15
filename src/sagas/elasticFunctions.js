@@ -42,26 +42,17 @@ export function* callElasticSearchLambda(searchIngredient, foodName, size, userS
     cache: 'default'
   })
   const json = yield call (elasticSearchFetch, request)
-  let {data} = json
-  var levenshtein = require('fast-levenshtein');
-  let sortedData = []
-  for (let i of data) {
-    let d = levenshtein.get(foodName, i._source.inPhood001)
-    sortedData.push({info: i, distance: d})
-  }
-  if (sortedData[0]) {
-    sortedData.sort(function(a, b) {
-      return a.distance - b.distance;
-    })
+  const {data} = json
+  const info = data[0]
+  if (info) {
     const {matchResultsModel} = yield select(state => state.tagModelReducer)
     let remEllipses = false
     if (matchResultsModel.hasSearchTerm(foodName)) {
         remEllipses = append &&
                       ((matchResultsModel.getSearchResultsLength(foodName) -1)
-                       === Object.keys(sortedData).length)
+                       === Object.keys(data).length)
     }
-    const info = sortedData[0].info
-    yield put ({type: INITIALIZE_FIREBASE_DATA, foodName, data: sortedData, userSearch, append, remEllipses})
+    yield put ({type: INITIALIZE_FIREBASE_DATA, foodName, data: data, userSearch, append, remEllipses})
     yield put ({type: GET_FIREBASE_DATA, foodName, ingredient: info._source.Description, key: info._id, userSearch, append})
   }
   else {

@@ -1,38 +1,88 @@
-function switchSpecial(s) {
+function switchSpecial(s, i) {
+  let ret = ''
   switch(s) {
     case "½":
-      return "1/2"
+    {
+      ret = "1/2"
+      break
+    }
     case "⅓":
-      return "1/3"
+    {
+      ret = "1/3"
+      break
+    }
     case "⅔":
-      return "2/3"
+    {
+      ret = "2/3"
+      break
+    }
     case "¼":
-      return "1/4"
+    {
+      ret = "1/4"
+      break
+    }
     case "¾":
-      return "3/4"
+    {
+      ret = "3/4"
+      break
+    }
     case "⅕":
-      return "1/5"
+    {
+      ret = "1/5"
+      break
+    }
     case "⅖":
-      return "2/5"
+    {
+      ret = "2/5"
+      break
+    }
     case "⅗":
-      return "3/5"
+    {
+      ret = "3/5"
+      break
+    }
     case "⅘":
-      return "4/5"
+    {
+      ret = "4/5"
+      break
+    }
     case "⅙":
-      return "1/6"
+    {
+      ret = "1/6"
+      break
+    }
     case "⅚":
-      return "5/6"
+    {
+      ret = "5/6"
+      break
+    }
     case "⅛":
-      return "1/8"
+    {
+      ret = "1/8"
+      break
+    }
     case "⅜":
-      return "3/8"
+    {
+      ret = "3/8"
+      break
+    }
     case "⅝":
-      return "5/8"
+    {
+      ret = "5/8"
+      break
+    }
     case "⅞":
-      return "7/8"
+    {
+      ret = "7/8"
+      break
+    }
     default:
+    {
       return s
+    }
   }
+  ret = i ? (" " + ret) : ret
+  return ret
 }
 
 function removeSpecialChars(str) {
@@ -48,7 +98,7 @@ function removeSpecialChars(str) {
   let m = 0
   for (let i = 0; i < str.length; i++) {
     if (index.length > 0 && i === index[m]) {
-      clean += switchSpecial(str[i])
+      clean += switchSpecial(str[i], i)
       m++
     }
     else {

@@ -1,6 +1,6 @@
 module.exports = {};
 
-var reOptional = module.exports.reOptional = /^(optional|\(\W*optional\W*\)$)/i;
+var reOptional = module.exports.reOptional = /^(\(?optional|\(\W*optional\W*\)$)/i;
 
 var unitsOfMeasure = module.exports.unitsOfMeasure = {
   tablespoon: ['T', 'Tbs', 'tbs', 'tb', 'tbsp.', 'Tbsp.', 'Tbsp', 'tbsp', 'TB', 'TBS', 'TBSP'],

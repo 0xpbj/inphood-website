@@ -24,8 +24,8 @@ const fdaFetch = (request) => {
   })
 }
 
-function* reportFDA(searchIngredient, ndbnoInfo, searchMode) {
-  console.log('reportFDA ---------------------------------------------------');
+function* reportFDA(searchIngredient, ndbnoInfo, userSearch) {
+  // console.log('reportFDA ---------------------------------------------------');
   const fdaReportUrl = Config.FDA_REPORT_URL +
     '?' + ndbnoInfo + '&api_key=' + Config.FDA_API_KEY
   const requestReport = new Request(fdaReportUrl)
@@ -37,17 +37,16 @@ function* reportFDA(searchIngredient, ndbnoInfo, searchMode) {
   const {selectedTags, matchResultsModel, unusedTags} =
     yield select(state => state.tagModelReducer)
 
-  if (searchMode === 'recipe') {
+  if (userSearch === false) {
     const {missingData, parsedData} = yield select(state => state.nutritionReducer)
     yield fork (changesFromRecipe, parsedData, missingData, matchResultsModel)
-  } else if (searchMode === 'user') {
-    const fdaSearch = true
-    yield fork (changesFromSearch, selectedTags, matchResultsModel, searchIngredient, unusedTags, fdaSearch)
+  } 
+  else if (userSearch === true) {
+    yield fork (changesFromSearch, selectedTags, matchResultsModel, searchIngredient, unusedTags, userSearch)
   }
 }
 
-function* searchFDA(searchIngredient, searchMode = 'recipe') {
-  console.log('searchFDA (', searchMode, ') --------------------------------');
+function* searchFDA(searchIngredient, userSearch) {
   const fdaSearchUrl = Config.FDA_SEARCH_URL +
     '?format=json&q=' +
     searchIngredient +
@@ -61,12 +60,12 @@ function* searchFDA(searchIngredient, searchMode = 'recipe') {
     for (let i of items) {
       ndbnoInfo += '&ndbno=' + i.ndbno
     }
-    if (ndbnoInfo !== '')
-      yield call (reportFDA, searchIngredient, ndbnoInfo, searchMode)
+    if (ndbnoInfo !== '') {
+      yield call (reportFDA, searchIngredient, ndbnoInfo, userSearch)
+    }
   }
   else {
     yield put ({type: INITIALIZE_FIREBASE_DATA, foodName: searchIngredient, data: [], append: false})
-    const userSearch = searchMode === 'user'
     yield put ({type: GET_FIREBASE_DATA, foodName: searchIngredient, ingredient: searchIngredient, key: 'undefined', userSearch, append: false})
   }
 }
@@ -76,14 +75,16 @@ function* searchFDA(searchIngredient, searchMode = 'recipe') {
 function* fdaUserSearch() {
   while (true) {
     const {searchIngredient} = yield take(SEARCH_INGREDIENT)
-    yield fork (searchFDA, searchIngredient, 'user')
+    const userSearch = true
+    yield call (searchFDA, searchIngredient, userSearch)
   }
 }
 
 function* fdaRecipeSearch() {
   while (true) {
     const {searchIngredient} = yield take(SEARCH_INGREDIENT_COMMERCIAL)
-    yield fork (searchFDA, searchIngredient)
+    const userSearch = false
+    yield call (searchFDA, searchIngredient, userSearch)
   }
 }
 

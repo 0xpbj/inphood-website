@@ -61,6 +61,7 @@ export function* callElasticSearchLambda(searchIngredient, foodName, size, userS
                   matchResultsModel: new MatchResultsModel(),
                   ingredient: searchIngredient})
     }
-    yield put ({type: SEARCH_INGREDIENT_COMMERCIAL, searchIngredient})
+    else
+      yield put ({type: SEARCH_INGREDIENT_COMMERCIAL, searchIngredient})
   }
 }

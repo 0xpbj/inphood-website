@@ -62,10 +62,5 @@ export function* callElasticSearchLambda(searchIngredient, foodName, size, userS
                   ingredient: searchIngredient})
     }
     yield put ({type: SEARCH_INGREDIENT_COMMERCIAL, searchIngredient})
-    // TODO: why do we need the next two lines? SEARCH_INGREDIENT_COMMERCIAL
-    //       calls changesFromRecipe which does all the heavy lifting?
-    //       Also, does it makes sense to make the above call blocking?
-    yield put ({type: INITIALIZE_FIREBASE_DATA, foodName, data: [], append})
-    yield put ({type: GET_FIREBASE_DATA, foodName, ingredient: foodName, key: 'undefined', userSearch, append})
   }
 }

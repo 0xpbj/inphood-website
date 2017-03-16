@@ -47,7 +47,6 @@ export default class Search extends React.Component {
         nonInteraction: false,
         label: this.state.searchIngredient
       });
-      console.log('\n\n\n\n\n\n\n\n\n\n\n\nSEARCHING HERE************************\n\n\n\n\n\n\n', this.state.searchIngredient)
       this.props.searchIngredientData(this.state.searchIngredient)
       this.setState({searchIngredient: '', show: true})
     }
@@ -95,8 +94,8 @@ export default class Search extends React.Component {
   }
   render() {
     let close = () => this.closeModal()
-    const {searching} = this.props.search
-    const modalBody = searching ?
+    const {firebaseSearch, fdaSearch} = this.props.search
+    const modalBody = (firebaseSearch || fdaSearch) ?
       (
         <Modal.Body className="text-center">
           <ProgressBar type='circular' mode='indeterminate' multicolor={true} />

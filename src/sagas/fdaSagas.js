@@ -1,6 +1,8 @@
 import {
   SET_FDA_RESULTS,
   SEARCH_INGREDIENT,
+  GET_FIREBASE_DATA,
+  INITIALIZE_FIREBASE_DATA,
   SEARCH_INGREDIENT_COMMERCIAL
 } from '../constants/ActionTypes'
 
@@ -39,7 +41,8 @@ function* reportFDA(searchIngredient, ndbnoInfo, searchMode) {
     const {missingData, parsedData} = yield select(state => state.nutritionReducer)
     yield fork (changesFromRecipe, parsedData, missingData, matchResultsModel)
   } else if (searchMode === 'user') {
-    yield fork (changesFromSearch, selectedTags, matchResultsModel, searchIngredient, unusedTags)
+    const fdaSearch = true
+    yield fork (changesFromSearch, selectedTags, matchResultsModel, searchIngredient, unusedTags, fdaSearch)
   }
 }
 
@@ -61,6 +64,11 @@ function* searchFDA(searchIngredient, searchMode = 'recipe') {
     if (ndbnoInfo !== '')
       yield call (reportFDA, searchIngredient, ndbnoInfo, searchMode)
   }
+  else {
+    yield put ({type: INITIALIZE_FIREBASE_DATA, foodName: searchIngredient, data: [], append: false})
+    const userSearch = searchMode === 'user'
+    yield put ({type: GET_FIREBASE_DATA, foodName: searchIngredient, ingredient: searchIngredient, key: 'undefined', userSearch, append: false})
+  }
 }
 
 // TODO: might make more sense to combine these functions and pass in an
@@ -68,14 +76,14 @@ function* searchFDA(searchIngredient, searchMode = 'recipe') {
 function* fdaUserSearch() {
   while (true) {
     const {searchIngredient} = yield take(SEARCH_INGREDIENT)
-    yield call (searchFDA, searchIngredient, 'user')
+    yield fork (searchFDA, searchIngredient, 'user')
   }
 }
 
 function* fdaRecipeSearch() {
   while (true) {
     const {searchIngredient} = yield take(SEARCH_INGREDIENT_COMMERCIAL)
-    yield call (searchFDA, searchIngredient)
+    yield fork (searchFDA, searchIngredient)
   }
 }
 

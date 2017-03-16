@@ -20,8 +20,7 @@ import {changesFromAppend, changesFromSearch, changesFromRecipe} from './parserF
 
 function* getDataFromFireBase() {
   const {foodName, ingredient, key, userSearch, append} = yield take(GET_FIREBASE_DATA)
-  console.log('getDataFromFireBase ------------------------------------------');
-
+  // console.log('getDataFromFireBase ------------------------------------------');
   const path = 'global/nutritionInfo/' + key
   const flag = (yield call(db.getPath, path)).exists()
   if (flag) {
@@ -29,12 +28,12 @@ function* getDataFromFireBase() {
     yield put ({type: INGREDIENT_FIREBASE_DATA, foodName, ingredient, data, userSearch, append})
   }
   else {
-    if (userSearch) {
-      const {searchIngredient} = yield select(state => state.tagModelReducer)
-      yield put ({type: SUPER_SEARCH_RESULTS,
-                  matchResultsModel: new MatchResultsModel(),
-                  ingredient: searchIngredient})
-    }
+    // if (userSearch) {
+    //   const {searchIngredient} = yield select(state => state.tagModelReducer)
+    //   yield put ({type: SUPER_SEARCH_RESULTS,
+    //               matchResultsModel: new MatchResultsModel(),
+    //               ingredient: searchIngredient})
+    // }
     yield put ({type: INGREDIENT_FIREBASE_DATA, foodName, ingredient, data: [], userSearch, append})
   }
   if (append) {
@@ -44,7 +43,8 @@ function* getDataFromFireBase() {
   else if (userSearch) {
     const {selectedTags, matchResultsModel, searchIngredient} = yield select(state => state.tagModelReducer)
     let {unusedTags} = yield select(state => state.tagModelReducer)
-    yield fork (changesFromSearch, selectedTags, matchResultsModel, searchIngredient, unusedTags)
+    const fdaSearch = false
+    yield fork (changesFromSearch, selectedTags, matchResultsModel, searchIngredient, unusedTags, fdaSearch)
   }
   else {
     const {parsedData} = yield select(state => state.nutritionReducer)

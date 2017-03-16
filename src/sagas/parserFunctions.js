@@ -9,6 +9,7 @@ import {
   NM_SET_SERVINGS,
   SUPER_SEARCH_RESULTS,
   ADD_SEARCH_SELECTION,
+  FDA_SEARCH_RESULTS_FLAG,
   CLOSE_SEARCH_MODAL
 } from '../constants/ActionTypes'
 
@@ -118,7 +119,7 @@ export function* changesFromAppend(searchTerm, matchResultsModel) {
   yield put ({type: IM_ADD_CONTROL_MODEL, tag: searchTerm, ingredientControlModel})
 }
 
-export function* changesFromSearch(selectedTags, matchResultsModel, searchIngredient, unusedTags) {
+export function* changesFromSearch(selectedTags, matchResultsModel, searchIngredient, unusedTags, fdaSearch) {
   console.log('changesFromSearch --------------------------------------------');
   if (matchResultsModel.getSearchResultsLength(searchIngredient) === 0) {
     ReactGA.event({
@@ -134,11 +135,15 @@ export function* changesFromSearch(selectedTags, matchResultsModel, searchIngred
     yield put ({type: SUPER_SEARCH_RESULTS,
                 matchResultsModel: new MatchResultsModel(),
                 ingredient: searchIngredient})
+    if (fdaSearch)
+      yield put ({type: FDA_SEARCH_RESULTS_FLAG})
     return
   } else {
     yield put ({type: SUPER_SEARCH_RESULTS,
                 matchResultsModel: matchResultsModel,
                 ingredient: searchIngredient})
+    if (fdaSearch)
+      yield put ({type: FDA_SEARCH_RESULTS_FLAG})
     yield race({
       response: call (getDataForSearchSelection, searchIngredient, selectedTags),
       cancel: take(CLOSE_SEARCH_MODAL)

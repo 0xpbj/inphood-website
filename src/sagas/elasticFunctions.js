@@ -52,7 +52,7 @@ export function* callElasticSearchLambda(searchIngredient, foodName, size, userS
                       ((matchResultsModel.getSearchResultsLength(foodName) -1)
                        === Object.keys(data).length)
     }
-    yield put ({type: INITIALIZE_FIREBASE_DATA, foodName, data: data, userSearch, append, remEllipses})
+    yield put ({type: INITIALIZE_FIREBASE_DATA, foodName, data, userSearch, append, remEllipses})
     yield put ({type: GET_FIREBASE_DATA, foodName, ingredient: info._source.Description, key: info._id, userSearch, append})
   }
   else {

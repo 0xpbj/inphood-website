@@ -90,7 +90,9 @@ export default function modelFun(state = initialState, action) {
           ...state
         }
       }
-
+      if (action.append) {
+        matchResultsModel._searches[searchTerm] = []
+      }
       matchResultsModel.addSearch(searchTerm)
       for (let obj of action.data) {
         const description = obj._source.Description

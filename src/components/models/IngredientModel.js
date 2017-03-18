@@ -39,6 +39,20 @@ function zeroIfNaN(aValue) {
   return isNaN(aValue) ? 0 : aValue
 }
 
+// Convert _vitaminE to VitaminE:
+//
+function getDbKeyNameFromMember(aMicroNutrientMember) {
+  function firstAlphaCharToUpper(match, p1, offset, string) {
+    return p1.toUpperCase()
+  }
+
+  return aMicroNutrientMember.replace(/^_([A-Za-z])/g, firstAlphaCharToUpper)
+}
+
+function getNutrientValue(dbDataObj, microNutrientMember) {
+  const dbKey = getDbKeyNameFromMember(microNutrientMember)
+  return getFloatFromDB(dbDataObj, dbKey)
+}
 
 // from: https://www.dsld.nlm.nih.gov/dsld/dailyvalue.jsp
 var RDA2000Cal = {
@@ -125,6 +139,46 @@ export class IngredientModel {
     this._measureQuantity = 0
     this._measureUnit = ''
     this._measureMeta = ''
+    //
+    //   Micronutrients:
+    this._vitaminB12 = 0
+    this._vitaminB12Unit = 'µg'
+    this._calcium = 0
+    this._calciumUnit = 'mg'
+    this._iron = 0
+    this._ironUnit = 'mg'
+    this._vitaminE = 0
+    this._vitaminEUnit = 'mg'
+    this._vitaminD = 0
+    this._vitaminDUnit = 'µg'
+    this._niacinB3 = 0
+    this._niacinB3Unit = 'mg'
+    this._polyunsatFat = 0
+    this._polyunsatFatUnit = 'g'
+    this._magnesium = 0
+    this._magnesiumUnit = 'mg'
+    this._riboflavinB2 = 0
+    this._riboflavinB2Unit = 'mg'
+    this._phosphorus = 0
+    this._phosphorusUnit = 'mg'
+    this._zinc = 0
+    this._zincUnit = 'mg'
+    this._folicAcid = 0
+    this._folicAcidUnit = 'µg'
+    this._vitaminB6 = 0
+    this._vitaminB6Unit = 'mg'
+    this._potassium = 0
+    this._potassiumUnit = 'mg'
+    this._thiaminB1 = 0
+    this._thiaminB1Unit = 'mg'
+    this._vitaminC = 0
+    this._vitaminCUnit = 'mg'
+    this._sodium = 0
+    this._sodiumUnit = 'mg'
+    this._vitaminK = 0
+    this._vitaminKUnit = 'µg'
+    this._vitaminA = 0
+    this._vitaminAUnit = 'µg'
   }
 
   // This constructor initializes a NutritionItem from the DB/JSON which
@@ -183,11 +237,14 @@ export class IngredientModel {
     this._measureWeight_g = parseFloat(dataForKey['Weight(g)'])
     this._measureString = dataForKey['Measure']
     this.setMeasurePropsFromString(this._measureString)
+    //
+    // Micronutrients
+    for (let microNutrientMember of IngredientModel.microNutrientMembers) {
+      this[microNutrientMember] = getNutrientValue(dataForKey, microNutrientMember)
+    }
 
-    this.setServingAmount(100,
-                          'g',
-                          this._displayServingCount,
-                          this._displayServingUnit)
+    this.setServingAmount(
+      100, 'g', this._displayServingCount, this._displayServingUnit)
   }
 
   initializeComposite(scaledIngredients) {
@@ -674,3 +731,7 @@ export class IngredientModel {
     return this._measureMeta
   }
 }
+
+// static var:
+IngredientModel.microNutrientMembers = ['_vitaminB12', '_calcium', '_iron', '_vitaminE', '_vitaminD', '_niacinB3', '_polyunsatFat', '_magnesium', '_riboflavinB2', '_phosphorus', '_zinc', '_folicAcid',
+ '_vitaminB6', '_potassium', '_thiaminB1', '_vitaminC', '_sodium', '_vitaminK', '_vitaminA']

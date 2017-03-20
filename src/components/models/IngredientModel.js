@@ -103,17 +103,14 @@ export class IngredientModel {
     this._measureUnit = ''
     this._measureMeta = ''
 
-    // The following two loops create all the boilerplate/data-driven
+    // The following loop creates all the boilerplate/data-driven
     // member variables for this class.
     //
     //   TODO: thoughts to improve this:
-    //           - merge both into one big dictionary for all nutrients
     //           - do we really need the units and to store the units for
     //             each nutrient? (you could make an assumption about
     //             similarity and perform a static check?)
     //
-    //
-    //   Macronutrients:
     const nutrientMembers = IngredientModel.nutrientMembers
     for (let member in nutrientMembers) {
       const nutrientMember = nutrientMembers[member]
@@ -126,21 +123,6 @@ export class IngredientModel {
         this[nutrientMember.rdaMember] = 0
       }
       this[nutrientMember.visibleMember] = undefined
-    }
-    //
-    //   Micronutrients:
-    const microNutrientMembers = IngredientModel.microNutrientMembers
-    for (let member in microNutrientMembers) {
-      const uNutrientMember = microNutrientMembers[member]
-
-      this[member] = 0
-      if (bothDefined(uNutrientMember.unitMember, uNutrientMember.unit)) {
-        this[uNutrientMember.unitMember] = uNutrientMember.unit
-      }
-      if (bothDefined(uNutrientMember.rdaMember, uNutrientMember.rda2k)) {
-        this[uNutrientMember.rdaMember] = 0
-      }
-      this[uNutrientMember.visibleMember] = undefined
     }
   }
 
@@ -183,21 +165,6 @@ export class IngredientModel {
         }
     }
 
-    //
-    // Micronutrients:
-    const microNutrientMembers = IngredientModel.microNutrientMembers
-    for (let member in microNutrientMembers) {
-      const uNutrientMember = microNutrientMembers[member]
-
-      this[member] = getFloatFromDB(dataForKey, uNutrientMember.firebaseKey)
-      if (bothDefined(uNutrientMember.unitMember, uNutrientMember.unit)) {
-        this[uNutrientMember.unitMember] = uNutrientMember.unit
-      }
-      if (bothDefined(uNutrientMember.rdaMember, uNutrientMember.rda2k)) {
-        this[uNutrientMember.rdaMember] = 100.0 * this[member] / uNutrientMember.rda2k
-      }
-    }
-
     this.setServingAmount(
       100, 'g', this._displayServingCount, this._displayServingUnit)
   }
@@ -225,7 +192,6 @@ export class IngredientModel {
       for (let member in nutrientMembers) {
         const nutrientMember = nutrientMembers[member]
 
-        this[member] += ingredient[member] * scaleFactor
         if (bothDefined(nutrientMember.unitMember, nutrientMember.unit)) {
           // TODO: not sure if this check makes sense--it's comparing the unit
           //       provided in the constructor against the one being added--maybe
@@ -237,28 +203,10 @@ export class IngredientModel {
                               ingredient._key)
           this[nutrientMember.unitMember] = ingredient[nutrientMember.unitMember]
         }
+        this[member] += ingredient[member] * scaleFactor
         if (bothDefined(nutrientMember.rdaMember, nutrientMember.rda2k)) {
           this[nutrientMember.rdaMember] +=
             ingredient[nutrientMember.rdaMember] * scaleFactor
-        }
-      }
-      //
-      //  Micronutrients:
-      const microNutrientMembers = IngredientModel.microNutrientMembers
-      for (let member in microNutrientMembers) {
-        const uNutrientMember = microNutrientMembers[member]
-        if (bothDefined(uNutrientMember.unitMember, uNutrientMember.unit)) {
-          throwIfUnitMismatch(uNutrientMember,
-                              uNutrientMember.unit,
-                              ingredient[uNutrientMember.unitMember],
-                              ingredient._tag,
-                              ingredient._key)
-          this[member] += ingredient[member] * scaleFactor
-          this[uNutrientMember.unitMember] = ingredient[uNutrientMember.unitMember]
-        }
-        if (bothDefined(uNutrientMember.rdaMember, uNutrientMember.rda2k)) {
-          this[uNutrientMember.rdaMember] +=
-            ingredient[uNutrientMember.rdaMember] * scaleFactor
         }
       }
     }
@@ -319,33 +267,6 @@ export class IngredientModel {
           ingredientData[nutrientMember.rdaMember]
       }
     }
-    //
-    // Micronutrients:
-    //    These were added after serialization, consequently they cannot be restored
-    //    for all label serializations
-    const microNutrientMembers = IngredientModel.microNutrientMembers
-    for (let member in microNutrientMembers) {
-      const uNutrientMember = microNutrientMembers[member]
-
-      if (! ingredientData.hasOwnProperty(member)) {
-        // Go with the constructor values
-        // TODO: in future, might want to use NDBNO to look this up (poses problems
-        //       for label.inphood package size & performance; would also want to
-        //       re-serialize)
-        continue
-      }
-
-      this[member] = ingredientData[member]
-      // Assume unit & rda were also serialized
-      if (bothDefined(uNutrientMember.unitMember, uNutrientMember.unit)) {
-        this[uNutrientMember.unitMember] =
-          ingredientData[uNutrientMember.unitMember]
-      }
-      if (bothDefined(uNutrientMember.rdaMember, uNutrientMember.rda2k)) {
-        this[uNutrientMember.rdaMember] =
-          ingredientData[uNutrientMember.rdaMember]
-      }
-    }
 
     // sets member var and also scale factor
     // (using the this values here b/c they've been vetted above with hasOwnProperty)
@@ -399,27 +320,6 @@ export class IngredientModel {
           this[member] = nValue
           if (bothDefined(nutrientMember.rdaMember, nutrientMember.rda2k)) {
             this[nutrientMember.rdaMember] = 100 * nValue / nutrientMember.rda2k
-          }
-          break
-        }
-      }
-
-      // Micronutrients:
-      //    Check to see if nName is in the nutrientKey values of the
-      //    IngredientModel.microNutrientMembers:
-      const microNutrientMembers = IngredientModel.microNutrientMembers
-      for (let member in microNutrientMembers) {
-        const uNutrientMember = microNutrientMembers[member]
-
-        if (nName === uNutrientMember.nutrientKey) {
-          // TODO: what if they're not both defined?
-          if (bothDefined(uNutrientMember.unitMember, uNutrientMember.unit)) {
-            throwIfUnexpectedUnit(nName, uNutrientMember.unit, nUnit)
-          }
-          this[member] = nValue
-          if (bothDefined(uNutrientMember.rdaMember, uNutrientMember.rda2k)) {
-            this[uNutrientMember.rdaMember] =
-              100 * nValue / uNutrientMember.rda2k
           }
           break
         }
@@ -769,10 +669,7 @@ IngredientModel.nutrientMembers = {
     visibleMember: '_totalProteinVisible',
     firebaseKey: 'Protein',
     nutrientKey: 'Protein'
-  }
-}
-// static var:
-IngredientModel.microNutrientMembers = {
+  },
   _vitaminB12 : {
     unit: 'µg',
     unitMember: '_vitaminB12Unit',

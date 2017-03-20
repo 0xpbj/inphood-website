@@ -3,18 +3,11 @@
 // FDA value to a float and returns it.
 //
 function getFloatFromDB(dataForKey, key) {
-  var data = 0.0
+  if (! key in dataForKey)
+    return 0.0
 
-  if (key in dataForKey) {
-    const field = dataForKey[key]
-    if (field == "--") {
-      data = 0.0
-    } else {
-      data = parseFloat(field)
-    }
-  }
-
-  return data
+  const field = dataForKey[key]
+  return ((field === '--') ? 0.0 : parseFloat(field))
 }
 
 function throwIfUnitMismatch(category, mainUnit, otherUnit, otherTag, otherKey) {
@@ -35,26 +28,9 @@ function throwIfUnexpectedUnit(metric, expectedUnit, actualUnit) {
   }
 }
 
-function zeroIfNaN(aValue) {
-  return isNaN(aValue) ? 0 : aValue
-}
-
-// Convert _vitaminE to VitaminE:
-//
-function getDbKeyNameFromMember(aMicroNutrientMember) {
-  function firstAlphaCharToUpper(match, p1, offset, string) {
-    return p1.toUpperCase()
-  }
-
-  return aMicroNutrientMember.replace(/^_([A-Za-z])/g, firstAlphaCharToUpper)
-}
-
-function getNutrientValue(dbDataObj, microNutrientMember) {
-  const dbKey = getDbKeyNameFromMember(microNutrientMember)
-  return getFloatFromDB(dbDataObj, dbKey)
-}
-
 // from: https://www.dsld.nlm.nih.gov/dsld/dailyvalue.jsp
+//  _vitaminA and _vitaminD do not feature in this b/c the site above uses IU instead
+//  of ug/mg
 var RDA2000Cal = {
   totalFat: 65,
   saturatedFat: 20,
@@ -62,62 +38,45 @@ var RDA2000Cal = {
   sodium: 2400,
   carbohydrate: 300,
   fiber: 25,
+  _sodium: 2400,  // mg
+  _potassium: 3500, // mg
+  _vitaminA_IU: 5000, // IU
+  _vitaminC: 60, // mg
+  _calcium: 1000, // mg
+  _iron: 18, // mg
+  _vitaminD_IU: 400, // IU
+  _vitaminE: 30, // IU  - TODO, I suspect we use micro grams for this measure--need to convert
+  _vitaminK: 80, // ug
+  _thiaminB1: 1.5, // mg
+  _riboflavinB2: 1.7, // mg
+  _niacinB3: 20, // mg
+  _vitaminB6: 2.0, // mg
+  _folicAcid: 400, // ug (value given for folate--used interchangeably with folic acid--see: https://ods.od.nih.gov/factsheets/Folate-HealthProfessional/)
+  _vitaminB12: 6.0, // ug
+  _phosphorus: 1000, // mg
+  _magnesium: 400, // mg
+  _zinc: 15, // mg
 }
 
 export class IngredientModel {
   constructor() {
     this.decimalPlaces = 2
-
     this._scaleGettersTo = 1.0
-
     this._suggestedServingAmount = 0
     this._suggestedServingUnit = 'g'
-
     //
     // Display units & unit count (i.e. 2 tacos)
     // WARNING: not included in original serialization (must check if object has
     // these when read from serialization).
     this._displayServingCount = 1
     this._displayServingUnit = 'serving'
-
     //
     //   Generic measures/Unit:
     this._servingAmount = 0
     this._servingUnit = 'g'
-    this._calories = 0
+    //
+    // This value calculated from fat (lipid) data:
     this._caloriesFromFat = 0
-    //
-    //   Fat measures/metrics:
-    this._totalFatPerServing = 0
-    this._totalFatUnit = 'g'
-    this._totalFatRDA = 0
-    this._saturatedFatPerServing = 0
-    this._saturatedFatUnit = 'g'
-    this._saturatedFatRDA = 0
-    this._transFatPerServing = 0
-    this._transFatUnit = 'g'
-    //
-    //   Cholesterol & Sodium measures/metrics:
-    this._cholesterol = 0
-    this._cholesterolUnit = 'mg'
-    this._cholesterolRDA = 0
-    this._sodium = 0
-    this._sodiumUnit = 'mg'
-    this._sodiumRDA = 0
-    //
-    //   Carbohydrate measures/metrics:
-    this._totalCarbohydratePerServing = 0
-    this._totalCarbohydrateUnit = 'g'
-    this._totalCarbohydrateRDA = 0
-    this._dietaryFiber = 0
-    this._dietaryFiberUnit = 'g'
-    this._dietaryFiberRDA = 0
-    this._sugars = 0
-    this._sugarsUnit = 'g'
-    //
-    //   Protein measures/metrics:
-    this._totalProteinPerServing = 0
-    this._totalProteinUnit = 'g'
     //
     //   National Database Number
     this._ndbno = -1
@@ -139,46 +98,48 @@ export class IngredientModel {
     this._measureQuantity = 0
     this._measureUnit = ''
     this._measureMeta = ''
+
+    // The following two loops create all the boilerplate/data-driven
+    // member variables for this class.
+    //
+    //   TODO: thoughts to improve this:
+    //           - merge both into one big dictionary for all nutrients
+    //           - do we really need the units and to store the units for
+    //             each nutrient? (you could make an assumption about
+    //             similarity and perform a static check?)
+    //
+    //
+    //   Macronutrients:
+    const nutrientMembers = IngredientModel.nutrientMembers
+    for (let member in nutrientMembers) {
+      const nutrientMember = nutrientMembers[member]
+
+      this[member] = 0
+      if (nutrientMember.unitMember !== undefined &&
+          nutrientMember.unit !== undefined) {
+        this[nutrientMember.unitMember] = nutrientMember.unit
+      }
+      if (nutrientMember.rdaMember !== undefined &&
+          nutrientMember.rda2k !== undefined) {
+        this[nutrientMember.rdaMember] = 0
+      }
+    }
     //
     //   Micronutrients:
-    this._vitaminB12 = 0
-    this._vitaminB12Unit = 'µg'
-    this._calcium = 0
-    this._calciumUnit = 'mg'
-    this._iron = 0
-    this._ironUnit = 'mg'
-    this._vitaminE = 0
-    this._vitaminEUnit = 'mg'
-    this._vitaminD = 0
-    this._vitaminDUnit = 'µg'
-    this._niacinB3 = 0
-    this._niacinB3Unit = 'mg'
-    this._polyunsatFat = 0
-    this._polyunsatFatUnit = 'g'
-    this._magnesium = 0
-    this._magnesiumUnit = 'mg'
-    this._riboflavinB2 = 0
-    this._riboflavinB2Unit = 'mg'
-    this._phosphorus = 0
-    this._phosphorusUnit = 'mg'
-    this._zinc = 0
-    this._zincUnit = 'mg'
-    this._folicAcid = 0
-    this._folicAcidUnit = 'µg'
-    this._vitaminB6 = 0
-    this._vitaminB6Unit = 'mg'
-    this._potassium = 0
-    this._potassiumUnit = 'mg'
-    this._thiaminB1 = 0
-    this._thiaminB1Unit = 'mg'
-    this._vitaminC = 0
-    this._vitaminCUnit = 'mg'
-    this._sodium = 0
-    this._sodiumUnit = 'mg'
-    this._vitaminK = 0
-    this._vitaminKUnit = 'µg'
-    this._vitaminA = 0
-    this._vitaminAUnit = 'µg'
+    const microNutrientMembers = IngredientModel.microNutrientMembers
+    for (let member in microNutrientMembers) {
+      const uNutrientMember = microNutrientMembers[member]
+
+      this[member] = 0
+      if (uNutrientMember.unitMember !== undefined &&
+          uNutrientMember.unit !== undefined) {
+        this[uNutrientMember.unitMember] = uNutrientMember.unit
+      }
+      if (uNutrientMember.rdaMember !== undefined &&
+          uNutrientMember.unit !== undefined) {
+        this[uNutrientMember.rdaMember] = 0
+      }
+    }
   }
 
   // This constructor initializes a NutritionItem from the DB/JSON which
@@ -187,13 +148,12 @@ export class IngredientModel {
     this._key = key
     this._tag = tag
 
-    const TODO = 0
-
     // Pull data from DB/JSON to initialize remainder of class instance:
     //
     //   Generic measures/Unit:
     this._servingAmount = 100
     this._servingUnit = 'g'
+
     this._calories = getFloatFromDB(dataForKey, 'kcal')
     // 9 calories per gram of fat:
     this._caloriesFromFat = 9 * getFloatFromDB(dataForKey, 'Fat')
@@ -207,6 +167,7 @@ export class IngredientModel {
     this._saturatedFatRDA = 100.0 * this._saturatedFatPerServing / RDA2000Cal.saturatedFat
     this._transFatPerServing = getFloatFromDB(dataForKey, 'TransFat')
     this._transFatUnit = 'g'
+    this['_polyunsatFat'] = getFloatFromDB(dataForKey, 'PolyunsatFat')
     //
     //   Cholesterol & Sodium measures/metrics:
     this._cholesterol = getFloatFromDB(dataForKey, 'Cholesterol')
@@ -238,9 +199,20 @@ export class IngredientModel {
     this._measureString = dataForKey['Measure']
     this.setMeasurePropsFromString(this._measureString)
     //
-    // Micronutrients
-    for (let microNutrientMember of IngredientModel.microNutrientMembers) {
-      this[microNutrientMember] = getNutrientValue(dataForKey, microNutrientMember)
+    // Micronutrients:
+    const microNutrientMembers = IngredientModel.microNutrientMembers
+    for (let member in microNutrientMembers) {
+      const uNutrientMember = microNutrientMembers[member]
+
+      this[member] = getFloatFromDB(dataForKey, uNutrientMember.firebaseKey)
+      if (uNutrientMember.unitMember !== undefined &&
+          uNutrientMember.unit !== undefined) {
+        this[uNutrientMember.unitMember] = uNutrientMember.unit
+      }
+      if (uNutrientMember.rdaMember !== undefined &&
+          uNutrientMember.rda2k !== undefined) {
+        this[uNutrientMember.rdaMember] = 100.0 * this[member] / uNutrientMember.rda2k
+      }
     }
 
     this.setServingAmount(
@@ -264,39 +236,60 @@ export class IngredientModel {
         ingredient._servingUnit, ingredient._tag, ingredient._key)
       // Only need this assingment on the first ingredient, but in a hurry ...
       this._servingUnit = ingredient._servingUnit
-      this._servingAmount += zeroIfNaN(ingredient._servingAmount) * scaleFactor
+      this._servingAmount += ingredient._servingAmount * scaleFactor
       // TODO: pretty sure this works for calories (everything is linear
       // I believe). Need to confirm.
-      this._calories += zeroIfNaN(ingredient._calories) * scaleFactor
-      this._caloriesFromFat += zeroIfNaN(ingredient._caloriesFromFat) * scaleFactor
+      this._calories += ingredient._calories * scaleFactor
+      this._caloriesFromFat += ingredient._caloriesFromFat * scaleFactor
       //
       //   Fat measures/metrics:
       throwIfUnitMismatch('total fat', this._totalFatUnit,
         ingredient._totalFatUnit, ingredient._tag, ingredient._key)
       // Only need this assingment on the first ingredient, but in a hurry ...
       this._totalFatUnit = ingredient._totalFatUnit
-      this._totalFatPerServing += zeroIfNaN(ingredient._totalFatPerServing) * scaleFactor
-      this._totalFatRDA += zeroIfNaN(ingredient._totalFatRDA) * scaleFactor
-      this._saturatedFatPerServing += zeroIfNaN(ingredient._saturatedFatPerServing) * scaleFactor
-      this._saturatedFatRDA += zeroIfNaN(ingredient._saturatedFatRDA) * scaleFactor
-      this._transFatPerServing += zeroIfNaN(ingredient._transFatPerServing) * scaleFactor
+      this._totalFatPerServing += ingredient._totalFatPerServing * scaleFactor
+      this._totalFatRDA += ingredient._totalFatRDA * scaleFactor
+      this._saturatedFatPerServing += ingredient._saturatedFatPerServing * scaleFactor
+      this._saturatedFatRDA += ingredient._saturatedFatRDA * scaleFactor
+      this._transFatPerServing += ingredient._transFatPerServing * scaleFactor
+      this['_polyunsatFat'] += ingredient['_polyunsatFat'] * scaleFactor
       //
       //   Cholesterol & Sodium measures/metrics:
-      this._cholesterol += zeroIfNaN(ingredient._cholesterol) * scaleFactor
-      this._cholesterolRDA += zeroIfNaN(ingredient._cholesterolRDA) * scaleFactor
-      this._sodium += zeroIfNaN(ingredient._sodium) * scaleFactor
-      this._sodiumRDA += zeroIfNaN(ingredient._sodiumRDA) * scaleFactor
+      this._cholesterol += ingredient._cholesterol * scaleFactor
+      this._cholesterolRDA += ingredient._cholesterolRDA * scaleFactor
+      this._sodium += ingredient._sodium * scaleFactor
+      this._sodiumRDA += ingredient._sodiumRDA * scaleFactor
       //
       //   Carbohydrate measures/metrics:
-      this._totalCarbohydratePerServing += zeroIfNaN(ingredient._totalCarbohydratePerServing) * scaleFactor
-      this._totalCarbohydrateRDA += zeroIfNaN(ingredient._totalCarbohydrateRDA) * scaleFactor
-      this._dietaryFiber += zeroIfNaN(ingredient._dietaryFiber) * scaleFactor
-      this._dietaryFiberRDA += zeroIfNaN(ingredient._dietaryFiber) * scaleFactor
-      this._sugars += zeroIfNaN(ingredient._sugars) * scaleFactor
+      this._totalCarbohydratePerServing += ingredient._totalCarbohydratePerServing * scaleFactor
+      this._totalCarbohydrateRDA += ingredient._totalCarbohydrateRDA * scaleFactor
+      this._dietaryFiber += ingredient._dietaryFiber * scaleFactor
+      this._dietaryFiberRDA += ingredient._dietaryFiber * scaleFactor
+      this._sugars += ingredient._sugars * scaleFactor
       //
       //   Protein measures/metrics:
-      this._totalProteinPerServing += zeroIfNaN(ingredient._totalProteinPerServing) * scaleFactor
-
+      this._totalProteinPerServing += ingredient._totalProteinPerServing * scaleFactor
+      //
+      //   Micronutrients:
+      const microNutrientMembers = IngredientModel.microNutrientMembers
+      for (let member in microNutrientMembers) {
+        const uNutrientMember = microNutrientMembers[member]
+        if (uNutrientMember.unitMember !== undefined &&
+            uNutrientMember.unit !== undefined) {
+          throwIfUnitMismatch(uNutrientMember,
+                              uNutrientMember.unit,
+                              ingredient[uNutrientMember.unitMember],
+                              ingredient._tag,
+                              ingredient._key)
+          this[member] += ingredient[member] * scaleFactor
+          this[uNutrientMember.unitMember] = ingredient[uNutrientMember.unitMember]
+        }
+        if (uNutrientMember.rdaMember !== undefined &&
+            uNutrientMember.rda2k !== undefined) {
+          this[uNutrientMember.rdaMember] +=
+            ingredient[uNutrientMember.rdaMember] * scaleFactor
+        }
+      }
 
       // console.log('   ' + key);
       // console.log('   scaleFactor:          ' + scaleFactor);
@@ -337,6 +330,16 @@ export class IngredientModel {
     this._saturatedFatRDA = ingredientData._saturatedFatRDA
     this._transFatPerServing = ingredientData._transFatPerServing
     this._transFatUnit = ingredientData._transFatUnit
+    // Poly unsaturated fat was a late add on:
+    const pUnsatFat = '_polyunsatFat'
+    if (ingredientData.hasOwnProperty(pUnsatFat)) {
+      this[pUnsatFat] = ingredientData[pUnsatFat]
+      //Assume unit is also serialized
+      const unitMember = pUnsatFat + 'Unit'
+      this[unitMember] = ingredientData[unitMember]
+    } // else go with constructor values (TODO: consider NDBNO look up to fill
+      // this value in and storing it in FB/update)
+    //
     //
     //   Cholesterol & Sodium measures/metrics:
     this._cholesterol = ingredientData._cholesterol
@@ -369,6 +372,32 @@ export class IngredientModel {
     this._measureQuantity = ingredientData._measureQuantity
     this._measureUnit = ingredientData._measureUnit
     this._measureMeta = ingredientData._measureMeta
+    //
+    // Micronutrients:
+    //    These were added after serialization, consequently they cannot be restored
+    //    for all label serializations
+    const microNutrientMembers = IngredientModel.microNutrientMembers
+    for (let member in microNutrientMembers) {
+      const uNutrientMember = microNutrientMembers[member]
+
+      if (ingredientData.hasOwnProperty(member)) {
+        this[member] = ingredientData[member]
+        // Assume unit & rda were also serialized
+        if (uNutrientMember.unitMember !== undefined &&
+            uNutrientMember.unit !== undefined) {
+          this[uNutrientMember.unitMember] =
+            ingredientData[uNutrientMember.unitMember]
+        }
+        if (uNutrientMember.rdaMember !== undefined &&
+            uNutrientMember.rda2k !== undefined) {
+          this[uNutrientMember.rdaMember] =
+            ingredientData[uNutrientMember.rdaMember]
+        }
+      } // else go with the constructor values
+      // TODO: in future, might want to use NDBNO to look this up (poses problems
+      //       for label.inphood package size & performance; would also want to
+      //       re-serialize)
+    }
 
     // sets member var and also scale factor
     // (using the this values here b/c they've been vetted above with hasOwnProperty)
@@ -388,37 +417,8 @@ export class IngredientModel {
     this._key = description
     this._tag = searchTerm
 
-    // Initialize key metrics to NaN to prevent composite calculations from being
-    // done where data is unknown (i.e. 6 + unknown = unknown  or  NaN so we can
-    // exclude these metrics from the label):
-    //
     //   Generic measures/Unit:
     this._servingAmount = 100
-    this._calories = NaN
-    this._caloriesFromFat = NaN
-    //
-    //   Fat measures/metrics:
-    this._totalFatPerServing = NaN
-    this._totalFatRDA = NaN
-    this._saturatedFatPerServing = NaN
-    this._saturatedFatRDA = NaN
-    this._transFatPerServing = NaN
-    //
-    //   Cholesterol & Sodium measures/metrics:
-    this._cholesterol = NaN
-    this._cholesterolRDA = NaN
-    this._sodium = NaN
-    this._sodiumRDA = NaN
-    //
-    //   Carbohydrate measures/metrics:
-    this._totalCarbohydratePerServing = NaN
-    this._totalCarbohydrateRDA = NaN
-    this._dietaryFiber = NaN
-    this._dietaryFiberRDA = NaN
-    this._sugars = NaN
-    //
-    //   Protein measures/metrics:
-    this._totalProteinPerServing = NaN
 
     if (!foodObject.hasOwnProperty('nutrients')) {
       throw 'Unable to execute IngredientModel.initializeFromBrandedFdaObj. No nutritent data.'
@@ -477,6 +477,14 @@ export class IngredientModel {
           this._saturatedFatPerServing = nValue
           this._saturatedFatRDA = 100.0 * this._saturatedFatPerServing / RDA2000Cal.saturatedFat
           break
+        // TODO:
+        // case "Fatty acids, total monounsaturated":
+        //   ...
+        //   break
+        case "Fatty acids, total polyunsaturated":
+          throwIfUnexpectedUnit(nName, "", nUnit)
+          this['_polyunsatFat'] = nValue
+          break
         case "Fatty acids, total trans":
           throwIfUnexpectedUnit("Fatty acids, total trans", "g", nUnit)
           this._transFatPerServing = nValue
@@ -485,8 +493,33 @@ export class IngredientModel {
           throwIfUnexpectedUnit("Cholesterol", "mg", nUnit)
           this._cholesterol = nValue
           this._cholesterolRDA = 100.0 * this._cholesterol / RDA2000Cal.cholesterol
-
+          break
         default:
+          // Micronutrients:
+          //    Check to see if nName is in the nutrientKey values of the
+          //    IngredientModel.microNutrientMembers:
+          const microNutrientMembers = IngredientModel.microNutrientMembers
+          for (let member in microNutrientMembers) {
+            const uNutrientMember = microNutrientMembers[member]
+
+            if (nName === uNutrientMember.nutrientKey) {
+              // TODO:
+              //   - special cases:
+              //         "Vitamin D" measured in IU
+              //         "Vitamin D (D2 + D3)" measured in ug
+              if (uNutrientMember.unitMember !== undefined &&
+                  uNutrientMember.unit !== undefined) {
+                throwIfUnexpectedUnit(nName, uNutrientMember.unit, nUnit)
+              }
+              this[member] = nValue
+              if (uNutrientMember.rdaMember !== undefined &&
+                  uNutrientMember.rda2k !== undefined) {
+                this[uNutrientMember.rdaMember] =
+                  100 * nValue / uNutrientMember.rda2k
+              }
+              break
+            }
+          }
       }
 
       // The FDA Branded database has an array of nutrients for each food item.
@@ -732,6 +765,258 @@ export class IngredientModel {
   }
 }
 
+// TODO: integrate this the way we did for microNutrientMembers:
+//
+IngredientModel.nutrientMembers = {
+  _calories : {
+    unit: undefined,
+    unitMember: undefined,
+    rda2k: 2000,
+    rdaMember: undefined,
+    firebaseKey: 'kcal',
+    nutrientKey: 'Energy'
+  },
+  _totalFatPerServing : {
+    unit: 'g',
+    unitMember: '_totalFatUnit',
+    rda2k: 65,
+    rdaMember: '_totalFatRDA',
+    firebaseKey: 'Fat',
+    nutrientKey: 'Total lipid (fat)'
+  },
+  _saturatedFatPerServing : {
+    unit: 'g',
+    unitMember: '_saturatedFatUnit',
+    rda2k: 20,
+    rdaMember: '_saturatedFatRDA',
+    firebaseKey: 'SatFat',
+    nutrientKey: 'Fatty acids, total saturated'
+  },
+  _transFatPerServing : {
+    unit: 'g',
+    unitMember: '_transFatUnit',
+    rda2k: undefined,
+    rdaMember: undefined,
+    firebaseKey: 'TransFat',
+    nutrientKey: 'Fatty acids, total trans'
+  },
+  _polyunsatFat : {
+    unit: 'g',
+    unitMember: '_polyunsatFatUnit',
+    rda2k: undefined,
+    rdaMember: undefined,
+    firebaseKey: 'PolyunsatFat',
+    nutrientKey: 'Fatty acids, total polyunsaturated'
+  },
+  _cholesterol : {
+    unit: 'mg',
+    unitMember: '_cholesterolUnit',
+    rda2k: 300,
+    rdaMember: '_cholesterolRDA',
+    firebaseKey: 'Cholesterol',
+    nutrientKey: 'Cholesterol'
+  },
+  _sodium : {
+    unit: 'mg',
+    unitMember: '_sodiumUnit',
+    rda2k: 2400,
+    rdaMember: '_sodiumRDA',
+    firebaseKey: 'Sodium',
+    nutrientKey: 'Sodium, Na'
+  },
+  _totalCarbohydratePerServing : {
+    unit: 'g',
+    unitMember: '_totalCarbohydrateUnit',
+    rda2k: 300,
+    rdaMember: '_totalCarbohydrateRDA',
+    firebaseKey: 'Carbohydrate',
+    nutrientKey: 'Carbohydrate, by difference'
+  },
+  _dietaryFiber : {
+    unit: 'g',
+    unitMember: '_dietaryFiberUnit',
+    rda2k: 25,
+    rdaMember: '_dietaryFiberRDA',
+    firebaseKey: 'Fiber',
+    nutrientKey: 'Fiber, total dietary'
+  },
+  _sugars : {
+    unit: 'g',
+    unitMember: '_sugarsUnit',
+    rda2k: undefined,
+    rdaMember: undefined,
+    firebaseKey: 'Sugar',
+    nutrientKey: 'Sugars, total'
+  },
+  _totalProteinPerServing : {
+    unit: 'g',
+    unitMember: '_totalProteinUnit',
+    rda2k: 50,
+    rdaMember: undefined,
+    firebaseKey: 'Protein',
+    nutrientKey: 'Protein'
+  }
+}
 // static var:
-IngredientModel.microNutrientMembers = ['_vitaminB12', '_calcium', '_iron', '_vitaminE', '_vitaminD', '_niacinB3', '_polyunsatFat', '_magnesium', '_riboflavinB2', '_phosphorus', '_zinc', '_folicAcid',
- '_vitaminB6', '_potassium', '_thiaminB1', '_vitaminC', '_sodium', '_vitaminK', '_vitaminA']
+IngredientModel.microNutrientMembers = {
+  _vitaminB12 : {
+    unit: 'µg',
+    unitMember: '_vitaminB12Unit',
+    rda2k: 6.0,
+    rdaMember: '_vitaminB12RDA',
+    firebaseKey: 'VitaminB12',
+    nutrientKey: 'Vitamin B-12'
+  },
+  _calcium : {
+    unit: 'mg',
+    unitMember: '_calciumUnit',
+    rda2k: 1000,
+    rdaMember: '_calciumRDA',
+    firebaseKey: 'Calcium',
+    nutrientKey: 'Calcium, Ca'
+  },
+  _iron : {
+    unit: 'mg',
+    unitMember: '_ironUnit',
+    rda2k: 18,
+    rdaMember: '_ironRDA',
+    firebaseKey: 'Iron',
+    nutrientKey: 'Iron, Fe'
+  },
+  _vitaminE : {
+    unit: 'mg',
+    unitMember: '_vitaminEUnit',
+    rda2k: undefined,   // TODO: get conversion from 30 IU
+    rdaMember: '_vitaminERDA',
+    firebaseKey: 'VitaminE',
+    nutrientKey: 'Vitamin E (alpha-tocopherol)'
+  },
+  _vitaminD : {
+    unit: 'µg',
+    unitMember: '_vitaminDUnit',
+    rda2k: undefined,   // TODO: get conversion from 400 IU
+    rdaMember: '_vitaminDRDA',
+    firebaseKey: 'VitaminD',
+    nutrientKey: 'Vitamin D (D2 + D3)'  // Measured in ug from USDA data
+  },
+  _niacinB3 : {
+    unit: 'mg',
+    unitMember: '_niacinB3Unit',
+    rda2k: 20,
+    rdaMember: '_niacinB3RDA',
+    firebaseKey: 'NiacinB3',
+    nutrientKey: 'Niacin'
+  },
+  _magnesium : {
+    unit: 'mg',
+    unitMember: '_magnesiumUnit',
+    rda2k: 400,
+    rdaMember: '_magnesiumRDA',
+    firebaseKey: 'Magnesium',
+    nutrientKey: 'Magnesium, Mg'
+  },
+  _riboflavinB2 : {
+    unit: 'mg',
+    unitMember: '_riboflavinB2Unit',
+    rda2k: 1.7,
+    rdaMember: '_riboflavinB2RDA',
+    firebaseKey: 'RiboflavinB2',
+    nutrientKey: 'Riboflavin'
+  },
+  _phosphorus : {
+    unit: 'mg',
+    unitMember: '_phosphorusUnit',
+    rda2k: 1000,
+    rdaMember: '_phosphorusRDA',
+    firebaseKey: 'Phosphorus',
+    nutrientKey: 'Phosphorus, P'
+  },
+  _zinc : {
+    unit:  'mg',
+    unitMember: '_zincUnit',
+    rda2k: 15,
+    rdaMember: '_zincRDA',
+    firebaseKey: 'Zinc',
+    nutrientKey: 'Zing, Zn'
+  },
+  _folicAcid : {  // also folate--see: https://ods.od.nih.gov/factsheets/Folate-HealthProfessional/
+    unit: 'µg',
+    unitMember: '_folicAcidUnit',
+    rda2k: 400,
+    rdaMember: '_folicAcidRDA',
+    firebaseKey: 'FolicAcid',
+    nutrientKey: 'Folate, DFE'
+  },
+  _vitaminB6 : {
+    unit: 'mg',
+    unitMember: '_vitaminB6Unit',
+    rda2k: 2.0,
+    rdaMember: '_vitaminB6RDA',
+    firebaseKey: 'VitaminB6',
+    nutrientKey: 'Vitamin B-6'
+  },
+  _potassium : {
+    unit: 'mg',
+    unitMember: '_potassiumUnit',
+    rda2k: 3500,
+    rdaMember: '_potassiumRDA',
+    firebaseKey: 'Potassium',
+    nutrientKey: 'Potassium, K'
+  },
+  _thiaminB1 : {
+    unit: 'mg',
+    unitMember: '_thiaminB1Unit',
+    rda2k: 1.5,
+    rdaMember: '_thiaminB1RDA',
+    firebaseKey: 'ThiaminB1',
+    nutrientKey: 'Thiamin'
+  },
+  _vitaminC : {
+    unit: 'mg',
+    unitMember: '_vitaminCUnit',
+    rda2k: 60,
+    rdaMember: '_vitaminCRDA',
+    firebaseKey: 'VitaminC',
+    nutrientKey: 'Vitamin C, total ascorbic acid'
+  },
+  _sodium : {
+    unit: 'mg',
+    unitMember: '_sodiumUnit',
+    rda2k: 2400,
+    rdaMember: '_sodiumRDA',
+    firebaseKey: 'Sodium',
+    nutrientKey: 'Sodium, Na'
+  },
+  _vitaminK : {
+    unit: 'µg',
+    unitMember: '_vitaminKUnit',
+    rda2k: 80,
+    rdaMember: '_vitaminKRDA',
+    firebaseKey: 'VitaminK',
+    nutrientKey: 'Vitamin K (phylloquinone)'
+  },
+  _vitaminA : {
+    unit: 'µg',
+    unitMember: '_vitaminAUnit',
+    rda2k: undefined, // TODO: get conversion from 5000 IU
+    rdaMember: '_vitaminARDA',
+    firebaseKey: 'VitaminA',
+    nutrientKey: 'Vitamin A, RAE',
+  },
+  _vitaminA_IU : {
+    unit: 'IU',
+    unitMember: '_vitaminA_IUUnit',
+    rda2k: 5000,
+    rdaMember: '_vitaminA_IURDA',
+    firebaseKey: 'VitaminA_IU',
+    nutrientKey: 'Vitamin A, IU'
+  },
+  _vitaminD_IU : {
+    unit: 'IU',
+    unitMember: '_vitaminD_IUUnit',
+    rda2k: 400,
+    rdaMember: '_vitaminD_IURDA',
+    firebaseKey: 'VitaminD_IU',
+    nutrientKey: 'Vitamin D'  // Measured in IU from USDA data.
+  }
+}

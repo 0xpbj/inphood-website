@@ -153,43 +153,11 @@ export class IngredientModel {
     //   Generic measures/Unit:
     this._servingAmount = 100
     this._servingUnit = 'g'
-
-    this._calories = getFloatFromDB(dataForKey, 'kcal')
+    //
     // 9 calories per gram of fat:
-    this._caloriesFromFat = 9 * getFloatFromDB(dataForKey, 'Fat')
-    //
-    //   Fat measures/metrics:
-    this._totalFatPerServing = getFloatFromDB(dataForKey, 'Fat')
-    this._totalFatUnit = 'g'
-    this._totalFatRDA = 100.0 * this._totalFatPerServing / RDA2000Cal.totalFat
-    this._saturatedFatPerServing = getFloatFromDB(dataForKey, 'SatFat')
-    this._saturatedFatUnit = 'g'
-    this._saturatedFatRDA = 100.0 * this._saturatedFatPerServing / RDA2000Cal.saturatedFat
-    this._transFatPerServing = getFloatFromDB(dataForKey, 'TransFat')
-    this._transFatUnit = 'g'
-    this['_polyunsatFat'] = getFloatFromDB(dataForKey, 'PolyunsatFat')
-    //
-    //   Cholesterol & Sodium measures/metrics:
-    this._cholesterol = getFloatFromDB(dataForKey, 'Cholesterol')
-    this._cholesterolUnit = 'mg'
-    this._cholesterolRDA = 100.0 * this._cholesterol / RDA2000Cal.cholesterol
-    this._sodium = getFloatFromDB(dataForKey, 'Sodium')
-    this._sodiumUnit = 'mg'
-    this._sodiumRDA = 100.0 * this._sodium / RDA2000Cal.sodium
-    //
-    //   Carbohydrate measures/metrics:
-    this._totalCarbohydratePerServing = getFloatFromDB(dataForKey, 'Carbohydrate')
-    this._totalCarbohydrateUnit = 'g'
-    this._totalCarbohydrateRDA = 100.0 * this._totalCarbohydratePerServing / RDA2000Cal.carbohydrate
-    this._dietaryFiber = getFloatFromDB(dataForKey, 'Fiber')
-    this._dietaryFiberUnit = 'g'
-    this._dietaryFiberRDA = 100.0 * this._dietaryFiber / RDA2000Cal.fiber
-    this._sugars = getFloatFromDB(dataForKey, 'Sugar')
-    this._sugarsUnit = 'g'
-    //
-    //   Protein measures/metrics:
-    this._totalProteinPerServing = getFloatFromDB(dataForKey, 'Protein')
-    this._totalProteinUnit = 'g'
+    this._caloriesFromFat = 9 * getFloatFromDB(
+      dataForKey,
+      IngredientModel.nutrientMembers['_totalFatPerServing'].firebaseKey)
     //
     //   National Database Number
     this._ndbno = parseInt(dataForKey['NDB'])
@@ -198,6 +166,23 @@ export class IngredientModel {
     this._measureWeight_g = parseFloat(dataForKey['Weight(g)'])
     this._measureString = dataForKey['Measure']
     this.setMeasurePropsFromString(this._measureString)
+    //
+    // Nutrients:
+    const nutrientMembers = IngredientModel.nutrientMembers
+    for (let member in nutrientMembers) {
+        const nutrientMember = nutrientMembers[member]
+
+        this[member] = getFloatFromDB(dataForKey, nutrientMember.firebaseKey)
+        if (nutrientMember.unitMember !== undefined &&
+            nutrientMember.unit !== undefined) {
+          this[nutrientMember.unitMember] = nutrientMember.unit
+        }
+        if (nutrientMember.rdaMember !== undefined &&
+            nutrientMember.rda2k !== undefined) {
+          this[nutrientMember.rdaMember] = 100.0 * this[member] / nutrientMember.rda2k
+        }
+    }
+
     //
     // Micronutrients:
     const microNutrientMembers = IngredientModel.microNutrientMembers
@@ -773,6 +758,7 @@ IngredientModel.nutrientMembers = {
     unitMember: undefined,
     rda2k: 2000,
     rdaMember: undefined,
+    visibleMember: '_caloriesVisible',
     firebaseKey: 'kcal',
     nutrientKey: 'Energy'
   },
@@ -781,6 +767,7 @@ IngredientModel.nutrientMembers = {
     unitMember: '_totalFatUnit',
     rda2k: 65,
     rdaMember: '_totalFatRDA',
+    visibleMember: '_totalFatVisible',
     firebaseKey: 'Fat',
     nutrientKey: 'Total lipid (fat)'
   },
@@ -789,6 +776,7 @@ IngredientModel.nutrientMembers = {
     unitMember: '_saturatedFatUnit',
     rda2k: 20,
     rdaMember: '_saturatedFatRDA',
+    visibleMember: '_saturatedFatVisible',
     firebaseKey: 'SatFat',
     nutrientKey: 'Fatty acids, total saturated'
   },
@@ -797,6 +785,7 @@ IngredientModel.nutrientMembers = {
     unitMember: '_transFatUnit',
     rda2k: undefined,
     rdaMember: undefined,
+    visibleMember: '_transFatVisible',
     firebaseKey: 'TransFat',
     nutrientKey: 'Fatty acids, total trans'
   },
@@ -805,6 +794,7 @@ IngredientModel.nutrientMembers = {
     unitMember: '_polyunsatFatUnit',
     rda2k: undefined,
     rdaMember: undefined,
+    visibleMember: '_polyunsatFatVisible',
     firebaseKey: 'PolyunsatFat',
     nutrientKey: 'Fatty acids, total polyunsaturated'
   },
@@ -813,6 +803,7 @@ IngredientModel.nutrientMembers = {
     unitMember: '_cholesterolUnit',
     rda2k: 300,
     rdaMember: '_cholesterolRDA',
+    visibleMember: '_cholesterolVisible',
     firebaseKey: 'Cholesterol',
     nutrientKey: 'Cholesterol'
   },
@@ -821,6 +812,7 @@ IngredientModel.nutrientMembers = {
     unitMember: '_sodiumUnit',
     rda2k: 2400,
     rdaMember: '_sodiumRDA',
+    visibleMember: '_sodiumVisible',
     firebaseKey: 'Sodium',
     nutrientKey: 'Sodium, Na'
   },
@@ -829,6 +821,7 @@ IngredientModel.nutrientMembers = {
     unitMember: '_totalCarbohydrateUnit',
     rda2k: 300,
     rdaMember: '_totalCarbohydrateRDA',
+    visibleMember: '_totalCarbohydrateVisible',
     firebaseKey: 'Carbohydrate',
     nutrientKey: 'Carbohydrate, by difference'
   },
@@ -837,6 +830,7 @@ IngredientModel.nutrientMembers = {
     unitMember: '_dietaryFiberUnit',
     rda2k: 25,
     rdaMember: '_dietaryFiberRDA',
+    visibleMember: '_dietaryFiberVisible',
     firebaseKey: 'Fiber',
     nutrientKey: 'Fiber, total dietary'
   },
@@ -845,6 +839,7 @@ IngredientModel.nutrientMembers = {
     unitMember: '_sugarsUnit',
     rda2k: undefined,
     rdaMember: undefined,
+    visibleMember: '_sugarsVisible',
     firebaseKey: 'Sugar',
     nutrientKey: 'Sugars, total'
   },
@@ -853,6 +848,7 @@ IngredientModel.nutrientMembers = {
     unitMember: '_totalProteinUnit',
     rda2k: 50,
     rdaMember: undefined,
+    visibleMember: '_totalProteinVisible',
     firebaseKey: 'Protein',
     nutrientKey: 'Protein'
   }
@@ -864,6 +860,7 @@ IngredientModel.microNutrientMembers = {
     unitMember: '_vitaminB12Unit',
     rda2k: 6.0,
     rdaMember: '_vitaminB12RDA',
+    visibleMember: '_vitaminB12Visible',
     firebaseKey: 'VitaminB12',
     nutrientKey: 'Vitamin B-12'
   },
@@ -872,6 +869,7 @@ IngredientModel.microNutrientMembers = {
     unitMember: '_calciumUnit',
     rda2k: 1000,
     rdaMember: '_calciumRDA',
+    visibleMember: '_calciumVisible',
     firebaseKey: 'Calcium',
     nutrientKey: 'Calcium, Ca'
   },
@@ -880,6 +878,7 @@ IngredientModel.microNutrientMembers = {
     unitMember: '_ironUnit',
     rda2k: 18,
     rdaMember: '_ironRDA',
+    visibleMember: '_ironVisible',
     firebaseKey: 'Iron',
     nutrientKey: 'Iron, Fe'
   },
@@ -888,6 +887,7 @@ IngredientModel.microNutrientMembers = {
     unitMember: '_vitaminEUnit',
     rda2k: undefined,   // TODO: get conversion from 30 IU
     rdaMember: '_vitaminERDA',
+    visibleMember: '_vitaminEVisible',
     firebaseKey: 'VitaminE',
     nutrientKey: 'Vitamin E (alpha-tocopherol)'
   },
@@ -896,6 +896,7 @@ IngredientModel.microNutrientMembers = {
     unitMember: '_vitaminDUnit',
     rda2k: undefined,   // TODO: get conversion from 400 IU
     rdaMember: '_vitaminDRDA',
+    visibleMember: '_vitaminDVisible',
     firebaseKey: 'VitaminD',
     nutrientKey: 'Vitamin D (D2 + D3)'  // Measured in ug from USDA data
   },
@@ -904,6 +905,7 @@ IngredientModel.microNutrientMembers = {
     unitMember: '_niacinB3Unit',
     rda2k: 20,
     rdaMember: '_niacinB3RDA',
+    visibleMember: '_niacinB3Visible',
     firebaseKey: 'NiacinB3',
     nutrientKey: 'Niacin'
   },
@@ -912,6 +914,7 @@ IngredientModel.microNutrientMembers = {
     unitMember: '_magnesiumUnit',
     rda2k: 400,
     rdaMember: '_magnesiumRDA',
+    visibleMember: '_magnesiumVisible',
     firebaseKey: 'Magnesium',
     nutrientKey: 'Magnesium, Mg'
   },
@@ -920,6 +923,7 @@ IngredientModel.microNutrientMembers = {
     unitMember: '_riboflavinB2Unit',
     rda2k: 1.7,
     rdaMember: '_riboflavinB2RDA',
+    visibleMember: '_riboflavinB2Visible',
     firebaseKey: 'RiboflavinB2',
     nutrientKey: 'Riboflavin'
   },
@@ -928,6 +932,7 @@ IngredientModel.microNutrientMembers = {
     unitMember: '_phosphorusUnit',
     rda2k: 1000,
     rdaMember: '_phosphorusRDA',
+    visibleMember: '_phosphorusVisible',
     firebaseKey: 'Phosphorus',
     nutrientKey: 'Phosphorus, P'
   },
@@ -936,6 +941,7 @@ IngredientModel.microNutrientMembers = {
     unitMember: '_zincUnit',
     rda2k: 15,
     rdaMember: '_zincRDA',
+    visibleMember: '_zincVisible',
     firebaseKey: 'Zinc',
     nutrientKey: 'Zing, Zn'
   },
@@ -944,6 +950,7 @@ IngredientModel.microNutrientMembers = {
     unitMember: '_folicAcidUnit',
     rda2k: 400,
     rdaMember: '_folicAcidRDA',
+    visibleMember: '_folicAcidVisible',
     firebaseKey: 'FolicAcid',
     nutrientKey: 'Folate, DFE'
   },
@@ -952,6 +959,7 @@ IngredientModel.microNutrientMembers = {
     unitMember: '_vitaminB6Unit',
     rda2k: 2.0,
     rdaMember: '_vitaminB6RDA',
+    visibleMember: '_vitaminB6Visible',
     firebaseKey: 'VitaminB6',
     nutrientKey: 'Vitamin B-6'
   },
@@ -960,6 +968,7 @@ IngredientModel.microNutrientMembers = {
     unitMember: '_potassiumUnit',
     rda2k: 3500,
     rdaMember: '_potassiumRDA',
+    visibleMember: '_potassiumVisible',
     firebaseKey: 'Potassium',
     nutrientKey: 'Potassium, K'
   },
@@ -968,6 +977,7 @@ IngredientModel.microNutrientMembers = {
     unitMember: '_thiaminB1Unit',
     rda2k: 1.5,
     rdaMember: '_thiaminB1RDA',
+    visibleMember: '_thiaminB1Visible',
     firebaseKey: 'ThiaminB1',
     nutrientKey: 'Thiamin'
   },
@@ -976,6 +986,7 @@ IngredientModel.microNutrientMembers = {
     unitMember: '_vitaminCUnit',
     rda2k: 60,
     rdaMember: '_vitaminCRDA',
+    visibleMember: '_vitaminCVisible',
     firebaseKey: 'VitaminC',
     nutrientKey: 'Vitamin C, total ascorbic acid'
   },
@@ -984,6 +995,7 @@ IngredientModel.microNutrientMembers = {
     unitMember: '_sodiumUnit',
     rda2k: 2400,
     rdaMember: '_sodiumRDA',
+    visibleMember: '_sodiumVisible',
     firebaseKey: 'Sodium',
     nutrientKey: 'Sodium, Na'
   },
@@ -992,6 +1004,7 @@ IngredientModel.microNutrientMembers = {
     unitMember: '_vitaminKUnit',
     rda2k: 80,
     rdaMember: '_vitaminKRDA',
+    visibleMember: '_vitaminKVisible',
     firebaseKey: 'VitaminK',
     nutrientKey: 'Vitamin K (phylloquinone)'
   },
@@ -1000,6 +1013,7 @@ IngredientModel.microNutrientMembers = {
     unitMember: '_vitaminAUnit',
     rda2k: undefined, // TODO: get conversion from 5000 IU
     rdaMember: '_vitaminARDA',
+    visibleMember: '_vitaminAVisible',
     firebaseKey: 'VitaminA',
     nutrientKey: 'Vitamin A, RAE',
   },
@@ -1008,6 +1022,7 @@ IngredientModel.microNutrientMembers = {
     unitMember: '_vitaminA_IUUnit',
     rda2k: 5000,
     rdaMember: '_vitaminA_IURDA',
+    visibleMember: '_vitaminA_IUVisible',
     firebaseKey: 'VitaminA_IU',
     nutrientKey: 'Vitamin A, IU'
   },
@@ -1016,6 +1031,7 @@ IngredientModel.microNutrientMembers = {
     unitMember: '_vitaminD_IUUnit',
     rda2k: 400,
     rdaMember: '_vitaminD_IURDA',
+    visibleMember: '_vitaminD_IUVisible',
     firebaseKey: 'VitaminD_IU',
     nutrientKey: 'Vitamin D'  // Measured in IU from USDA data.
   }

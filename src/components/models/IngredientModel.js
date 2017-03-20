@@ -247,8 +247,7 @@ export class IngredientModel {
       const microNutrientMembers = IngredientModel.microNutrientMembers
       for (let member in microNutrientMembers) {
         const uNutrientMember = microNutrientMembers[member]
-        if (uNutrientMember.unitMember !== undefined &&
-            uNutrientMember.unit !== undefined) {
+        if (bothDefined(uNutrientMember.unitMember, uNutrientMember.unit)) {
           throwIfUnitMismatch(uNutrientMember,
                               uNutrientMember.unit,
                               ingredient[uNutrientMember.unitMember],
@@ -257,18 +256,11 @@ export class IngredientModel {
           this[member] += ingredient[member] * scaleFactor
           this[uNutrientMember.unitMember] = ingredient[uNutrientMember.unitMember]
         }
-        if (uNutrientMember.rdaMember !== undefined &&
-            uNutrientMember.rda2k !== undefined) {
+        if (bothDefined(uNutrientMember.rdaMember, uNutrientMember.rda2k)) {
           this[uNutrientMember.rdaMember] +=
             ingredient[uNutrientMember.rdaMember] * scaleFactor
         }
       }
-
-      // console.log('   ' + key);
-      // console.log('   scaleFactor:          ' + scaleFactor);
-      // console.log('   ingredient._calories: ' + ingredient._calories);
-      // console.log('   total calories:       ' + this._calories);
-      // console.log('   total mass(g):        ' + this._servingAmount + this._servingUnit);
     }
   }
 
@@ -283,7 +275,7 @@ export class IngredientModel {
     //   Generic measures/Unit:
     this._servingAmount = ingredientData._servingAmount
     this._servingUnit = ingredientData._servingUnit
-    this._calories = ingredientData._calories
+
     // Display Unit/Servings (i.e. 2 tacos) -- added after items were serialized,
     // hence check for hasOwnProperty:
     if (ingredientData.hasOwnProperty('_displayServingCount') &&
@@ -293,48 +285,6 @@ export class IngredientModel {
     }
     // 9 calories per gram of fat:
     this._caloriesFromFat = ingredientData._caloriesFromFat
-    //
-    //   Fat measures/metrics:
-    this._totalFatPerServing = ingredientData._totalFatPerServing
-    this._totalFatUnit = ingredientData._totalFatUnit
-    this._totalFatRDA = ingredientData._totalFatRDA
-    this._saturatedFatPerServing = ingredientData._saturatedFatPerServing
-    this._saturatedFatUnit = ingredientData._saturatedFatUnit
-    this._saturatedFatRDA = ingredientData._saturatedFatRDA
-    this._transFatPerServing = ingredientData._transFatPerServing
-    this._transFatUnit = ingredientData._transFatUnit
-    // Poly unsaturated fat was a late add on:
-    const pUnsatFat = '_polyunsatFat'
-    if (ingredientData.hasOwnProperty(pUnsatFat)) {
-      this[pUnsatFat] = ingredientData[pUnsatFat]
-      //Assume unit is also serialized
-      const unitMember = pUnsatFat + 'Unit'
-      this[unitMember] = ingredientData[unitMember]
-    } // else go with constructor values (TODO: consider NDBNO look up to fill
-      // this value in and storing it in FB/update)
-    //
-    //
-    //   Cholesterol & Sodium measures/metrics:
-    this._cholesterol = ingredientData._cholesterol
-    this._cholesterolUnit = ingredientData._cholesterolUnit
-    this._cholesterolRDA = ingredientData._cholesterolRDA
-    this._sodium = ingredientData._sodium
-    this._sodiumUnit = ingredientData._sodiumUnit
-    this._sodiumRDA = ingredientData._sodiumRDA
-    //
-    //   Carbohydrate measures/metrics:
-    this._totalCarbohydratePerServing = ingredientData._totalCarbohydratePerServing
-    this._totalCarbohydrateUnit = ingredientData._totalCarbohydrateUnit
-    this._totalCarbohydrateRDA = ingredientData._totalCarbohydrateRDA
-    this._dietaryFiber = ingredientData._dietaryFiber
-    this._dietaryFiberUnit = ingredientData._dietaryFiberUnit
-    this._dietaryFiberRDA = ingredientData._dietaryFiberRDA
-    this._sugars = ingredientData._sugars
-    this._sugarsUnit = ingredientData._sugarsUnit
-    //
-    //   Protein measures/metrics:
-    this._totalProteinPerServing = ingredientData._totalProteinPerServing
-    this._totalProteinUnit = ingredientData._totalProteinUnit
     //
     //   National Database Number
     this._ndbno = ingredientData._ndbno
@@ -346,6 +296,30 @@ export class IngredientModel {
     this._measureUnit = ingredientData._measureUnit
     this._measureMeta = ingredientData._measureMeta
     //
+    // Nutrients
+    const nutrientMembers = IngredientModel.nutrientMembers
+    for (let member in nutrientMembers) {
+      const nutrientMember = nutrientMembers[member]
+
+      if (! ingredientData.hasOwnProperty(member)) {
+        // Go with the constructor values
+        // TODO: in future, might want to use NDBNO to look this up (poses problems
+        //       for label.inphood package size & performance; would also want to
+        //       re-serialize)
+        continue
+      }
+
+      this[member] = ingredientData[member]
+      if (bothDefined(nutrientMember.unitMember, nutrientMember.unit)) {
+        this[nutrientMember.unitMember] =
+          ingredientData[nutrientMember.unitMember]
+      }
+      if (bothDefined(nutrientMember.rdaMember, nutrientMember.rda2k)) {
+        this[nutrientMember.rdaMember] =
+          ingredientData[nutrientMember.rdaMember]
+      }
+    }
+    //
     // Micronutrients:
     //    These were added after serialization, consequently they cannot be restored
     //    for all label serializations
@@ -353,23 +327,24 @@ export class IngredientModel {
     for (let member in microNutrientMembers) {
       const uNutrientMember = microNutrientMembers[member]
 
-      if (ingredientData.hasOwnProperty(member)) {
-        this[member] = ingredientData[member]
-        // Assume unit & rda were also serialized
-        if (uNutrientMember.unitMember !== undefined &&
-            uNutrientMember.unit !== undefined) {
-          this[uNutrientMember.unitMember] =
-            ingredientData[uNutrientMember.unitMember]
-        }
-        if (uNutrientMember.rdaMember !== undefined &&
-            uNutrientMember.rda2k !== undefined) {
-          this[uNutrientMember.rdaMember] =
-            ingredientData[uNutrientMember.rdaMember]
-        }
-      } // else go with the constructor values
-      // TODO: in future, might want to use NDBNO to look this up (poses problems
-      //       for label.inphood package size & performance; would also want to
-      //       re-serialize)
+      if (! ingredientData.hasOwnProperty(member)) {
+        // Go with the constructor values
+        // TODO: in future, might want to use NDBNO to look this up (poses problems
+        //       for label.inphood package size & performance; would also want to
+        //       re-serialize)
+        continue
+      }
+
+      this[member] = ingredientData[member]
+      // Assume unit & rda were also serialized
+      if (bothDefined(uNutrientMember.unitMember, uNutrientMember.unit)) {
+        this[uNutrientMember.unitMember] =
+          ingredientData[uNutrientMember.unitMember]
+      }
+      if (bothDefined(uNutrientMember.rdaMember, uNutrientMember.rda2k)) {
+        this[uNutrientMember.rdaMember] =
+          ingredientData[uNutrientMember.rdaMember]
+      }
     }
 
     // sets member var and also scale factor

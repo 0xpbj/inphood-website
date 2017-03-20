@@ -371,10 +371,7 @@ export class IngredientModel {
     if (!foodObject.hasOwnProperty('nutrients')) {
       throw 'Unable to execute IngredientModel.initializeFromBrandedFdaObj. No nutritent data.'
     }
-    const nutrients = foodObject.nutrients
-    for (let j = 0; j < nutrients.length; j++) {
-      const nutrient = nutrients[j]
-
+    for (let nutrient of foodObject.nutrients) {
       if (!(nutrient.hasOwnProperty('name')
             && nutrient.hasOwnProperty('unit')
             && nutrient.hasOwnProperty('value'))) {
@@ -386,88 +383,46 @@ export class IngredientModel {
       const nUnit = nutrient.unit
       const nValue = nutrient.value
 
-      switch(nName) {
-        case "Energy":
-          throwIfUnexpectedUnit("Energy", "kcal", nUnit)
-          this._calories = nValue
-          break
-        case "Protein":
-          throwIfUnexpectedUnit("Protein", "g", nUnit)
-          this._totalProteinPerServing = nValue
-          break
-        case "Total lipid (fat)":
-          throwIfUnexpectedUnit("Total lipid (fat)", "g", nUnit)
-          this._totalFatPerServing = nValue
-          this._totalFatRDA = 100.0 * this._totalFatPerServing / RDA2000Cal.totalFat
-          this._caloriesFromFat = 9 * this._totalFatPerServing
-          break
-        case "Carbohydrate, by difference":
-          throwIfUnexpectedUnit("Carbohydrate, by difference", "g", nUnit)
-          this._totalCarbohydratePerServing = nValue
-          this._totalCarbohydrateRDA = 100.0 * this._totalCarbohydratePerServing / RDA2000Cal.carbohydrate
-          break
-        case "Fiber, total dietary":
-          throwIfUnexpectedUnit("Fiber, total dietary", "g", nUnit)
-          this._dietaryFiber = nValue
-          this._dietaryFiberRDA = 100.0 * this._dietaryFiber / RDA2000Cal.fiber
-          break
-        case "Sodium, Na":
-          throwIfUnexpectedUnit("Sodium, Na", "mg", nUnit)
-          this._sodium = nValue
-          this._sodiumRDA = 100.0 * this._sodium / RDA2000Cal.sodium
-          break
-        case "Sugars, total":
-          throwIfUnexpectedUnit("Sugars, total", "g", nUnit)
-          this._sugars = nValue
-          break
-        case "Fatty acids, total saturated":
-          throwIfUnexpectedUnit("Fatty acids, total saturated", "g", nUnit)
-          this._saturatedFatPerServing = nValue
-          this._saturatedFatRDA = 100.0 * this._saturatedFatPerServing / RDA2000Cal.saturatedFat
-          break
-        // TODO:
-        // case "Fatty acids, total monounsaturated":
-        //   ...
-        //   break
-        case "Fatty acids, total polyunsaturated":
-          throwIfUnexpectedUnit(nName, "", nUnit)
-          this['_polyunsatFat'] = nValue
-          break
-        case "Fatty acids, total trans":
-          throwIfUnexpectedUnit("Fatty acids, total trans", "g", nUnit)
-          this._transFatPerServing = nValue
-          break
-        case "Cholesterol":
-          throwIfUnexpectedUnit("Cholesterol", "mg", nUnit)
-          this._cholesterol = nValue
-          this._cholesterolRDA = 100.0 * this._cholesterol / RDA2000Cal.cholesterol
-          break
-        default:
-          // Micronutrients:
-          //    Check to see if nName is in the nutrientKey values of the
-          //    IngredientModel.microNutrientMembers:
-          const microNutrientMembers = IngredientModel.microNutrientMembers
-          for (let member in microNutrientMembers) {
-            const uNutrientMember = microNutrientMembers[member]
+      // TODO: combine these
+      // Nutrients:
+      //    Check to see if nName is in the nutrientKey values of the
+      //    IngredientModel.nutrientMembers:
+      const nutrientMembers = IngredientModel.nutrientMembers
+      for (let member in nutrientMembers) {
+        const nutrientMember = nutrientMembers[member]
 
-            if (nName === uNutrientMember.nutrientKey) {
-              // TODO:
-              //   - special cases:
-              //         "Vitamin D" measured in IU
-              //         "Vitamin D (D2 + D3)" measured in ug
-              if (uNutrientMember.unitMember !== undefined &&
-                  uNutrientMember.unit !== undefined) {
-                throwIfUnexpectedUnit(nName, uNutrientMember.unit, nUnit)
-              }
-              this[member] = nValue
-              if (uNutrientMember.rdaMember !== undefined &&
-                  uNutrientMember.rda2k !== undefined) {
-                this[uNutrientMember.rdaMember] =
-                  100 * nValue / uNutrientMember.rda2k
-              }
-              break
-            }
+        if (nName === nutrientMember.nutrientKey) {
+          // TODO: what if they're not both defined?
+          if (bothDefined(nutrientMember.unitMember, nutrientMember.unit)) {
+            throwIfUnexpectedUnit(nName, nutrientMember.unit, nUnit)
           }
+          this[member] = nValue
+          if (bothDefined(nutrientMember.rdaMember, nutrientMember.rda2k)) {
+            this[nutrientMember.rdaMember] = 100 * nValue / nutrientMember.rda2k
+          }
+          break
+        }
+      }
+
+      // Micronutrients:
+      //    Check to see if nName is in the nutrientKey values of the
+      //    IngredientModel.microNutrientMembers:
+      const microNutrientMembers = IngredientModel.microNutrientMembers
+      for (let member in microNutrientMembers) {
+        const uNutrientMember = microNutrientMembers[member]
+
+        if (nName === uNutrientMember.nutrientKey) {
+          // TODO: what if they're not both defined?
+          if (bothDefined(uNutrientMember.unitMember, uNutrientMember.unit)) {
+            throwIfUnexpectedUnit(nName, uNutrientMember.unit, nUnit)
+          }
+          this[member] = nValue
+          if (bothDefined(uNutrientMember.rdaMember, uNutrientMember.rda2k)) {
+            this[uNutrientMember.rdaMember] =
+              100 * nValue / uNutrientMember.rda2k
+          }
+          break
+        }
       }
 
       // The FDA Branded database has an array of nutrients for each food item.

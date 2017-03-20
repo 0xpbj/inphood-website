@@ -60,7 +60,7 @@ export default class Results extends React.Component {
       'Fiber        : ' + anIngredientModel.getDietaryFiber() + ' ' + anIngredientModel.getDietaryFiberUnit() + '\n' +
       'Protein      : ' + anIngredientModel.getTotalProteinPerServing() + ' ' + anIngredientModel.getTotalProteinUnit() + '\n' +
       'Sugars       : ' + anIngredientModel.getSugars() + ' ' + anIngredientModel.getSugarsUnit() + '\n' +
-      'Sodium       : ' + anIngredientModel.getSodium() + ' ' + anIngredientModel.getSodumUnit() + '\n'
+      'Sodium       : ' + anIngredientModel.getSodium() + ' ' + anIngredientModel.getSodiumUnit() + '\n'
 
     return textLabel
   }

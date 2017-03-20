@@ -28,6 +28,10 @@ function throwIfUnexpectedUnit(metric, expectedUnit, actualUnit) {
   }
 }
 
+function bothDefined(obj1, obj2) {
+  return ((obj1 !== undefined) && (obj2 !== undefined))
+}
+
 // from: https://www.dsld.nlm.nih.gov/dsld/dailyvalue.jsp
 //  _vitaminA and _vitaminD do not feature in this b/c the site above uses IU instead
 //  of ug/mg
@@ -115,14 +119,13 @@ export class IngredientModel {
       const nutrientMember = nutrientMembers[member]
 
       this[member] = 0
-      if (nutrientMember.unitMember !== undefined &&
-          nutrientMember.unit !== undefined) {
+      if (bothDefined(nutrientMember.unitMember, nutrientMember.unit)) {
         this[nutrientMember.unitMember] = nutrientMember.unit
       }
-      if (nutrientMember.rdaMember !== undefined &&
-          nutrientMember.rda2k !== undefined) {
+      if (bothDefined(nutrientMember.rdaMember, nutrientMember.rda2k)) {
         this[nutrientMember.rdaMember] = 0
       }
+      this[nutrientMember.visibleMember] = undefined
     }
     //
     //   Micronutrients:
@@ -131,14 +134,13 @@ export class IngredientModel {
       const uNutrientMember = microNutrientMembers[member]
 
       this[member] = 0
-      if (uNutrientMember.unitMember !== undefined &&
-          uNutrientMember.unit !== undefined) {
+      if (bothDefined(uNutrientMember.unitMember, uNutrientMember.unit)) {
         this[uNutrientMember.unitMember] = uNutrientMember.unit
       }
-      if (uNutrientMember.rdaMember !== undefined &&
-          uNutrientMember.unit !== undefined) {
+      if (bothDefined(uNutrientMember.rdaMember, uNutrientMember.rda2k)) {
         this[uNutrientMember.rdaMember] = 0
       }
+      this[uNutrientMember.visibleMember] = undefined
     }
   }
 
@@ -173,12 +175,10 @@ export class IngredientModel {
         const nutrientMember = nutrientMembers[member]
 
         this[member] = getFloatFromDB(dataForKey, nutrientMember.firebaseKey)
-        if (nutrientMember.unitMember !== undefined &&
-            nutrientMember.unit !== undefined) {
+        if (bothDefined(nutrientMember.unitMember, nutrientMember.unit)) {
           this[nutrientMember.unitMember] = nutrientMember.unit
         }
-        if (nutrientMember.rdaMember !== undefined &&
-            nutrientMember.rda2k !== undefined) {
+        if (bothDefined(nutrientMember.rdaMember, nutrientMember.rda2k)) {
           this[nutrientMember.rdaMember] = 100.0 * this[member] / nutrientMember.rda2k
         }
     }
@@ -190,12 +190,10 @@ export class IngredientModel {
       const uNutrientMember = microNutrientMembers[member]
 
       this[member] = getFloatFromDB(dataForKey, uNutrientMember.firebaseKey)
-      if (uNutrientMember.unitMember !== undefined &&
-          uNutrientMember.unit !== undefined) {
+      if (bothDefined(uNutrientMember.unitMember, uNutrientMember.unit)) {
         this[uNutrientMember.unitMember] = uNutrientMember.unit
       }
-      if (uNutrientMember.rdaMember !== undefined &&
-          uNutrientMember.rda2k !== undefined) {
+      if (bothDefined(uNutrientMember.rdaMember, uNutrientMember.rda2k)) {
         this[uNutrientMember.rdaMember] = 100.0 * this[member] / uNutrientMember.rda2k
       }
     }
@@ -211,9 +209,6 @@ export class IngredientModel {
       const scaleFactor = scaledIngredient.getScale()
       const ingredient = scaledIngredient.getIngredientModel()
 
-      // TODO add remaining checks for serving unit compatibility or appropriate
-      // conversions:
-
       // Add the ingredients together to get a composite label
       //
       //   Generic measures/Unit:
@@ -222,40 +217,33 @@ export class IngredientModel {
       // Only need this assingment on the first ingredient, but in a hurry ...
       this._servingUnit = ingredient._servingUnit
       this._servingAmount += ingredient._servingAmount * scaleFactor
-      // TODO: pretty sure this works for calories (everything is linear
-      // I believe). Need to confirm.
-      this._calories += ingredient._calories * scaleFactor
       this._caloriesFromFat += ingredient._caloriesFromFat * scaleFactor
+
       //
-      //   Fat measures/metrics:
-      throwIfUnitMismatch('total fat', this._totalFatUnit,
-        ingredient._totalFatUnit, ingredient._tag, ingredient._key)
-      // Only need this assingment on the first ingredient, but in a hurry ...
-      this._totalFatUnit = ingredient._totalFatUnit
-      this._totalFatPerServing += ingredient._totalFatPerServing * scaleFactor
-      this._totalFatRDA += ingredient._totalFatRDA * scaleFactor
-      this._saturatedFatPerServing += ingredient._saturatedFatPerServing * scaleFactor
-      this._saturatedFatRDA += ingredient._saturatedFatRDA * scaleFactor
-      this._transFatPerServing += ingredient._transFatPerServing * scaleFactor
-      this['_polyunsatFat'] += ingredient['_polyunsatFat'] * scaleFactor
+      //  Nutrients:
+      const nutrientMembers = IngredientModel.nutrientMembers
+      for (let member in nutrientMembers) {
+        const nutrientMember = nutrientMembers[member]
+
+        this[member] += ingredient[member] * scaleFactor
+        if (bothDefined(nutrientMember.unitMember, nutrientMember.unit)) {
+          // TODO: not sure if this check makes sense--it's comparing the unit
+          //       provided in the constructor against the one being added--maybe
+          //       the check makes sense but the assingment below does not?
+          throwIfUnitMismatch(member,
+                              this[nutrientMember.unitMember],
+                              ingredient[nutrientMember.unitMember],
+                              ingredient._tag,
+                              ingredient._key)
+          this[nutrientMember.unitMember] = ingredient[nutrientMember.unitMember]
+        }
+        if (bothDefined(nutrientMember.rdaMember, nutrientMember.rda2k)) {
+          this[nutrientMember.rdaMember] +=
+            ingredient[nutrientMember.rdaMember] * scaleFactor
+        }
+      }
       //
-      //   Cholesterol & Sodium measures/metrics:
-      this._cholesterol += ingredient._cholesterol * scaleFactor
-      this._cholesterolRDA += ingredient._cholesterolRDA * scaleFactor
-      this._sodium += ingredient._sodium * scaleFactor
-      this._sodiumRDA += ingredient._sodiumRDA * scaleFactor
-      //
-      //   Carbohydrate measures/metrics:
-      this._totalCarbohydratePerServing += ingredient._totalCarbohydratePerServing * scaleFactor
-      this._totalCarbohydrateRDA += ingredient._totalCarbohydrateRDA * scaleFactor
-      this._dietaryFiber += ingredient._dietaryFiber * scaleFactor
-      this._dietaryFiberRDA += ingredient._dietaryFiber * scaleFactor
-      this._sugars += ingredient._sugars * scaleFactor
-      //
-      //   Protein measures/metrics:
-      this._totalProteinPerServing += ingredient._totalProteinPerServing * scaleFactor
-      //
-      //   Micronutrients:
+      //  Micronutrients:
       const microNutrientMembers = IngredientModel.microNutrientMembers
       for (let member in microNutrientMembers) {
         const uNutrientMember = microNutrientMembers[member]

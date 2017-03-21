@@ -164,7 +164,7 @@ export default class NutritionEstimateJSX extends React.Component {
                   <th colSpan={2} style={myStyles.performanceFactsTableElementTh}>
                     <b>Sodium </b>
                     {ingredientComposite.getSodium()}
-                    {ingredientComposite.getSodumUnit()}
+                    {ingredientComposite.getSodiumUnit()}
                   </th>
                   <td style={myStyles.performanceFactsTableElementTdLastChild}>
                     <b>{ingredientComposite.getSodiumRDA()}%</b>

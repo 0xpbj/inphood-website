@@ -133,6 +133,8 @@ export class IngredientModel {
         if (bothDefined(nutrientMember.rdaMember, nutrientMember.rda2k)) {
           this[nutrientMember.rdaMember] = 100.0 * this[member] / nutrientMember.rda2k
         }
+
+        this[nutrientMember.visibleMember] = true
     }
 
     this.setServingAmount(
@@ -521,244 +523,308 @@ export class IngredientModel {
     return this._totalProteinUnit
   }
 
-  getVitaminB12() {
+  get_vitaminB12() {
     return (this._vitaminB12 * this._scaleGettersTo).toFixed(this.decimalPlaces)
   }
 
-  getVitaminB12Unit() {
+  get_vitaminB12Unit() {
     return this._vitaminB12Unit
   }
 
-  getVitaminB12RDA() {
+  get_vitaminB12RDA() {
     return (this._vitaminB12RDA * this._scaleGettersTo).toFixed(this.decimalPlaces)
   }
 
-  getCalcium() {
+  get_vitaminB12Visible() {
+    return this._vitaminB12Visible
+  }
+
+  get_calcium() {
     return (this._calcium * this._scaleGettersTo).toFixed(this.decimalPlaces)
   }
 
-  getCalciumUnit() {
+  get_calciumUnit() {
     return this._calciumUnit
   }
 
-  getCalciumRDA() {
+  get_calciumRDA() {
     return (this._calciumRDA * this._scaleGettersTo).toFixed(this.decimalPlaces)
   }
 
-  getIron() {
+  get_calciumVisible() {
+    return this._calciumVisible
+  }
+
+  get_iron() {
     return (this._iron * this._scaleGettersTo).toFixed(this.decimalPlaces)
   }
 
-  getIronUnit() {
+  get_ironUnit() {
     return this._ironUnit
   }
 
-  getIronRDA() {
+  get_ironRDA() {
     return (this._ironRDA * this._scaleGettersTo).toFixed(this.decimalPlaces)
   }
 
-  getVitaminE() {
+  get_ironVisible() {
+    return this._ironVisible
+  }
+
+  get_vitaminE() {
     return (this._vitaminE * this._scaleGettersTo).toFixed(this.decimalPlaces)
   }
 
-  getVitaminEUnit() {
+  get_vitaminEUnit() {
     return this._vitaminEUnit
   }
 
-  getVitaminERDA() {
+  get_vitaminERDA() {
     return (this._vitaminERDA * this._scaleGettersTo).toFixed(this.decimalPlaces)
   }
 
-  getVitaminD() {
+  get_vitaminEVisible() {
+    return this._vitaminEVisible
+  }
+
+  get_vitaminD() {
     return (this._vitaminD * this._scaleGettersTo).toFixed(this.decimalPlaces)
   }
 
-  getVitaminDUnit() {
+  get_vitaminDUnit() {
     return this._vitaminDUnit
   }
 
-  getVitaminDRDA() {
+  get_vitaminDRDA() {
     return (this._vitaminDRDA * this._scaleGettersTo).toFixed(this.decimalPlaces)
   }
 
-  getNiacinB3() {
+  get_vitaminDVisible() {
+    return this._vitaminDVisible
+  }
+
+  get_niacinB3() {
     return (this._niacinB3 * this._scaleGettersTo).toFixed(this.decimalPlaces)
   }
 
-  getNiacinB3Unit() {
+  get_niacinB3Unit() {
     return this._niacinB3Unit
   }
 
-  getNiacinB3RDA() {
+  get_niacinB3RDA() {
     return (this._niacinB3RDA * this._scaleGettersTo).toFixed(this.decimalPlaces)
   }
 
-  getMagnesium() {
+  get_niacinB3Visible() {
+    return this._niacinB3Visible
+  }
+
+  get_magnesium() {
     return (this._magnesium * this._scaleGettersTo).toFixed(this.decimalPlaces)
   }
 
-  getMagnesiumUnit() {
+  get_magnesiumUnit() {
     return this._magnesiumUnit
   }
 
-  getMagnesiumRDA() {
+  get_magnesiumRDA() {
     return (this._magnesiumRDA * this._scaleGettersTo).toFixed(this.decimalPlaces)
   }
 
-  getRiboflavinB2() {
+  get_magnesiumVisible() {
+    return this._magnesiumVisible
+  }
+
+  get_riboflavinB2() {
     return (this._riboflavinB2 * this._scaleGettersTo).toFixed(this.decimalPlaces)
   }
 
-  getRiboflavinB2Unit() {
+  get_riboflavinB2Unit() {
     return this._riboflavinB2Unit
   }
 
-  getRiboflavinB2RDA() {
+  get_riboflavinB2RDA() {
     return (this._riboflavinB2RDA * this._scaleGettersTo).toFixed(this.decimalPlaces)
   }
 
-  getPhosphorus() {
+  get_riboflavinB2Visible() {
+    return this._riboflavinB2Visible
+  }
+
+  get_phosphorus() {
     return (this._phosphorus * this._scaleGettersTo).toFixed(this.decimalPlaces)
   }
 
-  getPhosphorusUnit() {
+  get_phosphorusUnit() {
     return this._phosphorusUnit
   }
 
-  getPhosphorusRDA() {
+  get_phosphorusRDA() {
     return (this._phosphorusRDA * this._scaleGettersTo).toFixed(this.decimalPlaces)
   }
 
-  getZinc() {
+  get_phosphorusVisible() {
+    return this._phosphorusVisible
+  }
+
+  get_zinc() {
     return (this._zinc * this._scaleGettersTo).toFixed(this.decimalPlaces)
   }
 
-  getZincUnit() {
+  get_zincUnit() {
     return this._zincUnit
   }
 
-  getZincRDA() {
+  get_zincRDA() {
     return (this._zincRDA * this._scaleGettersTo).toFixed(this.decimalPlaces)
   }
 
-  getFolicAcid() {
+  get_zincVisible() {
+    return this._zincVisible
+  }
+
+  get_folicAcid() {
     return (this._folicAcid * this._scaleGettersTo).toFixed(this.decimalPlaces)
   }
 
-  getFolicAcidUnit() {
+  get_folicAcidUnit() {
     return this._folicAcidUnit
   }
 
-  getFolicAcidRDA() {
+  get_folicAcidRDA() {
     return (this._folicAcidRDA * this._scaleGettersTo).toFixed(this.decimalPlaces)
   }
 
-  getVitaminB6() {
+  get_folicAcidVisible() {
+    return this._folicAcidVisible
+  }
+
+  get_vitaminB6() {
     return (this._vitaminB6 * this._scaleGettersTo).toFixed(this.decimalPlaces)
   }
 
-  getVitaminB6Unit() {
+  get_vitaminB6Unit() {
     return this._vitaminB6Unit
   }
 
-  getVitaminB6RDA() {
+  get_vitaminB6RDA() {
     return (this._vitaminB6RDA * this._scaleGettersTo).toFixed(this.decimalPlaces)
   }
 
-  getPotassium() {
+  get_vitaminB6Visible() {
+    return this._vitaminB6Visible
+  }
+
+  get_potassium() {
     return (this._potassium * this._scaleGettersTo).toFixed(this.decimalPlaces)
   }
 
-  getPotassiumUnit() {
+  get_potassiumUnit() {
     return this._potassiumUnit
   }
 
-  getPotassiumRDA() {
+  get_potassiumRDA() {
     return (this._potassiumRDA * this._scaleGettersTo).toFixed(this.decimalPlaces)
   }
 
-  getThiaminB1() {
+  get_potassiumVisible() {
+    return this._potassiumVisible
+  }
+
+  get_thiaminB1() {
     return (this._thiaminB1 * this._scaleGettersTo).toFixed(this.decimalPlaces)
   }
 
-  getThiaminB1Unit() {
+  get_thiaminB1Unit() {
     return this._thiaminB1Unit
   }
 
-  getThiaminB1RDA() {
+  get_thiaminB1RDA() {
     return (this._thiaminB1RDA * this._scaleGettersTo).toFixed(this.decimalPlaces)
   }
 
-  getVitaminC() {
+  get_thiaminB1Visible() {
+    return this._thiaminB1Visible
+  }
+
+  get_vitaminC() {
     return (this._vitaminC * this._scaleGettersTo).toFixed(this.decimalPlaces)
   }
 
-  getVitaminCUnit() {
+  get_vitaminCUnit() {
     return this._vitaminCUnit
   }
 
-  getVitaminCRDA() {
+  get_vitaminCRDA() {
     return (this._vitaminCRDA * this._scaleGettersTo).toFixed(this.decimalPlaces)
   }
 
-  getSodium() {
-    return (this._sodium * this._scaleGettersTo).toFixed(this.decimalPlaces)
+  get_vitaminCVisible() {
+    return this._vitaminCVisible
   }
 
-  getSodiumUnit() {
-    return this._sodiumUnit
-  }
-
-  getSodiumRDA() {
-    return (this._sodiumRDA * this._scaleGettersTo).toFixed(this.decimalPlaces)
-  }
-
-  getVitaminK() {
+  get_vitaminK() {
     return (this._vitaminK * this._scaleGettersTo).toFixed(this.decimalPlaces)
   }
 
-  getVitaminKUnit() {
+  get_vitaminKUnit() {
     return this._vitaminKUnit
   }
 
-  getVitaminKRDA() {
+  get_vitaminKRDA() {
     return (this._vitaminKRDA * this._scaleGettersTo).toFixed(this.decimalPlaces)
   }
 
-  getVitaminA() {
+  get_vitaminKVisible() {
+    return this._vitaminKVisible
+  }
+
+  get_vitaminA() {
     return (this._vitaminA * this._scaleGettersTo).toFixed(this.decimalPlaces)
   }
 
-  getVitaminAUnit() {
+  get_vitaminAUnit() {
     return this._vitaminAUnit
   }
 
-  getVitaminARDA() {
+  get_vitaminARDA() {
     return (this._vitaminARDA * this._scaleGettersTo).toFixed(this.decimalPlaces)
   }
 
-  getVitaminA_IU() {
+  get_vitaminAVisible() {
+    return this._vitaminAVisible
+  }
+
+  get_vitaminA_IU() {
     return (this._vitaminA_IU * this._scaleGettersTo).toFixed(this.decimalPlaces)
   }
 
-  getVitaminA_IUUnit() {
+  get_vitaminA_IUUnit() {
     return this._vitaminA_IUUnit
   }
 
-  getVitaminA_IURDA() {
+  get_vitaminA_IURDA() {
     return (this._vitaminA_IURDA * this._scaleGettersTo).toFixed(this.decimalPlaces)
   }
 
-  getVitaminD_IU() {
+  get_vitaminA_IUVisible() {
+    return this._vitaminA_IUVisible
+  }
+
+  get_vitaminD_IU() {
     return (this._vitaminD_IU * this._scaleGettersTo).toFixed(this.decimalPlaces)
   }
 
-  getVitaminD_IUUnit() {
+  get_vitaminD_IUUnit() {
     return this._vitaminD_IUUnit
   }
 
-  getVitaminD_IURDA() {
+  get_vitaminD_IURDA() {
     return (this._vitaminD_IURDA * this._scaleGettersTo).toFixed(this.decimalPlaces)
+  }
+
+  get_vitaminD_IUVisible() {
+    return this._vitaminD_IUVisible
   }
 
   getMeasureWeightGrams() {
@@ -781,6 +847,9 @@ export class IngredientModel {
 // rda2k from: https://www.dsld.nlm.nih.gov/dsld/dailyvalue.jsp
 //  _vitaminA and _vitaminD do not feature in this b/c the site above uses IU instead
 //  of ug/mg
+// rda2k for _vitaminE was obtained from conversion described on (for natural form):
+//  https://ods.od.nih.gov/factsheets/VitaminE-HealthProfessional/
+//
 IngredientModel.nutrientMembers = {
   _calories : {
     unit: undefined,
@@ -911,7 +980,7 @@ IngredientModel.nutrientMembers = {
   _vitaminE : {
     unit: 'mg',
     unitMember: '_vitaminEUnit',
-    rda2k: undefined,   // TODO: get conversion from 30 IU
+    rda2k: 20.1,   // Conversion from 30 IU to natural form (from: https://ods.od.nih.gov/factsheets/VitaminE-HealthProfessional/)
     rdaMember: '_vitaminERDA',
     visibleMember: '_vitaminEVisible',
     firebaseKey: 'VitaminE',

@@ -30,9 +30,69 @@ export default class NutritionEstimateJSX extends React.Component {
       return
     }
   }
-  getMicroNutrients(ingredientComposite) {
+  getMicroNutrients(ingredientComposite, styles) {
+    let microNutrientRows = []
+    const numNutrients =
+      Object.keys(NutritionEstimateJSX.microNutrientsAndFnPfxs).length
+    let idxNutrients = 0
 
+    for (let nutrient in NutritionEstimateJSX.microNutrientsAndFnPfxs) {
+      idxNutrients += 1
+      const functionPrefix =
+        NutritionEstimateJSX.microNutrientsAndFnPfxs[nutrient]
+      const getVisibleFn = functionPrefix + 'Visible'
+
+      if (ingredientComposite[getVisibleFn]()) {
+        const getValueFn = functionPrefix
+        const getUnitFn = functionPrefix + 'Unit'
+        const getRDAFn = functionPrefix + 'RDA'
+
+        const value = ingredientComposite[getValueFn]()
+        let unit = ingredientComposite[getUnitFn]()
+        let rda2k = ingredientComposite[getRDAFn]()
+
+        // Convert 'µg' to 'mcg':
+        if (unit === 'µg') {
+          unit = 'mcg'
+        }
+
+        // Handle special cases:
+        if (rda2k === undefined || isNaN(rda2k)) {
+          if (functionPrefix === 'get_vitaminA') {
+            const getAltRDAFn = 'get_vitaminA_IURDA'
+            rda2k = ingredientComposite[getAltRDAFn]()
+          } else if (functionPrefix === 'get_vitaminD') {
+            const getAltRDAFn = 'get_vitaminD_IURDA'
+            rda2k = ingredientComposite[getAltRDAFn]()
+          } else {
+            console.log('RDA based on 2k calorie diet unavailable.');
+            rda2k = ''
+          }
+        }
+        if (rda2k != '') {
+          rda2k = parseInt(rda2k) + '%'
+        }
+
+        let trStyle = (idxNutrients === numNutrients) ? styles.thickEnd : {}
+
+        microNutrientRows.push(
+          <tr style={trStyle}>
+            <th colSpan={2} style={styles.performanceFactsTableElementTh}>
+              {nutrient}&nbsp;
+              {value}
+              {unit}
+            </th>
+            <td style={styles.performanceFactsTableElementTdLastChild}>
+              {rda2k}
+            </td>
+          </tr>
+        )
+      }
+    }
+
+    return microNutrientRows
   }
+
   render() {
     const myStyles = new Style()
     let resultIsNan = false
@@ -55,7 +115,7 @@ export default class NutritionEstimateJSX extends React.Component {
     //   if (resultIsNan)
     //     return <ProgressBar active now={50} bsStyle="info" />
     // }
-    // 
+    //
 
     const servingSizeSentence =
       "Serving Size " +
@@ -229,6 +289,8 @@ export default class NutritionEstimateJSX extends React.Component {
                   </td>
                 </tr>
 
+                {this.getMicroNutrients(ingredientComposite, myStyles)}
+
               </tbody>
             </table>
             <p style={myStyles.smallInfo}>* Percent Daily Values are based on a 2,000 calorie diet. Your daily values may be higher or lower depending on your calorie needs:</p>
@@ -238,4 +300,32 @@ export default class NutritionEstimateJSX extends React.Component {
       </div>
     )
   }
+}
+
+// This list composed based on the order in:
+//   https://www.fda.gov/downloads/Food/GuidanceRegulation/GuidanceDocumentsRegulatoryInformation/LabelingNutrition/UCM511964.pdf
+//
+// Notes:
+//   - Vitamin E did not feature so it has been added at the end.
+//   - Everything is straightforward except Folate which appears as:
+//       Folate 200mcg DFE (120 mcg folic acid)
+//
+// static:
+NutritionEstimateJSX.microNutrientsAndFnPfxs = {
+  'Vitamin D'  : 'get_vitaminD',
+  'Calcium'    : 'get_calcium',
+  'Iron'       : 'get_iron',
+  'Potassium'  : 'get_potassium',
+  'Vitamin A'  : 'get_vitaminA',
+  'Vitamin C'  : 'get_vitaminC',
+  'Thiamin'    : 'get_thiaminB1',
+  'Riboflavin' : 'get_riboflavinB2',
+  'Niacin'     : 'get_niacinB3',
+  'Vitamin B6' : 'get_vitaminB6',
+  'Folate'     : 'get_folicAcid',
+  'Vitamin B12': 'get_vitaminB12',
+  'Phosphorus' : 'get_phosphorus',
+  'Magnesium'  : 'get_magnesium',
+  'Zinc'       : 'get_zinc',
+  'Vitamin E'  : 'get_vitaminE'
 }

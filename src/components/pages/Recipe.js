@@ -20,6 +20,7 @@ import UploadModal from '../layout/UploadModal'
 import MarginLayout from '../../helpers/MarginLayout'
 import TopBar from '../layout/TopBar'
 import ServingsController from '../../containers/ServingsControllerContainer'
+import { withRouter } from 'react-router'
 
 const FieldGroup = ({ id, label, ...props }) => {
   return (
@@ -30,13 +31,14 @@ const FieldGroup = ({ id, label, ...props }) => {
   )
 }
 
-export default class Recipe extends React.Component {
+class Recipe extends React.Component {
   constructor() {
     super()
     this.state = {
       chips: [],
       chipData: [],
       recipe: '',
+      isSaved: true,
       parse: false,
       allergen: '',
       dietary: '',
@@ -56,6 +58,19 @@ export default class Recipe extends React.Component {
       action: 'User in recipe page',
       nonInteraction: false
     });
+    this.setState({isSaved: true})
+  }
+  componentDidMount() {
+    this.props.router.setRouteLeaveHook(this.props.route, this.routerWillLeave.bind(this))
+  }
+  routerWillLeave(nextLocation) {
+    if (!this.state.isSaved) {
+      console.log('NEXT LOCATION: ', nextLocation)
+      if (!nextLocation.search)
+        return 'Your work is not saved! Are you sure you want to leave?'
+      else if (nextLocation.search)
+        return 'Happy with the changes?'
+    }
   }
   recipeFlow() {
     if (this.state.ingredients === '') {
@@ -81,7 +96,7 @@ export default class Recipe extends React.Component {
         this.props.showNutritionMixers()
         this.props.uploadPhoto()
       }
-      this.setState({ingredients: ''})
+      this.setState({ingredients: '', isSaved: false})
     }
   }
   getTitleValidationState() {
@@ -248,3 +263,5 @@ export default class Recipe extends React.Component {
     )
   }
 }
+
+export default withRouter(Recipe)

@@ -165,7 +165,7 @@ export default class Results extends React.Component {
       const embedMsg = '<embed src=' + epath + ' height=600 width=400>'
       const {iUrl, title} = this.props.results.data
       let modTitle = ''
-      if (title !== '')
+      if (title && title !== '')
         modTitle = ': ' + title
 
       const saveButton = (

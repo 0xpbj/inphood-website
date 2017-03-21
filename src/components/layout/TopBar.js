@@ -48,10 +48,8 @@ export default class TopBar extends React.Component {
              lg={ml.lgCol}>
           <Row>
             <Col xs={12} sm={3} style={{paddingLeft: 0, paddingRight: 0}}>
-              <Button bsStyle="link" onClick={() => this.props.closeGenerator()}>
-                <Link to="http://www.inphood.com">
-                  <img src={require('../../images/logoSmall.png')} width="147" height="35"/>
-                </Link>
+              <Button bsStyle="link" onClick={() => this.props.router.push('/')}>
+                <img src={require('../../images/logoSmall.png')} width="147" height="35"/>
               </Button>
             </Col>
             {centerContent}

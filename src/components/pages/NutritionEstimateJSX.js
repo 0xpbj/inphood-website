@@ -30,6 +30,9 @@ export default class NutritionEstimateJSX extends React.Component {
       return
     }
   }
+  getMicroNutrients(ingredientComposite) {
+
+  }
   render() {
     const myStyles = new Style()
     let resultIsNan = false
@@ -38,6 +41,9 @@ export default class NutritionEstimateJSX extends React.Component {
     if (displayGeneratedStatement === undefined) {
       displayGeneratedStatement = false
     }
+    // TODO: We should change this to always load from one or the other (one
+    //       code path vs. these two--it creates problems for setting whether
+    //       things are visible.)
     let ingredientComposite = this.props.ingredientComposite
     if (ingredientComposite === undefined) {
       const nutritionModel = this.props.nutritionModel
@@ -52,8 +58,10 @@ export default class NutritionEstimateJSX extends React.Component {
 
     const servingSizeSentence =
       "Serving Size " +
-      ingredientComposite.getDisplayServingCount() + " " + ingredientComposite.getDisplayServingUnit() +
-      " (" + ingredientComposite.getServingAmount() + ingredientComposite.getServingUnit() + ")"
+      ingredientComposite.getDisplayServingCount() + " " +
+      ingredientComposite.getDisplayServingUnit() + " (" +
+      ingredientComposite.getServingAmount() +
+      ingredientComposite.getServingUnit() + ")"
 
     const showServingsPerContainer =
       (ingredientComposite.getSuggestedServingUnit() === 'people')
@@ -99,7 +107,7 @@ export default class NutritionEstimateJSX extends React.Component {
                   </td>
                 </tr>
 
-                <tr className="thick-row">
+                <tr>
                   <td colSpan={3}
                     style={{...myStyles.smallInfo,
                             ...myStyles.performanceFactsTableElementTdLastChild,
@@ -210,7 +218,7 @@ export default class NutritionEstimateJSX extends React.Component {
                   </td>
                 </tr>
 
-                <tr style={myStyles.thickEnd}>
+                <tr style={myStyles.thickSeparator}>
                   <th colSpan={2} style={myStyles.performanceFactsTableElementTh}>
                     <b>Protein </b>
                     {ingredientComposite.getTotalProteinPerServing()}

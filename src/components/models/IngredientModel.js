@@ -92,7 +92,7 @@ export class IngredientModel {
       if (bothDefined(nutrientMember.rdaMember, nutrientMember.rda2k)) {
         this[nutrientMember.rdaMember] = 0
       }
-      this[nutrientMember.visibleMember] = undefined
+      this[nutrientMember.visibleMember] = true
     }
   }
 

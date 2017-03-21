@@ -97,4 +97,10 @@ export default class NutritionEstimateStyles {
     borderBottomStyle: 'solid',
     borderBottomColor: 'black'
   }
+
+  thickSeparator = {
+    borderBottomWidth: '5px',
+    borderBottomStyle: 'solid',
+    borderBottomColor: 'black'
+  }
 }

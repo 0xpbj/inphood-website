@@ -3,7 +3,7 @@ import {
   INGREDIENT_FIREBASE_DATA,
   SUPER_SEARCH_RESULTS,
   GET_FIREBASE_DATA,
-  SEARCH_INGREDIENT_COMMERCIAL
+  GET_COMMERCIAL_DATA
 } from '../constants/ActionTypes'
 
 import {MatchResultsModel} from '../components/models/MatchResultsModel'
@@ -20,16 +20,16 @@ export const elasticSearchFetch = (request) => {
         return json
       });
     }
-    // else {
-      //console.log("Unexpected server response (non-JSON object returned)");
-    // }
+    else {
+      console.log("Unexpected server response (non-JSON object returned)");
+    }
   })
 }
 
-export function* callElasticSearchLambda(searchIngredient, foodName, size, userSearch, append) {
+export function* callElasticSearchLambda(foodName, size, append, index, length) {
   const url = Config.ELASTIC_LAMBDA_URL
   const search = {
-    'query': {'match' : {'Description': searchIngredient}},
+    'query': {'match' : {'Description': foodName}},
     'size': size
   }
   let myHeaders = new Headers()
@@ -45,23 +45,10 @@ export function* callElasticSearchLambda(searchIngredient, foodName, size, userS
   const {data} = json
   const info = data[0]
   if (info) {
-    const {matchResultsModel} = yield select(state => state.tagModelReducer)
-    let remEllipses = false
-    if (matchResultsModel.hasSearchTerm(foodName)) {
-        remEllipses = append &&
-                      ((matchResultsModel.getSearchResultsLength(foodName) -1)
-                       === Object.keys(data).length)
-    }
-    yield put ({type: INITIALIZE_FIREBASE_DATA, foodName, data, userSearch, append, remEllipses})
-    yield put ({type: GET_FIREBASE_DATA, foodName, ingredient: info._source.Description, key: info._id, userSearch, append})
+    yield put ({type: INITIALIZE_FIREBASE_DATA, foodName, data, append})
+    yield put ({type: GET_FIREBASE_DATA, foodName, ingredient: info._source.Description, key: info._id, append, index, length})
   }
   else {
-    if (userSearch) {
-      yield put ({type: SUPER_SEARCH_RESULTS,
-                  matchResultsModel: new MatchResultsModel(),
-                  ingredient: searchIngredient})
-    }
-    else
-      yield put ({type: SEARCH_INGREDIENT_COMMERCIAL, searchIngredient})
+    yield put ({type: GET_COMMERCIAL_DATA, foodName})
   }
 }

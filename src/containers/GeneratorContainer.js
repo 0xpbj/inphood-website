@@ -1,14 +1,15 @@
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import Nutrition from '../components/pages/Nutrition'
+import Generator from '../components/pages/Generator'
 import * as actionCreators from '../actions/Actions'
 
 function mapStateToProps (state) {
   return {
     tagModel: state.tagModelReducer,
     nutrition: state.nutritionReducer,
-    ingredientModel: state.ingredientModelReducer,
     nutritionModelRed: state.nutritionModelReducer,
+    generator: state.generatorReducer,
+    search: state.searchReducer
   }
 }
 
@@ -19,4 +20,4 @@ function mapDispatchToProps (dispatch) {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(Nutrition)
+)(Generator)

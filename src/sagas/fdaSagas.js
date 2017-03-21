@@ -1,16 +1,16 @@
 import {
+  GET_MORE_DATA,
+  GET_COMMERCIAL_DATA,
   SET_FDA_RESULTS,
-  SEARCH_INGREDIENT,
+  PARSE_SEARCH_FDA_DATA,
   GET_FIREBASE_DATA,
   INITIALIZE_FIREBASE_DATA,
-  SEARCH_INGREDIENT_COMMERCIAL
 } from '../constants/ActionTypes'
-
-import {changesFromSearch, changesFromRecipe} from './parserFunctions'
 
 import { call, fork, put, select, take, takeLatest } from 'redux-saga/effects'
 import request from 'request'
 const Config = require('Config')
+import {changesFromRecipe, changesFromSearch} from './parserFunctions'
 
 const fdaFetch = (request) => {
   return fetch(request)
@@ -24,29 +24,28 @@ const fdaFetch = (request) => {
   })
 }
 
-function* reportFDA(searchIngredient, ndbnoInfo, userSearch) {
-  // console.log('reportFDA ---------------------------------------------------');
+function* reportFDA(searchIngredient, ndbnoInfo, append) {
   const fdaReportUrl = Config.FDA_REPORT_URL +
     '?' + ndbnoInfo + '&api_key=' + Config.FDA_API_KEY
   const requestReport = new Request(fdaReportUrl)
   const resultsReport = yield call (fdaFetch, requestReport)
-  yield put.resolve({type: SET_FDA_RESULTS,
+  yield put ({type: SET_FDA_RESULTS,
                      searchTerm: searchIngredient,
                     results: resultsReport})
-
-  const {selectedTags, matchResultsModel, unusedTags} =
-    yield select(state => state.tagModelReducer)
-
-  if (userSearch === false) {
-    const {missingData, parsedData} = yield select(state => state.nutritionReducer)
-    yield fork (changesFromRecipe, parsedData, missingData, matchResultsModel)
-  } 
-  else if (userSearch === true) {
-    yield fork (changesFromSearch, selectedTags, matchResultsModel, searchIngredient, unusedTags, userSearch)
+  if (append) {
+    yield put ({type: PARSE_SEARCH_FDA_DATA, ingredient: searchIngredient})
+    yield fork (changesFromSearch)
+  }
+  else {
+    const {missingData} = yield select(state => state.nutritionReducer)
+    let newData = []
+    newData.push(searchIngredient)
+    const {matchResultsModel} = yield select(state => state.tagModelReducer)
+    yield fork (changesFromRecipe, newData, missingData, matchResultsModel)
   }
 }
 
-function* searchFDA(searchIngredient, userSearch) {
+function* searchFDA(searchIngredient, append) {
   const fdaSearchUrl = Config.FDA_SEARCH_URL +
     '?format=json&q=' +
     searchIngredient +
@@ -61,34 +60,32 @@ function* searchFDA(searchIngredient, userSearch) {
       ndbnoInfo += '&ndbno=' + i.ndbno
     }
     if (ndbnoInfo !== '') {
-      yield call (reportFDA, searchIngredient, ndbnoInfo, userSearch)
+      yield call (reportFDA, searchIngredient, ndbnoInfo, append)
     }
   }
   else {
-    yield put ({type: INITIALIZE_FIREBASE_DATA, foodName: searchIngredient, data: [], append: false})
-    yield put ({type: GET_FIREBASE_DATA, foodName: searchIngredient, ingredient: searchIngredient, key: 'undefined', userSearch, append: false})
+    yield put ({type: INITIALIZE_FIREBASE_DATA, foodName: searchIngredient, data: [], append})
+    yield put ({type: GET_FIREBASE_DATA, foodName: searchIngredient, ingredient: searchIngredient, key: 'undefined', append, index: 0, length: 0})
   }
 }
 
-// TODO: might make more sense to combine these functions and pass in an
-//       argument indicating what type of search, 'user' or 'recipe'
-function* fdaUserSearch() {
+function* fdaSearch() {
   while (true) {
-    const {searchIngredient} = yield take(SEARCH_INGREDIENT)
-    const userSearch = true
-    yield call (searchFDA, searchIngredient, userSearch)
+    const {foodName} = yield take(GET_MORE_DATA)
+    const append = true
+    yield call (searchFDA, foodName, append)
   }
 }
 
-function* fdaRecipeSearch() {
+function* fdaRecipe() {
   while (true) {
-    const {searchIngredient} = yield take(SEARCH_INGREDIENT_COMMERCIAL)
-    const userSearch = false
-    yield call (searchFDA, searchIngredient, userSearch)
+    const {foodName} = yield take(GET_COMMERCIAL_DATA)
+    const append = false
+    yield call (searchFDA, foodName, append)
   }
 }
 
 export default function* root() {
-  yield fork(fdaUserSearch)
-  yield fork(fdaRecipeSearch)
+  yield fork(fdaSearch)
+  yield fork(fdaRecipe)
 }

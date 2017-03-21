@@ -12,13 +12,15 @@ import UploadModal from '../layout/UploadModal'
 import MarginLayout from '../../helpers/MarginLayout'
 import ImageGallery from 'react-image-gallery'
 import 'react-image-gallery/styles/css/image-gallery.css'
+import Generator from '../../containers/GeneratorContainer'
 import Results from '../../containers/ResultsContainer'
 const Config = require('Config')
 export default class Home extends React.Component {
   constructor() {
     super()
     this.state = {
-      showHelp: false
+      showHelp: false,
+      showGenerator: true
     }
   }
   componentWillMount() {
@@ -36,8 +38,12 @@ export default class Home extends React.Component {
         }
       })
     }
-    this.props.clearData()
   }
+  closeGenerator() {
+    this.props.modelReset()
+    this.props.clearData()
+    this.setState({showGenerator: false})
+  } 
   showHelp() {
     ReactGA.event({
       category: 'User',
@@ -49,6 +55,7 @@ export default class Home extends React.Component {
   render() {
     const {label, user} = this.props.location.query
     if (label && label !== '') {
+      const hUser = user ? user : Config.DEBUG ? 'test' : 'anonymous'
       return <Results label={label} user={user}/>
     }
     else {
@@ -82,22 +89,23 @@ export default class Home extends React.Component {
           onImageLoad={this.handleImageLoad}/>
       ) : (
         <div>
-          <h1 className="text-center">What's really in your food?</h1>
-          <h3 className="text-center">Make nutrition labels in three easy steps!</h3>
+          <h1 className="text-center">Understand what you are eating!</h1>
+          <h3 className="text-center">Make free nutrition labels in three easy steps!</h3>
           <p className="text-right">
-            <Button bsStyle="primary" onClick={this.showHelp.bind(this)}>
+            <Button bsStyle="primary" onClick={() => this.showHelp()}>
               Learn more
             </Button>
           </p>
         </div>
       )
-      return (
+      const page = this.state.showGenerator ? <Generator router={this.props.router} closeGenerator={this.closeGenerator.bind(this)}/> : (
         <div>
           <Grid>
             <Jumbotron style={{}}>{jumbo}</Jumbotron>
             <Row>
               <div className="text-center">
-                <Button bsStyle="default" onClick={() => this.props.router.push('recipe')}>
+                {/*<Button bsStyle="default" onClick={() => this.props.router.push('recipe')}>*/}
+                <Button bsStyle="default" onClick={() => this.setState({showGenerator: true})}>
                   Get Started&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-send"></Glyphicon>
                 </Button>
               </div>
@@ -105,6 +113,7 @@ export default class Home extends React.Component {
           </Grid>
         </div>
       )
+      return page
     }
   }
 }

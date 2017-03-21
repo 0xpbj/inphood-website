@@ -1,19 +1,18 @@
 import {
   MODEL_RESET,
-  CLEAR_FIREBASE_DATA,
   INITIALIZE_FIREBASE_DATA,
   INGREDIENT_FIREBASE_DATA,
-  SET_FDA_RESULTS,
-  LAZY_LOAD_FIREBASE,
-  LAZY_FETCH_FIREBASE,
-  RESET_LAZY_LOAD_STATUS,
-  SEARCH_INGREDIENT,
-  RESET_SEARCH_FLAG,
   SELECTED_TAGS,
+  DELETED_TAGS,
   UNUSED_TAGS,
+  REPLACED_TAGS,
+  LAZY_FETCH_FIREBASE,
+  LAZY_LOAD_FIREBASE,
+  SET_FDA_RESULTS,
+  PARSE_SEARCH_DATA,
   GET_MORE_DATA,
-  RESET_APPEND_DATA,
-  REMOVE_ELLIPSES
+  SUPER_SEARCH_RESULTS,
+  REM_MATCH_RESULT_MODEL
 } from '../constants/ActionTypes'
 
 import {MatchResultsModel, SearchResult} from '../components/models/MatchResultsModel'
@@ -27,9 +26,10 @@ const initialState = {
   },
   modelSetup: false,
   userSearch: false,
-  searchIngredient: '',
   selectedTags: [],
   unusedTags: [],
+  deletedTags: [],
+  replacedTags: [],
   append: false,
   tag: ''
 }
@@ -47,29 +47,20 @@ export default function modelFun(state = initialState, action) {
         },
         modelSetup: false,
         userSearch: false,
-        searchIngredient: '',
         selectedTags: [],
         unusedTags: [],
+        deletedTags: [],
+        replacedTags: [],
         append: false,
         tag: ''
       }
     }
-    case CLEAR_FIREBASE_DATA:
-    {
+    case SUPER_SEARCH_RESULTS:
       return {
         ...state,
-        tag: '',
-        matchResultsModel: new MatchResultsModel()
+        tag: action.ingredient,
+        matchResultsModel: action.matchResultsModel,
       }
-    }
-    case RESET_APPEND_DATA:
-    {
-      return {
-        ...state,
-        append: false,
-        tag: ''
-      }
-    }
     case GET_MORE_DATA:
     {
       return {
@@ -77,6 +68,43 @@ export default function modelFun(state = initialState, action) {
         tag: action.foodName
       }
     }
+    case SELECTED_TAGS:
+    {
+      return {
+        ...state,
+        selectedTags: action.tags
+      }
+    }
+    case DELETED_TAGS:
+    {
+      return {
+        ...state,
+        deletedTags: action.tags
+      }
+    }
+    case UNUSED_TAGS:
+    {
+      return {
+        ...state,
+        unusedTags: action.tags
+      }
+    }
+    case REPLACED_TAGS:
+    {
+      return {
+        ...state,
+        replacedTags: action.tags
+      }
+    }
+    // case REM_MATCH_RESULT_MODEL:
+    // {
+    //   let {matchResultsModel} = state
+    //   matchResultsModel._searches[action.tag] = []
+    //   return {
+    //     ...state,
+    //     matchResultsModel
+    //   }
+    // }
     case INITIALIZE_FIREBASE_DATA:
     {
       // Initializes our dictionary of match data with ordered arrays of tuples
@@ -101,11 +129,10 @@ export default function modelFun(state = initialState, action) {
         matchResultsModel.appendSearchResult(searchTerm, searchResult)
       }
       // Insert ellipses for ellipses search
-      if (action.data.length !== 0 && !action.userSearch && !action.remEllipses) {
+      if (action.data.length !== 0 && !action.append) {
         const searchResult = new SearchResult('.....', '-1')
         matchResultsModel.appendSearchResult(searchTerm, searchResult)
       }
-
       return {
         ...state,
         matchResultsModel
@@ -138,34 +165,6 @@ export default function modelFun(state = initialState, action) {
         lazyLoadOperation: lazyLoadOperation
       }
     }
-    case RESET_LAZY_LOAD_STATUS:
-    {
-      return {
-        ...state,
-        lazyLoadOperation: {
-          status: 'idle',
-          tag: undefined,
-          value: undefined
-        }
-      }
-    }
-    case RESET_SEARCH_FLAG:
-    {
-      console.log('RESET_SEARCH_FLAG --------------------------------------');
-      return {
-        ...state,
-        userSearch: false,
-        searchIngredient: ''
-      }
-    }
-    case SEARCH_INGREDIENT:
-    {
-      console.log('SEARCH_INGREDIENT: ' + action.searchIngredient + '-------------');
-      return {
-        ...state,
-        searchIngredient: action.searchIngredient
-      }
-    }
     case INGREDIENT_FIREBASE_DATA:
     {
       // Performs an ordered insertion of the data returned by firebase for the
@@ -176,9 +175,6 @@ export default function modelFun(state = initialState, action) {
       if (!matchResultsModel.defineSearchResultObjectForDesc(searchTerm,
                                                              description,
                                                              action.data)) {
-        // console.log('error in INGREDIENT_FIREBASE_DATA');
-        // console.log(action.foodName);
-        // console.log(matchResultsModel.toString());
       }
 
       return {
@@ -192,7 +188,6 @@ export default function modelFun(state = initialState, action) {
     {
       console.log('tagModelReducer SET_FDA_RESULTS:');
       console.log('-----------------------------------------------------------');
-
       const fdaBrandedResults = action.results
       const {matchResultsModel} = state
       if (fdaBrandedResults.hasOwnProperty('count') &&
@@ -224,20 +219,6 @@ export default function modelFun(state = initialState, action) {
         ...state,
         matchResultsModel,
         results: action.results
-      }
-    }
-    case SELECTED_TAGS:
-    {
-      return {
-        ...state,
-        selectedTags: action.tags
-      }
-    }
-    case UNUSED_TAGS:
-    {
-      return {
-        ...state,
-        unusedTags: action.tags
       }
     }
     default:

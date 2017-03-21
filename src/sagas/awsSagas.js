@@ -79,7 +79,7 @@ function* uploadImageToS3(file, key, username, extension) {
 }
 
 function* loadAWSPut() {
-  const {parsedData, rawData, title, dietary, allergen, file} = yield select(state => state.nutritionReducer)
+  const {parsedData, rawData, file} = yield select(state => state.nutritionReducer)
   yield call (firebaseLogin)
   let user = Config.DEBUG ? 'test' : 'anonymous'
   let key = firebase.database().ref('/global/nutritionLabel/' + user).push().key
@@ -96,9 +96,6 @@ function* loadAWSPut() {
     iUrl,
     rawData,
     parsedData,
-    title,
-    dietary,
-    allergen
   })
   const url = "http://www.inphood.com/" + key
   yield put ({type: RESULT_URL, url, key, anonymous: true})

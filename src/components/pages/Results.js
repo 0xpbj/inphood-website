@@ -28,6 +28,10 @@ export default class Results extends React.Component {
       ecopied: false
     }
   }
+  componentWillMount() {
+    this.props.modelReset()
+    this.props.clearData()
+  }
   saveLabelToImage() {
     ReactGA.event({
       category: 'Share',

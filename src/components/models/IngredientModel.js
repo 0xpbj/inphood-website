@@ -56,7 +56,7 @@ export class IngredientModel {
 
     this._scaleGettersTo = 1.0
 
-    this._suggestedServingAmount = 0
+    this._suggestedServingAmount = 1
     this._suggestedServingUnit = 'g'
 
     //
@@ -68,7 +68,7 @@ export class IngredientModel {
 
     //
     //   Generic measures/Unit:
-    this._servingAmount = 0
+    this._servingAmount = 1
     this._servingUnit = 'g'
     this._calories = 0
     this._caloriesFromFat = 0

@@ -1,38 +1,44 @@
 import {
-  INIT_SUPER_SEARCH,
-  SUPER_SEARCH_RESULTS,
-  FDA_SEARCH_RESULTS_FLAG,
+  PARSE_SEARCH_DATA,
+  PARSE_SEARCH_FDA_DATA,
+  GET_MORE_DATA,
+  CLOSE_SEARCH_MODAL,
+  ADD_SEARCH_SELECTION
 } from '../constants/ActionTypes'
 
-import {MatchResultsModel} from '../components/models/MatchResultsModel'
-
 const initialState = {
-  ingredient: '',
-  matchResultsModel: new MatchResultsModel(),
   firebaseSearch: false,
-  fdaSearch: false
+  fdaSearch: false,
+  showModal: false
 }
 export default function matches(state = initialState, action) {
   switch (action.type) {
-    case INIT_SUPER_SEARCH:
-      return {
-        ...state,
-        firebaseSearch: action.flag,
-        fdaSearch: action.flag,
-        ingredient: '',
-        matchResultsModel: new MatchResultsModel()
-      }
-    case SUPER_SEARCH_RESULTS:
+    case PARSE_SEARCH_DATA:
       return {
         ...state,
         ingredient: action.ingredient,
-        matchResultsModel: action.matchResultsModel,
-        firebaseSearch: false
+        firebaseSearch: true
       }
-    case FDA_SEARCH_RESULTS_FLAG:
+    case PARSE_SEARCH_FDA_DATA:
       return {
         ...state,
-        fdaSearch: false
+        ingredient: action.ingredient,
+        fdaSearch: true
+      }
+    case GET_MORE_DATA:
+      return {
+        ...state,
+        showModal: true,
+      }
+    case CLOSE_SEARCH_MODAL:
+      return {
+        ...state,
+        showModal: false,
+      }
+    case ADD_SEARCH_SELECTION:
+      return {
+        ...state,
+        showModal: false,
       }
     default:
       return state

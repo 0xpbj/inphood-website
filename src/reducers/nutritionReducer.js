@@ -4,44 +4,34 @@ import {
   RESULT_URL,
   SEND_SERIALIZED_DATA,
   STORE_PARSED_DATA,
-  CLEAN_REDUCERS,
-  NM_RESET
+  SET_PARSED_DATA
 } from '../constants/ActionTypes'
 
 const initialState = {
+  file: '',
   picture: '',
   resultUrl: '',
   key: '',
   composite: '',
   full: '',
-  index: 0,
-  rawData: '',
-  title: '',
-  dietary: '',
-  allergen: '',
   parsedData: [],
-  recipeFlag: false,
-  file: '',
+  rawData: [],
+  newData: [],
   missingData: []
 }
 export default function nutrition(state = initialState, action) {
   switch (action.type) {
-    case CLEAN_REDUCERS:
     case CLEAR_DATA:
       return {
+        file: '',
         picture: '',
         resultUrl: '',
         key: '',
         composite: '',
         full: '',
-        index: 0,
-        rawData: '',
-        title: '',
-        dietary: '',
-        allergen: '',
         parsedData: [],
-        recipeFlag: false,
-        file: '',
+        rawData: [],
+        newData: [],
         missingData: []
       }
     case SELECTED_PHOTO:
@@ -55,7 +45,6 @@ export default function nutrition(state = initialState, action) {
         ...state,
         resultUrl: action.url,
         key: action.key,
-        anonymous: action.anonymous,
       }
     case SEND_SERIALIZED_DATA:
       return {
@@ -63,16 +52,18 @@ export default function nutrition(state = initialState, action) {
         composite: action.composite,
         full: action.full
       }
+    case SET_PARSED_DATA:
+      return {
+        ...state,
+        parsedData: action.parsedData
+      }
     case STORE_PARSED_DATA:
       return {
         ...state,
-        parsedData: action.parsedData,
-        rawData: action.rawData,
-        recipeFlag: action.recipeFlag,
-        title: action.title,
-        dietary: action.dietary,
-        allergen: action.allergen,
-        missingData: action.missingData
+        parsedData: [...state.parsedData, ...action.parsedData],
+        rawData: state.rawData.concat(action.rawData),
+        newData: action.parsedData,
+        missingData: [...state.missingData, ...action.missingData]
       }
     default:
       return state

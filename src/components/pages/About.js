@@ -44,7 +44,7 @@ export default class About extends React.Component {
               <div className="col-sm-6">
                 {this.getTeamMember("Prabhaav Bhardwaj", "CEO",
                   true,
-                  "https://www.instagram.com/t3zcat",
+                  "https://www.instagram.com/7pvbj",
                   "https://www.linkedin.com/in/prabhaav"
                 )}
               </div>

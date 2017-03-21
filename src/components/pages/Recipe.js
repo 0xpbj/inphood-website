@@ -19,6 +19,7 @@ import UploadModal from '../layout/UploadModal'
 
 import MarginLayout from '../../helpers/MarginLayout'
 import TopBar from '../layout/TopBar'
+import ServingsController from '../../containers/ServingsControllerContainer'
 
 const FieldGroup = ({ id, label, ...props }) => {
   return (
@@ -50,7 +51,6 @@ export default class Recipe extends React.Component {
     }
   }
   componentWillMount() {
-    this.props.modelReset()
     ReactGA.event({
       category: 'User',
       action: 'User in recipe page',
@@ -68,16 +68,20 @@ export default class Recipe extends React.Component {
     //   this.setState({pictureError: true})
     // }
     else {
-      const {ingredients, title, dietary, allergen} = this.state
-      let data = parseRecipe(ingredients)
-      this.props.storeParsedData(data.found, data.missing, ingredients, title, dietary, allergen)
-      this.props.uploadPhoto()
       ReactGA.event({
         category: 'User',
         action: 'User sending recipe',
         nonInteraction: true
       });
-      this.props.router.push('nutrition')
+      this.props.uploadPhoto()
+      const {ingredients} = this.state
+      let data = parseRecipe(ingredients)
+      this.props.storeParsedData(data.found, data.missing, ingredients)
+      if (!this.state.showNutritionMixers) {
+        this.setState({showNutritionMixers: true})
+        this.props.showNutritionMixers()
+      }
+      this.setState({ingredients: ''})
     }
   }
   getTitleValidationState() {
@@ -156,7 +160,28 @@ export default class Recipe extends React.Component {
         Extract ingredients from social media caption
       </Popover>
     ) : null
-    let textRows = 9
+    let textRows = 3
+    const image = this.props.nutrition.picture ? (
+      <Image className="center-block" src={this.props.nutrition.picture} responsive rounded/>
+    ) : (
+      <div className="text-center">
+        {pictureAlert}
+        <Button bsStyle="default" onClick={()=>this.setState({ showUploadModal: true })}>
+          Upload Meal Photo&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-open"></Glyphicon>
+        </Button>
+        <Glyphicon
+          onClick={()=>this.setState({picturePopoverFlag: !this.state.picturePopoverFlag})}
+          style={{marginLeft: 10}}
+          glyph="glyphicon glyphicon-info-sign">
+          {picturePopover}
+        </Glyphicon>
+        <UploadModal
+          onDrop={(acceptedFiles, rejectedFiles) => this.onDrop.bind(this)}
+          show={this.state.showUploadModal}
+          onHide={() => this.setState({showUploadModal: false})}
+        />
+      </div>
+    )
     let recipeForm = (
       <div>
         <FieldGroup
@@ -183,86 +208,42 @@ export default class Recipe extends React.Component {
           validationState={this.getAllergenValidationState()}
           onChange={(e) => this.setState({allergen: e.target.value})}
         />
+        <ControlLabel>Recipe Photo</ControlLabel>
+          {image}
       </div>
     )
-    const image = this.props.nutrition.picture ? (
-      <Image className="center-block" src={this.props.nutrition.picture} responsive rounded/>
-    ) : (
-      <div className="text-center">
-        {pictureAlert}
-        <Button bsStyle="default" onClick={()=>this.setState({ showUploadModal: true })}>
-          Upload Meal Photo&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-open"></Glyphicon>
-        </Button>
-        <Glyphicon
-          onClick={()=>this.setState({picturePopoverFlag: !this.state.picturePopoverFlag})}
-          style={{marginLeft: 10}}
-          glyph="glyphicon glyphicon-info-sign">
-          {picturePopover}
-        </Glyphicon>
-        <UploadModal
-          onDrop={(acceptedFiles, rejectedFiles) => this.onDrop.bind(this)}
-          show={this.state.showUploadModal}
-          onHide={() => this.setState({showUploadModal: false})}
-        />
-      </div>
-    )
-    const ml = new MarginLayout()
     const useRecipeButton = (
       <Button className="btn-primary-spacing"
               bsStyle="success"
               onClick={() => this.recipeFlow()}>
-        Next: Parse Recipe
+        Add Ingredients
       </Button>
     )
     return (
       <div>
-        <TopBar step=""
-                stepText=""
-                aButton={useRecipeButton}/>
-
-        <Row>
-          {ml.marginCol}
-          <Col xs={ml.xsCol}
-               sm={ml.smCol}
-               md={ml.mdCol}
-               lg={ml.lgCol}>
-            <Row>
-              <Col xs={4} md={4}>
-                {recipeForm}
-              </Col>
-              <Col xs={8} md={8}>
-                <FormGroup controlId="formControlsTextarea">
-                  <ControlLabel>Recipe Ingredients</ControlLabel>
-                  {recipeAlert}
-                  <Glyphicon
-                    onClick={()=>this.setState({recipePopoverFlag: !this.state.recipePopoverFlag})}
-                    style={{marginLeft: 10}}
-                    glyph="glyphicon glyphicon-info-sign">
-                    {recipePopover}
-                  </Glyphicon>
-                  <FormControl
-                    componentClass="textarea"
-                    rows={textRows}
-                    value={this.state.ingredients}
-                    placeholder={"1.5 cup rainbow chard (sliced)\n2 stalks green onion (sliced)\n2 medium tomatoes (chopped)\n1 medium avocado (chopped)\n¼ tsp sea salt\n1 tbsp butter\n1 ½ tbsp flax seed oil\n½ tbsp white wine vinegar\n..."}
-                    onChange={(e) => this.setState({ingredients: e.target.value, recipeError: false})}
-                  />
-                </FormGroup>
-              </Col>
-            </Row>
-          </Col>
-          {ml.marginCol}
-        </Row>
-        <Row>
-          {ml.marginCol}
-          <Col xs={ml.xsCol}
-               sm={ml.smCol}
-               md={ml.mdCol}
-               lg={ml.lgCol}>
-            {image}
-          </Col>
-          {ml.marginCol}
-        </Row>
+        <FormGroup controlId="formControlsTextarea">
+          <ControlLabel>Recipe Ingredients</ControlLabel>
+          {recipeAlert}
+          <Glyphicon
+            onClick={()=>this.setState({recipePopoverFlag: !this.state.recipePopoverFlag})}
+            style={{marginLeft: 10}}
+            glyph="glyphicon glyphicon-info-sign">
+            {recipePopover}
+          </Glyphicon>
+          <FormControl
+            componentClass="textarea"
+            rows={textRows}
+            value={this.state.ingredients}
+            placeholder={"1 cup spinach (sliced)\n..."}
+            onChange={(e) => this.setState({ingredients: e.target.value, recipeError: false})}
+          />
+          <div style={{marginTop: 10}} className="text-right">
+            {useRecipeButton}
+          </div>
+        </FormGroup>
+        <div style={{marginTop: 15, marginBottom: 15}}>
+          <ServingsController/>
+        </div>
       </div>
     )
   }

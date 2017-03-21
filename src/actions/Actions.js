@@ -232,10 +232,11 @@ export function sendUserGeneratedData(data, labelId, userId) {
   }
 }
 
-export function addSearchSelection(searchResult) {
+export function addSearchSelection(searchResult, index) {
   return {
     type: ADD_SEARCH_SELECTION,
-    searchResult
+    searchResult,
+    index
   }
 }
 

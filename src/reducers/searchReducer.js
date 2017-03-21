@@ -3,13 +3,15 @@ import {
   PARSE_SEARCH_FDA_DATA,
   GET_MORE_DATA,
   CLOSE_SEARCH_MODAL,
-  ADD_SEARCH_SELECTION
+  ADD_SEARCH_SELECTION,
+  SEARCH_TIMED_OUT
 } from '../constants/ActionTypes'
 
 const initialState = {
   firebaseSearch: false,
   fdaSearch: false,
-  showModal: false
+  showModal: false,
+  timeout: false
 }
 export default function matches(state = initialState, action) {
   switch (action.type) {
@@ -29,6 +31,12 @@ export default function matches(state = initialState, action) {
       return {
         ...state,
         showModal: true,
+        timeout: false,
+      }
+    case SEARCH_TIMED_OUT:
+      return {
+        ...state,
+        timeout: true,
       }
     case CLOSE_SEARCH_MODAL:
       return {

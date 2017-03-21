@@ -95,23 +95,25 @@ export default class Generator extends React.Component {
       label: searchTerm
     });
   }
-  selectedListItem(aSearchResult, ingredient) {
+  selectedListItem(aSearchResult, ingredient, index) {
     this.props.nutritionModelRemIng(ingredient)
     this.props.ingredientModelRemTag(ingredient)
     let {replacedTags} = this.props.tagModel
     replacedTags.push(ingredient)
     this.props.replacedTags(replacedTags)
-    this.props.addSearchSelection(aSearchResult)
+    this.props.addSearchSelection(aSearchResult, index)
   }
   getSearchList() {
     const {tag, matchResultsModel} = this.props.tagModel
     let items = []
     if (matchResultsModel.getNumberOfSearches() > 0) {
+      let index = 0
       for (let searchResult of matchResultsModel.getSearchResults(tag)) {
         items.push(<ListGroupItem
-                      onClick={this.selectedListItem.bind(this, searchResult, tag)}>
+                      onClick={this.selectedListItem.bind(this, searchResult, tag, index)}>
                     {searchResult.getDescription()}
                     </ListGroupItem>)
+        ++index
       }
     }
     if (items.length) {
@@ -145,18 +147,28 @@ export default class Generator extends React.Component {
       </Button>
     )
     let close = () => this.closeModal()
-    const {firebaseSearch, fdaSearch, showModal} = this.props.search
-    const modalBody = (firebaseSearch && fdaSearch) ?
-      (
-        <Modal.Body className="text-left">
-          {this.getSearchList()}
-        </Modal.Body>
-      ) :
-      (
+    const {firebaseSearch, fdaSearch, showModal, timeout} = this.props.search
+    let modalBody = (
         <Modal.Body className="text-center">
           <ProgressBar type='circular' mode='indeterminate' multicolor={true} />
         </Modal.Body>
+    )
+    if (timeout) {
+      modalBody = (
+        <Modal.Body className="text-left">
+          <Alert bsStyle="warning">
+            <h4>Search timed out</h4>
+          </Alert>
+        </Modal.Body>
       )
+    }
+    else if (firebaseSearch && fdaSearch) {
+      modalBody = (
+        <Modal.Body className="text-left">
+          {this.getSearchList()}
+        </Modal.Body>
+      )
+    }
     const modal = (
       <div className="modal-container">
         <Modal

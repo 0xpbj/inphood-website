@@ -199,7 +199,7 @@ export default class Results extends React.Component {
       const placeHolderCol = <Col xs={1} sm={1} md={1} lg={2}/>
       return (
         <div style={{backgroundColor: 'white'}}>
-          <TopBar step="" stepText="" aButton={saveButton}/>
+          <TopBar step="" stepText="" aButton={saveButton} closeGenerator={this.props.closeGenerator}/>
           <Grid>
             <Row>
               <Col xs={12} sm={7} md={6} lg={6}>

@@ -5,7 +5,9 @@ import {
   GET_FIREBASE_DATA,
   STORE_PARSED_DATA,
   GET_MORE_DATA,
-  PARSE_SEARCH_DATA
+  PARSE_SEARCH_DATA,
+  INITIALIZE_RECIPE_FLOW,
+  INITIALIZE_SEARCH_FLOW
 } from '../constants/ActionTypes'
 
 import {MatchResultsModel} from '../components/models/MatchResultsModel'
@@ -14,7 +16,6 @@ import * as db from './firebaseCommands'
 import request from 'request'
 const Config = require('Config')
 import {callElasticSearchLambda, elasticSearchFetch} from './elasticFunctions'
-import {changesFromRecipe, changesFromSearch} from './parserFunctions'
 
 function* getDataFromFireBase() {
   const {foodName, ingredient, key, append, index, length} = yield take(GET_FIREBASE_DATA)
@@ -23,18 +24,17 @@ function* getDataFromFireBase() {
   if (flag) {
     const data = (yield call(db.getPath, path)).val()
     yield put ({type: INGREDIENT_FIREBASE_DATA, foodName, ingredient, data, append})
+    if (append) {
+      yield put ({type: PARSE_SEARCH_DATA, ingredient})
+      yield put ({type: INITIALIZE_SEARCH_FLOW})
+    }
+    else if (index === length) {
+      console.log('PBJERROR = REGULAR RECIPE SEARCH')
+      yield put ({type: INITIALIZE_RECIPE_FLOW})
+    }
   }
   else {
     yield put ({type: INGREDIENT_FIREBASE_DATA, foodName, ingredient, data: [], append})
-  }
-  if (append) {
-    yield put ({type: PARSE_SEARCH_DATA, ingredient})
-    yield fork (changesFromSearch)
-  }
-  else if (index === length) {
-    const {newData, missingData} = yield select(state => state.nutritionReducer)
-    const {matchResultsModel} = yield select(state => state.tagModelReducer)
-    yield fork (changesFromRecipe, newData, missingData, matchResultsModel)
   }
 }
 
@@ -82,8 +82,8 @@ function* lambdaHack() {
 }
 
 export default function* root() {
-  // yield call(lambdaHack)
+  yield call(lambdaHack)
   yield fork(appendData)
   yield fork(takeEvery, INITIALIZE_FIREBASE_DATA, getDataFromFireBase)
-  yield fork(takeLatest, STORE_PARSED_DATA, processParseForLabel)
+  yield fork(takeEvery, STORE_PARSED_DATA, processParseForLabel)
 }

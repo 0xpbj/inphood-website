@@ -5,12 +5,13 @@ import {
   PARSE_SEARCH_FDA_DATA,
   GET_FIREBASE_DATA,
   INITIALIZE_FIREBASE_DATA,
+  INITIALIZE_RECIPE_FLOW,
+  INITIALIZE_SEARCH_FLOW
 } from '../constants/ActionTypes'
 
 import { call, fork, put, select, take, takeLatest } from 'redux-saga/effects'
 import request from 'request'
 const Config = require('Config')
-import {changesFromRecipe, changesFromSearch} from './parserFunctions'
 
 const fdaFetch = (request) => {
   return fetch(request)
@@ -34,14 +35,10 @@ function* reportFDA(searchIngredient, ndbnoInfo, append) {
                     results: resultsReport})
   if (append) {
     yield put ({type: PARSE_SEARCH_FDA_DATA, ingredient: searchIngredient})
-    yield fork (changesFromSearch)
+    yield put ({type: INITIALIZE_SEARCH_FLOW})
   }
   else {
-    const {missingData} = yield select(state => state.nutritionReducer)
-    let newData = []
-    newData.push(searchIngredient)
-    const {matchResultsModel} = yield select(state => state.tagModelReducer)
-    yield fork (changesFromRecipe, newData, missingData, matchResultsModel)
+    yield put ({type: INITIALIZE_RECIPE_FLOW})
   }
 }
 

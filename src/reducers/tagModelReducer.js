@@ -12,7 +12,8 @@ import {
   PARSE_SEARCH_DATA,
   GET_MORE_DATA,
   SUPER_SEARCH_RESULTS,
-  REM_MATCH_RESULT_MODEL
+  REM_MATCH_RESULT_MODEL,
+  UPDATE_MATCH_RESULTS_MODEL
 } from '../constants/ActionTypes'
 
 import {MatchResultsModel, SearchResult} from '../components/models/MatchResultsModel'
@@ -96,15 +97,16 @@ export default function modelFun(state = initialState, action) {
         replacedTags: action.tags
       }
     }
-    // case REM_MATCH_RESULT_MODEL:
-    // {
-    //   let {matchResultsModel} = state
-    //   matchResultsModel._searches[action.tag] = []
-    //   return {
-    //     ...state,
-    //     matchResultsModel
-    //   }
-    // }
+    case UPDATE_MATCH_RESULTS_MODEL:
+    {
+      let {matchResultsModel} = state
+      matchResultsModel._searches[action.searchIngredient] = [matchResultsModel._searches[action.searchIngredient][action.index]]
+      debugger
+      return {
+        ...state,
+        matchResultsModel
+      }
+    }
     case INITIALIZE_FIREBASE_DATA:
     {
       // Initializes our dictionary of match data with ordered arrays of tuples

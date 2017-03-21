@@ -11,12 +11,19 @@ import {
   FDA_SEARCH_RESULTS_FLAG,
   CLOSE_SEARCH_MODAL,
   PARSE_SEARCH_DATA,
-  SET_PARSED_DATA
+  SET_PARSED_DATA,
+  INITIALIZE_RECIPE_FLOW,
+  INITIALIZE_SEARCH_FLOW,
+  SEARCH_TIMED_OUT,
+  INITIALIZE_FIREBASE_DATA,
+  INGREDIENT_FIREBASE_DATA,
+  UPDATE_MATCH_RESULTS_MODEL
 } from '../constants/ActionTypes'
 
 import ReactGA from 'react-ga'
 import * as db from './firebaseCommands'
-import { call, fork, put, select, take, takeLatest, race } from 'redux-saga/effects'
+import { call, fork, put, select, take, takeEvery, race } from 'redux-saga/effects'
+import { delay } from 'redux-saga'
 import {IngredientModel} from '../components/models/IngredientModel'
 import {IngredientControlModel} from '../components/models/IngredientControlModel'
 import {MatchResultsModel} from '../components/models/MatchResultsModel'
@@ -25,7 +32,7 @@ import {mapToSupportedUnitsStrict,
         getPossibleUnits} from '../helpers/ConversionUtils'
 
 function* getDataForSearchSelection(searchIngredient, selectedTags) {
-  const {searchResult} = yield take(ADD_SEARCH_SELECTION)
+  const {searchResult, index} = yield take(ADD_SEARCH_SELECTION)
   const description = searchResult.getDescription()
   let stdRefObj = searchResult.getStandardRefDataObj()
   let brandedObj = searchResult.getBrandedDataObj()
@@ -78,8 +85,16 @@ function* getDataForSearchSelection(searchIngredient, selectedTags) {
         break
       }
     }
+    let _source = {Description: description}
+    let _id = searchResult.getNdbNo()
+    let data = [{_stdRefObj: stdRefObj, _brandedObj: brandedObj, _source, _id }]
+    // matchResultsModel._searches[searchIngredient] = data
+    // yield put ({type: INGREDIENT_FIREBASE_DATA, foodName: searchIngredient, ingredient: searchIngredient, data})
     yield put ({type: SET_PARSED_DATA, parsedData})
     yield put ({type: IM_UPDATE_MODEL, tag: searchIngredient, ingredientControlModel})
+    yield put ({type: UPDATE_MATCH_RESULTS_MODEL, searchIngredient, index})
+    let {matchResultsModel} = yield select(state => state.tagModelReducer)
+    // console.log('\n\n\nPBJERROR = SEARCH TERMS REPLACED (1): ', matchResultsModel.getSearches())
     ReactGA.event({
       category: 'Nutrition Mixer',
       action: 'Search results added to label',
@@ -89,7 +104,7 @@ function* getDataForSearchSelection(searchIngredient, selectedTags) {
   }
 }
 
-export function* changesFromSearch() {
+function* changesFromSearch() {
   console.log('changesFromSearch --------------------------------------------');
   const {firebaseSearch, fdaSearch, ingredient} = yield select(state => state.searchReducer)
   if (firebaseSearch && fdaSearch) {
@@ -105,25 +120,43 @@ export function* changesFromSearch() {
         unusedTags.push(ingredient)
         yield put ({type: UNUSED_TAGS, tags: unusedTags})
       }
+        // console.log('\n\n\nPBJERROR = SEARCH RESULTS BEING RESET: ')
       yield put ({type: SUPER_SEARCH_RESULTS,
                   matchResultsModel: new MatchResultsModel(),
                   ingredient})
       return
     } 
     else {
+      // console.log('\n\n\nPBJERROR = SEARCH RESULTS BEING REPLACED: ', matchResultsModel)
       yield put ({type: SUPER_SEARCH_RESULTS,
                   matchResultsModel: matchResultsModel,
                   ingredient})
       yield race({
         response: call (getDataForSearchSelection, ingredient, selectedTags),
-        cancel: take(CLOSE_SEARCH_MODAL)
+        cancel: take([CLOSE_SEARCH_MODAL, SEARCH_TIMED_OUT])
       })
     }
   }
 }
 
-export function* changesFromRecipe(newData, missingData, matchResultsModel) {
+//TODO: make this work gracefully
+function* changesFromSearchController() {
+  console.log('changesFromSearchController--------------------------------------------');
+  const {response, timeout} = yield race({
+    response: call (changesFromSearch),
+    timeout: call(delay, 1000),
+    // cancel: take()
+  })
+  if (timeout) {
+    put({type: SEARCH_TIMED_OUT})
+  }
+}
+
+function* changesFromRecipe() {
   console.log('changesFromRecipe ---------------------------------------------');
+  const {newData, missingData} = yield select(state => state.nutritionReducer)
+  const {matchResultsModel} = yield select(state => state.tagModelReducer)
+  // console.log('\n\n\nPBJERROR = SEARCH TERMS LOOPING: ', matchResultsModel.getSearches())
   for (let searchTerm in matchResultsModel.getSearches()) {
     if (matchResultsModel.getSearchResultsLength(searchTerm) === 0) {
       ReactGA.event({
@@ -133,11 +166,13 @@ export function* changesFromRecipe(newData, missingData, matchResultsModel) {
         label: searchTerm
       });
       continue
+      // console.log('\n\n\nPBJERROR = SEARCH TERM NOT FOUND: ', searchTerm)
     }
     const searchResult = matchResultsModel.getSearchResultByIndex(searchTerm)
     if ((searchResult.getStandardRefDataObj() === undefined) &&
         (searchResult.getBrandedDataObj() === undefined)) {
       return
+      // console.log('\n\n\nPBJERROR = SEARCH TERM UNDEFINED: ', searchTerm)
     }
   }
   let selectedTags = []
@@ -152,6 +187,7 @@ export function* changesFromRecipe(newData, missingData, matchResultsModel) {
           label: searchTerm
         });
       }
+      // console.log('\n\n\nPBJERROR = SEARCH TERM HAS NO RESULTS: ', searchTerm)
       continue
     }
     const searchResult = matchResultsModel.getSearchResultByIndex(searchTerm)
@@ -286,4 +322,9 @@ export function* changesFromRecipe(newData, missingData, matchResultsModel) {
   yield put ({type: NM_SET_SERVINGS, servingsControlModel})
   yield put ({type: SELECTED_TAGS, tags: selectedTags})
   yield put ({type: UNUSED_TAGS, tags: missingData})
+}
+
+export default function* root() {
+  yield fork(takeEvery, INITIALIZE_RECIPE_FLOW, changesFromRecipe)
+  yield fork(takeEvery, INITIALIZE_SEARCH_FLOW, changesFromSearch)
 }

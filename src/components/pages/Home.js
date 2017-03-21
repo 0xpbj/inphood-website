@@ -56,7 +56,7 @@ export default class Home extends React.Component {
     const {label, user} = this.props.location.query
     if (label && label !== '') {
       const hUser = user ? user : Config.DEBUG ? 'test' : 'anonymous'
-      return <Results label={label} user={user}/>
+      return <Results label={label} user={user} closeGenerator={this.closeGenerator.bind(this)}/>
     }
     else {
       const images = [

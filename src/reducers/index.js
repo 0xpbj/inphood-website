@@ -6,6 +6,7 @@ import nutritionReducer from './nutritionReducer'
 import nutritionModelReducer from './nutritionModelReducer'
 import ingredientModelReducer from './ingredientModelReducer'
 import servingsControlsReducer from './servingsControllerReducer'
+import generatorReducer from './generatorReducer'
 
 const appReducer = combineReducers({
     searchReducer,
@@ -14,6 +15,7 @@ const appReducer = combineReducers({
     nutritionReducer,
     nutritionModelReducer,
     ingredientModelReducer,
+    generatorReducer,
     servingsControlsReducer,
 })
 

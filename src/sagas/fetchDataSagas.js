@@ -1,13 +1,11 @@
 import {
   INITIALIZE_FIREBASE_DATA,
   INGREDIENT_FIREBASE_DATA,
-  REMOVE_ELLIPSES,
-  SEARCH_INGREDIENT,
-  GET_MORE_DATA,
-  STORE_PARSED_DATA,
   CLEAR_FIREBASE_DATA,
   GET_FIREBASE_DATA,
-  SUPER_SEARCH_RESULTS
+  STORE_PARSED_DATA,
+  GET_MORE_DATA,
+  PARSE_SEARCH_DATA
 } from '../constants/ActionTypes'
 
 import {MatchResultsModel} from '../components/models/MatchResultsModel'
@@ -16,88 +14,50 @@ import * as db from './firebaseCommands'
 import request from 'request'
 const Config = require('Config')
 import {callElasticSearchLambda, elasticSearchFetch} from './elasticFunctions'
-import {changesFromAppend, changesFromSearch, changesFromRecipe} from './parserFunctions'
+import {changesFromRecipe, changesFromSearch} from './parserFunctions'
 
 function* getDataFromFireBase() {
-  const {foodName, ingredient, key, userSearch, append} = yield take(GET_FIREBASE_DATA)
-  // console.log('getDataFromFireBase ------------------------------------------');
+  const {foodName, ingredient, key, append, index, length} = yield take(GET_FIREBASE_DATA)
   const path = 'global/nutritionInfo/' + key
   const flag = (yield call(db.getPath, path)).exists()
   if (flag) {
     const data = (yield call(db.getPath, path)).val()
-    yield put ({type: INGREDIENT_FIREBASE_DATA, foodName, ingredient, data, userSearch, append})
+    yield put ({type: INGREDIENT_FIREBASE_DATA, foodName, ingredient, data, append})
   }
   else {
-    // if (userSearch) {
-    //   const {searchIngredient} = yield select(state => state.tagModelReducer)
-    //   yield put ({type: SUPER_SEARCH_RESULTS,
-    //               matchResultsModel: new MatchResultsModel(),
-    //               ingredient: searchIngredient})
-    // }
-    yield put ({type: INGREDIENT_FIREBASE_DATA, foodName, ingredient, data: [], userSearch, append})
+    yield put ({type: INGREDIENT_FIREBASE_DATA, foodName, ingredient, data: [], append})
   }
   if (append) {
-    const {matchResultsModel} = yield select(state => state.tagModelReducer)
-    yield fork (changesFromAppend, foodName, matchResultsModel)
+    yield put ({type: PARSE_SEARCH_DATA, ingredient})
+    yield fork (changesFromSearch)
   }
-  else if (userSearch) {
-    const {selectedTags, matchResultsModel, searchIngredient} = yield select(state => state.tagModelReducer)
-    let {unusedTags} = yield select(state => state.tagModelReducer)
-    const fdaSearch = false
-    yield fork (changesFromSearch, selectedTags, matchResultsModel, searchIngredient, unusedTags, fdaSearch)
-  }
-  else {
-    const {parsedData} = yield select(state => state.nutritionReducer)
-    const {missingData} = yield select(state => state.nutritionReducer)
+  else if (index === length) {
+    const {newData, missingData} = yield select(state => state.nutritionReducer)
     const {matchResultsModel} = yield select(state => state.tagModelReducer)
-    if (matchResultsModel.getNumberOfSearches() === Object.keys(parsedData).length) {
-      yield fork (changesFromRecipe, parsedData, missingData, matchResultsModel)
-    }
+    yield fork (changesFromRecipe, newData, missingData, matchResultsModel)
   }
 }
 
 function* processParseForLabel() {
-  // Get the parse data out of the nutrition reducer and call elastic search on
-  // it to build the following structure:
-  //   [
-  //     'Green Onion' : ['dbKey1', 'dbKey2' ...],
-  //     'red bean' : ['dbKey1', ...],
-  //     'yakisoba' : []
-  //   ]
-  const {parsedData} = yield select(state => state.nutritionReducer)
-  for (let i = 0; i < parsedData.length; i++) {
-    const parseObj = parsedData[i]
+  const {newData} = yield select(state => state.nutritionReducer)
+  const length = newData.length
+  for (let i = 0; i < length; i++) {
+    const parseObj = newData[i]
     const foodName = parseObj['name']
-    yield put({type: CLEAR_FIREBASE_DATA})
-    const userSearch = false
     const append = false
     const size = 5
-    yield fork(callElasticSearchLambda, foodName, foodName, size, userSearch, append)
-  }
-}
-
-function* userSearchIngredient() {
-  while (true) {
-    const {searchIngredient} = yield take(SEARCH_INGREDIENT)
-    const userSearch = true
-    const append = false
-    if (searchIngredient) {
-      const size = 10
-      yield fork(callElasticSearchLambda, searchIngredient, searchIngredient, size, userSearch, append)
-    }
-    else {
-      yield put ({type: INITIALIZE_FIREBASE_DATA, foodName: searchIngredient, data: [], append})
-      yield put ({type: INGREDIENT_FIREBASE_DATA, foodName: searchIngredient, ingredient: '', data: [], userSearch, append})
-    }
+    yield call (callElasticSearchLambda, foodName, size, append, i, length-1)
   }
 }
 
 function* appendData() {
   while (true) {
-    const {foodName, size} = yield take(GET_MORE_DATA)
-    const userSearch = false
+    const {foodName} = yield take(GET_MORE_DATA)
     const append = true
-    yield fork(callElasticSearchLambda, foodName, foodName, size+5, userSearch, append)
+    const size = 25
+    const i = 0
+    const length = 0
+    yield fork(callElasticSearchLambda, foodName, size, append, i, length)
   }
 }
 
@@ -122,9 +82,8 @@ function* lambdaHack() {
 }
 
 export default function* root() {
-  yield call(lambdaHack)
+  // yield call(lambdaHack)
   yield fork(appendData)
   yield fork(takeEvery, INITIALIZE_FIREBASE_DATA, getDataFromFireBase)
-  yield fork(userSearchIngredient)
   yield fork(takeLatest, STORE_PARSED_DATA, processParseForLabel)
 }

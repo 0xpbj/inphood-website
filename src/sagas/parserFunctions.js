@@ -1,16 +1,17 @@
 import {
-  INITIALIZE_FIREBASE_DATA,
-  INGREDIENT_FIREBASE_DATA,
   SELECTED_TAGS,
   NM_ADD_INGREDIENT,
   NM_REM_INGREDIENT,
+  IM_UPDATE_MODEL,
   IM_ADD_CONTROL_MODEL,
   UNUSED_TAGS,
   NM_SET_SERVINGS,
   SUPER_SEARCH_RESULTS,
   ADD_SEARCH_SELECTION,
   FDA_SEARCH_RESULTS_FLAG,
-  CLOSE_SEARCH_MODAL
+  CLOSE_SEARCH_MODAL,
+  PARSE_SEARCH_DATA,
+  SET_PARSED_DATA
 } from '../constants/ActionTypes'
 
 import ReactGA from 'react-ga'
@@ -26,10 +27,8 @@ import {mapToSupportedUnitsStrict,
 function* getDataForSearchSelection(searchIngredient, selectedTags) {
   const {searchResult} = yield take(ADD_SEARCH_SELECTION)
   const description = searchResult.getDescription()
-  // TODO: consider case with getBrandedDataObj
   let stdRefObj = searchResult.getStandardRefDataObj()
   let brandedObj = searchResult.getBrandedDataObj()
-
   let ingredientModel = new IngredientModel()
   if ((brandedObj !== undefined) && (stdRefObj === undefined)) {
     // Handle brandedObj (but only if the stdRefObj isn't defined because we
@@ -49,7 +48,6 @@ function* getDataForSearchSelection(searchIngredient, selectedTags) {
     }
     ingredientModel.initializeSingle(description, searchIngredient, stdRefObj)
   }
-
   let measureQuantity = ingredientModel.getMeasureQuantity()
   let measureUnit = ingredientModel.getMeasureUnit()
   let errorStr = ''
@@ -62,11 +60,8 @@ function* getDataForSearchSelection(searchIngredient, selectedTags) {
                 append: false})
   }
   catch(err) {
-    console.log('Error adding ingredient. ------------------------------------');
-    console.log(err);
     errorStr = err
   }
-
   if (errorStr === '') {
     let ingredientControlModel = new IngredientControlModel(
       measureQuantity,
@@ -74,12 +69,17 @@ function* getDataForSearchSelection(searchIngredient, selectedTags) {
       measureUnit,
       [description],
       description)
-    yield put ({type: IM_ADD_CONTROL_MODEL, tag: searchIngredient, ingredientControlModel})
-    const {servingsControlModel} = yield select(state => state.servingsControlsReducer)
-    yield put ({type: NM_SET_SERVINGS, servingsControlModel})
-    selectedTags.push(searchIngredient)
-    yield put ({type: SELECTED_TAGS, tags: selectedTags})
-
+    let {parsedData} = yield select(state => state.nutritionReducer)
+    for (let i = 0; i < parsedData.length; i++) {
+      if (searchIngredient === parsedData[i].name) {
+        parsedData[i].name = description
+        parsedData[i].unit = measureUnit
+        parsedData[i].amount = measureQuantity
+        break
+      }
+    }
+    yield put ({type: SET_PARSED_DATA, parsedData})
+    yield put ({type: IM_UPDATE_MODEL, tag: searchIngredient, ingredientControlModel})
     ReactGA.event({
       category: 'Nutrition Mixer',
       action: 'Search results added to label',
@@ -89,76 +89,40 @@ function* getDataForSearchSelection(searchIngredient, selectedTags) {
   }
 }
 
-export function* changesFromAppend(searchTerm, matchResultsModel) {
-  if (matchResultsModel.getSearchResultsLength(searchTerm) === 0) {
-    ReactGA.event({
-      category: 'Nutrition Mixer',
-      action: 'No ellipses results returned',
-      nonInteraction: false,
-      label: searchTerm
-    });
-    return
-  }
-  const searchResult = matchResultsModel.getSearchResultByIndex(searchTerm)
-  const description = searchResult.getDescription()
-  // TODO: expand this to handle getBrandedDataObj() for FDA Branded results
-  let ingredientModel = new IngredientModel()
-  ingredientModel.initializeSingle(description,
-                                   searchTerm,
-                                   searchResult.getStandardRefDataObj())
-  const measureQuantity = ingredientModel.getMeasureQuantity()
-  const measureUnit = ingredientModel.getMeasureUnit()
-  yield put ({type: NM_ADD_INGREDIENT, tag: searchTerm, ingredientModel, quantity: measureQuantity, unit: measureUnit, append: true})
-  let ingredientControlModel =
-    new IngredientControlModel(
-          measureQuantity,
-          getPossibleUnits(measureUnit),
-          measureUnit,
-          matchResultsModel.getSearchResultDescriptions(searchTerm),
-          description)
-  yield put ({type: IM_ADD_CONTROL_MODEL, tag: searchTerm, ingredientControlModel})
-}
-
-export function* changesFromSearch(selectedTags, matchResultsModel, searchIngredient, unusedTags, fdaSearch) {
+export function* changesFromSearch() {
   console.log('changesFromSearch --------------------------------------------');
-  if (matchResultsModel.getSearchResultsLength(searchIngredient) === 0) {
-    ReactGA.event({
-      category: 'Nutrition Mixer',
-      action: 'No search results returned',
-      nonInteraction: false,
-      label: searchIngredient
-    });
-    if (unusedTags.indexOf(searchIngredient) === -1) {
-      unusedTags.push(searchIngredient)
-      yield put ({type: UNUSED_TAGS, tags: unusedTags})
+  const {firebaseSearch, fdaSearch, ingredient} = yield select(state => state.searchReducer)
+  if (firebaseSearch && fdaSearch) {
+    const {selectedTags, unusedTags, matchResultsModel} = yield select(state => state.tagModelReducer)
+    if (matchResultsModel.getSearchResultsLength(ingredient) === 0) {
+      ReactGA.event({
+        category: 'Nutrition Mixer',
+        action: 'No search results returned',
+        nonInteraction: false,
+        label: ingredient
+      });
+      if (unusedTags.indexOf(ingredient) === -1) {
+        unusedTags.push(ingredient)
+        yield put ({type: UNUSED_TAGS, tags: unusedTags})
+      }
+      yield put ({type: SUPER_SEARCH_RESULTS,
+                  matchResultsModel: new MatchResultsModel(),
+                  ingredient})
+      return
+    } 
+    else {
+      yield put ({type: SUPER_SEARCH_RESULTS,
+                  matchResultsModel: matchResultsModel,
+                  ingredient})
+      yield race({
+        response: call (getDataForSearchSelection, ingredient, selectedTags),
+        cancel: take(CLOSE_SEARCH_MODAL)
+      })
     }
-    yield put ({type: SUPER_SEARCH_RESULTS,
-                matchResultsModel: new MatchResultsModel(),
-                ingredient: searchIngredient})
-    if (fdaSearch)
-      yield put ({type: FDA_SEARCH_RESULTS_FLAG})
-    return
-  } else {
-    yield put ({type: SUPER_SEARCH_RESULTS,
-                matchResultsModel: matchResultsModel,
-                ingredient: searchIngredient})
-    if (fdaSearch)
-      yield put ({type: FDA_SEARCH_RESULTS_FLAG})
-    yield race({
-      response: call (getDataForSearchSelection, searchIngredient, selectedTags),
-      cancel: take(CLOSE_SEARCH_MODAL)
-    })
   }
 }
 
-// TODO: TODO: TODO:
-//  Refactor / clean this up
-//    - it's too long
-//    - it was written for synchronous execution
-//    - it's not pleasant to maintain
-//    - it's unclear what it's trying to do
-//
-export function* changesFromRecipe(parsedData, missingData, matchResultsModel) {
+export function* changesFromRecipe(newData, missingData, matchResultsModel) {
   console.log('changesFromRecipe ---------------------------------------------');
   for (let searchTerm in matchResultsModel.getSearches()) {
     if (matchResultsModel.getSearchResultsLength(searchTerm) === 0) {
@@ -199,18 +163,18 @@ export function* changesFromRecipe(parsedData, missingData, matchResultsModel) {
     const brandedObj = searchResult.getBrandedDataObj()
     if (stdRefObj) {
       ingredientModel.initializeSingle(description, searchTerm, stdRefObj)
-    } else { // brandedObj
+    } 
+    else { // brandedObj
       ingredientModel.initializeFromBrandedFdaObj(description, searchTerm, brandedObj)
     }
-
     let measureQuantity = ingredientModel.getMeasureQuantity()
     let measureUnit = ingredientModel.getMeasureUnit()
     let tryQuantity = measureQuantity
     let tryUnit = measureUnit
     let parseQuantity = undefined
     let parseUnit = undefined
-    for (let i = 0; i < parsedData.length; i++) {
-      const parseObj = parsedData[i]
+    for (let i = 0; i < newData.length; i++) {
+      const parseObj = newData[i]
       const foodName = parseObj['name']
       if (foodName === searchTerm) {
         // Sometimes the parseObj returns things like 'toTaste=true' and no
@@ -296,9 +260,9 @@ export function* changesFromRecipe(parsedData, missingData, matchResultsModel) {
         }
       }
     }
-    //console.log('Adding ingredient control model ---------------------------');
-    //console.log('   addIngredientErrorStr: ', addIngredientErrorStr);
-    //console.log('   searchTerm: ', searchTerm);
+    // console.log('Adding ingredient control model ---------------------------');
+    // console.log('   addIngredientErrorStr: ', addIngredientErrorStr);
+    // console.log('   searchTerm: ', searchTerm);
     if (addIngredientErrorStr === '') {
       let ingredientControlModel = new IngredientControlModel(
         tryQuantity,
@@ -306,11 +270,11 @@ export function* changesFromRecipe(parsedData, missingData, matchResultsModel) {
         tryUnit,
         matchResultsModel.getSearchResultDescriptions(searchTerm),
         description)
-      //console.log('   calling IM_ADD_CONTROL_MODEL', ingredientControlModel);
+      // console.log('   calling IM_ADD_CONTROL_MODEL', ingredientControlModel);
       yield put ({type: IM_ADD_CONTROL_MODEL, tag: searchTerm, ingredientControlModel})
       selectedTags.push(searchTerm)
     } else {
-      //console.log('changesFromRecipe: unable to addIngredient');
+      console.log('changesFromRecipe: unable to addIngredient');
     }
   }
   ReactGA.event({

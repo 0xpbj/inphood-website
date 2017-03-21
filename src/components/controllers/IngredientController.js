@@ -7,38 +7,24 @@ import FormControl from 'react-bootstrap/lib/FormControl'
 import 'react-widgets/lib/less/react-widgets.less'
 import Dropdownlist from 'react-widgets/lib/Dropdownlist'
 import {IngredientModel} from '../models/IngredientModel'
-import {getValueInUnits,
-        getIngredientValueInUnits,
-        mapToSupportedUnits,
-        mapToSupportedUnitsStrict,
-        rationalToFloat,
-        getPossibleUnits} from '../../helpers/ConversionUtils'
+import {rationalToFloat} from '../../helpers/ConversionUtils'
 import Slider from 'react-toolbox/lib/slider'
 
 export default class IngredientController extends React.Component {
   constructor(props) {
     super(props)
   }
-
   handleSliderValuesChange(value) {
     const {tag} = this.props
     const ingredientControlModel = this.props.ingredientModel.ingredientControlModels[tag]
     const units = ingredientControlModel.getDropdownUnitValue()
-
-    // console.log('-------------------------------------------------------------');
-    // console.log('handleSliderValuesChange:');
-    // console.log('tag = ' + tag);
-    // console.log('value = ' + value);
-
     ReactGA.event({
       category: 'Nutrition Mixer',
       action: 'Slider value changed',
       nonInteraction: false,
     });
-
     this.updateReduxStore(tag, value, units)
   }
-
   handleEditBoxValueChange(formObject) {
     const {tag} = this.props
     const value = formObject.target.value
@@ -46,26 +32,18 @@ export default class IngredientController extends React.Component {
     ingredientControlModel.setEditBoxValue(value)
     this.props.updateIngredientControlModel(tag, ingredientControlModel)
   }
-
   handleUnitDropdownChange(units) {
     const {tag} = this.props
     const ingredientControlModel = this.props.ingredientModel.ingredientControlModels[tag]
     const value = ingredientControlModel.getSliderValue()
-
     ReactGA.event({
       category: 'Nutrition Mixer',
       action: 'User changed units for ingredient',
       nonInteraction: false,
       label: tag
     });
-
-    //console.log('handleUnitDropdownChange ----------------------------------------');
-    //console.log('tag = ' + tag);
-    //console.log('units = ' + units);
-
     this.updateReduxStore(tag, value, units)
   }
-
   handleMatchDropdownChange(value) {
     const {tag} = this.props
     const {matchResultsModel} = this.props.tagModel
@@ -81,7 +59,7 @@ export default class IngredientController extends React.Component {
           nonInteraction: false,
           label: tag
         });
-        this.props.getMoreData(tag, matchResultsModel.getSearchResultsLength(tag))
+        this.props.getMoreData(tag)
       } else {
         // Firebase lazy fetch
         ReactGA.event({
@@ -99,12 +77,10 @@ export default class IngredientController extends React.Component {
       this.props.completeMatchDropdownChange(tag, value)
     }
   }
-
   getValidationState() {
     const {tag} = this.props
     const ingredientControlModel = this.props.ingredientModel.ingredientControlModels[tag]
     const editBoxValue = ingredientControlModel.getEditBoxValue()
-
     // Check to see if editBoxValue is a number--if so, return success because
     // rationalToFloat expects a string. This also helps to catch things like
     // "" and " " which evaluate to numbers (isNan===false) with the second
@@ -114,7 +90,6 @@ export default class IngredientController extends React.Component {
         return 'success'
       }
     }
-
     // Try and convert to a rational number from a variety of string
     // representations (i.e. "1/2" "024" etc.), failing that, return error.
     try {
@@ -122,10 +97,8 @@ export default class IngredientController extends React.Component {
     } catch(err) {
       return 'error'
     }
-
     return 'success'
   }
-
   updateReduxStore(tag, value, units) {
     let ingredientControlModel = this.props.ingredientModel.ingredientControlModels[tag]
     ingredientControlModel.setSliderValue(value)
@@ -133,7 +106,6 @@ export default class IngredientController extends React.Component {
     this.props.updateIngredientControlModel(tag, ingredientControlModel)
     this.props.nutritionModelScaleIng(tag, value, units)
   }
-
   updateReduxStoreIfValid() {
     if (this.getValidationState() === 'success') {
       const {tag} = this.props
@@ -149,7 +121,6 @@ export default class IngredientController extends React.Component {
       this.updateReduxStore(tag, value, units)
     }
   }
-
   submitNewSliderValue(event) {
     this.updateReduxStoreIfValid()
 
@@ -157,18 +128,15 @@ export default class IngredientController extends React.Component {
     // re-render / re-state!
     event.preventDefault()
   }
-
   onEditBoxBlurred() {
     this.updateReduxStoreIfValid()
   }
-
   render() {
     const {tag} = this.props
     const ingredientControlModel = this.props.ingredientModel.ingredientControlModels[tag]
     const formControlId = tag + "FormControlId"
     const sliderValue = ingredientControlModel.getSliderValue()
     const editBoxValue = ingredientControlModel.getEditBoxValue()
-
     return (
       <div style={{borderWidth: 1,
                    borderColor: 'black',
@@ -177,7 +145,6 @@ export default class IngredientController extends React.Component {
                    padding: 10,
                    marginRight: 10,
                    marginLeft: 10}}>
-
         <Row>
           <Col xs={7} md={7} style={{paddingLeft: 5, paddingRight: 5}}>
             <Slider
@@ -214,7 +181,6 @@ export default class IngredientController extends React.Component {
               onChange={this.handleUnitDropdownChange.bind(this)}/>
           </Col>
         </Row>
-
         <Row>
           <Col xs={12} md={12}>
           <Dropdownlist
@@ -223,7 +189,6 @@ export default class IngredientController extends React.Component {
             onChange={this.handleMatchDropdownChange.bind(this)}/>
           </Col>
         </Row>
-
       </div>
     )
   }

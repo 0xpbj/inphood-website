@@ -45,16 +45,17 @@ export default class NutritionEstimateJSX extends React.Component {
     //       code path vs. these two--it creates problems for setting whether
     //       things are visible.)
     let ingredientComposite = this.props.ingredientComposite
-    if (ingredientComposite === undefined) {
-      const nutritionModel = this.props.nutritionModel
-      if (nutritionModel != undefined) {
-        ingredientComposite = nutritionModel.getScaledCompositeIngredientModel()
-      }
-    } else {
-      resultIsNan = isNaN(ingredientComposite.getCalories())
-      if (resultIsNan)
-        return <ProgressBar active now={50} bsStyle="info" />
-    }
+    // if (ingredientComposite === undefined) {
+    //   const nutritionModel = this.props.nutritionModel
+    //   if (nutritionModel != undefined) {
+    //     ingredientComposite = nutritionModel.getScaledCompositeIngredientModel()
+    //   }
+    // } else {
+    //   resultIsNan = isNaN(ingredientComposite.getCalories())
+    //   if (resultIsNan)
+    //     return <ProgressBar active now={50} bsStyle="info" />
+    // }
+    // 
 
     const servingSizeSentence =
       "Serving Size " +

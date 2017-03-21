@@ -7,9 +7,6 @@ import {
   SEND_SERIALIZED_DATA,
   STORE_PARSED_DATA,
   LAZY_FETCH_FIREBASE,
-  RESET_LAZY_LOAD_STATUS,
-  CLEAN_REDUCERS,
-  SEARCH_INGREDIENT,
   MODEL_RESET,
   NM_ADD_INGREDIENT,
   NM_REM_INGREDIENT,
@@ -19,18 +16,20 @@ import {
   IM_UPDATE_MODEL,
   IM_REM_INGREDIENT_TAG,
   SC_STORE_MODEL,
-  RESET_SEARCH_FLAG,
   SELECTED_TAGS,
+  DELETED_TAGS,
   UNUSED_TAGS,
-  GET_MORE_DATA,
-  RESET_APPEND_DATA,
+  REPLACED_TAGS,
   INIT_EMAIL_FLOW,
   GET_EMAIL_DATA,
   COMPLETE_DROPDOWN_CHANGE,
   ADD_SEARCH_SELECTION,
   SEND_USER_GENERATED_DATA,
   INIT_SUPER_SEARCH,
-  CLOSE_SEARCH_MODAL
+  CLOSE_SEARCH_MODAL,
+  SHOW_NUTRITION_MIXERS,
+  GET_MORE_DATA,
+  SET_PARSED_DATA,
 } from '../constants/ActionTypes'
 
 export function uploadPhoto() {
@@ -76,6 +75,13 @@ export function sendSerializedData(composite, full) {
   }
 }
 
+export function setParsedData(parsedData) {
+  return {
+    type: SET_PARSED_DATA,
+    parsedData
+  }
+}
+
 export function storeParsedData(parsedData, missingData, rawData, title, dietary, allergen) {
   return {
     type: STORE_PARSED_DATA,
@@ -95,25 +101,6 @@ export function lazyFetchFirebase(foodName, ingredient, key, index) {
     ingredient,
     key,
     index
-  }
-}
-
-export function resetLazyLoadOperation() {
-  return {
-    type: RESET_LAZY_LOAD_STATUS
-  }
-}
-
-export function cleanReducers() {
-  return {
-    type: CLEAN_REDUCERS
-  }
-}
-
-export function searchIngredientData(searchIngredient) {
-  return {
-    type: SEARCH_INGREDIENT,
-    searchIngredient
   }
 }
 
@@ -187,15 +174,16 @@ export function setServingsControllerModel(servingsControlModel) {
   }
 }
 
-export function resetSearchFlag() {
-  return {
-    type: RESET_SEARCH_FLAG,
-  }
-}
-
 export function selectedTags(tags) {
   return {
     type: SELECTED_TAGS,
+    tags
+  }
+}
+
+export function deletedTags(tags) {
+  return {
+    type: DELETED_TAGS,
     tags
   }
 }
@@ -207,17 +195,10 @@ export function unusedTags(tags) {
   }
 }
 
-export function getMoreData(foodName, size) {
+export function replacedTags(tags) {
   return {
-    type: GET_MORE_DATA,
-    foodName,
-    size
-  }
-}
-
-export function resetAppendData() {
-  return {
-    type: RESET_APPEND_DATA
+    type: REPLACED_TAGS,
+    tags
   }
 }
 
@@ -242,20 +223,6 @@ export function completeMatchDropdownChange(tag, value) {
   }
 }
 
-export function addSearchSelection(searchResult) {
-  return {
-    type: ADD_SEARCH_SELECTION,
-    searchResult
-  }
-}
-
-export function initSuperSearch(flag) {
-  return {
-    type: INIT_SUPER_SEARCH,
-    flag
-  }
-}
-
 export function sendUserGeneratedData(data, labelId, userId) {
   return {
     type: SEND_USER_GENERATED_DATA,
@@ -265,8 +232,28 @@ export function sendUserGeneratedData(data, labelId, userId) {
   }
 }
 
+export function addSearchSelection(searchResult) {
+  return {
+    type: ADD_SEARCH_SELECTION,
+    searchResult
+  }
+}
+
 export function closeSearchModal() {
   return {
     type: CLOSE_SEARCH_MODAL
+  }
+}
+
+export function showNutritionMixers() {
+  return {
+    type: SHOW_NUTRITION_MIXERS
+  }
+}
+
+export function getMoreData(foodName) {
+  return {
+    type: GET_MORE_DATA,
+    foodName
   }
 }

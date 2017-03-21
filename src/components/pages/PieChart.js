@@ -56,7 +56,7 @@ export default class NutritionChart extends React.Component {
       return (
         <div>
           <Button onClick={()=>this.setState({ showNutritionModal: true })}><Glyphicon glyph="glyphicon glyphicon-signal" /></Button>
-          <Modal show={showNutritionModal} bsSize="medium" aria-labelledby="contained-modal-title-md">
+          <Modal show={showNutritionModal} bsSize="large" aria-labelledby="contained-modal-title-lg">
             <Modal.Header closeButton onClick={()=>this.setState({ showNutritionModal: false })}>
               <Modal.Title id="contained-modal-title-lg">Nutrition Facts: 100 grams of <i>{tag}</i> has <b>{calories}</b> calories</Modal.Title>
             </Modal.Header>

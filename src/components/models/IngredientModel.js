@@ -46,7 +46,7 @@ export class IngredientModel {
     this._displayServingUnit = 'serving'
     //
     //   Generic measures/Unit:
-    this._servingAmount = 0
+    this._servingAmount = 1
     this._servingUnit = 'g'
     //
     // This value calculated from fat (lipid) data:

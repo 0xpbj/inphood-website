@@ -50,5 +50,5 @@ function* sendEmail () {
 }
 
 export default function* root() {
-  yield fork(takeLatest, INIT_EMAIL_FLOW, sendEmail)
+  // yield fork(takeLatest, INIT_EMAIL_FLOW, sendEmail)
 }

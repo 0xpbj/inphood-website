@@ -6,7 +6,7 @@ export default class NoMatch extends React.Component {
   render() {
     return (
       <Alert bsStyle="danger" onDismiss={() => this.props.router.push('/')}>
-        <h4>Oh snap! Page not found!</h4>
+        <h4>Now where did that page go...</h4>
         <p>
           <Button bsStyle="danger" onClick={() => this.props.router.push('/')}>Go Home</Button>
         </p>

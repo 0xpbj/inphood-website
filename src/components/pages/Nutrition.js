@@ -15,7 +15,6 @@ import ControlLabel from 'react-bootstrap/lib/ControlLabel'
 
 import PieChart from './PieChart'
 import Label from './NutritionEstimateJSX'
-import Search from '../../containers/SearchContainer'
 import {IngredientModel} from '../models/IngredientModel'
 import {rationalToFloat} from '../../helpers/ConversionUtils'
 import {IngredientControlModel} from '../models/IngredientControlModel'

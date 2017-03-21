@@ -73,13 +73,13 @@ export default class Recipe extends React.Component {
         action: 'User sending recipe',
         nonInteraction: true
       });
-      this.props.uploadPhoto()
       const {ingredients} = this.state
       let data = parseRecipe(ingredients)
       this.props.storeParsedData(data.found, data.missing, ingredients)
       if (!this.state.showNutritionMixers) {
         this.setState({showNutritionMixers: true})
         this.props.showNutritionMixers()
+        this.props.uploadPhoto()
       }
       this.setState({ingredients: ''})
     }

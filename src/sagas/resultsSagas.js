@@ -1,6 +1,7 @@
 import {
   LABEL_DATA,
   GET_LABEL_ID,
+  RESULT_URL,
   SEND_SERIALIZED_DATA,
   SEND_USER_GENERATED_DATA,
 } from '../constants/ActionTypes'
@@ -11,6 +12,7 @@ const Config = require('Config')
 const firebase = require('firebase')
 
 function* loadSerializedData() {
+  yield take (SEND_SERIALIZED_DATA)
   const {composite, full, key} = yield select(state => state.nutritionReducer)
   let user = Config.DEBUG ? 'test' : 'anonymous'
   firebase.database().ref('/global/nutritionLabel/'+user+'/'+key).update({
@@ -40,5 +42,5 @@ function* sendUserGeneratedData() {
 export default function* root() {
   yield fork(getLabelData)
   yield fork(sendUserGeneratedData)
-  yield fork(takeLatest, SEND_SERIALIZED_DATA, loadSerializedData)
+  yield fork(takeLatest, RESULT_URL, loadSerializedData)
 }

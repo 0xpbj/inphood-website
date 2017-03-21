@@ -29,8 +29,18 @@ export default class Results extends React.Component {
     }
   }
   componentWillMount() {
-    this.props.modelReset()
-    this.props.clearData()
+    const {label, user} = this.props
+    if (label && label !== '') {
+      const hUser = user ? user : Config.DEBUG ? 'test' : 'anonymous'
+      this.props.getLabelId(hUser, label)
+    }
+    ReactGA.initialize('UA-88850545-2', {
+      debug: Config.DEBUG,
+      titleCase: false,
+      gaOptions: {
+        userId: 'websiteUser'
+      }
+    })
   }
   saveLabelToImage() {
     ReactGA.event({

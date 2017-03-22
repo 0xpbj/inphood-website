@@ -99,7 +99,7 @@ export default class Home extends React.Component {
         <div>
           <Grid>
             <Jumbotron style={{
-              backgroundColor: 'GhostWhite', 
+              backgroundColor: 'MintCream', 
               borderWidth: 1,
               borderColor: 'black',
               borderStyle: 'solid',

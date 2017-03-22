@@ -9,6 +9,7 @@ import Modal from 'react-bootstrap/lib/Modal'
 import Image from 'react-bootstrap/lib/Image'
 import Button from 'react-bootstrap/lib/Button'
 import Popover from 'react-bootstrap/lib/Popover'
+import MenuItem from 'react-bootstrap/lib/MenuItem'
 import Glyphicon from 'react-bootstrap/lib/Glyphicon'
 import FormGroup from 'react-bootstrap/lib/FormGroup'
 import ListGroup from 'react-bootstrap/lib/ListGroup'
@@ -31,30 +32,13 @@ import Label from './NutritionEstimateJSX'
 import {getPossibleUnits, rationalToFloat} from '../../helpers/ConversionUtils'
 import {IngredientModel} from '../models/IngredientModel'
 import {IngredientControlModel} from '../models/IngredientControlModel'
-import Results from '../../containers/ResultsContainer'
 const Config = require('Config')
 
 export default class Generator extends React.Component {
   constructor() {
     super()
     this.state = {
-      showResults: false
-    }
-  }
-  componentWillMount() {
-    const {label, user, developer} = this.props.location.query
-    if (label && label !== '') {
-      const hUser = user ? user : Config.DEBUG ? 'test' : 'anonymous'
-      this.props.getLabelId(hUser, label)
-    }
-    if (!developer) {
-      ReactGA.initialize('UA-88850545-2', {
-        debug: Config.DEBUG,
-        titleCase: false,
-        gaOptions: {
-          userId: 'websiteUser'
-        }
-      })
+      labelErrorFlag: false
     }
   }
   transitionToLabelPage(composite, full) {
@@ -63,10 +47,14 @@ export default class Generator extends React.Component {
       action: 'User sharing results',
       nonInteraction: false
     });
-    this.props.sendSerializedData(composite, full)
-    // const user = Config.DEBUG ? 'test' : 'anonymous'
-    // this.props.router.push('/?user=' + user + '&label=' + this.props.nutrition.key)
-    this.setState({showResults: true})
+    if (this.props.nutrition.key) {
+      this.props.sendSerializedData(composite, full)
+      const user = Config.DEBUG ? 'test' : 'anonymous'
+      this.props.router.push('/?user=' + user + '&label=' + this.props.nutrition.key)
+    }
+    else {
+      this.setState({labelErrorFlag: true})
+    }
   }
   //////////////////////////////////////////////////////////////////////////////
   // Action Handlers:
@@ -148,148 +136,152 @@ export default class Generator extends React.Component {
     this.props.closeSearchModal()
   }
   render() {
-    // const {label, user} = this.props.location.query
-    if (this.state.showResults) {
-      const user = Config.DEBUG ? 'test' : 'anonymous'
-      const label = this.props.nutrition.key
-      return <Results label={label} user={user} closeGenerator={this.props.closeGenerator}/>
+    const {nutritionModel} = this.props.nutritionModelRed
+    const full = nutritionModel.serialize()
+    const compositeModel = nutritionModel.getScaledCompositeIngredientModel()
+    const composite = compositeModel.serialize()
+    const {unusedTags, deletedTags, replacedTags, selectedTags} = this.props.tagModel
+    const ml = new MarginLayout()
+    const shareResultsButton = (
+      <Button bsStyle="success"
+              onClick={() => this.transitionToLabelPage(composite, full)}>
+        Share Results&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-send"></Glyphicon>
+      </Button>
+    )
+    const embedButton = (
+      <Button bsStyle="success"
+              onClick={() => this.setState({flag: 1})}>
+        Embed Label
+      </Button>
+    )
+    let close = () => this.closeModal()
+    const {firebaseSearch, fdaSearch, showModal, timeout} = this.props.search
+    let modalBody = (
+        <Modal.Body className="text-center">
+          <ProgressBar type='circular' mode='indeterminate' multicolor={true} />
+        </Modal.Body>
+    )
+    if (timeout) {
+      modalBody = (
+        <Modal.Body className="text-left">
+          <Alert bsStyle="warning">
+            <h4>Search timed out</h4>
+          </Alert>
+        </Modal.Body>
+      )
     }
-    else {
-      const {nutritionModel} = this.props.nutritionModelRed
-      const full = nutritionModel.serialize()
-      const compositeModel = nutritionModel.getScaledCompositeIngredientModel()
-      const composite = compositeModel.serialize()
-      const {unusedTags, deletedTags, replacedTags} = this.props.tagModel
-      const ml = new MarginLayout()
-      const shareResultsButton = (
-        <Button bsStyle="success"
-                onClick={() => this.transitionToLabelPage(composite, full)}>
-          Share Results
-        </Button>
+    else if (firebaseSearch && fdaSearch) {
+      modalBody = (
+        <Modal.Body className="text-left">
+          {this.getSearchList()}
+        </Modal.Body>
       )
-      const embedButton = (
-        <Button bsStyle="success"
-                onClick={() => this.setState({flag: 1})}>
-          Embed Label
-        </Button>
-      )
-      let close = () => this.closeModal()
-      const {firebaseSearch, fdaSearch, showModal, timeout} = this.props.search
-      let modalBody = (
-          <Modal.Body className="text-center">
-            <ProgressBar type='circular' mode='indeterminate' multicolor={true} />
-          </Modal.Body>
-      )
-      if (timeout) {
-        modalBody = (
-          <Modal.Body className="text-left">
-            <Alert bsStyle="warning">
-              <h4>Search timed out</h4>
-            </Alert>
-          </Modal.Body>
-        )
-      }
-      else if (firebaseSearch && fdaSearch) {
-        modalBody = (
-          <Modal.Body className="text-left">
-            {this.getSearchList()}
-          </Modal.Body>
-        )
-      }
-      const modal = (
-        <div className="modal-container">
-          <Modal
-            show={showModal}
-            onHide={close}
-            container={this}
-            aria-labelledby="contained-modal-title"
-          >
-            <Modal.Header closeButton onClick={close}>
-              <Modal.Title id="contained-modal-title">Ingredient Super Search</Modal.Title>
-            </Modal.Header>
-            {modalBody}
-            <Modal.Footer>
-              <Button onClick={close}>Close</Button>
-            </Modal.Footer>
-          </Modal>
-        </div>
-      )
-      return (
-        <div>
-          <TopBar step=""
-                  stepText=""
-                  aButton={null}
-                  closeGenerator={this.props.closeGenerator}/>
-          <Row>
-            {ml.marginCol}
-            <Col xs={ml.xsCol}
-                 sm={ml.smCol}
-                 md={ml.mdCol}
-                 lg={ml.lgCol}>
-              <Row>
-                <Col xs={7} sm={7} md={7}>
+    }
+    const labelError = (this.state.labelErrorFlag && selectedTags.length === 0) ? (
+      <Alert bsStyle="warning">
+        <h4>Please add ingredients to your label!</h4>
+      </Alert>
+    ) : null
+    const modal = (
+      <div className="modal-container">
+        <Modal
+          show={showModal}
+          onHide={close}
+          container={this}
+          aria-labelledby="contained-modal-title"
+        >
+          <Modal.Header closeButton onClick={close}>
+            <Modal.Title id="contained-modal-title">Ingredient Super Search</Modal.Title>
+          </Modal.Header>
+          {modalBody}
+          <Modal.Footer>
+            <Button onClick={close}>Close</Button>
+          </Modal.Footer>
+        </Modal>
+      </div>
+    )
+    const customizeLabel = (
+      <DropdownButton bsStyle='success' title='Customize Label' id='dropdwon'>
+        <MenuItem eventKey='1' onClick={() => this.props.setLabelType('standard')}>Standard Label</MenuItem>
+        <MenuItem eventKey='2' onClick={() => this.props.setLabelType('complete')}>Complete Label</MenuItem>
+        <MenuItem eventKey='3' onClick={() => this.props.setLabelType('micronut')}>Micro Nutrition Label</MenuItem>
+      </DropdownButton>
+    )
+    return (
+      <div>
+        <TopBar step=""
+                stepText=""
+                aButton={shareResultsButton}
+                router={this.props.router}/>
+        <Row>
+          {ml.marginCol}
+          <Col xs={ml.xsCol}
+               sm={ml.smCol}
+               md={ml.mdCol}
+               lg={ml.lgCol}>
+            <Row>
+              <Col xs={7} sm={7} md={7}>
+                <div>
+                  {labelError}
+                  <Recipe router={this.props.router} route={this.props.route}/>
+                  {modal}
+                  <Nutrition />
+                </div>
+              </Col>
+              <Col xs={5} sm={5} md={5}>
+                <Row>
                   <div>
-                    <Recipe />
-                    {modal}
-                    <Nutrition />
+                    <text>&nbsp;</text>
+                    <Label id='nutritionLabel' ingredientComposite={compositeModel} labelType={this.props.labelRed.labelType}/>
                   </div>
-                </Col>
-                <Col xs={5} sm={5} md={5}>
-                  <Row>
-                    <div>
-                      <text>&nbsp;</text>
-                      <Label id='nutritionLabel' ingredientComposite={compositeModel}/>
-                    </div>
-                  </Row>
-                  <Row>
-                    {/*<pre>{this.props.nutrition.rawData}</pre>*/}
-                    <div style={{marginTop: 10}} className="text-right">
-                      {shareResultsButton}
-                    </div>
-                  </Row>
-                  {/*<Row>
-                    <div>
-                      <pre>{this.props.nutrition.rawData}</pre>
-                    </div>
-                  </Row>*/}
-                  {/* temporary hack to align top to adjacent slider */}
-                  <Row style={{marginTop: 9}}>
-                    <TagController
-                      tags={deletedTags}
-                      tagName={'Discarded Tags:'}
-                      deletable={false}
-                    />
-                  </Row>
-                  <Row>
-                    <TagController
-                      tags={replacedTags}
-                      tagName={'Replaced Tags:'}
-                      deletable={false}
-                    />
-                  </Row>
-                  <Row>
-                    <TagController
-                      tags={unusedTags}
-                      tagName={'Missing Tags:'}
-                      deletable={false}
-                    />
-                  </Row>
-                </Col>
-              </Row>
-            </Col>
-            {ml.marginCol}
-          </Row>
-          <Row>
-            {ml.marginCol}
-            <Col xs={ml.xsCol}
-                 sm={ml.smCol}
-                 md={ml.mdCol}
-                 lg={ml.lgCol}>
-            </Col>
-            {ml.marginCol}
-          </Row>
-        </div>
-      )
-    }
+                </Row>
+                <Row>
+                  <div className="text-right" style={{marginTop: 10}}>
+                    {customizeLabel}
+                  </div>
+                </Row>
+                {/*<Row>
+                  <div>
+                    <pre>{this.props.nutrition.rawData}</pre>
+                  </div>
+                </Row>*/}
+                {/* temporary hack to align top to adjacent slider */}
+                <Row style={{marginTop: 9}}>
+                  <TagController
+                    tags={deletedTags}
+                    tagName={'Discarded Tags:'}
+                    deletable={false}
+                  />
+                </Row>
+                <Row>
+                  <TagController
+                    tags={replacedTags}
+                    tagName={'Replaced Tags:'}
+                    deletable={false}
+                  />
+                </Row>
+                <Row>
+                  <TagController
+                    tags={unusedTags}
+                    tagName={'Missing Tags:'}
+                    deletable={false}
+                  />
+                </Row>
+              </Col>
+            </Row>
+          </Col>
+          {ml.marginCol}
+        </Row>
+        <Row>
+          {ml.marginCol}
+          <Col xs={ml.xsCol}
+               sm={ml.smCol}
+               md={ml.mdCol}
+               lg={ml.lgCol}>
+          </Col>
+          {ml.marginCol}
+        </Row>
+      </div>
+    )
   }
 }

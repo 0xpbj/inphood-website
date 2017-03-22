@@ -143,7 +143,7 @@ export default class Results extends React.Component {
         let ingredient = new IngredientModel()
         ingredient.initializeFromSerialization(ingredientData)
         textLabel = this.getTextLabel(ingredient)
-        nutritionLabel = <Label displayGeneratedStatement={true} ingredientComposite={ingredient}/>
+        nutritionLabel = <Label displayGeneratedStatement={true} ingredientComposite={ingredient} labelType={this.props.labelRed.labelType}/>
         ReactGA.event({
           category: 'User',
           action: 'User results composite found',
@@ -165,7 +165,7 @@ export default class Results extends React.Component {
       const embedMsg = '<embed src=' + epath + ' height=600 width=400>'
       const {iUrl, title} = this.props.results.data
       let modTitle = ''
-      if (title !== '')
+      if (title && title !== '')
         modTitle = ': ' + title
 
       const saveButton = (
@@ -209,7 +209,7 @@ export default class Results extends React.Component {
       const placeHolderCol = <Col xs={1} sm={1} md={1} lg={2}/>
       return (
         <div style={{backgroundColor: 'white'}}>
-          <TopBar step="" stepText="" aButton={saveButton} closeGenerator={this.props.closeGenerator}/>
+          <TopBar step="" stepText="" aButton={saveButton} router={this.props.router}/>
           <Grid>
             <Row>
               <Col xs={12} sm={7} md={6} lg={6}>

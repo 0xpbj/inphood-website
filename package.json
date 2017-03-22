@@ -18,7 +18,7 @@
   "license": "inphood llc.",
   "homepage": "https://www.inphood.com",
   "dependencies": {
-    "convert-units": "^1.3.1",
+    "convert-units": "^2.0.1",
     "dom-to-image": "^2.5.2",
     "fast-levenshtein": "^2.0.6",
     "history": "^4.5.0",
@@ -36,7 +36,7 @@
     "react-widgets": "^3.4.5",
     "recharts": "^0.21.2",
     "redux": "^3.6.0",
-    "redux-actions": "^1.2.0",
+    "redux-actions": "^2.0.1",
     "redux-saga": "^0.14.0",
     "request": "^2.79.0",
     "whatwg-fetch": "^2.0.2"

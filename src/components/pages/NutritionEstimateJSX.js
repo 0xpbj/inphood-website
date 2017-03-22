@@ -180,6 +180,7 @@ export default class NutritionEstimateJSX extends React.Component {
   }
 
   render() {
+    // console.log('LABEL TYPE: ', this.props.labelType);
     const myStyles = new Style()
     let resultIsNan = false
 

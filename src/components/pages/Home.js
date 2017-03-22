@@ -55,7 +55,7 @@ export default class Home extends React.Component {
   render() {
     const {label, user} = this.props.location.query
     if (label && label !== '') {
-      return <Results label={label} user={user}/>
+      return <Results label={label} user={user} router={this.props.router}/>
     }
     else {
       const images = [

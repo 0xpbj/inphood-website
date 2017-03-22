@@ -18,7 +18,6 @@ import Chip from 'react-toolbox/lib/chip'
 import UploadModal from '../layout/UploadModal'
 
 import MarginLayout from '../../helpers/MarginLayout'
-import TopBar from '../layout/TopBar'
 import ServingsController from '../../containers/ServingsControllerContainer'
 import { withRouter } from 'react-router'
 

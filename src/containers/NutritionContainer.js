@@ -7,7 +7,7 @@ function mapStateToProps (state) {
   return {
     tagModel: state.tagModelReducer,
     nutrition: state.nutritionReducer,
-    ingredientModel: state.ingredientModelReducer,
+    ingredientModel: state.ingredientControlModelReducer,
     nutritionModelRed: state.nutritionModelReducer,
   }
 }

@@ -181,7 +181,11 @@ export default class NutritionEstimateJSX extends React.Component {
   }
 
   render() {
-    // console.log('LABEL TYPE: ', this.props.labelType);
+    console.log('LABEL TYPE: ', this.props.labelType)
+    // standard
+    // complete
+    // micronut
+
     const myStyles = new Style()
     let resultIsNan = false
 

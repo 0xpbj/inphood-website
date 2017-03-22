@@ -9,6 +9,7 @@ import Modal from 'react-bootstrap/lib/Modal'
 import Image from 'react-bootstrap/lib/Image'
 import Button from 'react-bootstrap/lib/Button'
 import Popover from 'react-bootstrap/lib/Popover'
+import MenuItem from 'react-bootstrap/lib/MenuItem'
 import Glyphicon from 'react-bootstrap/lib/Glyphicon'
 import FormGroup from 'react-bootstrap/lib/FormGroup'
 import ListGroup from 'react-bootstrap/lib/ListGroup'
@@ -39,9 +40,6 @@ export default class Generator extends React.Component {
     this.state = {
       labelErrorFlag: false
     }
-  }
-  componentWillMount() {
-    this.setState({labelErrorFlag: false})
   }
   transitionToLabelPage(composite, full) {
     ReactGA.event({
@@ -142,7 +140,7 @@ export default class Generator extends React.Component {
     const full = nutritionModel.serialize()
     const compositeModel = nutritionModel.getScaledCompositeIngredientModel()
     const composite = compositeModel.serialize()
-    const {unusedTags, deletedTags, replacedTags} = this.props.tagModel
+    const {unusedTags, deletedTags, replacedTags, selectedTags} = this.props.tagModel
     const ml = new MarginLayout()
     const shareResultsButton = (
       <Button bsStyle="success"
@@ -179,7 +177,7 @@ export default class Generator extends React.Component {
         </Modal.Body>
       )
     }
-    const labelError = this.state.labelErrorFlag ? (
+    const labelError = (this.state.labelErrorFlag && selectedTags.length === 0) ? (
       <Alert bsStyle="warning">
         <h4>Please add ingredients to your label!</h4>
       </Alert>
@@ -202,11 +200,18 @@ export default class Generator extends React.Component {
         </Modal>
       </div>
     )
+    const customizeLabel = (
+      <DropdownButton bsStyle='success' title='Customize Label' id='dropdwon'>
+        <MenuItem eventKey='1' onClick={() => this.props.setLabelType('standard')}>Standard Label</MenuItem>
+        <MenuItem eventKey='2' onClick={() => this.props.setLabelType('complete')}>Complete Label</MenuItem>
+        <MenuItem eventKey='3' onClick={() => this.props.setLabelType('micronut')}>Micro Nutrition Label</MenuItem>
+      </DropdownButton>
+    )
     return (
       <div>
         <TopBar step=""
                 stepText=""
-                aButton={null}
+                aButton={shareResultsButton}
                 router={this.props.router}/>
         <Row>
           {ml.marginCol}
@@ -225,15 +230,14 @@ export default class Generator extends React.Component {
               </Col>
               <Col xs={5} sm={5} md={5}>
                 <Row>
-                  {/*<pre>{this.props.nutrition.rawData}</pre>*/}
-                  <div className="text-right">
-                    {shareResultsButton}
+                  <div>
+                    <text>&nbsp;</text>
+                    <Label id='nutritionLabel' ingredientComposite={compositeModel} labelType={this.props.label.labelType}/>
                   </div>
                 </Row>
                 <Row>
-                  <div>
-                    <text>&nbsp;</text>
-                    <Label id='nutritionLabel' ingredientComposite={compositeModel}/>
+                  <div className="text-right">
+                    {customizeLabel}
                   </div>
                 </Row>
                 {/*<Row>

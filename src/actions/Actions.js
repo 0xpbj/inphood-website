@@ -27,9 +27,9 @@ import {
   SEND_USER_GENERATED_DATA,
   INIT_SUPER_SEARCH,
   CLOSE_SEARCH_MODAL,
-  SHOW_NUTRITION_MIXERS,
   GET_MORE_DATA,
   SET_PARSED_DATA,
+  SET_LABEL_TYPE
 } from '../constants/ActionTypes'
 
 export function uploadPhoto() {
@@ -246,15 +246,16 @@ export function closeSearchModal() {
   }
 }
 
-export function showNutritionMixers() {
-  return {
-    type: SHOW_NUTRITION_MIXERS
-  }
-}
-
 export function getMoreData(foodName) {
   return {
     type: GET_MORE_DATA,
     foodName
+  }
+}
+
+export function setLabelType(labelType) {
+  return {
+    type: SET_LABEL_TYPE,
+    labelType
   }
 }

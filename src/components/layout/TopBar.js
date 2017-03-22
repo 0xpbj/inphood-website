@@ -30,7 +30,7 @@ export default class TopBar extends React.Component {
               </Button>
             </Col>
             {centerContent}
-            <Col xs={12} sm={3} className="text-right" style={{paddingLeft: 0, paddingRight: 0, marginTop: 1}}>
+            <Col xs={12} sm={3} className="text-right" style={{paddingLeft: 0, paddingRight: 0, marginTop: 10}}>
               {aButton}
             </Col>
           </Row>

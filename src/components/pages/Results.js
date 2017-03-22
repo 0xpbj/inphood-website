@@ -195,7 +195,7 @@ export default class Results extends React.Component {
     ) : (
       <div className="text-center">
         {pictureAlert}
-        <Button bsStyle="default" onClick={()=>this.setState({ showUploadModal: true })}>
+        <Button bsStyle="success" onClick={()=>this.setState({ showUploadModal: true })}>
           Upload Meal Photo&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-open"></Glyphicon>
         </Button>
         <Glyphicon

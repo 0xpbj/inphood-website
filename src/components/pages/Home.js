@@ -89,7 +89,7 @@ export default class Home extends React.Component {
           <h1 className="text-center">Make free nutrition labels!</h1>
           <h3 className="text-center">Understand what you are eating.</h3>
           <p className="text-right">
-            <Button bsStyle="primary" onClick={() => this.showHelp()}>
+            <Button bsStyle="default" onClick={() => this.showHelp()}>
               Learn more&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-bell"></Glyphicon>
             </Button>
           </p>

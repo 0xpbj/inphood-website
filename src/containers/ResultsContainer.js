@@ -6,7 +6,7 @@ import * as actionCreators from '../actions/Actions'
 function mapStateToProps (state) {
   return {
     results: state.resultsReducer,
-    label: state.labelReducer
+    labelRed: state.labelReducer
   }
 }
 

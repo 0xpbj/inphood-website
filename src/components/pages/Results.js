@@ -143,7 +143,7 @@ export default class Results extends React.Component {
         let ingredient = new IngredientModel()
         ingredient.initializeFromSerialization(ingredientData)
         textLabel = this.getTextLabel(ingredient)
-        nutritionLabel = <Label displayGeneratedStatement={true} ingredientComposite={ingredient} labelType={this.props.label.labelType}/>
+        nutritionLabel = <Label displayGeneratedStatement={true} ingredientComposite={ingredient} labelType={this.props.labelRed.labelType}/>
         ReactGA.event({
           category: 'User',
           action: 'User results composite found',

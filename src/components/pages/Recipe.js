@@ -92,7 +92,6 @@ class Recipe extends React.Component {
       this.props.storeParsedData(data.found, data.missing, ingredients)
       if (!this.state.showNutritionMixers) {
         this.setState({showNutritionMixers: true})
-        this.props.showNutritionMixers()
         this.props.uploadPhoto()
       }
       this.setState({ingredients: '', isSaved: false})

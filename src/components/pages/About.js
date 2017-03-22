@@ -7,6 +7,7 @@ import Alert from 'react-bootstrap/lib/Alert'
 import instagram from '../../images/instagram.svg'
 import linkedin from '../../images/linkedin.svg'
 import {Link} from 'react-router'
+import TopBar from '../layout/TopBar'
 
 export default class About extends React.Component {
   getTeamMember(memberName, title, flag, instagramUrl, linkedInUrl) {
@@ -34,30 +35,37 @@ export default class About extends React.Component {
       nonInteraction: false
     });
     return (
-      <Grid>
-        <Row className="show-grid">
-          <h1 className="page-header">About Us</h1>
-          <h4>inPhood LLC founded in 2016, labels food images across the internet.</h4>
-          <h4>Our products help users generate shareable nutrition labels, based on USDA information and proprietary sources.</h4>
-          <h2 className="page-header">Our Team</h2>
-            <div className="row">
-              <div className="col-sm-6">
-                {this.getTeamMember("Prabhaav Bhardwaj", "CEO",
-                  true,
-                  "https://www.instagram.com/pv.bj",
-                  "https://www.linkedin.com/in/prabhaav"
-                )}
+      <div style={{backgroundColor: 'white'}}>
+        <Grid>
+          <Row className="show-grid">
+            <TopBar step="" stepText="" router={this.props.router}/>
+            <Col xs={2} sm={2} md={2} lg={2}/>
+            <Col xs={8} sm={8} md={8} lg={8}>
+              <h1 className="page-header">About Us</h1>
+              <h4>inPhood LLC founded in 2016, labels food images across the internet.</h4>
+              <h4>Our products help users generate shareable nutrition labels, based on USDA information and proprietary sources.</h4>
+              <h2 className="page-header">Our Team</h2>
+              <div className="row">
+                <div className="col-sm-6">
+                  {this.getTeamMember("Prabhaav Bhardwaj", "CEO",
+                    true,
+                    "https://www.instagram.com/pv.bj",
+                    "https://www.linkedin.com/in/prabhaav"
+                  )}
+                </div>
+                <div className="col-sm-6">
+                  {this.getTeamMember("Alex Carreira", "CTO",
+                    false,
+                    "https://www.instagram.com/ac4tw",
+                    "https://www.linkedin.com/in/alex-carreira-6a2a711"
+                  )}
+                </div>
               </div>
-              <div className="col-sm-6">
-                {this.getTeamMember("Alex Carreira", "CTO",
-                  false,
-                  "https://www.instagram.com/ac4tw",
-                  "https://www.linkedin.com/in/alex-carreira-6a2a711"
-                )}
-              </div>
-            </div>
-        </Row>
-      </Grid>
+            </Col>
+            <Col xs={2} sm={2} md={2} lg={2}/>
+          </Row>
+        </Grid>
+      </div>
     )
   }
 }

@@ -137,14 +137,13 @@ export default class Nutrition extends React.Component {
             <Col xs={12} md={12}>
               <div key={tag}>
                 <Row>
-                  <Col xs={6} md={6}>
+                  <Col xs={6}>
                     <Chip onDeleteClick={this.handleChipDelete.bind(this, tag)} deletable>
                       {recipeLine}
                     </Chip>
                   </Col>
-                  <Col xs={4} md={4} />
-                  <Col xs={2} md={2}>
-                    <PieChart nutritionModel={nutritionModel} tag={tag} />
+                  <Col className="text-right" xs={6}>
+                    <PieChart nutritionModel={nutritionModel} tag={tag}/>
                   </Col>
                 </Row>
               </div>

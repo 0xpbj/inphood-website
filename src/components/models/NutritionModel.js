@@ -69,7 +69,7 @@ export class NutritionModel {
     //    - complete
     //    - micronut  (Prabhaav)
     //
-    this._labelType = 'standard'
+    this._labelType = IngredientModel.labelTypes.standard
   }
 
   initializeFromSerialization(serializedData) {
@@ -86,7 +86,7 @@ export class NutritionModel {
 
     //
     // Label Type
-    this._labelType = 'standard'
+    this._labelType = IngredientModel.labelTypes.standard
     if (nutritionData.hasOwnProperty('_labelType')) {
       this._labelType = nutritionData._labelType
     }

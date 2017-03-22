@@ -206,9 +206,21 @@ export default class Generator extends React.Component {
     )
     const customizeLabel = (
       <DropdownButton bsStyle='success' title='Customize Label' id='dropdwon'>
-        <MenuItem eventKey='1' onClick={() => this.props.setLabelType('standard')}>Standard Label</MenuItem>
-        <MenuItem eventKey='2' onClick={() => this.props.setLabelType('complete')}>Complete Label</MenuItem>
-        <MenuItem eventKey='3' onClick={() => this.props.setLabelType('micronut')}>Micro Nutrient Label</MenuItem>
+        <MenuItem
+          eventKey='1'
+          onClick={() => this.props.setLabelType(IngredientModel.labelTypes.standard)}>
+          Standard Label
+        </MenuItem>
+        <MenuItem
+          eventKey='2'
+          onClick={() => this.props.setLabelType(IngredientModel.labelTypes.complete)}>
+          Complete Label
+        </MenuItem>
+        <MenuItem
+          eventKey='3'
+          onClick={() => this.props.setLabelType(IngredientModel.labelTypes.micronut)}>
+          Micro Nutrient Label
+        </MenuItem>
       </DropdownButton>
     )
     return (

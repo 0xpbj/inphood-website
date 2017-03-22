@@ -1,6 +1,7 @@
 const React = require('react')
 import Style from "../styles/NutritionEstimateStyles.js"
 import ProgressBar from 'react-bootstrap/lib/ProgressBar'
+import {IngredientModel} from '../models/IngredientModel'
 
 export default class NutritionEstimateJSX extends React.Component {
   constructor() {
@@ -306,17 +307,17 @@ export default class NutritionEstimateJSX extends React.Component {
     let tableTitle = undefined
     let standardNutrients = undefined
     let microNutrients = undefined
-    if (labelType === 'complete') {
+    if (labelType === IngredientModel.labelTypes.complete) {
       tableTitle = this.getTableTitle(ingredientComposite, myStyles)
       standardNutrients = this.getStandardNutrients(ingredientComposite,
                                                     myStyles,
                                                     myStyles.thickSeparator);
       microNutrients = this.getMicroNutrients(ingredientComposite, myStyles)
-    } else if (labelType === 'micronut') {
+    } else if (labelType === IngredientModel.labelTypes.micronut) {
       tableTitle = this.getMicroNutrientTitle(ingredientComposite, myStyles)
       standardNutrients = '';
       microNutrients = this.getMicroNutrients(ingredientComposite, myStyles)
-    } else { // labelType === 'standard'
+    } else { // labelType === IngredientModel.labelTypes.standard
       tableTitle = this.getTableTitle(ingredientComposite, myStyles)
       standardNutrients = this.getStandardNutrients(ingredientComposite,
                                                     myStyles,

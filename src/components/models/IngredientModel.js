@@ -225,7 +225,7 @@ export class IngredientModel {
     this._measureMeta = ingredientData._measureMeta
     //
     // Label Type
-    this._labelType = 'standard'
+    this._labelType = IngredientModel.labelTypes.standard
     if (ingredientData.hasOwnProperty('_labelType')) {
       this._labelType = ingredientData._labelType
     }
@@ -864,6 +864,12 @@ export class IngredientModel {
   getMeasureMeta() {
     return this._measureMeta
   }
+}
+
+IngredientModel.labelTypes = {
+  standard: 0,
+  complete: 1,
+  micronut: 2   // Prabhaav
 }
 
 // rda2k from: https://www.dsld.nlm.nih.gov/dsld/dailyvalue.jsp

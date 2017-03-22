@@ -13,7 +13,7 @@ export default class NutritionEstimateJSX extends React.Component {
 
     let servingInfo = [servingSizeSentence]
     if (ingredientComposite.getSuggestedServingUnit() === 'people') {
-      servingInfo.push(<br/>)
+      servingInfo.push(<br key={0}/>)
       servingInfo.push('Servings Per Recipe about ' + ingredientComposite.getSuggestedServingAmount())
     }
 
@@ -75,7 +75,7 @@ export default class NutritionEstimateJSX extends React.Component {
     )
   }
 
-  getIndentedRow(styles, rowTitle, rowValue, rowUnit, rowRDA = undefined) {
+  getIndentedRow(styles, rowTitle, rowValue, rowUnit, rowRDA=undefined) {
 
     const theRDA = (rowRDA !== undefined) ? parseFloat(rowRDA) + '%' : ''
     return (
@@ -92,11 +92,12 @@ export default class NutritionEstimateJSX extends React.Component {
     )
   }
 
-  getRow(styles, rowTitle, rowValue, rowUnit, rowRDA=undefined, rowStyle={}) {
+  getRow(styles,
+    rowTitle, rowValue, rowUnit, rowRDA=undefined, rowStyle={}, keyValue='') {
 
     const theRDA = (rowRDA !== undefined) ? parseFloat(rowRDA) + '%' : ''
     return (
-      <tr style={rowStyle}>
+      <tr style={rowStyle} key={keyValue}>
         <th colSpan={2} style={styles.performanceFactsTableElementTh}>
           {rowTitle}&nbsp;{rowValue}{rowUnit}
         </th>
@@ -143,7 +144,7 @@ export default class NutritionEstimateJSX extends React.Component {
 
         let rowStyle = (idxNutrients === numNutrients) ? styles.thickEnd : {}
         microNutrientRows.push(
-          this.getRow(styles, nutrient, value, unit, rda2k, rowStyle))
+          this.getRow(styles, nutrient, value, unit, rda2k, rowStyle, idxNutrients))
       }
     }
 

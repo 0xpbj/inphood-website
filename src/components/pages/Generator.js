@@ -236,7 +236,7 @@ export default class Generator extends React.Component {
                md={ml.mdCol}
                lg={ml.lgCol}>
             <Row>
-              <Col xs={7} sm={7} md={7}>
+              <Col xs={12} sm={6} md={6} lg={6}>
                 <div>
                   {labelError}
                   <Recipe router={this.props.router} route={this.props.route}/>
@@ -244,7 +244,7 @@ export default class Generator extends React.Component {
                   <Nutrition />
                 </div>
               </Col>
-              <Col xs={5} sm={5} md={5}>
+              <Col xs={12} sm={6} md={6} lg={6}>
                 <Row>
                   <div>
                     <text>&nbsp;</text>

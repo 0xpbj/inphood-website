@@ -86,10 +86,10 @@ export default class Home extends React.Component {
           onImageLoad={this.handleImageLoad}/>
       ) : (
         <div>
-          <h1 className="text-center">Understand what you are eating!</h1>
-          <h3 className="text-center">Make free nutrition labels in three easy steps!</h3>
+          <h1 className="text-center">Make free nutrition labels!</h1>
+          <h3 className="text-center">Understand what you are eating.</h3>
           <p className="text-right">
-            <Button bsStyle="primary" onClick={() => this.showHelp()}>
+            <Button bsStyle="default" onClick={() => this.showHelp()}>
               Learn more&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-bell"></Glyphicon>
             </Button>
           </p>
@@ -98,7 +98,15 @@ export default class Home extends React.Component {
       return (
         <div>
           <Grid>
-            <Jumbotron style={{}}>{jumbo}</Jumbotron>
+            <Jumbotron style={{
+              backgroundColor: 'MintCream', 
+              borderWidth: 1,
+              borderColor: 'black',
+              borderStyle: 'solid',
+              borderRadius: 5}}
+            >
+              {jumbo}
+            </Jumbotron>
             <Row>
               <div className="text-center">
                 <Button bsStyle="success" onClick={() => this.transitionToGenerator()}>

@@ -19,7 +19,7 @@ function* completeMatchDropdownChange() {
     const {tag, value} = yield take(COMPLETE_DROPDOWN_CHANGE)
     const {nutritionModel} = yield select(state => state.nutritionModelReducer)
     const {matchResultsModel} = yield select(state => state.tagModelReducer)
-    const {ingredientControlModels} = yield select(state => state.ingredientModelReducer)
+    const {ingredientControlModels} = yield select(state => state.ingredientControlModelReducer)
     // 1. Save the current ingredient key for deletion at the end of this
     //    process:
     let ingredientControlModel = ingredientControlModels[tag]

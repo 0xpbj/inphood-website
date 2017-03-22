@@ -4,7 +4,7 @@ import resultsReducer from './resultsReducer'
 import tagModelReducer from './tagModelReducer'
 import nutritionReducer from './nutritionReducer'
 import nutritionModelReducer from './nutritionModelReducer'
-import ingredientModelReducer from './ingredientModelReducer'
+import ingredientControlModelReducer from './ingredientControlModelReducer'
 import servingsControlsReducer from './servingsControllerReducer'
 import labelReducer from './labelReducer'
 
@@ -14,7 +14,7 @@ const appReducer = combineReducers({
     tagModelReducer,
     nutritionReducer,
     nutritionModelReducer,
-    ingredientModelReducer,
+    ingredientControlModelReducer,
     servingsControlsReducer,
     labelReducer
 })

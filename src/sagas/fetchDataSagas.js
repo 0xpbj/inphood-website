@@ -29,7 +29,6 @@ function* getDataFromFireBase() {
       yield put ({type: INITIALIZE_SEARCH_FLOW})
     }
     else if (index === length) {
-      console.log('PBJERROR = REGULAR RECIPE SEARCH')
       yield put ({type: INITIALIZE_RECIPE_FLOW})
     }
   }

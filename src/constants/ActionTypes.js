@@ -1,10 +1,10 @@
 // User Flow Actions
 export const CLEAR_DATA = 'CLEAR_DATA'
-export const UPLOAD_PHOTO = 'UPLOAD_PHOTO'
+export const SAVE_TO_CLOUD = 'SAVE_TO_CLOUD'
 export const SELECTED_PHOTO = 'SELECTED_PHOTO'
 export const GET_MORE_DATA = 'GET_MORE_DATA'
 export const GET_COMMERCIAL_DATA = 'GET_COMMERCIAL_DATA'
-
+export const SET_TITLE = 'SET_TITLE'
 
 // Results Actions
 export const LABEL_DATA = 'LABEL_DATA'

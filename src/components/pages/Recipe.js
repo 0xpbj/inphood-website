@@ -15,20 +15,10 @@ import ControlLabel from 'react-bootstrap/lib/ControlLabel'
 import DropdownButton from 'react-bootstrap/lib/DropdownButton'
 import {parseRecipe, parseCaption} from '../../helpers/parseRecipe'
 import Chip from 'react-toolbox/lib/chip'
-import UploadModal from '../layout/UploadModal'
 
 import MarginLayout from '../../helpers/MarginLayout'
 import ServingsController from '../../containers/ServingsControllerContainer'
 import { withRouter } from 'react-router'
-
-const FieldGroup = ({ id, label, ...props }) => {
-  return (
-    <FormGroup controlId={id} validationState={props.validationState}>
-      <ControlLabel>{label}</ControlLabel>
-      <FormControl {...props} />
-    </FormGroup>
-  )
-}
 
 class Recipe extends React.Component {
   constructor() {
@@ -39,16 +29,9 @@ class Recipe extends React.Component {
       recipe: '',
       isSaved: true,
       parse: false,
-      allergen: '',
-      dietary: '',
-      title: '',
       ingredients: '',
       recipeError: false,
-      pictureError: false,
-      picturePopoverFlag: false,
-      captionPopoverFlag: false,
       recipePopoverFlag: false,
-      showUploadModal: false
     }
   }
   componentWillMount() {
@@ -92,51 +75,15 @@ class Recipe extends React.Component {
       this.props.storeParsedData(data.found, data.missing, ingredients)
       if (!this.state.showNutritionMixers) {
         this.setState({showNutritionMixers: true})
-        this.props.uploadPhoto()
       }
       this.setState({ingredients: '', isSaved: false})
     }
   }
-  getTitleValidationState() {
-    const length = this.state.title.length
-    if (length === 1 || length > 100)
-      return 'error'
-    else if (length > 0)
-      return 'success'
-  }
-  getDietaryValidationState() {
-    const length = this.state.dietary.length
-    if (length === 1 || length > 100)
-      return 'error'
-    else if (length > 0)
-      return 'success'
-  }
-  getAllergenValidationState() {
-    const length = this.state.allergen.length
-    if (length === 1 || length > 100)
-      return 'error'
-    else if (length > 0)
-      return 'success'
-  }
-  onDrop(acceptedFiles, rejectedFiles) {
-    ReactGA.event({
-      category: 'User',
-      action: 'Image uploaded',
-      nonInteraction: false
-    })
-    acceptedFiles.forEach(file => {
-      this.props.selectedPhoto(file)
-    })
-  }
   render() {
+    let textRows = 3
     const recipeAlert = (this.state.recipeError) ? (
       <Alert bsStyle="danger">
         <h4>Oh snap! You forgot to enter a recipe!</h4>
-      </Alert>
-    ) : null
-    const pictureAlert = (this.state.pictureError) ? (
-      <Alert bsStyle="danger">
-        <h4>Oh snap! You forgot to add a picture of your meal!</h4>
       </Alert>
     ) : null
     const recipePopover = this.state.recipePopoverFlag ? (
@@ -152,79 +99,6 @@ class Recipe extends React.Component {
         </Popover>
       </div>
     ) : null
-    const picturePopover = this.state.picturePopoverFlag ? (
-      <div style={{ width: 300 }}>
-        <Popover
-          id="popover-basic"
-          placement="right"
-          positionLeft={20}
-          positionTop={-40}
-          title="Picture Help"
-        >
-          Add a meal photo to highlight recipe details
-        </Popover>
-      </div>
-    ) : null
-    const captionPopover = this.state.captionPopoverFlag ? (
-      <Popover
-        id="popover-basic"
-        title="Caption Flow"
-      >
-        Extract ingredients from social media caption
-      </Popover>
-    ) : null
-    let textRows = 3
-    const image = this.props.nutrition.picture ? (
-      <Image className="center-block" src={this.props.nutrition.picture} responsive rounded/>
-    ) : (
-      <div className="text-center">
-        {pictureAlert}
-        <Button bsStyle="default" onClick={()=>this.setState({ showUploadModal: true })}>
-          Upload Meal Photo&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-open"></Glyphicon>
-        </Button>
-        <Glyphicon
-          onClick={()=>this.setState({picturePopoverFlag: !this.state.picturePopoverFlag})}
-          style={{marginLeft: 10}}
-          glyph="glyphicon glyphicon-info-sign">
-          {picturePopover}
-        </Glyphicon>
-        <UploadModal
-          onDrop={(acceptedFiles, rejectedFiles) => this.onDrop.bind(this)}
-          show={this.state.showUploadModal}
-          onHide={() => this.setState({showUploadModal: false})}
-        />
-      </div>
-    )
-    let recipeForm = (
-      <div>
-        <FieldGroup
-          id="formControlsText"
-          type="text"
-          label="Recipe Title"
-          placeholder="Pumpkin Waffles"
-          validationState={this.getTitleValidationState()}
-          onChange={(e) => this.setState({title: e.target.value})}
-        />
-        <FieldGroup
-          id="formControlsText"
-          type="text"
-          label="Dietary Information"
-          placeholder="Paleo, Vegan, etc..."
-          validationState={this.getDietaryValidationState()}
-          onChange={(e) => this.setState({dietary: e.target.value})}
-        />
-        <FieldGroup
-          id="formControlsText"
-          type="text"
-          label="Allergen Information"
-          placeholder="Peanut, Gluten, etc..."
-          validationState={this.getAllergenValidationState()}
-          onChange={(e) => this.setState({allergen: e.target.value})}
-        />
-        <ControlLabel>Recipe Photo</ControlLabel>
-          {image}
-      </div>
-    )
     const useRecipeButton = (
       <Button className="btn-primary-spacing"
               bsStyle="success"

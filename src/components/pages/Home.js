@@ -38,8 +38,6 @@ export default class Home extends React.Component {
         }
       })
     }
-    this.props.modelReset()
-    this.props.clearData()
   }
   transitionToGenerator() {
     this.props.router.push('nutrition')

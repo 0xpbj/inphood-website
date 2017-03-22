@@ -41,6 +41,10 @@ export default class Generator extends React.Component {
       labelErrorFlag: false
     }
   }
+  componentWillMount() {
+    this.props.modelReset()
+    this.props.clearData()
+  }
   transitionToLabelPage(composite, full) {
     ReactGA.event({
       category: 'User',
@@ -204,7 +208,7 @@ export default class Generator extends React.Component {
       <DropdownButton bsStyle='success' title='Customize Label' id='dropdwon'>
         <MenuItem eventKey='1' onClick={() => this.props.setLabelType('standard')}>Standard Label</MenuItem>
         <MenuItem eventKey='2' onClick={() => this.props.setLabelType('complete')}>Complete Label</MenuItem>
-        <MenuItem eventKey='3' onClick={() => this.props.setLabelType('micronut')}>Micro Nutrition Label</MenuItem>
+        <MenuItem eventKey='3' onClick={() => this.props.setLabelType('micronut')}>Micro Nutrient Label</MenuItem>
       </DropdownButton>
     )
     return (

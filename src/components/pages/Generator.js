@@ -110,7 +110,7 @@ export default class Generator extends React.Component {
   }
   selectedListItem(aSearchResult, ingredient, index) {
     this.props.nutritionModelRemIng(ingredient)
-    this.props.ingredientModelRemTag(ingredient)
+    this.props.ingredientControlModelRemTag(ingredient)
     let {replacedTags} = this.props.tagModel
     replacedTags.push(ingredient)
     this.props.replacedTags(replacedTags)
@@ -266,21 +266,14 @@ export default class Generator extends React.Component {
                 <Row style={{marginTop: 9}}>
                   <TagController
                     tags={deletedTags}
-                    tagName={'Discarded Tags:'}
-                    deletable={false}
-                  />
-                </Row>
-                <Row>
-                  <TagController
-                    tags={replacedTags}
-                    tagName={'Replaced Tags:'}
+                    tagName={'Deleted Ingredients:'}
                     deletable={false}
                   />
                 </Row>
                 <Row>
                   <TagController
                     tags={unusedTags}
-                    tagName={'Missing Tags:'}
+                    tagName={'Unfound Ingredients:'}
                     deletable={false}
                   />
                 </Row>

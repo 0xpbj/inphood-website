@@ -8,6 +8,7 @@ import {
   STORE_PARSED_DATA,
   LAZY_FETCH_FIREBASE,
   MODEL_RESET,
+  UPDATE_MATCH_RESULTS_MODEL,
   NM_ADD_INGREDIENT,
   NM_REM_INGREDIENT,
   NM_SET_SERVINGS,
@@ -111,6 +112,13 @@ export function modelReset() {
   }
 }
 
+export function updateMatchResultsModel(matchResultsModel) {
+  return {
+    type: UPDATE_MATCH_RESULTS_MODEL,
+    matchResultsModel
+  }
+}
+
 export function nutritionModelAddIng(tag, ingredientModel, quantity, unit, append) {
   return {
     type: NM_ADD_INGREDIENT,
@@ -161,7 +169,7 @@ export function updateIngredientControlModel(tag, ingredientControlModel) {
   }
 }
 
-export function ingredientModelRemTag(tag) {
+export function ingredientControlModelRemTag(tag) {
   return {
     type: IM_REM_INGREDIENT_TAG,
     tag

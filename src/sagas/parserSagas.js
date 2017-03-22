@@ -17,7 +17,7 @@ import {
   SEARCH_TIMED_OUT,
   INITIALIZE_FIREBASE_DATA,
   INGREDIENT_FIREBASE_DATA,
-  UPDATE_MATCH_RESULTS_MODEL
+  UPDATE_MATCH_RESULTS_SEARCH_INDEX
 } from '../constants/ActionTypes'
 
 import ReactGA from 'react-ga'
@@ -92,7 +92,7 @@ function* getDataForSearchSelection(searchIngredient, selectedTags) {
     // yield put ({type: INGREDIENT_FIREBASE_DATA, foodName: searchIngredient, ingredient: searchIngredient, data})
     yield put ({type: SET_PARSED_DATA, parsedData})
     yield put ({type: IM_UPDATE_MODEL, tag: searchIngredient, ingredientControlModel})
-    yield put ({type: UPDATE_MATCH_RESULTS_MODEL, searchIngredient, index})
+    yield put ({type: UPDATE_MATCH_RESULTS_SEARCH_INDEX, searchIngredient, index})
     let {matchResultsModel} = yield select(state => state.tagModelReducer)
     // console.log('\n\n\nPBJERROR = SEARCH TERMS REPLACED (1): ', matchResultsModel.getSearches())
     ReactGA.event({
@@ -125,7 +125,7 @@ function* changesFromSearch() {
                   matchResultsModel: new MatchResultsModel(),
                   ingredient})
       return
-    } 
+    }
     else {
       // console.log('\n\n\nPBJERROR = SEARCH RESULTS BEING REPLACED: ', matchResultsModel)
       yield put ({type: SUPER_SEARCH_RESULTS,
@@ -199,7 +199,7 @@ function* changesFromRecipe() {
     const brandedObj = searchResult.getBrandedDataObj()
     if (stdRefObj) {
       ingredientModel.initializeSingle(description, searchTerm, stdRefObj)
-    } 
+    }
     else { // brandedObj
       ingredientModel.initializeFromBrandedFdaObj(description, searchTerm, brandedObj)
     }

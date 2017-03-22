@@ -91,6 +91,12 @@ export class MatchResultsModel {
     this._searches[aSearchTerm] = []
   }
 
+  removeSearch(aSearchTerm) {
+    if (aSearchTerm in this._searches) {
+      delete this._searches[aSearchTerm]
+    }
+  }
+
   getSearches() {
     return this._searches
   }

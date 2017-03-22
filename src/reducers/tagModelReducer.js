@@ -13,7 +13,8 @@ import {
   GET_MORE_DATA,
   SUPER_SEARCH_RESULTS,
   REM_MATCH_RESULT_MODEL,
-  UPDATE_MATCH_RESULTS_MODEL
+  UPDATE_MATCH_RESULTS_MODEL,
+  UPDATE_MATCH_RESULTS_SEARCH_INDEX
 } from '../constants/ActionTypes'
 
 import {MatchResultsModel, SearchResult} from '../components/models/MatchResultsModel'
@@ -100,8 +101,15 @@ export default function modelFun(state = initialState, action) {
     case UPDATE_MATCH_RESULTS_MODEL:
     {
       let {matchResultsModel} = state
+      return {
+        ...state,
+        matchResultsModel
+      }
+    }
+    case UPDATE_MATCH_RESULTS_SEARCH_INDEX:
+    {
+      let {matchResultsModel} = state
       matchResultsModel._searches[action.searchIngredient] = [matchResultsModel._searches[action.searchIngredient][action.index]]
-      debugger
       return {
         ...state,
         matchResultsModel

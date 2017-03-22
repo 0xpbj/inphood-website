@@ -34,8 +34,10 @@ export default class Nutrition extends React.Component {
   handleChipDelete(tag) {
     let {deletedTags, selectedTags} = this.props.tagModel
     let {parsedData} = this.props.nutrition
+
     this.props.nutritionModelRemIng(tag)
-    this.props.ingredientModelRemTag(tag)
+    this.props.ingredientControlModelRemTag(tag)
+
     // 2. Remove the tag from selectedTags (use splice--delete just makes the
     //    element undefined):
     for (let i = 0; i < selectedTags.length; i++) {
@@ -50,10 +52,18 @@ export default class Nutrition extends React.Component {
         break
       }
     }
-    deletedTags.push(tag)
+    if (deletedTags.indexOf(tag) === -1) {
+      deletedTags.push(tag)
+      this.props.deletedTags(deletedTags)
+    }
     this.props.selectedTags(selectedTags)
-    this.props.deletedTags(deletedTags)
     this.props.setParsedData(parsedData)
+
+    // Remove the tag from the matchResultsModel:
+    let {matchResultsModel} = this.props.tagModel
+    matchResultsModel.removeSearch(tag)
+    this.props.updateMatchResultsModel(matchResultsModel)
+
     ReactGA.event({
       category: 'Nutrition Mixer',
       action: 'User deleted ingredient',
@@ -118,6 +128,9 @@ export default class Nutrition extends React.Component {
       recipeLine = recipeLine + name
       recipeLines[name] = recipeLine
     }
+
+    let {deletedTags, selectedTags} = this.props.tagModel
+
     for (let i = 0; i < tagsInOrder.length; i++) {
       const tag = tagsInOrder[i]
       if (! matchResultsModel.hasSearchTerm(tag)) {

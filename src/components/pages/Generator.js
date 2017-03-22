@@ -232,7 +232,8 @@ export default class Generator extends React.Component {
                 <Row>
                   <div>
                     <text>&nbsp;</text>
-                    <Label id='nutritionLabel' ingredientComposite={compositeModel} labelType={this.props.labelRed.labelType}/>
+                    <Label id='nutritionLabel'
+                           ingredientComposite={compositeModel}/>
                   </div>
                 </Row>
                 <Row>

@@ -62,6 +62,14 @@ export class NutritionModel {
     //    (these are the values that put "2 tacos" on the nutrition label)
     this._displayServingCount = 1
     this._displayServingUnit = 'serving'
+
+    // Persist the type of label in the nutrition model and composite
+    // ingredient model. Valid label types include:
+    //    - standard
+    //    - complete
+    //    - micronut  (Prabhaav)
+    //
+    this._labelType = 'standard'
   }
 
   initializeFromSerialization(serializedData) {
@@ -74,6 +82,13 @@ export class NutritionModel {
         nutritionData.hasOwnProperty('_displayServingUnit')) {
       this._displayServingCount = nutritionData._displayServingCount
       this._displayServingUnit = nutritionData._displayServingUnit
+    }
+
+    //
+    // Label Type
+    this._labelType = 'standard'
+    if (nutritionData.hasOwnProperty('_labelType')) {
+      this._labelType = nutritionData._labelType
     }
 
     const append = false
@@ -207,6 +222,11 @@ export class NutritionModel {
                                          this._suggestedServingUnit,
                                          this._displayServingCount,
                                          this._displayServingUnit)
+    compositeIngredient.setLabelType(this._labelType)
     return compositeIngredient
+  }
+
+  setLabelType(aLabelType) {
+    this._labelType = aLabelType
   }
 }

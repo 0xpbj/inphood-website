@@ -12,6 +12,7 @@ import {
   NM_REM_INGREDIENT,
   NM_SET_SERVINGS,
   NM_SCALE_INGREDIENT,
+  NM_SET_LABEL_TYPE,
   IM_ADD_CONTROL_MODEL,
   IM_UPDATE_MODEL,
   IM_REM_INGREDIENT_TAG,
@@ -28,8 +29,7 @@ import {
   INIT_SUPER_SEARCH,
   CLOSE_SEARCH_MODAL,
   GET_MORE_DATA,
-  SET_PARSED_DATA,
-  SET_LABEL_TYPE
+  SET_PARSED_DATA
 } from '../constants/ActionTypes'
 
 export function uploadPhoto() {
@@ -255,7 +255,7 @@ export function getMoreData(foodName) {
 
 export function setLabelType(labelType) {
   return {
-    type: SET_LABEL_TYPE,
+    type: NM_SET_LABEL_TYPE,
     labelType
   }
 }

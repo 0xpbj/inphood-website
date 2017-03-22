@@ -73,6 +73,14 @@ export class IngredientModel {
     this._measureUnit = ''
     this._measureMeta = ''
 
+    // Persist the type of label in the composite ingredient model.
+    // Valid label types include:
+    //    - standard
+    //    - complete
+    //    - micronut  (Prabhaav)
+    //
+    this._labelType = ''
+
     // The following loop creates all the boilerplate/data-driven
     // member variables for this class.
     //
@@ -215,6 +223,12 @@ export class IngredientModel {
     this._measureQuantity = ingredientData._measureQuantity
     this._measureUnit = ingredientData._measureUnit
     this._measureMeta = ingredientData._measureMeta
+    //
+    // Label Type
+    this._labelType = 'standard'
+    if (ingredientData.hasOwnProperty('_labelType')) {
+      this._labelType = ingredientData._labelType
+    }
     //
     // Nutrients
     const nutrientMembers = IngredientModel.nutrientMembers
@@ -417,6 +431,14 @@ export class IngredientModel {
 
   getDisplayServingUnit() {
     return this._displayServingUnit
+  }
+
+  setLabelType(aLabelType) {
+    this._labelType = aLabelType
+  }
+
+  getLabelType() {
+    return this._labelType
   }
 
   getCalories() {

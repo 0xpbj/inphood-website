@@ -4,6 +4,7 @@ import {
   NM_REM_INGREDIENT,
   NM_SET_SERVINGS,
   NM_SCALE_INGREDIENT,
+  NM_SET_LABEL_TYPE
 } from '../constants/ActionTypes'
 
 import {NutritionModel} from '../components/models/NutritionModel'
@@ -58,6 +59,15 @@ export default function nmModelFun(state = initialState, action) {
       return {
         ...state,
         nutritionModel: nutritionModel
+      }
+    }
+    case NM_SET_LABEL_TYPE:
+    {
+      let {nutritionModel} = state
+      nutritionModel.setLabelType(action.labelType)
+      return {
+        ...state,
+        nutritionModel
       }
     }
     default:

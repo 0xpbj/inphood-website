@@ -50,6 +50,7 @@ export default class NutritionChart extends React.Component {
 
     if (scaledIngredient) {
       const ingredientModel = scaledIngredient.getIngredientModel()
+      const key = ingredientModel.getKey()
       const scale = scaledIngredient.getScale()
       const quantity = scaledIngredient.getQuantity()
       const unit = scaledIngredient.getUnit()
@@ -60,7 +61,7 @@ export default class NutritionChart extends React.Component {
           category: 'User',
           action: 'User in ingredient nutrition modal',
           nonInteraction: false,
-          label: ingredientModel.getKey()
+          label: key
         });
       }
 
@@ -70,7 +71,7 @@ export default class NutritionChart extends React.Component {
           <Button onClick={()=>this.setState({ showNutritionModal: true })}><Glyphicon glyph="glyphicon glyphicon-signal" /></Button>
           <Modal show={showNutritionModal} bsSize="large" aria-labelledby="contained-modal-title-lg">
             <Modal.Header closeButton onClick={()=>this.setState({ showNutritionModal: false })}>
-              <Modal.Title id="contained-modal-title-lg">Nutrition Facts: {quantity} {unit} of <i>{tag}</i> has <b>{calories}</b> calories</Modal.Title>
+              <Modal.Title id="contained-modal-title-lg">Nutrition Facts: {quantity} {unit} of <i>{key}</i> has <b>{calories}</b> calories</Modal.Title>
             </Modal.Header>
             <Modal.Body>
               <RadialBarChart width={500} height={300} cx={150} cy={150} innerRadius={20} outerRadius={140} barSize={10} data={labelData}>

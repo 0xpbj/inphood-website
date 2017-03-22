@@ -246,8 +246,8 @@ export function getIngredientValueInUnits(newUnit, ingredientModel, ingredientCo
 // ...
 export function getPossibleUnits(measureUnit) {
   const excludedUnits = [
-    'mm3', 'cm3', 'm3', 'km3', 'in3', 'ft3', 'yd3',
-    'mcg', 'mg']
+    'mm3', 'cm3', 'm3', 'km3', 'in3', 'ft3', 'yd3', 'mcg', 'mg', 'cl', 'dl',
+    'krm', 'tsk', 'msk', 'kkp', 'glas', 'kanna']
 
   let sanitizedMeasureUnit = mapToSupportedUnits(measureUnit)
   // We can also convert anything to grams so include those measures since

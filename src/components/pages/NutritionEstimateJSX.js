@@ -3,6 +3,153 @@ import Style from "../styles/NutritionEstimateStyles.js"
 import ProgressBar from 'react-bootstrap/lib/ProgressBar'
 
 export default class NutritionEstimateJSX extends React.Component {
+  getLabelTitle(styles, ingredientComposite) {
+    const servingSizeSentence =
+      "Serving Size " +
+      ingredientComposite.getDisplayServingCount() + " " +
+      ingredientComposite.getDisplayServingUnit() + " (" +
+      ingredientComposite.getServingAmount() +
+      ingredientComposite.getServingUnit() + ")"
+
+    let servingInfo = [servingSizeSentence]
+    if (ingredientComposite.getSuggestedServingUnit() === 'people') {
+      servingInfo.push(<br/>)
+      servingInfo.push('Servings Per Recipe about ' + ingredientComposite.getSuggestedServingAmount())
+    }
+
+    return (
+      <header style={styles.performanceFactsHeader}>
+        <h1 style={styles.performanceFactsTitle}>Nutrition Facts</h1>
+        <p style={styles.performanceFactsHeaderElementP}>
+          {servingInfo}
+        </p>
+      </header>
+    )
+  }
+
+  getLeftColumnTitle(styles) {
+    const sectionStyle =
+      {...styles.performanceFactsTableElementTheadTrTh, ...styles.smallInfo}
+
+    return (
+      <thead>
+        <tr><th colSpan={3} style={sectionStyle}>Amount Per Serving</th></tr>
+      </thead>
+    )
+  }
+
+  getRightColumnTitle(styles) {
+    const sectionStyle = {...styles.smallInfo,
+                          ...styles.performanceFactsTableElementTdLastChild,
+                          ...styles.performanceFactsTableClassThickRowTd}
+    return (
+      <tr><td colSpan={3} style={sectionStyle}><b>% Daily Value*</b></td></tr>)
+  }
+
+  getCaloriesRow(styles, ingredientComposite) {
+    return (
+      <tr>
+        <th colSpan={2} style={styles.performanceFactsTableElementTh}>
+          <b>Calories </b>{ingredientComposite.getCalories()}
+        </th>
+        <td style={styles.performanceFactsTableElementTdLastChild}>
+          Calories from Fat&nbsp;{ingredientComposite.getCaloriesFromFat()}
+        </td>
+      </tr>
+    )
+  }
+
+  getSectionRow(
+    styles, rowTitle, rowValue, rowUnit, rowRDA=undefined, rowStyle={}) {
+
+    const theRDA = (rowRDA !== undefined) ? parseFloat(rowRDA) + '%' : ''
+    return (
+      <tr style={rowStyle}>
+        <th colSpan={2} style={styles.performanceFactsTableElementTh}>
+          <b>{rowTitle} </b>{rowValue}{rowUnit}
+        </th>
+        <td style={styles.performanceFactsTableElementTdLastChild}>
+          <b>{theRDA}</b>
+        </td>
+      </tr>
+    )
+  }
+
+  getIndentedRow(styles, rowTitle, rowValue, rowUnit, rowRDA = undefined) {
+
+    const theRDA = (rowRDA !== undefined) ? parseFloat(rowRDA) + '%' : ''
+    return (
+      <tr>
+        <td style={{...styles.performanceFactsTableElementTd,
+                    ...styles.performanceFactsTableClassBlankCell}}/>
+        <th style={styles.performanceFactsTableElementTh}>
+          {rowTitle}&nbsp;{rowValue}{rowUnit}
+        </th>
+        <td style={styles.performanceFactsTableElementTdLastChild}>
+          <b>{theRDA}</b>
+        </td>
+      </tr>
+    )
+  }
+
+  getRow(styles, rowTitle, rowValue, rowUnit, rowRDA=undefined, rowStyle={}) {
+
+    const theRDA = (rowRDA !== undefined) ? parseFloat(rowRDA) + '%' : ''
+    return (
+      <tr style={rowStyle}>
+        <th colSpan={2} style={styles.performanceFactsTableElementTh}>
+          {rowTitle}&nbsp;{rowValue}{rowUnit}
+        </th>
+        <td style={styles.performanceFactsTableElementTdLastChild}>
+          {theRDA}
+        </td>
+      </tr>
+    )
+  }
+
+  getMicroNutrients(ingredientComposite, styles) {
+    const microNutrientsAndFnPfxs = NutritionEstimateJSX.microNutrientsAndFnPfxs
+
+    let microNutrientRows = []
+    const numNutrients = Object.keys(microNutrientsAndFnPfxs).length
+    let idxNutrients = 0
+
+    for (let nutrient in microNutrientsAndFnPfxs) {
+      idxNutrients += 1
+      const functionPrefix = microNutrientsAndFnPfxs[nutrient]
+
+      if (ingredientComposite[functionPrefix + 'Visible']()) {
+        const value = ingredientComposite[functionPrefix]()
+        let unit = ingredientComposite[functionPrefix + 'Unit']()
+        let rda2k = ingredientComposite[functionPrefix + 'RDA']()
+
+        if (unit === 'µg') {  // Convert 'µg' to 'mcg':
+          unit = 'mcg'
+        }
+
+        if (rda2k === undefined || isNaN(rda2k)) {  // Handle special cases:
+          if (functionPrefix === 'get_vitaminA') {
+            rda2k = ingredientComposite['get_vitaminA_IURDA']()
+          } else if (functionPrefix === 'get_vitaminD') {
+            rda2k = ingredientComposite['get_vitaminD_IURDA']()
+          } else {
+            console.log('RDA based on 2k calorie diet unavailable.');
+            rda2k = ''
+          }
+        }
+        if (rda2k != '') {
+          rda2k = parseInt(rda2k) + '%'
+        }
+
+        let rowStyle = (idxNutrients === numNutrients) ? styles.thickEnd : {}
+        microNutrientRows.push(
+          this.getRow(styles, nutrient, value, unit, rda2k, rowStyle))
+      }
+    }
+
+    return microNutrientRows
+  }
+
   getInPhoodLogo() {
     return(
       <span>
@@ -17,6 +164,7 @@ export default class NutritionEstimateJSX extends React.Component {
       </span>
     )
   }
+
   getGeneratedStatement(displayGeneratedStatement) {
     if (displayGeneratedStatement === true) {
       return(
@@ -29,68 +177,6 @@ export default class NutritionEstimateJSX extends React.Component {
     } else {
       return
     }
-  }
-  getMicroNutrients(ingredientComposite, styles) {
-    let microNutrientRows = []
-    const numNutrients =
-      Object.keys(NutritionEstimateJSX.microNutrientsAndFnPfxs).length
-    let idxNutrients = 0
-
-    for (let nutrient in NutritionEstimateJSX.microNutrientsAndFnPfxs) {
-      idxNutrients += 1
-      const functionPrefix =
-        NutritionEstimateJSX.microNutrientsAndFnPfxs[nutrient]
-      const getVisibleFn = functionPrefix + 'Visible'
-
-      if (ingredientComposite[getVisibleFn]()) {
-        const getValueFn = functionPrefix
-        const getUnitFn = functionPrefix + 'Unit'
-        const getRDAFn = functionPrefix + 'RDA'
-
-        const value = ingredientComposite[getValueFn]()
-        let unit = ingredientComposite[getUnitFn]()
-        let rda2k = ingredientComposite[getRDAFn]()
-
-        // Convert 'µg' to 'mcg':
-        if (unit === 'µg') {
-          unit = 'mcg'
-        }
-
-        // Handle special cases:
-        if (rda2k === undefined || isNaN(rda2k)) {
-          if (functionPrefix === 'get_vitaminA') {
-            const getAltRDAFn = 'get_vitaminA_IURDA'
-            rda2k = ingredientComposite[getAltRDAFn]()
-          } else if (functionPrefix === 'get_vitaminD') {
-            const getAltRDAFn = 'get_vitaminD_IURDA'
-            rda2k = ingredientComposite[getAltRDAFn]()
-          } else {
-            console.log('RDA based on 2k calorie diet unavailable.');
-            rda2k = ''
-          }
-        }
-        if (rda2k != '') {
-          rda2k = parseInt(rda2k) + '%'
-        }
-
-        let trStyle = (idxNutrients === numNutrients) ? styles.thickEnd : {}
-
-        microNutrientRows.push(
-          <tr style={trStyle}>
-            <th colSpan={2} style={styles.performanceFactsTableElementTh}>
-              {nutrient}&nbsp;
-              {value}
-              {unit}
-            </th>
-            <td style={styles.performanceFactsTableElementTdLastChild}>
-              {rda2k}
-            </td>
-          </tr>
-        )
-      }
-    }
-
-    return microNutrientRows
   }
 
   render() {
@@ -117,19 +203,6 @@ export default class NutritionEstimateJSX extends React.Component {
     // }
     //
 
-    const servingSizeSentence =
-      "Serving Size " +
-      ingredientComposite.getDisplayServingCount() + " " +
-      ingredientComposite.getDisplayServingUnit() + " (" +
-      ingredientComposite.getServingAmount() +
-      ingredientComposite.getServingUnit() + ")"
-
-    const showServingsPerContainer =
-      (ingredientComposite.getSuggestedServingUnit() === 'people')
-    const servingSection = (showServingsPerContainer === '') ?
-      (<p style={myStyles.performanceFactsHeaderElementP}>{servingSizeSentence}</p>) :
-      (<p style={myStyles.performanceFactsHeaderElementP}>{servingSizeSentence}<br/>
-        Servings Per Recipe about {ingredientComposite.getSuggestedServingAmount()}</p>)
 
     // The div-in-div below and margin of 4 is to fix a save image issue (where it
     // cuts off part of the nutrition label border and the generated at inphood.com
@@ -140,154 +213,59 @@ export default class NutritionEstimateJSX extends React.Component {
         style={{backgroundColor:'white', padding:2}}>
         <div style={{margin:0}}>
           <section style={myStyles.performanceFacts}>
-            <header style={myStyles.performanceFactsHeader}>
-              <h1 style={myStyles.performanceFactsTitle}>Nutrition Facts</h1>
-              {servingSection}
-            </header>
+            {this.getLabelTitle(myStyles, ingredientComposite)}
+
             <table style={myStyles.performanceFactsTable}>
-              <thead>
-                <tr>
-                  <th
-                    colSpan={3}
-                    style={{...myStyles.performanceFactsTableElementTheadTrTh,
-                            ...myStyles.smallInfo}}>
-                    Amount Per Serving
-                  </th>
-                </tr>
-              </thead>
+              {this.getLeftColumnTitle(myStyles)}
               <tbody>
 
-                <tr>
-                  <th colSpan={2} style={myStyles.performanceFactsTableElementTh}>
-                    <b>Calories </b>
-                    {ingredientComposite.getCalories()}
-                  </th>
-                  <td style={myStyles.performanceFactsTableElementTdLastChild}>
-                    Calories from Fat&nbsp;
-                    {ingredientComposite.getCaloriesFromFat()}
-                  </td>
-                </tr>
+                {this.getCaloriesRow(myStyles, ingredientComposite)}
+                {this.getRightColumnTitle(myStyles)}
 
-                <tr>
-                  <td colSpan={3}
-                    style={{...myStyles.smallInfo,
-                            ...myStyles.performanceFactsTableElementTdLastChild,
-                            ...myStyles.performanceFactsTableClassThickRowTd}}>
-                    <b>% Daily Value*</b>
-                  </td>
-                </tr>
+                {this.getSectionRow(myStyles, 'Total Fat',
+                                    ingredientComposite.getTotalFatPerServing(),
+                                    ingredientComposite.getTotalFatUnit(),
+                                    ingredientComposite.getTotalFatRDA())}
 
-                <tr>
-                  <th colSpan={2} style={myStyles.performanceFactsTableElementTh}>
-                    <b>Total Fat </b>
-                    {ingredientComposite.getTotalFatPerServing()}
-                    {ingredientComposite.getTotalFatUnit()}
-                  </th>
-                  <td style={myStyles.performanceFactsTableElementTdLastChild}>
-                    <b>{ingredientComposite.getTotalFatRDA()}%</b>
-                  </td>
-                </tr>
+                {this.getIndentedRow(myStyles, 'Saturated Fat',
+                                     ingredientComposite.getSaturatedFatPerServing(),
+                                     ingredientComposite.getSaturatedFatUnit(),
+                                     ingredientComposite.getSaturatedFatRDA())}
 
-                <tr>
-                  <td
-                    style={{...myStyles.performanceFactsTableElementTd,
-                            ...myStyles.performanceFactsTableClassBlankCell}}>
-                  </td>
-                  <th style={myStyles.performanceFactsTableElementTh}>
-                    Saturated Fat&nbsp;
-                    {ingredientComposite.getSaturatedFatPerServing()}
-                    {ingredientComposite.getSaturatedFatUnit()}
-                  </th>
-                  <td style={myStyles.performanceFactsTableElementTdLastChild}>
-                    <b>{ingredientComposite.getSaturatedFatRDA()}%</b>
-                  </td>
-                </tr>
+                {this.getIndentedRow(myStyles, 'Trans Fat',
+                                     ingredientComposite.getTransFatPerServing(),
+                                     ingredientComposite.getTransFatUnit())}
 
-                <tr>
-                  <td
-                    style={{...myStyles.performanceFactsTableElementTd,
-                            ...myStyles.performanceFactsTableClassBlankCell}}>
-                  </td>
-                  <th style={myStyles.performanceFactsTableElementTh}>
-                    Trans Fat&nbsp;
-                    {ingredientComposite.getTransFatPerServing()}
-                    {ingredientComposite.getTransFatUnit()}
-                  </th>
-                  <td style={myStyles.performanceFactsTableElementTdLastChild}>
-                  </td>
-                </tr>
+                {this.getSectionRow(myStyles, 'Cholesterol',
+                                    ingredientComposite.getCholestorol(),
+                                    ingredientComposite.getCholestorolUnit(),
+                                    ingredientComposite.getCholestorolRDA())}
 
-                <tr>
-                  <th colSpan={2} style={myStyles.performanceFactsTableElementTh}>
-                    <b>Cholesterol </b>
-                    {ingredientComposite.getCholestorol()}
-                    {ingredientComposite.getCholestorolUnit()}
-                  </th>
-                  <td style={myStyles.performanceFactsTableElementTdLastChild}>
-                    <b>{ingredientComposite.getCholestorolRDA()}%</b>
-                  </td>
-                </tr>
+                {this.getSectionRow(myStyles, 'Sodium',
+                                    ingredientComposite.getSodium(),
+                                    ingredientComposite.getSodiumUnit(),
+                                    ingredientComposite.getSodiumRDA())}
 
-                <tr>
-                  <th colSpan={2} style={myStyles.performanceFactsTableElementTh}>
-                    <b>Sodium </b>
-                    {ingredientComposite.getSodium()}
-                    {ingredientComposite.getSodiumUnit()}
-                  </th>
-                  <td style={myStyles.performanceFactsTableElementTdLastChild}>
-                    <b>{ingredientComposite.getSodiumRDA()}%</b>
-                  </td>
-                </tr>
+                {this.getSectionRow(
+                  myStyles, 'Total Carbohydrate',
+                  ingredientComposite.getTotalCarbohydratePerServing(),
+                  ingredientComposite.getTotalCarbohydrateUnit(),
+                  ingredientComposite.getTotalCarbohydrateRDA())}
 
-                <tr>
-                  <th colSpan={2} style={myStyles.performanceFactsTableElementTh}>
-                    <b>Total Carbohydrate </b>
-                    {ingredientComposite.getTotalCarbohydratePerServing()}
-                    {ingredientComposite.getTotalCarbohydrateUnit()}
-                  </th>
-                  <td style={myStyles.performanceFactsTableElementTdLastChild}>
-                    <b>{ingredientComposite.getTotalCarbohydrateRDA()}%</b>
-                  </td>
-                </tr>
+                {this.getIndentedRow(myStyles, 'Dietary Fiber',
+                                     ingredientComposite.getDietaryFiber(),
+                                     ingredientComposite.getDietaryFiberUnit(),
+                                     ingredientComposite.getDietaryFiberRDA())}
 
-                <tr>
-                  <td
-                    style={{...myStyles.performanceFactsTableElementTd,
-                            ...myStyles.performanceFactsTableClassBlankCell}}>
-                  </td>
-                  <th style={myStyles.performanceFactsTableElementTh}>
-                    Dietary Fiber&nbsp;
-                    {ingredientComposite.getDietaryFiber()}
-                    {ingredientComposite.getDietaryFiberUnit()}
-                  </th>
-                  <td style={myStyles.performanceFactsTableElementTdLastChild}>
-                    <b>{ingredientComposite.getDietaryFiberRDA()}%</b>
-                  </td>
-                </tr>
+                {this.getIndentedRow(myStyles, 'Sugars',
+                                    ingredientComposite.getSugars(),
+                                    ingredientComposite.getSugarsUnit())}
 
-                <tr>
-                  <td
-                    style={{...myStyles.performanceFactsTableElementTd,
-                            ...myStyles.performanceFactsTableClassBlankCell}}>
-                  </td>
-                  <th style={myStyles.performanceFactsTableElementTh}>
-                    Sugars&nbsp;
-                    {ingredientComposite.getSugars()}
-                    {ingredientComposite.getSugarsUnit()}
-                  </th>
-                  <td style={myStyles.performanceFactsTableElementTdLastChild}>
-                  </td>
-                </tr>
-
-                <tr style={myStyles.thickSeparator}>
-                  <th colSpan={2} style={myStyles.performanceFactsTableElementTh}>
-                    <b>Protein </b>
-                    {ingredientComposite.getTotalProteinPerServing()}
-                    {ingredientComposite.getTotalProteinUnit()}
-                  </th>
-                  <td style={myStyles.performanceFactsTableElementTdLastChild}>
-                  </td>
-                </tr>
+                {this.getSectionRow(
+                  myStyles, 'Protein',
+                  ingredientComposite.getTotalProteinPerServing(),
+                  ingredientComposite.getTotalProteinUnit(),
+                  undefined, myStyles.thickSeparator)}
 
                 {this.getMicroNutrients(ingredientComposite, myStyles)}
 

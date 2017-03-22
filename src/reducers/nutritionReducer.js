@@ -8,8 +8,6 @@ import {
 } from '../constants/ActionTypes'
 
 const initialState = {
-  file: '',
-  picture: '',
   resultUrl: '',
   key: '',
   composite: '',
@@ -23,8 +21,6 @@ export default function nutrition(state = initialState, action) {
   switch (action.type) {
     case CLEAR_DATA:
       return {
-        file: '',
-        picture: '',
         resultUrl: '',
         key: '',
         composite: '',
@@ -33,12 +29,6 @@ export default function nutrition(state = initialState, action) {
         rawData: [],
         newData: [],
         missingData: []
-      }
-    case SELECTED_PHOTO:
-      return {
-        ...state,
-        file: action.photo,
-        picture: action.photo.preview,
       }
     case RESULT_URL:
       return {

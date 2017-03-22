@@ -1,5 +1,5 @@
 import {
-  UPLOAD_PHOTO,
+  SAVE_TO_CLOUD,
   SELECTED_PHOTO,
   CLEAR_DATA,
   GET_LABEL_ID,
@@ -29,12 +29,13 @@ import {
   CLOSE_SEARCH_MODAL,
   GET_MORE_DATA,
   SET_PARSED_DATA,
-  SET_LABEL_TYPE
+  SET_LABEL_TYPE,
+  SET_TITLE
 } from '../constants/ActionTypes'
 
-export function uploadPhoto() {
+export function saveToCloud() {
   return {
-    type: UPLOAD_PHOTO,
+    type: SAVE_TO_CLOUD,
   }
 }
 
@@ -257,5 +258,12 @@ export function setLabelType(labelType) {
   return {
     type: SET_LABEL_TYPE,
     labelType
+  }
+}
+
+export function setTitle(title) {
+  return {
+    type: SET_TITLE,
+    title
   }
 }

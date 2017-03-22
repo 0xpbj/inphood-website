@@ -41,6 +41,10 @@ export default class Generator extends React.Component {
       labelErrorFlag: false
     }
   }
+  componentWillMount() {
+    this.props.modelReset()
+    this.props.clearData()
+  }
   transitionToLabelPage(composite, full) {
     ReactGA.event({
       category: 'User',

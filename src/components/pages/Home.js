@@ -103,7 +103,7 @@ export default class Home extends React.Component {
             <Jumbotron style={{}}>{jumbo}</Jumbotron>
             <Row>
               <div className="text-center">
-                <Button bsStyle="default" onClick={() => this.transitionToGenerator()}>
+                <Button bsStyle="success" onClick={() => this.transitionToGenerator()}>
                   Get Started&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-flash"></Glyphicon>
                 </Button>
               </div>

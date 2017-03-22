@@ -145,7 +145,7 @@ export default class Generator extends React.Component {
     const shareResultsButton = (
       <Button bsStyle="success"
               onClick={() => this.transitionToLabelPage(composite, full)}>
-        Share Results
+        Share Results&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-send"></Glyphicon>
       </Button>
     )
     const embedButton = (
@@ -236,7 +236,7 @@ export default class Generator extends React.Component {
                   </div>
                 </Row>
                 <Row>
-                  <div className="text-right">
+                  <div className="text-right" style={{marginTop: 10}}>
                     {customizeLabel}
                   </div>
                 </Row>

@@ -230,7 +230,7 @@ class Recipe extends React.Component {
       <Button className="btn-primary-spacing"
               bsStyle="success"
               onClick={() => this.recipeFlow()}>
-        Add Ingredients
+        Add Ingredients&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-apple"></Glyphicon>
       </Button>
     )
     return (

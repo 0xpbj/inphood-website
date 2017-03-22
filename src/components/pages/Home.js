@@ -92,7 +92,7 @@ export default class Home extends React.Component {
           <h3 className="text-center">Make free nutrition labels in three easy steps!</h3>
           <p className="text-right">
             <Button bsStyle="primary" onClick={() => this.showHelp()}>
-              Learn more
+              Learn more&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-bell"></Glyphicon>
             </Button>
           </p>
         </div>
@@ -104,7 +104,7 @@ export default class Home extends React.Component {
             <Row>
               <div className="text-center">
                 <Button bsStyle="default" onClick={() => this.transitionToGenerator()}>
-                  Get Started&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-send"></Glyphicon>
+                  Get Started&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-flash"></Glyphicon>
                 </Button>
               </div>
             </Row>

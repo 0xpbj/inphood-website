@@ -248,10 +248,10 @@ function* changesFromRecipe() {
     for (let nmI = 0; nmI < nmTags.length; nmI++) {
       //console.log("  " + nmTags[nmI]);
     }
-    if (nutritionModel.getIngredientModel(searchTerm) !== null) {
+    // if (nutritionModel.getIngredientModel(searchTerm) !== null) {
       //console.log('   Deleting ingredient ' + searchTerm + ' from NutritionModel');
-      yield put.resolve({type: NM_REM_INGREDIENT, tag: searchTerm})
-    }
+      // yield put.resolve({type: NM_REM_INGREDIENT, tag: searchTerm})
+    // }
     let addIngredientErrorStr = ''
     try {
       //console.log('changesFromRecipe: addIngredient call #1 ', searchTerm);

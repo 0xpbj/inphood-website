@@ -22,7 +22,7 @@ import {
 
 import ReactGA from 'react-ga'
 import * as db from './firebaseCommands'
-import { call, fork, put, select, take, takeEvery, race } from 'redux-saga/effects'
+import { call, fork, put, select, take, takeEvery, takeLatest, race } from 'redux-saga/effects'
 import { delay } from 'redux-saga'
 import {IngredientModel} from '../components/models/IngredientModel'
 import {IngredientControlModel} from '../components/models/IngredientControlModel'
@@ -325,6 +325,6 @@ function* changesFromRecipe() {
 }
 
 export default function* root() {
-  yield fork(takeEvery, INITIALIZE_RECIPE_FLOW, changesFromRecipe)
+  yield fork(takeLatest, INITIALIZE_RECIPE_FLOW, changesFromRecipe)
   yield fork(takeEvery, INITIALIZE_SEARCH_FLOW, changesFromSearch)
 }

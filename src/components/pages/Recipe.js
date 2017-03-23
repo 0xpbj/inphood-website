@@ -48,7 +48,6 @@ class Recipe extends React.Component {
   }
   routerWillLeave(nextLocation) {
     if (!this.state.isSaved) {
-      console.log('NEXT LOCATION: ', nextLocation)
       if (!nextLocation.search)
         return 'Your work is not saved! Are you sure you want to leave?'
       else if (nextLocation.search)
@@ -62,9 +61,6 @@ class Recipe extends React.Component {
     else if (this.state.ingredients.length > 5000) {
       this.setState({recipeLengthError: true})
     }
-    // else if (this.props.nutrition.picture === '') {
-    //   this.setState({pictureError: true})
-    // }
     else {
       ReactGA.event({
         category: 'User',
@@ -84,7 +80,7 @@ class Recipe extends React.Component {
     let textRows = 3
     const recipeAlert = (this.state.recipeError) ? (
       <Alert bsStyle="danger">
-        <h4>Oh snap! You forgot to enter a recipe!</h4>
+        <h4>You forgot to enter a ingredient!</h4>
       </Alert>
     ) : null
     const recipePopover = this.state.recipePopoverFlag ? (

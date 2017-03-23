@@ -22,7 +22,7 @@ import {
 
 import ReactGA from 'react-ga'
 import * as db from './firebaseCommands'
-import { call, fork, put, select, take, takeEvery, race } from 'redux-saga/effects'
+import { call, fork, put, select, take, takeEvery, takeLatest, race } from 'redux-saga/effects'
 import { delay } from 'redux-saga'
 import {IngredientModel} from '../components/models/IngredientModel'
 import {IngredientControlModel} from '../components/models/IngredientControlModel'
@@ -105,7 +105,7 @@ function* getDataForSearchSelection(searchIngredient, selectedTags) {
 }
 
 function* changesFromSearch() {
-  console.log('changesFromSearch --------------------------------------------');
+  // console.log('changesFromSearch --------------------------------------------');
   const {firebaseSearch, fdaSearch, ingredient} = yield select(state => state.searchReducer)
   if (firebaseSearch && fdaSearch) {
     const {selectedTags, unusedTags, matchResultsModel} = yield select(state => state.tagModelReducer)
@@ -141,7 +141,7 @@ function* changesFromSearch() {
 
 //TODO: make this work gracefully
 function* changesFromSearchController() {
-  console.log('changesFromSearchController--------------------------------------------');
+  // console.log('changesFromSearchController--------------------------------------------');
   const {response, timeout} = yield race({
     response: call (changesFromSearch),
     timeout: call(delay, 1000),
@@ -156,7 +156,7 @@ function* changesFromRecipe() {
   console.log('changesFromRecipe ---------------------------------------------');
   const {newData, missingData} = yield select(state => state.nutritionReducer)
   const {matchResultsModel} = yield select(state => state.tagModelReducer)
-  // console.log('\n\n\nPBJERROR = SEARCH TERMS LOOPING: ', matchResultsModel.getSearches())
+  // console.log('\n\n\nPBJERROR = SEARCH TERMS LOOPING: ', matchResultsModel.getSearches());
   for (let searchTerm in matchResultsModel.getSearches()) {
     if (matchResultsModel.getSearchResultsLength(searchTerm) === 0) {
       ReactGA.event({
@@ -166,13 +166,13 @@ function* changesFromRecipe() {
         label: searchTerm
       });
       continue
-      // console.log('\n\n\nPBJERROR = SEARCH TERM NOT FOUND: ', searchTerm)
+      // console.log('\n\n\nPBJERROR = SEARCH TERM NOT FOUND: ', searchTerm);
     }
     const searchResult = matchResultsModel.getSearchResultByIndex(searchTerm)
     if ((searchResult.getStandardRefDataObj() === undefined) &&
         (searchResult.getBrandedDataObj() === undefined)) {
       return
-      // console.log('\n\n\nPBJERROR = SEARCH TERM UNDEFINED: ', searchTerm)
+      // console.log('\n\n\nPBJERROR = SEARCH TERM UNDEFINED: ', searchTerm);
     }
   }
   let selectedTags = []
@@ -187,7 +187,7 @@ function* changesFromRecipe() {
           label: searchTerm
         });
       }
-      // console.log('\n\n\nPBJERROR = SEARCH TERM HAS NO RESULTS: ', searchTerm)
+      // console.log('\n\n\nPBJERROR = SEARCH TERM HAS NO RESULTS: ', searchTerm);
       continue
     }
     const searchResult = matchResultsModel.getSearchResultByIndex(searchTerm)
@@ -325,6 +325,6 @@ function* changesFromRecipe() {
 }
 
 export default function* root() {
-  yield fork(takeEvery, INITIALIZE_RECIPE_FLOW, changesFromRecipe)
+  yield fork(takeLatest, INITIALIZE_RECIPE_FLOW, changesFromRecipe)
   yield fork(takeEvery, INITIALIZE_SEARCH_FLOW, changesFromSearch)
 }

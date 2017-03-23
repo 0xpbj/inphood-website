@@ -185,7 +185,6 @@ export default class Results extends React.Component {
       </div>
     ) : null
     const imLink = iUrl ? iUrl : this.props.results.picture
-    console.log('IMAGE: ', imLink)
     const image = imLink ? (
       <div className="text-center">
         <ControlLabel>Meal Photo</ControlLabel>

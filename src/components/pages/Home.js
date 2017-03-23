@@ -10,8 +10,8 @@ import Jumbotron from 'react-bootstrap/lib/Jumbotron'
 import Glyphicon from 'react-bootstrap/lib/Glyphicon'
 import UploadModal from '../layout/UploadModal'
 import MarginLayout from '../../helpers/MarginLayout'
-import ImageGallery from 'react-image-gallery'
-import 'react-image-gallery/styles/css/image-gallery.css'
+// import ImageGallery from 'react-image-gallery'
+// import 'react-image-gallery/styles/css/image-gallery.css'
 import Generator from '../../containers/GeneratorContainer'
 import Results from '../../containers/ResultsContainer'
 const Config = require('Config')
@@ -71,27 +71,28 @@ export default class Home extends React.Component {
         }
       ]
       const {showHelp} = this.state
-      const jumbo = showHelp ? (
-        <ImageGallery
-          items={images}
-          slideInterval={2000}
-          showThumbnails={false}
-          showFullscreenButton={false}
-          showPlayButton={false}
-          showNav={false}
-          autoPlay={true}
-          infinite={false}
-          disableArrowKeys={false}
-          showBullets={true}
-          onImageLoad={this.handleImageLoad}/>
-      ) : (
+      const jumbo = (
+      // showHelp ? (
+      //   <ImageGallery
+      //     items={images}
+      //     slideInterval={2000}
+      //     showThumbnails={false}
+      //     showFullscreenButton={false}
+      //     showPlayButton={false}
+      //     showNav={false}
+      //     autoPlay={true}
+      //     infinite={false}
+      //     disableArrowKeys={false}
+      //     showBullets={true}
+      //     onImageLoad={this.handleImageLoad}/>
+      // ) : (
         <div>
           <h1 className="text-center">Make free nutrition labels!</h1>
           <h3 className="text-center">Understand what you are eating.</h3>
           <p className="text-right">
-            <Button bsStyle="default" onClick={() => this.showHelp()}>
+            {/*<Button bsStyle="default" onClick={() => this.showHelp()}>
               Learn more&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-bell"></Glyphicon>
-            </Button>
+            </Button>*/}
           </p>
         </div>
       )

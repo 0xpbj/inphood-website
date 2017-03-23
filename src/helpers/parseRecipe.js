@@ -154,17 +154,19 @@ export function parseRecipe(data) {
   var ingp = require('../algorithms/parser/ingredientparser')
   let parsedData = []
   let missingData = []
-  if (!phrases)
-    return
-  for (let i of phrases) {
-    let reg = i.match(sRegex)
-    let str = ''
-    for (let x of reg) {
-      str += x
+  if (phrases) {
+    for (let i of phrases) {
+      let reg = i.match(sRegex)
+      let str = ''
+      if (reg) {
+        for (let x of reg) {
+          str += x
+        }
+        let clean = str !== '' ? removeSpecialChars(str) : i
+        let parsed = ingp.parse(clean.toLowerCase())
+        parsedData.push(parsed)
+      }
     }
-    let clean = str !== '' ? removeSpecialChars(str) : i
-    let parsed = ingp.parse(clean.toLowerCase())
-    parsedData.push(parsed)
   }
-  return {missing: missingData, found: combineData(parsedData)}
+  return {missing: missingData, found: parsedData}
 }

@@ -69,11 +69,13 @@ class Recipe extends React.Component {
       });
       const {ingredients} = this.state
       let data = parseRecipe(ingredients)
-      this.props.storeParsedData(data.found, data.missing, ingredients)
-      if (!this.state.showNutritionMixers) {
-        this.setState({showNutritionMixers: true})
+      if (data.found) {
+        this.props.storeParsedData(data.found, data.missing, ingredients)
+        if (!this.state.showNutritionMixers) {
+          this.setState({showNutritionMixers: true})
+        }
+        this.setState({ingredients: '', isSaved: false})
       }
-      this.setState({ingredients: '', isSaved: false})
     }
   }
   render() {

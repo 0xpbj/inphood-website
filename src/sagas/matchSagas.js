@@ -74,7 +74,7 @@ function* completeMatchDropdownChange() {
       nonInteraction: false,
       label: tag
     });
-    yield put.resolve({type: NM_ADD_INGREDIENT, tag, ingredientModel, quantity: currentValue, unit: newUnit, append: true})
+    yield put.resolve({type: NM_ADD_INGREDIENT, tag, ingredientModel, quantity: currentValue, unit: newUnit})
   }
 }
 

@@ -119,14 +119,13 @@ export function updateMatchResultsModel(matchResultsModel) {
   }
 }
 
-export function nutritionModelAddIng(tag, ingredientModel, quantity, unit, append) {
+export function nutritionModelAddIng(tag, ingredientModel, quantity, unit) {
   return {
     type: NM_ADD_INGREDIENT,
     tag,
     ingredientModel,
     quantity,
-    unit,
-    append
+    unit
   }
 }
 

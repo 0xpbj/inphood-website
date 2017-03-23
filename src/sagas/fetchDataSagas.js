@@ -18,22 +18,18 @@ const Config = require('Config')
 import {callElasticSearchLambda, elasticSearchFetch} from './elasticFunctions'
 
 function* getDataFromFireBase() {
-  const {foodName, ingredient, key, append, index, length} = yield take(GET_FIREBASE_DATA)
+  const {foodName, ingredient, key, index, length} = yield take(GET_FIREBASE_DATA)
   const path = 'global/nutritionInfo/' + key
   const flag = (yield call(db.getPath, path)).exists()
   if (flag) {
     const data = (yield call(db.getPath, path)).val()
-    yield put ({type: INGREDIENT_FIREBASE_DATA, foodName, ingredient, data, append})
-    if (append) {
-      yield put ({type: PARSE_SEARCH_DATA, ingredient})
-      yield put ({type: INITIALIZE_SEARCH_FLOW})
-    }
-    else if (index === length) {
+    yield put ({type: INGREDIENT_FIREBASE_DATA, foodName, ingredient, data})
+    if (index === length) {
       yield put ({type: INITIALIZE_RECIPE_FLOW})
     }
   }
   else {
-    yield put ({type: INGREDIENT_FIREBASE_DATA, foodName, ingredient, data: [], append})
+    yield put ({type: INGREDIENT_FIREBASE_DATA, foodName, ingredient, data: []})
   }
 }
 
@@ -43,20 +39,8 @@ function* processParseForLabel() {
   for (let i = 0; i < length; i++) {
     const parseObj = newData[i]
     const foodName = parseObj['name']
-    const append = false
-    const size = 5
-    yield call (callElasticSearchLambda, foodName, size, append, i, length-1)
-  }
-}
-
-function* appendData() {
-  while (true) {
-    const {foodName} = yield take(GET_MORE_DATA)
-    const append = true
-    const size = 25
-    const i = 0
-    const length = 0
-    yield fork(callElasticSearchLambda, foodName, size, append, i, length)
+    const size = 20
+    yield call (callElasticSearchLambda, foodName, size, i, length-1)
   }
 }
 
@@ -82,7 +66,6 @@ function* lambdaHack() {
 
 export default function* root() {
   yield call(lambdaHack)
-  yield fork(appendData)
   yield fork(takeEvery, INITIALIZE_FIREBASE_DATA, getDataFromFireBase)
   yield fork(takeEvery, STORE_PARSED_DATA, processParseForLabel)
 }

@@ -32,7 +32,6 @@ const initialState = {
   unusedTags: [],
   deletedTags: [],
   replacedTags: [],
-  append: false,
   tag: ''
 }
 
@@ -53,7 +52,6 @@ export default function modelFun(state = initialState, action) {
         unusedTags: [],
         deletedTags: [],
         replacedTags: [],
-        append: false,
         tag: ''
       }
     }
@@ -122,15 +120,13 @@ export default function modelFun(state = initialState, action) {
       // Clear the match data to prevent populating it twice on 'back' button actions etc.
       let {matchResultsModel} = state
       const searchTerm = action.foodName
-      if (matchResultsModel.hasResults(searchTerm) && !action.append) {
+      if (matchResultsModel.hasResults(searchTerm)) {
         // TODO: can we just return and skip the ...state since nothing changes?
         return {
           ...state
         }
       }
-      if (action.append) {
-        matchResultsModel._searches[searchTerm] = []
-      }
+
       matchResultsModel.addSearch(searchTerm)
       for (let obj of action.data) {
         const displayDescription = obj.highlight.Description[0]
@@ -139,11 +135,7 @@ export default function modelFun(state = initialState, action) {
         const searchResult = new SearchResult(description, ndbNo, displayDescription)
         matchResultsModel.appendSearchResult(searchTerm, searchResult)
       }
-      // Insert ellipses for ellipses search
-      if (action.data.length !== 0 && !action.append) {
-        const searchResult = new SearchResult('.....', '-1')
-        matchResultsModel.appendSearchResult(searchTerm, searchResult)
-      }
+
       return {
         ...state,
         matchResultsModel
@@ -191,8 +183,6 @@ export default function modelFun(state = initialState, action) {
       return {
         ...state,
         matchResultsModel,
-        userSearch: action.userSearch,
-        append: action.append
       }
     }
     case SET_FDA_RESULTS:

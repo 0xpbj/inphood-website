@@ -91,7 +91,6 @@ export class NutritionModel {
       this._labelType = nutritionData._labelType
     }
 
-    const append = false
     for (let tag in nutritionData._scaledIngredients) {
       const scaledIngredient = nutritionData._scaledIngredients[tag]
 
@@ -105,7 +104,7 @@ export class NutritionModel {
       ingredient.initializeFromSerialization(serializedIngredientData)
 
       try {
-        this.addIngredient(tag, ingredient, quantity, unit, append)
+        this.addIngredient(tag, ingredient, quantity, unit)
       } catch (error) {
         // TODO ...
         console.log('ERROR initializing ingredient, ' + tag + ', in nutrition model deserialization.');
@@ -121,8 +120,8 @@ export class NutritionModel {
 
   // throws if setRecipeAmount blows up
   // throws if a duplicate tag is specified
-  addIngredient(tag, anIngredient, quantity, unit, append) {
-    if (tag in this._scaledIngredients && !append) {
+  addIngredient(tag, anIngredient, quantity, unit) {
+    if (tag in this._scaledIngredients) {
       throw new Error("Tag " + tag + " already exists in nutrition model.")
     }
 

@@ -31,126 +31,126 @@ import {mapToSupportedUnitsStrict,
         rationalToFloat,
         getPossibleUnits} from '../helpers/ConversionUtils'
 
-function* getDataForSearchSelection(searchIngredient, selectedTags) {
-  const {searchResult, index} = yield take(ADD_SEARCH_SELECTION)
-  const description = searchResult.getDescription()
-  let stdRefObj = searchResult.getStandardRefDataObj()
-  let brandedObj = searchResult.getBrandedDataObj()
-  let ingredientModel = new IngredientModel()
-  if ((brandedObj !== undefined) && (stdRefObj === undefined)) {
-    // Handle brandedObj (but only if the stdRefObj isn't defined because we
-    // prefer the stdRefObj):
-    ingredientModel.initializeFromBrandedFdaObj(description,
-                                                searchIngredient,
-                                                brandedObj)
-  } else {
-    if (stdRefObj === undefined) {
-      const path = 'global/nutritionInfo/' + searchResult.getNdbNo()
-      const flag = (yield call(db.getPath, path)).exists()
-      if (flag) {
-        stdRefObj = (yield call(db.getPath, path)).val()
-      } else {
-        return
-      }
-    }
-    ingredientModel.initializeSingle(description, searchIngredient, stdRefObj)
-  }
-  let measureQuantity = ingredientModel.getMeasureQuantity()
-  let measureUnit = ingredientModel.getMeasureUnit()
-  let errorStr = ''
-  try {
-    yield put ({type: NM_ADD_INGREDIENT,
-                tag: searchIngredient,
-                ingredientModel,
-                quantity: measureQuantity,
-                unit: measureUnit,
-                append: false})
-  }
-  catch(err) {
-    errorStr = err
-  }
-  if (errorStr === '') {
-    let ingredientControlModel = new IngredientControlModel(
-      measureQuantity,
-      getPossibleUnits(measureUnit),
-      measureUnit,
-      [description],
-      description)
-    let {parsedData} = yield select(state => state.nutritionReducer)
-    for (let i = 0; i < parsedData.length; i++) {
-      if (searchIngredient === parsedData[i].name) {
-        parsedData[i].name = description
-        parsedData[i].unit = measureUnit
-        parsedData[i].amount = measureQuantity
-        break
-      }
-    }
-    let _source = {Description: description}
-    let _id = searchResult.getNdbNo()
-    let data = [{_stdRefObj: stdRefObj, _brandedObj: brandedObj, _source, _id }]
-    // matchResultsModel._searches[searchIngredient] = data
-    // yield put ({type: INGREDIENT_FIREBASE_DATA, foodName: searchIngredient, ingredient: searchIngredient, data})
-    yield put ({type: SET_PARSED_DATA, parsedData})
-    yield put ({type: IM_UPDATE_MODEL, tag: searchIngredient, ingredientControlModel})
-    yield put ({type: UPDATE_MATCH_RESULTS_SEARCH_INDEX, searchIngredient, index})
-    let {matchResultsModel} = yield select(state => state.tagModelReducer)
-    // console.log('\n\n\nPBJERROR = SEARCH TERMS REPLACED (1): ', matchResultsModel.getSearches())
-    ReactGA.event({
-      category: 'Nutrition Mixer',
-      action: 'Search results added to label',
-      nonInteraction: false,
-      label: searchIngredient
-    });
-  }
-}
+// function* getDataForSearchSelection(searchIngredient, selectedTags) {
+//   const {searchResult, index} = yield take(ADD_SEARCH_SELECTION)
+//   const description = searchResult.getDescription()
+//   let stdRefObj = searchResult.getStandardRefDataObj()
+//   let brandedObj = searchResult.getBrandedDataObj()
+//   let ingredientModel = new IngredientModel()
+//   if ((brandedObj !== undefined) && (stdRefObj === undefined)) {
+//     // Handle brandedObj (but only if the stdRefObj isn't defined because we
+//     // prefer the stdRefObj):
+//     ingredientModel.initializeFromBrandedFdaObj(description,
+//                                                 searchIngredient,
+//                                                 brandedObj)
+//   } else {
+//     if (stdRefObj === undefined) {
+//       const path = 'global/nutritionInfo/' + searchResult.getNdbNo()
+//       const flag = (yield call(db.getPath, path)).exists()
+//       if (flag) {
+//         stdRefObj = (yield call(db.getPath, path)).val()
+//       } else {
+//         return
+//       }
+//     }
+//     ingredientModel.initializeSingle(description, searchIngredient, stdRefObj)
+//   }
+//   let measureQuantity = ingredientModel.getMeasureQuantity()
+//   let measureUnit = ingredientModel.getMeasureUnit()
+//   let errorStr = ''
+//   try {
+//     yield put ({type: NM_ADD_INGREDIENT,
+//                 tag: searchIngredient,
+//                 ingredientModel,
+//                 quantity: measureQuantity,
+//                 unit: measureUnit,
+//                 append: false})
+//   }
+//   catch(err) {
+//     errorStr = err
+//   }
+//   if (errorStr === '') {
+//     let ingredientControlModel = new IngredientControlModel(
+//       measureQuantity,
+//       getPossibleUnits(measureUnit),
+//       measureUnit,
+//       [description],
+//       description)
+//     let {parsedData} = yield select(state => state.nutritionReducer)
+//     for (let i = 0; i < parsedData.length; i++) {
+//       if (searchIngredient === parsedData[i].name) {
+//         parsedData[i].name = description
+//         parsedData[i].unit = measureUnit
+//         parsedData[i].amount = measureQuantity
+//         break
+//       }
+//     }
+//     let _source = {Description: description}
+//     let _id = searchResult.getNdbNo()
+//     let data = [{_stdRefObj: stdRefObj, _brandedObj: brandedObj, _source, _id }]
+//     // matchResultsModel._searches[searchIngredient] = data
+//     // yield put ({type: INGREDIENT_FIREBASE_DATA, foodName: searchIngredient, ingredient: searchIngredient, data})
+//     yield put ({type: SET_PARSED_DATA, parsedData})
+//     yield put ({type: IM_UPDATE_MODEL, tag: searchIngredient, ingredientControlModel})
+//     yield put ({type: UPDATE_MATCH_RESULTS_SEARCH_INDEX, searchIngredient, index})
+//     let {matchResultsModel} = yield select(state => state.tagModelReducer)
+//     // console.log('\n\n\nPBJERROR = SEARCH TERMS REPLACED (1): ', matchResultsModel.getSearches())
+//     ReactGA.event({
+//       category: 'Nutrition Mixer',
+//       action: 'Search results added to label',
+//       nonInteraction: false,
+//       label: searchIngredient
+//     });
+//   }
+// }
+//
+// function* changesFromSearch() {
+//   // console.log('changesFromSearch --------------------------------------------');
+//   const {firebaseSearch, fdaSearch, ingredient} = yield select(state => state.searchReducer)
+//   if (firebaseSearch && fdaSearch) {
+//     const {selectedTags, unusedTags, matchResultsModel} = yield select(state => state.tagModelReducer)
+//     if (matchResultsModel.getSearchResultsLength(ingredient) === 0) {
+//       ReactGA.event({
+//         category: 'Nutrition Mixer',
+//         action: 'No search results returned',
+//         nonInteraction: false,
+//         label: ingredient
+//       });
+//       if (unusedTags.indexOf(ingredient) === -1) {
+//         unusedTags.push(ingredient)
+//         yield put ({type: UNUSED_TAGS, tags: unusedTags})
+//       }
+//         // console.log('\n\n\nPBJERROR = SEARCH RESULTS BEING RESET: ')
+//       yield put ({type: SUPER_SEARCH_RESULTS,
+//                   matchResultsModel: new MatchResultsModel(),
+//                   ingredient})
+//       return
+//     }
+//     else {
+//       // console.log('\n\n\nPBJERROR = SEARCH RESULTS BEING REPLACED: ', matchResultsModel)
+//       yield put ({type: SUPER_SEARCH_RESULTS,
+//                   matchResultsModel: matchResultsModel,
+//                   ingredient})
+//       yield race({
+//         response: call (getDataForSearchSelection, ingredient, selectedTags),
+//         cancel: take([CLOSE_SEARCH_MODAL, SEARCH_TIMED_OUT])
+//       })
+//     }
+//   }
+// }
 
-function* changesFromSearch() {
-  // console.log('changesFromSearch --------------------------------------------');
-  const {firebaseSearch, fdaSearch, ingredient} = yield select(state => state.searchReducer)
-  if (firebaseSearch && fdaSearch) {
-    const {selectedTags, unusedTags, matchResultsModel} = yield select(state => state.tagModelReducer)
-    if (matchResultsModel.getSearchResultsLength(ingredient) === 0) {
-      ReactGA.event({
-        category: 'Nutrition Mixer',
-        action: 'No search results returned',
-        nonInteraction: false,
-        label: ingredient
-      });
-      if (unusedTags.indexOf(ingredient) === -1) {
-        unusedTags.push(ingredient)
-        yield put ({type: UNUSED_TAGS, tags: unusedTags})
-      }
-        // console.log('\n\n\nPBJERROR = SEARCH RESULTS BEING RESET: ')
-      yield put ({type: SUPER_SEARCH_RESULTS,
-                  matchResultsModel: new MatchResultsModel(),
-                  ingredient})
-      return
-    }
-    else {
-      // console.log('\n\n\nPBJERROR = SEARCH RESULTS BEING REPLACED: ', matchResultsModel)
-      yield put ({type: SUPER_SEARCH_RESULTS,
-                  matchResultsModel: matchResultsModel,
-                  ingredient})
-      yield race({
-        response: call (getDataForSearchSelection, ingredient, selectedTags),
-        cancel: take([CLOSE_SEARCH_MODAL, SEARCH_TIMED_OUT])
-      })
-    }
-  }
-}
-
-//TODO: make this work gracefully
-function* changesFromSearchController() {
-  // console.log('changesFromSearchController--------------------------------------------');
-  const {response, timeout} = yield race({
-    response: call (changesFromSearch),
-    timeout: call(delay, 1000),
-    // cancel: take()
-  })
-  if (timeout) {
-    put({type: SEARCH_TIMED_OUT})
-  }
-}
+// //TODO: make this work gracefully
+// function* changesFromSearchController() {
+//   // console.log('changesFromSearchController--------------------------------------------');
+//   const {response, timeout} = yield race({
+//     response: call (changesFromSearch),
+//     timeout: call(delay, 1000),
+//     // cancel: take()
+//   })
+//   if (timeout) {
+//     put({type: SEARCH_TIMED_OUT})
+//   }
+// }
 
 function* changesFromRecipe() {
   console.log('changesFromRecipe ---------------------------------------------');
@@ -176,7 +176,10 @@ function* changesFromRecipe() {
     }
   }
   let selectedTags = []
-  for (let searchTerm in matchResultsModel.getSearches()) {
+  for (let index in newData) {
+    const parseObj = newData[index]
+    const searchTerm = parseObj['name']
+
     if (matchResultsModel.getSearchResultsLength(searchTerm) === 0) {
       if (missingData.indexOf(searchTerm) === -1) {
         missingData.push(searchTerm)
@@ -209,37 +212,33 @@ function* changesFromRecipe() {
     let tryUnit = measureUnit
     let parseQuantity = undefined
     let parseUnit = undefined
-    for (let i = 0; i < newData.length; i++) {
-      const parseObj = newData[i]
-      const foodName = parseObj['name']
-      if (foodName === searchTerm) {
-        // Sometimes the parseObj returns things like 'toTaste=true' and no
-        // amount or unit fields. TODO: we should probably exclude those tags/
-        // ingredients from the label in MVP3 or put them in their own bucket.
-        if ('amount' in parseObj) {
-          if ((parseObj['amount'].hasOwnProperty('min')) &&
-               parseObj['amount'].hasOwnProperty('max')) {
-            const parseMinQuantity = rationalToFloat(parseObj['amount'].min)
-            const parseMaxQuantity = rationalToFloat(parseObj['amount'].max)
-            parseQuantity = (parseMinQuantity + parseMaxQuantity) / 2.0
-          } else {
-            parseQuantity = rationalToFloat(parseObj['amount'])
-          }
-        }
-        if ('unit' in parseObj) {
-          parseUnit = mapToSupportedUnitsStrict(parseObj['unit'])
-        }
-        if ((parseQuantity !== undefined) && (parseQuantity !== "") && (!isNaN(parseQuantity))) {
-          //console.log(tag + ', setting measureQuantity to parseQuantity: ' + parseQuantity);
-          tryQuantity = parseQuantity
-        }
-        if ((parseUnit !== undefined) && (parseUnit !== "")) {
-          //console.log(tag + ', setting measureUnit to parseUnit: ' + parseUnit);
-          tryUnit = parseUnit
-        }
-        break
+
+
+    // Sometimes the parseObj returns things like 'toTaste=true' and no
+    // amount or unit fields. TODO: we should probably exclude those tags/
+    // ingredients from the label in MVP3 or put them in their own bucket.
+    if ('amount' in parseObj) {
+      if ((parseObj['amount'].hasOwnProperty('min')) &&
+           parseObj['amount'].hasOwnProperty('max')) {
+        const parseMinQuantity = rationalToFloat(parseObj['amount'].min)
+        const parseMaxQuantity = rationalToFloat(parseObj['amount'].max)
+        parseQuantity = (parseMinQuantity + parseMaxQuantity) / 2.0
+      } else {
+        parseQuantity = rationalToFloat(parseObj['amount'])
       }
     }
+    if ('unit' in parseObj) {
+      parseUnit = mapToSupportedUnitsStrict(parseObj['unit'])
+    }
+    if ((parseQuantity !== undefined) && (parseQuantity !== "") && (!isNaN(parseQuantity))) {
+      //console.log(tag + ', setting measureQuantity to parseQuantity: ' + parseQuantity);
+      tryQuantity = parseQuantity
+    }
+    if ((parseUnit !== undefined) && (parseUnit !== "")) {
+      //console.log(tag + ', setting measureUnit to parseUnit: ' + parseUnit);
+      tryUnit = parseUnit
+    }
+
     // Delete the ingredient if it's already in the model because we're going to
     // add it again below.
     //console.log('   Testing for ingredient in nutritionModel');
@@ -326,5 +325,5 @@ function* changesFromRecipe() {
 
 export default function* root() {
   yield fork(takeLatest, INITIALIZE_RECIPE_FLOW, changesFromRecipe)
-  yield fork(takeEvery, INITIALIZE_SEARCH_FLOW, changesFromSearch)
+  // yield fork(takeEvery, INITIALIZE_SEARCH_FLOW, changesFromSearch)
 }

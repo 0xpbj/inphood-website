@@ -24,7 +24,7 @@ export default function nmModelFun(state = initialState, action) {
     case NM_ADD_INGREDIENT:
     {
       let {nutritionModel} = state
-      nutritionModel.addIngredient(action.tag, action.ingredientModel, action.quantity, action.unit, action.append)
+      nutritionModel.addIngredient(action.tag, action.ingredientModel, action.quantity, action.unit)
       return {
         ...state,
         nutritionModel: nutritionModel

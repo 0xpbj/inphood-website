@@ -25,7 +25,7 @@ const fdaFetch = (request) => {
   })
 }
 
-function* reportFDA(searchIngredient, ndbnoInfo, append) {
+function* reportFDA(searchIngredient, ndbnoInfo) {
   const fdaReportUrl = Config.FDA_REPORT_URL +
     '?' + ndbnoInfo + '&api_key=' + Config.FDA_API_KEY
   const requestReport = new Request(fdaReportUrl)
@@ -33,16 +33,11 @@ function* reportFDA(searchIngredient, ndbnoInfo, append) {
   yield put.resolve ({type: SET_FDA_RESULTS,
                      searchTerm: searchIngredient,
                     results: resultsReport})
-  if (append) {
-    yield put ({type: PARSE_SEARCH_FDA_DATA, ingredient: searchIngredient})
-    yield put ({type: INITIALIZE_SEARCH_FLOW})
-  }
-  else {
-    yield put ({type: INITIALIZE_RECIPE_FLOW})
-  }
+
+  yield put ({type: INITIALIZE_RECIPE_FLOW})
 }
 
-function* searchFDA(searchIngredient, append) {
+function* searchFDA(searchIngredient) {
   const fdaSearchUrl = Config.FDA_SEARCH_URL +
     '?format=json&q=' +
     searchIngredient +
@@ -57,32 +52,23 @@ function* searchFDA(searchIngredient, append) {
       ndbnoInfo += '&ndbno=' + i.ndbno
     }
     if (ndbnoInfo !== '') {
-      yield call (reportFDA, searchIngredient, ndbnoInfo, append)
+      yield call (reportFDA, searchIngredient, ndbnoInfo)
     }
   }
   else {
-    yield put ({type: INITIALIZE_FIREBASE_DATA, foodName: searchIngredient, data: [], append})
-    yield put ({type: GET_FIREBASE_DATA, foodName: searchIngredient, ingredient: searchIngredient, key: 'undefined', append, index: 0, length: 0})
-  }
-}
-
-function* fdaSearch() {
-  while (true) {
-    const {foodName} = yield take(GET_MORE_DATA)
-    const append = true
-    yield call (searchFDA, foodName, append)
+    yield put ({type: INITIALIZE_FIREBASE_DATA, foodName: searchIngredient, data: []})
+    yield put ({type: GET_FIREBASE_DATA, foodName: searchIngredient, ingredient: searchIngredient, key: 'undefined', index: 0, length: 0})
   }
 }
 
 function* fdaRecipe() {
   while (true) {
     const {foodName} = yield take(GET_COMMERCIAL_DATA)
-    const append = false
-    yield call (searchFDA, foodName, append)
+    yield call (searchFDA, foodName)
   }
 }
 
 export default function* root() {
-  yield fork(fdaSearch)
+  // yield fork(fdaSearch)
   yield fork(fdaRecipe)
 }

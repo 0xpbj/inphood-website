@@ -26,7 +26,7 @@ export const elasticSearchFetch = (request) => {
   })
 }
 
-export function* callElasticSearchLambda(foodName, size, append, index, length) {
+export function* callElasticSearchLambda(foodName, size, index, length) {
   const url = Config.ELASTIC_LAMBDA_URL
   const search = {
     'query': {'match' : {'Description': foodName}},
@@ -45,8 +45,8 @@ export function* callElasticSearchLambda(foodName, size, append, index, length) 
   const {data} = json
   const info = data[0]
   if (info) {
-    yield put ({type: INITIALIZE_FIREBASE_DATA, foodName, data, append})
-    yield put ({type: GET_FIREBASE_DATA, foodName, ingredient: info._source.Description, key: info._id, append, index, length})
+    yield put ({type: INITIALIZE_FIREBASE_DATA, foodName, data})
+    yield put ({type: GET_FIREBASE_DATA, foodName, ingredient: info._source.Description, key: info._id, index, length})
   }
   else {
     yield put ({type: GET_COMMERCIAL_DATA, foodName})

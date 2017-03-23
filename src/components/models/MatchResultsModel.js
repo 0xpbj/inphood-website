@@ -1,7 +1,9 @@
 export class SearchResult {
-  constructor(description, ndbNo) {
+  constructor(description, ndbNo, displayDescription = '') {
     this._description = description
     this._ndbNo = ndbNo
+    this._displayDescription = displayDescription
+
     //
     // The FDA has two databases from which we draw results:
     //  - USDA National Nutrient Database for Standard Reference
@@ -15,6 +17,10 @@ export class SearchResult {
 
   getDescription() {
     return this._description
+  }
+
+  getDisplayDescription() {
+    return this._displayDescription
   }
 
   getNdbNo() {

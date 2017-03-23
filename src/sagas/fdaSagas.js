@@ -30,7 +30,7 @@ function* reportFDA(searchIngredient, ndbnoInfo, append) {
     '?' + ndbnoInfo + '&api_key=' + Config.FDA_API_KEY
   const requestReport = new Request(fdaReportUrl)
   const resultsReport = yield call (fdaFetch, requestReport)
-  yield put ({type: SET_FDA_RESULTS,
+  yield put.resolve ({type: SET_FDA_RESULTS,
                      searchTerm: searchIngredient,
                     results: resultsReport})
   if (append) {

@@ -133,9 +133,10 @@ export default function modelFun(state = initialState, action) {
       }
       matchResultsModel.addSearch(searchTerm)
       for (let obj of action.data) {
+        const displayDescription = obj.highlight.Description[0]
         const description = obj._source.Description
         const ndbNo = obj._id
-        const searchResult = new SearchResult(description, ndbNo)
+        const searchResult = new SearchResult(description, ndbNo, displayDescription)
         matchResultsModel.appendSearchResult(searchTerm, searchResult)
       }
       // Insert ellipses for ellipses search

@@ -9,7 +9,6 @@ import Alert from 'react-bootstrap/lib/Alert'
 import Button from 'react-bootstrap/lib/Button'
 import MenuItem from 'react-bootstrap/lib/MenuItem'
 import Glyphicon from 'react-bootstrap/lib/Glyphicon'
-import ProgressBar from 'react-toolbox/lib/progress_bar'
 import FormControl from 'react-bootstrap/lib/FormControl'
 import ControlLabel from 'react-bootstrap/lib/ControlLabel'
 
@@ -76,16 +75,6 @@ export default class Nutrition extends React.Component {
     const {matchResultsModel, replacedTags} = this.props.tagModel
     const {nutritionModel} = this.props.nutritionModelRed
     const {ingredientControlModels} = this.props.ingredientModel
-    const numIngredients = Object.keys(parsedData).length
-    const loadedIngredients = matchResultsModel.getNumberOfSearches()
-    let progressBar = null
-    if ((loadedIngredients + replacedTags.length) < numIngredients) {
-      progressBar = (
-        <div className="text-center">
-          <ProgressBar type='circular' mode='indeterminate' multicolor={true} />
-        </div>
-      )
-    }
     // 1. Generate a list of tags not found in our DB and build the array of
     //    sliders:
     let sliders = []
@@ -168,7 +157,6 @@ export default class Nutrition extends React.Component {
     }
     return (
       <div>
-        {progressBar}
         {sliders}
       </div>
     )

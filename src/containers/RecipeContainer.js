@@ -5,6 +5,7 @@ import * as actionCreators from '../actions/Actions'
 
 function mapStateToProps (state) {
   return {
+    tagModel: state.tagModelReducer,
     nutrition: state.nutritionReducer,
   }
 }

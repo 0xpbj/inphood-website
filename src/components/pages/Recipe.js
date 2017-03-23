@@ -10,6 +10,7 @@ import Button from 'react-bootstrap/lib/Button'
 import Popover from 'react-bootstrap/lib/Popover'
 import Glyphicon from 'react-bootstrap/lib/Glyphicon'
 import FormGroup from 'react-bootstrap/lib/FormGroup'
+import ProgressBar from 'react-toolbox/lib/progress_bar'
 import FormControl from 'react-bootstrap/lib/FormControl'
 import ControlLabel from 'react-bootstrap/lib/ControlLabel'
 import DropdownButton from 'react-bootstrap/lib/DropdownButton'
@@ -99,13 +100,24 @@ class Recipe extends React.Component {
         </Popover>
       </div>
     ) : null
-    const useRecipeButton = (
+    let useRecipeButton = (
       <Button className="btn-primary-spacing"
               bsStyle="success"
               onClick={() => this.recipeFlow()}>
         Add Ingredients&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-apple"></Glyphicon>
       </Button>
     )
+    const {matchResultsModel} = this.props.tagModel
+    const {parsedData} = this.props.nutrition
+    const numIngredients = Object.keys(parsedData).length
+    const loadedIngredients = matchResultsModel.getNumberOfSearches()
+    if (loadedIngredients < numIngredients) {
+      useRecipeButton = (
+        <div className="text-center">
+          <ProgressBar type='circular' mode='indeterminate' multicolor={true} />
+        </div>
+      )
+    }
     return (
       <div>
         <FormGroup controlId="formControlsTextarea">
@@ -123,7 +135,8 @@ class Recipe extends React.Component {
             value={this.state.ingredients}
             placeholder={"1 cup spinach (sliced)\n..."}
             onChange={(e) => this.setState({ingredients: e.target.value, recipeError: false})}
-          />
+          >
+          </FormControl>
           <div style={{marginTop: 10}} className="text-right">
             {useRecipeButton}
           </div>

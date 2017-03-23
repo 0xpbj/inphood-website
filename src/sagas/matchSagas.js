@@ -32,7 +32,7 @@ function* completeMatchDropdownChange() {
     const searchResult =
       matchResultsModel.getSearchResultByDesc(searchTerm, description)
     if (searchResult === undefined) {
-      throw "Unable to get searchResult in completeMatchDropdownChange"
+      throw new Error("Unable to get searchResult in completeMatchDropdownChange")
     }
     // TODO: expand this to handle searchResult.getBrandedDataObj() to support FDA
     //       data objects

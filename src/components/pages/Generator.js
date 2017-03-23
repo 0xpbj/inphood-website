@@ -72,7 +72,7 @@ export default class Generator extends React.Component {
     // TODO: need to disambiguate from Branded results object here
     const stdRefObj = searchResult.getStandardRefDataObj()
     if (stdRefObj === undefined) {
-      throw 'Unable to get std ref obj in handle chip add'
+      throw new Error('Unable to get std ref obj in handle chip add')
     }
 
     let ingredientModel = new IngredientModel()

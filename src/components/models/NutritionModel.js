@@ -123,7 +123,7 @@ export class NutritionModel {
   // throws if a duplicate tag is specified
   addIngredient(tag, anIngredient, quantity, unit, append) {
     if (tag in this._scaledIngredients && !append) {
-      throw new Error('tag already exists in nutrition model: ' + tag)
+      throw new Error("Tag " + tag + " already exists in nutrition model.")
     }
 
     this._scaledIngredients[tag] = new ScaledIngredient(anIngredient)

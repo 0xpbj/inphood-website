@@ -13,18 +13,20 @@ function getFloatFromDB(dataForKey, key) {
 function throwIfUnitMismatch(category, mainUnit, otherUnit, otherTag, otherKey) {
   if (mainUnit != undefined) {
     if (mainUnit != otherUnit) {
-      throw "Ingredient " + otherTag + "(" + otherKey
+      throw new Error(
+            "Ingredient " + otherTag + "(" + otherKey
             + ") uses different Unit, " + otherUnit
             + ", from other ingredients: " + mainUnit + " "
-            + category + "."
+            + category + ".")
     }
   }
 }
 
 function throwIfUnexpectedUnit(metric, expectedUnit, actualUnit) {
   if (expectedUnit !== actualUnit) {
-    throw 'Unexpected ' + metric
-          + ' unit: ' + actualUnit + ' (expected ' + expectedUnit + ')'
+    throw new Error(
+          'Unexpected ' + metric
+          + ' unit: ' + actualUnit + ' (expected ' + expectedUnit + ')')
   }
 }
 
@@ -265,7 +267,7 @@ export class IngredientModel {
   initializeFromBrandedFdaObj(description, searchTerm, foodObject) {
     if (!(foodObject.hasOwnProperty('desc')
           && foodObject.desc.hasOwnProperty('ndbno'))) {
-      throw 'Unable to execute IngredientModel.initializeFromBrandedFdaObj. No ndbno data.'
+      throw new Error('Unable to execute IngredientModel.initializeFromBrandedFdaObj. No ndbno data.')
     }
     this._ndbno = foodObject.desc.ndbno
 
@@ -276,7 +278,7 @@ export class IngredientModel {
     this._servingAmount = 100
 
     if (!foodObject.hasOwnProperty('nutrients')) {
-      throw 'Unable to execute IngredientModel.initializeFromBrandedFdaObj. No nutritent data.'
+      throw new Error('Unable to execute IngredientModel.initializeFromBrandedFdaObj. No nutritent data.')
     }
     for (let nutrient of foodObject.nutrients) {
       if (!(nutrient.hasOwnProperty('name')

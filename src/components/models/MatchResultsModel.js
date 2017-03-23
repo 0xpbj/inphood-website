@@ -85,7 +85,7 @@ export class MatchResultsModel {
   //)
   addSearch(aSearchTerm) {
     if (aSearchTerm in this._searches) {
-      return
+      throw new Error("Error, " + aSearchTerm + " already exists in searches.")
     }
 
     this._searches[aSearchTerm] = []

@@ -1,5 +1,6 @@
 import {
-  SAVE_TO_CLOUD
+  SAVE_TO_CLOUD,
+  SELECTED_PHOTO
 } from '../constants/ActionTypes'
 
 import { call, fork, put, select, take, takeLatest } from 'redux-saga/effects'
@@ -27,7 +28,8 @@ function* loadAWSPut() {
   const {key} = yield select(state => state.nutritionReducer)
   const {title, file} = yield select(state => state.resultsReducer)
   let user = Config.DEBUG ? 'test' : 'anonymous'
-  let iUrl = ''
+  let iUrl = 'null.jpg'
+  let iTitle = title ? title : ''
   if (file) {
     const extension = file.name.substr(file.name.lastIndexOf('.'))
     yield call (uploadImageToS3, file, key, user, extension)
@@ -35,10 +37,10 @@ function* loadAWSPut() {
   }
   firebase.database().ref('/global/nutritionLabel/' + user + '/' + key).update({
     iUrl,
-    title,
+    title: iTitle,
   })
 }
 
 export default function* root() {
-  yield fork(takeLatest, SAVE_TO_CLOUD, loadAWSPut)
+  yield fork(takeLatest, [SAVE_TO_CLOUD, SELECTED_PHOTO], loadAWSPut)
 }

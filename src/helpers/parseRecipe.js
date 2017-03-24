@@ -168,5 +168,5 @@ export function parseRecipe(data) {
       }
     }
   }
-  return {missing: missingData, found: parsedData}
+  return {missing: missingData, found: combineData(parsedData)}
 }

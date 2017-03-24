@@ -7,7 +7,8 @@ import {
   GET_MORE_DATA,
   PARSE_SEARCH_DATA,
   INITIALIZE_RECIPE_FLOW,
-  INITIALIZE_SEARCH_FLOW
+  INITIALIZE_SEARCH_FLOW,
+  UNUSED_TAGS
 } from '../constants/ActionTypes'
 
 import {MatchResultsModel} from '../components/models/MatchResultsModel'
@@ -30,6 +31,9 @@ function* getDataFromFireBase() {
   }
   else {
     yield put ({type: INGREDIENT_FIREBASE_DATA, foodName, ingredient, data: []})
+    let {unusedTags} = yield select(state => state.tagModelReducer)
+    unusedTags.push(ingredient)
+    yield put ({type: UNUSED_TAGS, tags: unusedTags})
   }
 }
 

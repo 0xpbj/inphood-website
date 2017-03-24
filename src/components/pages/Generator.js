@@ -64,7 +64,7 @@ export default class Generator extends React.Component {
   // Action Handlers:
   //////////////////////////////////////////////////////////////////////////////
   handleChipAdd(tag) {
-    let {selectedTags, deletedTags} = this.props.tagModel
+    let {deletedTags} = this.props.tagModel
     const searchTerm = tag
     const {matchResultsModel} = this.props.tagModel
     const searchResult = matchResultsModel.getSearchResultByIndex(searchTerm)
@@ -90,7 +90,7 @@ export default class Generator extends React.Component {
             description)
     this.props.ingredientAddModel(searchTerm, ingredientControlModel)
 
-    // 2. Add the tag to selectedTags and remove it from deleted tags ...
+    // 2. Remove the tag from deleted tags ...
     //
     for (let i = 0; i < deletedTags.length; i++) {
       if (searchTerm === deletedTags[i]) {
@@ -98,8 +98,6 @@ export default class Generator extends React.Component {
         break
       }
     }
-    selectedTags.push(searchTerm)
-    this.props.selectedTags(selectedTags)
     this.props.deletedTags(deletedTags)
     ReactGA.event({
       category: 'Nutrition Mixer',
@@ -144,7 +142,8 @@ export default class Generator extends React.Component {
     const full = nutritionModel.serialize()
     const compositeModel = nutritionModel.getScaledCompositeIngredientModel()
     const composite = compositeModel.serialize()
-    const {unusedTags, deletedTags, replacedTags, selectedTags} = this.props.tagModel
+    const {unusedTags, deletedTags, replacedTags, matchResultsModel}
+      = this.props.tagModel
     const ml = new MarginLayout()
     const shareResultsButton = (
       <Button bsStyle="success"
@@ -181,7 +180,7 @@ export default class Generator extends React.Component {
         </Modal.Body>
       )
     }
-    const labelError = (this.state.labelErrorFlag && selectedTags.length === 0) ? (
+    const labelError = (this.state.labelErrorFlag && !matchResultsModel.getNumberOfSearches()) ? (
       <Alert bsStyle="warning">
         <h4>Please add ingredients to your label!</h4>
       </Alert>

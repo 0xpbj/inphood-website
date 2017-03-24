@@ -18,7 +18,6 @@ import {
   IM_UPDATE_MODEL,
   IM_REM_INGREDIENT_TAG,
   SC_STORE_MODEL,
-  SELECTED_TAGS,
   DELETED_TAGS,
   UNUSED_TAGS,
   REPLACED_TAGS,
@@ -179,13 +178,6 @@ export function setServingsControllerModel(servingsControlModel) {
   return {
     type: SC_STORE_MODEL,
     servingsControlModel
-  }
-}
-
-export function selectedTags(tags) {
-  return {
-    type: SELECTED_TAGS,
-    tags
   }
 }
 

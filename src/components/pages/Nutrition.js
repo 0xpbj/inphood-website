@@ -31,20 +31,12 @@ export default class Nutrition extends React.Component {
     });
   }
   handleChipDelete(tag) {
-    let {deletedTags, selectedTags} = this.props.tagModel
+    let {deletedTags} = this.props.tagModel
     let {parsedData} = this.props.nutrition
 
     this.props.nutritionModelRemIng(tag)
     this.props.ingredientControlModelRemTag(tag)
 
-    // 2. Remove the tag from selectedTags (use splice--delete just makes the
-    //    element undefined):
-    for (let i = 0; i < selectedTags.length; i++) {
-      if (tag === selectedTags[i]) {
-        selectedTags.splice(i, 1)
-        break
-      }
-    }
     for (let i = 0; i < parsedData.length; i++) {
       if (tag === parsedData[i].name) {
         parsedData.splice(i, 1)
@@ -55,7 +47,6 @@ export default class Nutrition extends React.Component {
       deletedTags.push(tag)
       this.props.deletedTags(deletedTags)
     }
-    this.props.selectedTags(selectedTags)
     this.props.setParsedData(parsedData)
 
     // Remove the tag from the matchResultsModel:
@@ -118,7 +109,7 @@ export default class Nutrition extends React.Component {
       recipeLines[name] = recipeLine
     }
 
-    let {deletedTags, selectedTags} = this.props.tagModel
+    let {deletedTags} = this.props.tagModel
 
     for (let i = 0; i < tagsInOrder.length; i++) {
       const tag = tagsInOrder[i]

@@ -78,6 +78,28 @@ class Recipe extends React.Component {
       }
     }
   }
+  getAddIngredientButton() {
+    const {matchResultsModel} = this.props.tagModel
+    const {parsedData} = this.props.nutrition
+    const numIngredients = Object.keys(parsedData).length
+    const loadedIngredients = matchResultsModel.getNumberOfSearches()
+    if (loadedIngredients < numIngredients) {
+      return (
+        <div className="text-center">
+          <ProgressBar type='circular' mode='indeterminate' multicolor={true} />
+        </div>
+      )
+    } else {
+      return(
+        <Button className="btn-primary-spacing"
+                bsStyle="success"
+                onClick={() => this.recipeFlow()}>
+          Add Ingredients&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-apple"></Glyphicon>
+        </Button>
+      )
+    }
+  }
+  //
   render() {
     let textRows = 3
     const recipeAlert = (this.state.recipeError) ? (
@@ -98,24 +120,7 @@ class Recipe extends React.Component {
         </Popover>
       </div>
     ) : null
-    let useRecipeButton = (
-      <Button className="btn-primary-spacing"
-              bsStyle="success"
-              onClick={() => this.recipeFlow()}>
-        Add Ingredients&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-apple"></Glyphicon>
-      </Button>
-    )
-    const {matchResultsModel} = this.props.tagModel
-    const {parsedData} = this.props.nutrition
-    const numIngredients = Object.keys(parsedData).length
-    const loadedIngredients = matchResultsModel.getNumberOfSearches()
-    if (loadedIngredients < numIngredients) {
-      useRecipeButton = (
-        <div className="text-center">
-          <ProgressBar type='circular' mode='indeterminate' multicolor={true} />
-        </div>
-      )
-    }
+
     return (
       <div>
         <FormGroup controlId="formControlsTextarea">
@@ -135,10 +140,10 @@ class Recipe extends React.Component {
             onChange={(e) => this.setState({ingredients: e.target.value, recipeError: false})}
           >
           </FormControl>
-          <div style={{marginTop: 10}} className="text-right">
-            {useRecipeButton}
-          </div>
         </FormGroup>
+        <div style={{marginTop: 10}} className="text-right">
+          {this.getAddIngredientButton()}
+        </div>
         <div style={{marginTop: 15, marginBottom: 15}}>
           <ServingsController/>
         </div>

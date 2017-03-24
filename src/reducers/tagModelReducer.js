@@ -2,7 +2,6 @@ import {
   MODEL_RESET,
   INITIALIZE_FIREBASE_DATA,
   INGREDIENT_FIREBASE_DATA,
-  SELECTED_TAGS,
   DELETED_TAGS,
   UNUSED_TAGS,
   REPLACED_TAGS,
@@ -28,7 +27,6 @@ const initialState = {
   },
   modelSetup: false,
   userSearch: false,
-  selectedTags: [],
   unusedTags: [],
   deletedTags: [],
   replacedTags: [],
@@ -48,7 +46,6 @@ export default function modelFun(state = initialState, action) {
         },
         modelSetup: false,
         userSearch: false,
-        selectedTags: [],
         unusedTags: [],
         deletedTags: [],
         replacedTags: [],
@@ -66,13 +63,6 @@ export default function modelFun(state = initialState, action) {
       return {
         ...state,
         tag: action.foodName
-      }
-    }
-    case SELECTED_TAGS:
-    {
-      return {
-        ...state,
-        selectedTags: action.tags
       }
     }
     case DELETED_TAGS:

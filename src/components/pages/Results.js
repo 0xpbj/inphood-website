@@ -329,16 +329,16 @@ export default class Results extends React.Component {
       // let modTitle = ''
       // if (title && title !== '')
       //   modTitle = ': ' + title
-      const placeHolderCol = <Col xs={0} sm={1} md={1} lg={2}/>
+      const placeHolderCol = <Col xs={0} sm={0} md={1} lg={2}/>
       return (
         <div style={{backgroundColor: 'white'}}>
           <TopBar step="" stepText="" aButton={this.saveLabelPhotoButton()} router={this.props.router}/>
           <Grid>
             <Row>
-              <Col xs={12} sm={7} md={6} lg={6}>
+              <Col xs={12} sm={6} md={6} lg={6}>
                 <Row>
                   {placeHolderCol}
-                  <Col xs={12} sm={10} md={10} lg={8}>
+                  <Col xs={12} sm={12} md={10} lg={8}>
                     <Row>
                       <Col xs={12} className="center-block">
                         {nutritionLabel}
@@ -348,7 +348,7 @@ export default class Results extends React.Component {
                   {placeHolderCol}
                 </Row>
               </Col>
-              <Col xs={12} sm={5} md={6} lg={6}>
+              <Col xs={12} sm={6} md={6} lg={6}>
                 <Row>
                   {placeHolderCol}
                   <Col xs={12} sm={10} md={10} lg={8}>

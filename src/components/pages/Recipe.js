@@ -51,7 +51,7 @@ class Recipe extends React.Component {
       if (!nextLocation.search)
         return 'Your work is not saved! Are you sure you want to leave?'
       else if (nextLocation.search)
-        return 'Happy with the changes?'
+        return 'Happy with the recipe ingredients?'
     }
   }
   recipeFlow() {

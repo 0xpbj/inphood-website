@@ -2,7 +2,8 @@ import {
   LABEL_DATA,
   GET_LABEL_ID,
   SET_TITLE,
-  SELECTED_PHOTO
+  SELECTED_PHOTO,
+  CLEAR_DATA
 } from '../constants/ActionTypes'
 
 const initialState = {
@@ -14,6 +15,14 @@ const initialState = {
 }
 export default function results(state = initialState, action) {
   switch (action.type) {
+    case CLEAR_DATA:
+      return {
+        userId: '',
+        labelId: '',
+        data: {},
+        title: '',
+        picture: ''
+      }
     case LABEL_DATA:
       return {
         ...state,

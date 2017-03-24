@@ -89,7 +89,10 @@ export default class Results extends React.Component {
   //    has a property.
   //
   hasProp(object, property) {
-    return Object.prototype.hasOwnProperty.call(object, property)
+    if (object)
+      return Object.prototype.hasOwnProperty.call(object, property)
+    else
+      return null
   }
   // TODO: this should be a utility or a factory that constructs this from
   //       an ingredient model--it doesn't belong in results

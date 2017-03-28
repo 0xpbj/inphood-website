@@ -105,7 +105,7 @@ export default class Home extends React.Component {
         else
           browserWarning = (
             <Alert bsStyle="warning" onDismiss={() => this.setState({showBrowserWarning: false})}>
-              <h4>inPhood works best with Chrome or Firebox!</h4>
+              <h4>inPhood works best with Chrome or Firebox</h4>
             </Alert>
           )
       }

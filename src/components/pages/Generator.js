@@ -263,13 +263,13 @@ export default class Generator extends React.Component {
                 </Row>*/}
                 {/* temporary hack to align top to adjacent slider */}
                 <Row style={{marginTop: 9}}>
-                  <TagController
+                  {/*<TagController
                     tags={deletedTags}
                     tagName={'Deleted Ingredients:'}
                     deletable={false}
                   />
                 </Row>
-                <Row>
+                <Row>*/}
                   <TagController
                     tags={unusedTags}
                     tagName={'Unfound Ingredients:'}

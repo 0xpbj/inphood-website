@@ -19,6 +19,7 @@
   "homepage": "https://www.inphood.com",
   "dependencies": {
     "convert-units": "^2.0.1",
+    "detect-browser": "^1.6.2",
     "dom-to-image": "^2.5.2",
     "fast-levenshtein": "^2.0.6",
     "history": "^4.5.0",

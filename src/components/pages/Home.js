@@ -15,12 +15,14 @@ import MarginLayout from '../../helpers/MarginLayout'
 import Generator from '../../containers/GeneratorContainer'
 import Results from '../../containers/ResultsContainer'
 const Config = require('Config')
+import browser from 'detect-browser'
 
 export default class Home extends React.Component {
   constructor() {
     super()
     this.state = {
-      showHelp: false
+      showHelp: false,
+      showBrowserWarning: true
     }
   }
   componentWillMount() {
@@ -56,21 +58,21 @@ export default class Home extends React.Component {
       return <Results label={label} user={user} router={this.props.router}/>
     }
     else {
-      const images = [
-        { 
-          original: require('../../images/howto/recipe.jpg'),
-          description: 'Write recipe details'
-        },
-        { 
-          original: require('../../images/howto/mixers.jpg'),
-          description: 'Mix ingredient quantites'
-        },
-        { 
-          original: require('../../images/howto/result.jpg'),
-          description: 'Share your results'
-        }
-      ]
-      const {showHelp} = this.state
+      // const images = [
+      //   { 
+      //     original: require('../../images/howto/recipe.jpg'),
+      //     description: 'Write recipe details'
+      //   },
+      //   { 
+      //     original: require('../../images/howto/mixers.jpg'),
+      //     description: 'Mix ingredient quantites'
+      //   },
+      //   { 
+      //     original: require('../../images/howto/result.jpg'),
+      //     description: 'Share your results'
+      //   }
+      // ]
+      const {showHelp, showBrowserWarning} = this.state
       const jumbo = (
       // showHelp ? (
       //   <ImageGallery
@@ -96,9 +98,21 @@ export default class Home extends React.Component {
           </p>
         </div>
       )
+      let browserWarning = null
+      if (showBrowserWarning) {
+        if (browser.name === "chrome" || browser.name === "firefox")
+          browserWarning = null
+        else
+          browserWarning = (
+            <Alert bsStyle="warning" onDismiss={() => this.setState({showBrowserWarning: false})}>
+              <h4>inPhood works best with Chrome or Firebox!</h4>
+            </Alert>
+          )
+      }
       return (
         <div>
           <Grid>
+           {browserWarning}
             <Jumbotron style={{
               backgroundColor: 'MintCream', 
               borderWidth: 1,

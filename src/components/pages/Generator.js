@@ -126,11 +126,10 @@ export default class Generator extends React.Component {
               </Col>
               <Col xs={12} sm={6} md={6} lg={6}>
                 <Row>
-                  <div>
-                    <text>&nbsp;</text>
-                    <Label id='nutritionLabel'
-                           ingredientComposite={compositeModel}/>
-                  </div>
+                  <text>&nbsp;</text>
+                  <Label id='nutritionLabel'
+                         ingredientComposite={compositeModel}/>
+                  <text>&nbsp;</text>
                 </Row>
                 <Row>
                   <div className="text-right" style={{marginTop: 10}}>

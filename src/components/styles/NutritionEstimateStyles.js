@@ -22,8 +22,9 @@ export default class NutritionEstimateStyles {
   }
 
   performanceFactsTitle = {
+    fontFamily: 'Helvetica, "Franklin Gothic",Arial,sans-serif',
     fontWeight: 'bold',
-    fontSize: '2.25rem',
+    fontSize: '4.25rem',
     marginBottom: '0.25rem',
     marginTop: '10px'
   }
@@ -37,6 +38,7 @@ export default class NutritionEstimateStyles {
   }
 
   performanceFactsTableElementTh = {
+    fontFamily: 'Helvetica,Arial,sans-serif',
     fontWeight: 'normal',
     textAlign: 'left',
     paddingTop: '0.25rem',
@@ -48,6 +50,7 @@ export default class NutritionEstimateStyles {
   }
 
   performanceFactsTableElementTd = {
+    fontFamily: 'Helvetica,Arial,sans-serif',
     fontWeight: 'normal',
     textAlign: 'left',
     paddingTop: '0.25rem',
@@ -65,6 +68,7 @@ export default class NutritionEstimateStyles {
   //   }
   // }
   performanceFactsTableElementTdLastChild = {
+    fontFamily: 'Helvetica,Arial,sans-serif',
     fontWeight: 'normal',
     paddingTop: '0.25rem',
     paddingBottom: '0.25rem',
@@ -88,8 +92,15 @@ export default class NutritionEstimateStyles {
 
 
   smallInfo = {
+    fontFamily: 'Helvetica,Arial,sans-serif',
     fontSize: '0.9rem',
     textAlign: 'left',
+  }
+
+  thinEnd = {
+    borderBottomWidth: '1px',
+    borderBottomStyle: 'solid',
+    borderBottomColor: 'black'
   }
 
   thickEnd = {

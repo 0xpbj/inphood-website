@@ -3,6 +3,15 @@ import Style from "../styles/NutritionEstimateStyles.js"
 import ProgressBar from 'react-bootstrap/lib/ProgressBar'
 import {IngredientModel} from '../models/IngredientModel'
 
+// TODO: Fix this in FDA2018 labels
+//
+// The label fonts are not the precise fonts mentioned by FDA in their spec. Also,
+// the sizes are not the same when we convert from font points to px to ems.
+// See more info here:
+//   - http://stackoverflow.com/questions/7542214/is-it-possible-to-force-usage-of-custom-fonts-for-text-rendering-on-a-given-web
+//   - http://reeddesign.co.uk/test/points-pixels.html
+//   - http://www.cssfontstack.com/
+//
 export default class NutritionEstimateJSX extends React.Component {
   constructor() {
     super()
@@ -104,6 +113,57 @@ export default class NutritionEstimateJSX extends React.Component {
     )
   }
 
+  // Calculates the number of spaces needed to place a bullet (dot) in the middle
+  // of the nutrition label. Then inserts those spaces in an array of html.
+  getDotHtml(columnTextLength) {
+    let dotHtml = []
+    const dotPosition = 28
+    const dotOffset = dotPosition - columnTextLength
+    if (dotOffset > 0) {
+      for (let i = 0; i < dotOffset; i++) {
+        dotHtml.push(<span key={this.getKey()}>&nbsp;</span>)
+      }
+    }
+    dotHtml.push(<span key={this.getKey()} style={{fontWeight: 'bold'}}>
+                    &bull;
+                  </span>)
+
+    return dotHtml
+  }
+
+  getDoubleNutrientRow(
+    styles, leftName, leftValue, rightName, rightValue, rowStyle={}) {
+
+    const leftChars = leftName.length + leftValue.length + 2 // 2 for spaces below
+    const dotHtml = this.getDotHtml(leftChars)
+
+    return (
+      <tr key={this.getKey()} style={rowStyle}>
+        <th colSpan={2} style={styles.performanceFactsTableElementTh}>
+          {leftName}&nbsp;&nbsp;{leftValue}{dotHtml}
+        </th>
+        <td style={styles.performanceFactsTableElementTdLastChild}>
+          {rightName}&nbsp;&nbsp;{rightValue}
+        </td>
+      </tr>
+    )
+  }
+
+  getTransFatRow(styles, rowValue, rowUnit) {
+
+    return (
+      <tr key={this.getKey()}>
+        <td style={{...styles.performanceFactsTableElementTd,
+                    ...styles.performanceFactsTableClassBlankCell}}/>
+        <th style={styles.performanceFactsTableElementTh}>
+          <i>Trans</i>&nbsp;Fat&nbsp;{rowValue}{rowUnit}
+        </th>
+        <td style={styles.performanceFactsTableElementTdLastChild}>
+        </td>
+      </tr>
+    )
+  }
+
   getRow(styles,
     rowTitle, rowValue, rowUnit, rowRDA=undefined, rowStyle={}) {
 
@@ -165,9 +225,9 @@ export default class NutritionEstimateJSX extends React.Component {
                           ingredient.getSaturatedFatRDA()) )
 
     standardNutrients.push(
-      this.getIndentedRow(styles, 'Trans Fat',
-                          ingredient.getTransFatPerServing(),
-                          ingredient.getTransFatUnit()) )
+      this.getTransFatRow(styles,
+                         ingredient.getTransFatPerServing(),
+                         ingredient.getTransFatUnit()) )
 
     standardNutrients.push(
       this.getSectionRow(styles, 'Cholesterol',
@@ -203,6 +263,20 @@ export default class NutritionEstimateJSX extends React.Component {
                         ingredient.getTotalProteinPerServing(),
                         ingredient.getTotalProteinUnit(),
                         undefined, endStyle) )
+
+    return standardNutrients
+  }
+
+  getRequiredMicroNutrientsPre2018(ingredient, styles) {
+    let standardNutrients = []
+
+    standardNutrients.push(this.getDoubleNutrientRow(styles,
+      'Vitamin A', ingredient.get_vitaminA_IURDA() + '%',
+      'Vitamin C', ingredient.get_vitaminCRDA() + '%'))
+
+    standardNutrients.push(this.getDoubleNutrientRow(styles,
+      'Calcium', ingredient.get_calciumRDA() + '%',
+      'Iron', ingredient.get_ironRDA() + '%', styles.thinEnd))
 
     return standardNutrients
   }
@@ -306,41 +380,50 @@ export default class NutritionEstimateJSX extends React.Component {
     const labelType = ingredientComposite.getLabelType()
     let tableTitle = undefined
     let standardNutrients = undefined
+    let requiredMicroNutrients = undefined
     let microNutrients = undefined
     if (labelType === IngredientModel.labelTypes.complete) {
       tableTitle = this.getTableTitle(ingredientComposite, myStyles)
       standardNutrients = this.getStandardNutrients(ingredientComposite,
                                                     myStyles,
                                                     myStyles.thickSeparator);
+      requiredMicroNutrients = ''
       microNutrients = this.getMicroNutrients(ingredientComposite, myStyles)
     } else if (labelType === IngredientModel.labelTypes.micronut) {
       tableTitle = this.getMicroNutrientTitle(ingredientComposite, myStyles)
       standardNutrients = '';
+      requiredMicroNutrients = ''
       microNutrients = this.getMicroNutrients(ingredientComposite, myStyles)
     } else { // labelType === IngredientModel.labelTypes.standard
       tableTitle = this.getTableTitle(ingredientComposite, myStyles)
       standardNutrients = this.getStandardNutrients(ingredientComposite,
                                                     myStyles,
                                                     myStyles.thickEnd);
+      requiredMicroNutrients =
+        this.getRequiredMicroNutrientsPre2018(ingredientComposite, myStyles)
       microNutrients = ''
     }
 
 
-    // The div-in-div below and margin of 4 is to fix a save image issue (where it
-    // cuts off part of the nutrition label border and the generated at inphood.com
-    // is too low on the image).
+    // The width & auto margin below force the width of the label to be the size
+    // of the 'Nutrition Facts' title and center the label in the bounding box.
+    // It's important to have this sizing div encapsulate the id=
+    // "nutrition-label" div--this way when you save the label, the margin is
+    // tight and the saved label looks correct.
+    // Other methods here: https://www.sitepoint.com/css-center-position-absolute-div/
     return(
       <div
-        id="nutrition-label"
-        style={{backgroundColor:'white', padding:2}}>
-        <div style={{margin:0}}>
+        style={{width:320, margin:'auto'}}>
+        <div
+          id="nutrition-label"
+          style={{backgroundColor:'white', padding:2}}>
           <section style={myStyles.performanceFacts}>
             {this.getLabelTitle(myStyles, ingredientComposite)}
-
             <table style={myStyles.performanceFactsTable}>
               <tbody>
                 {tableTitle}
                 {standardNutrients}
+                {requiredMicroNutrients}
                 {microNutrients}
               </tbody>
             </table>

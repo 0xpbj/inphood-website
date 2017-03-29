@@ -31,7 +31,6 @@ export default class Nutrition extends React.Component {
     });
   }
   handleChipDelete(tag) {
-    let {deletedTags} = this.props.tagModel
     let {parsedData} = this.props.nutrition
 
     this.props.nutritionModelRemIng(tag)
@@ -42,10 +41,6 @@ export default class Nutrition extends React.Component {
         parsedData.splice(i, 1)
         break
       }
-    }
-    if (deletedTags.indexOf(tag) === -1) {
-      deletedTags.push(tag)
-      this.props.deletedTags(deletedTags)
     }
     this.props.setParsedData(parsedData)
 

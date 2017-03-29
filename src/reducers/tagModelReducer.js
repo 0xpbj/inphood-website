@@ -2,7 +2,6 @@ import {
   MODEL_RESET,
   INITIALIZE_FIREBASE_DATA,
   INGREDIENT_FIREBASE_DATA,
-  DELETED_TAGS,
   UNUSED_TAGS,
   LAZY_FETCH_FIREBASE,
   LAZY_LOAD_FIREBASE,
@@ -27,7 +26,6 @@ const initialState = {
   modelSetup: false,
   userSearch: false,
   unusedTags: [],
-  deletedTags: [],
   tag: ''
 }
 
@@ -45,7 +43,6 @@ export default function modelFun(state = initialState, action) {
         modelSetup: false,
         userSearch: false,
         unusedTags: [],
-        deletedTags: [],
         tag: ''
       }
     }
@@ -60,13 +57,6 @@ export default function modelFun(state = initialState, action) {
       return {
         ...state,
         tag: action.foodName
-      }
-    }
-    case DELETED_TAGS:
-    {
-      return {
-        ...state,
-        deletedTags: action.tags
       }
     }
     case UNUSED_TAGS:

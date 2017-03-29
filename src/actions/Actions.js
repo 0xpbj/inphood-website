@@ -18,7 +18,6 @@ import {
   IM_UPDATE_MODEL,
   IM_REM_INGREDIENT_TAG,
   SC_STORE_MODEL,
-  DELETED_TAGS,
   UNUSED_TAGS,
   INIT_EMAIL_FLOW,
   GET_EMAIL_DATA,
@@ -177,13 +176,6 @@ export function setServingsControllerModel(servingsControlModel) {
   return {
     type: SC_STORE_MODEL,
     servingsControlModel
-  }
-}
-
-export function deletedTags(tags) {
-  return {
-    type: DELETED_TAGS,
-    tags
   }
 }
 

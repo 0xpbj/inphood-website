@@ -71,7 +71,7 @@ export default class Generator extends React.Component {
     const full = nutritionModel.serialize()
     const compositeModel = nutritionModel.getScaledCompositeIngredientModel()
     const composite = compositeModel.serialize()
-    const {unusedTags, deletedTags, matchResultsModel}
+    const {unusedTags, matchResultsModel}
       = this.props.tagModel
     const ml = new MarginLayout()
     const shareResultsButton = (

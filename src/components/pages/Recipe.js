@@ -42,6 +42,11 @@ class Recipe extends React.Component {
       nonInteraction: false
     });
     this.setState({isSaved: true})
+    // user did not come from home page
+    if (this.props.router.location.action !== 'PUSH') {
+      // send user back to home page
+      this.props.router.push('/')
+    }
   }
   componentDidMount() {
     this.props.router.setRouteLeaveHook(this.props.route, this.routerWillLeave.bind(this))
@@ -99,7 +104,6 @@ class Recipe extends React.Component {
       )
     }
   }
-  //
   render() {
     let textRows = 3
     const recipeAlert = (this.state.recipeError) ? (
@@ -120,7 +124,6 @@ class Recipe extends React.Component {
         </Popover>
       </div>
     ) : null
-
     return (
       <div>
         <FormGroup controlId="formControlsTextarea">

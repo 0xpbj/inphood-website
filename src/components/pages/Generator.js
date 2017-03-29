@@ -45,13 +45,19 @@ export default class Generator extends React.Component {
     this.props.modelReset()
     this.props.clearData()
   }
+  componentWillReceiveProps(nextProps) {
+    if (this.state.labelErrorFlag)
+      this.setState({labelErrorFlag: false})
+  }
   transitionToLabelPage(composite, full) {
     ReactGA.event({
       category: 'User',
       action: 'User sharing results',
       nonInteraction: false
     });
-    if (this.props.nutrition.key) {
+    const {unusedTags, matchResultsModel} = this.props.tagModel
+    const usefulIngredients = matchResultsModel.getNumberOfSearches() - unusedTags.length
+    if (this.props.nutrition.key && usefulIngredients) {
       this.props.sendSerializedData(composite, full)
       const user = Config.DEBUG ? 'test' : 'anonymous'
       this.props.router.push('/?user=' + user + '&label=' + this.props.nutrition.key)
@@ -60,89 +66,12 @@ export default class Generator extends React.Component {
       this.setState({labelErrorFlag: true})
     }
   }
-  //////////////////////////////////////////////////////////////////////////////
-  // Action Handlers:
-  //////////////////////////////////////////////////////////////////////////////
-  handleChipAdd(tag) {
-    let {deletedTags} = this.props.tagModel
-    const searchTerm = tag
-    const {matchResultsModel} = this.props.tagModel
-    const searchResult = matchResultsModel.getSearchResultByIndex(searchTerm)
-    const description = searchResult.getDescription()
-    // TODO: need to disambiguate from Branded results object here
-    const stdRefObj = searchResult.getStandardRefDataObj()
-    if (stdRefObj === undefined) {
-      throw new Error('Unable to get std ref obj in handle chip add')
-    }
-
-    let ingredientModel = new IngredientModel()
-    ingredientModel.initializeSingle(description, searchTerm, stdRefObj)
-    const measureQuantity = ingredientModel.getMeasureQuantity()
-    const measureUnit = ingredientModel.getMeasureUnit()
-    this.props.nutritionModelAddIng(
-      searchTerm, ingredientModel, measureQuantity, measureUnit)
-    let ingredientControlModel =
-      new IngredientControlModel(
-            measureQuantity,
-            getPossibleUnits(measureUnit),
-            measureUnit,
-            matchResultsModel.getSearchResultDescriptions(searchTerm),
-            description)
-    this.props.ingredientAddModel(searchTerm, ingredientControlModel)
-
-    // 2. Remove the tag from deleted tags ...
-    //
-    for (let i = 0; i < deletedTags.length; i++) {
-      if (searchTerm === deletedTags[i]) {
-        deletedTags.splice(i, 1)
-        break
-      }
-    }
-    this.props.deletedTags(deletedTags)
-    ReactGA.event({
-      category: 'Nutrition Mixer',
-      action: 'User added ingredient',
-      nonInteraction: false,
-      label: searchTerm
-    });
-  }
-  selectedListItem(aSearchResult, ingredient, index) {
-    this.props.nutritionModelRemIng(ingredient)
-    this.props.ingredientControlModelRemTag(ingredient)
-    let {replacedTags} = this.props.tagModel
-    replacedTags.push(ingredient)
-    this.props.replacedTags(replacedTags)
-    this.props.addSearchSelection(aSearchResult, index)
-  }
-  getSearchList() {
-    const {tag, matchResultsModel} = this.props.tagModel
-    let items = []
-    if (matchResultsModel.getNumberOfSearches() > 0) {
-      let index = 0
-      for (let searchResult of matchResultsModel.getSearchResults(tag)) {
-        items.push(<ListGroupItem
-                      onClick={this.selectedListItem.bind(this, searchResult, tag, index)}>
-                    {searchResult.getDescription()}
-                    </ListGroupItem>)
-        ++index
-      }
-    }
-    if (items.length) {
-      return <ListGroup>{items}</ListGroup>
-    }
-    else {
-      return <ListGroup>No matches found for {tag}!</ListGroup>
-    }
-  }
-  closeModal() {
-    this.props.closeSearchModal()
-  }
   render() {
     const {nutritionModel} = this.props.nutritionModelRed
     const full = nutritionModel.serialize()
     const compositeModel = nutritionModel.getScaledCompositeIngredientModel()
     const composite = compositeModel.serialize()
-    const {unusedTags, deletedTags, replacedTags, matchResultsModel}
+    const {unusedTags, deletedTags, matchResultsModel}
       = this.props.tagModel
     const ml = new MarginLayout()
     const shareResultsButton = (
@@ -151,58 +80,11 @@ export default class Generator extends React.Component {
         Share Results&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-send"></Glyphicon>
       </Button>
     )
-    const embedButton = (
-      <Button bsStyle="success"
-              onClick={() => this.setState({flag: 1})}>
-        Embed Label
-      </Button>
-    )
-    let close = () => this.closeModal()
-    const {firebaseSearch, fdaSearch, showModal, timeout} = this.props.search
-    let modalBody = (
-        <Modal.Body className="text-center">
-          <ProgressBar type='circular' mode='indeterminate' multicolor={true} />
-        </Modal.Body>
-    )
-    if (timeout) {
-      modalBody = (
-        <Modal.Body className="text-left">
-          <Alert bsStyle="warning">
-            <h4>Search timed out</h4>
-          </Alert>
-        </Modal.Body>
-      )
-    }
-    else if (firebaseSearch && fdaSearch) {
-      modalBody = (
-        <Modal.Body className="text-left">
-          {this.getSearchList()}
-        </Modal.Body>
-      )
-    }
-    const labelError = (this.state.labelErrorFlag && !matchResultsModel.getNumberOfSearches()) ? (
+    const labelError = (this.state.labelErrorFlag) ? (
       <Alert bsStyle="warning">
         <h4>Please add ingredients to your label!</h4>
       </Alert>
     ) : null
-    const modal = (
-      <div className="modal-container">
-        <Modal
-          show={showModal}
-          onHide={close}
-          container={this}
-          aria-labelledby="contained-modal-title"
-        >
-          <Modal.Header closeButton onClick={close}>
-            <Modal.Title id="contained-modal-title">Ingredient Super Search</Modal.Title>
-          </Modal.Header>
-          {modalBody}
-          <Modal.Footer>
-            <Button onClick={close}>Close</Button>
-          </Modal.Footer>
-        </Modal>
-      </div>
-    )
     const customizeLabel = (
       <DropdownButton bsStyle='success' title='Customize Label' id='dropdwon'>
         <MenuItem
@@ -239,7 +121,6 @@ export default class Generator extends React.Component {
                 <div>
                   {labelError}
                   <Recipe router={this.props.router} route={this.props.route}/>
-                  {modal}
                   <Nutrition />
                 </div>
               </Col>
@@ -256,20 +137,8 @@ export default class Generator extends React.Component {
                     {customizeLabel}
                   </div>
                 </Row>
-                {/*<Row>
-                  <div>
-                    <pre>{this.props.nutrition.rawData}</pre>
-                  </div>
-                </Row>*/}
                 {/* temporary hack to align top to adjacent slider */}
                 <Row style={{marginTop: 9}}>
-                  <TagController
-                    tags={deletedTags}
-                    tagName={'Deleted Ingredients:'}
-                    deletable={false}
-                  />
-                </Row>
-                <Row>
                   <TagController
                     tags={unusedTags}
                     tagName={'Unfound Ingredients:'}

@@ -4,7 +4,6 @@ import {
   INGREDIENT_FIREBASE_DATA,
   DELETED_TAGS,
   UNUSED_TAGS,
-  REPLACED_TAGS,
   LAZY_FETCH_FIREBASE,
   LAZY_LOAD_FIREBASE,
   SET_FDA_RESULTS,
@@ -29,7 +28,6 @@ const initialState = {
   userSearch: false,
   unusedTags: [],
   deletedTags: [],
-  replacedTags: [],
   tag: ''
 }
 
@@ -48,7 +46,6 @@ export default function modelFun(state = initialState, action) {
         userSearch: false,
         unusedTags: [],
         deletedTags: [],
-        replacedTags: [],
         tag: ''
       }
     }
@@ -77,13 +74,6 @@ export default function modelFun(state = initialState, action) {
       return {
         ...state,
         unusedTags: action.tags
-      }
-    }
-    case REPLACED_TAGS:
-    {
-      return {
-        ...state,
-        replacedTags: action.tags
       }
     }
     case UPDATE_MATCH_RESULTS_MODEL:

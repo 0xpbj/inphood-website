@@ -9,6 +9,14 @@ import Dropdownlist from 'react-widgets/lib/Dropdownlist'
 import {IngredientModel} from '../models/IngredientModel'
 import {rationalToFloat} from '../../helpers/ConversionUtils'
 import Slider from 'react-toolbox/lib/slider'
+import renderHTML from 'react-render-html'
+
+const ListItem = React.createClass({
+  render() {
+    const {item} = this.props
+    return <span>{renderHTML(item)}</span>
+  }
+})
 
 export default class IngredientController extends React.Component {
   constructor(props) {
@@ -138,13 +146,14 @@ export default class IngredientController extends React.Component {
     const sliderValue = ingredientControlModel.getSliderValue()
     const editBoxValue = ingredientControlModel.getEditBoxValue()
     return (
-      <div style={{borderWidth: 1,
+      <div  style={{borderWidth: 1,
                    borderColor: 'black',
                    borderStyle: 'solid',
                    borderRadius: 5,
                    padding: 10,
                    marginRight: 10,
-                   marginLeft: 10}}>
+                   marginLeft: 10}}
+            ref={tag}>
         <Row>
           <Col xs={7} md={7} style={{paddingLeft: 5, paddingRight: 5}}>
             <Slider
@@ -186,7 +195,8 @@ export default class IngredientController extends React.Component {
           <Dropdownlist
             data={ingredientControlModel.getDropdownMatches()}
             value={ingredientControlModel.getDropdownMatchValue()}
-            onChange={this.handleMatchDropdownChange.bind(this)}/>
+            onChange={this.handleMatchDropdownChange.bind(this)}
+            itemComponent={ListItem}/>
           </Col>
         </Row>
       </div>

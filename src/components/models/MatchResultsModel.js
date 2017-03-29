@@ -158,7 +158,7 @@ export class MatchResultsModel {
       const searchTermResults = this._searches[aSearchTerm]
       let descriptions = []
       for (let idx = 0; idx < searchTermResults.length; idx++) {
-        descriptions.push(searchTermResults[idx].getDescription())
+        descriptions.push(searchTermResults[idx].getDisplayDescription())
       }
       return descriptions
     }

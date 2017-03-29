@@ -63,7 +63,7 @@ export default class Nutrition extends React.Component {
   }
   render() {
     const {parsedData, missingData} = this.props.nutrition
-    const {matchResultsModel, replacedTags} = this.props.tagModel
+    const {matchResultsModel} = this.props.tagModel
     const {nutritionModel} = this.props.nutritionModelRed
     const {ingredientControlModels} = this.props.ingredientModel
     // 1. Generate a list of tags not found in our DB and build the array of
@@ -108,9 +108,6 @@ export default class Nutrition extends React.Component {
       recipeLine = recipeLine + name
       recipeLines[name] = recipeLine
     }
-
-    let {deletedTags} = this.props.tagModel
-
     for (let i = 0; i < tagsInOrder.length; i++) {
       const tag = tagsInOrder[i]
       if (! matchResultsModel.hasSearchTerm(tag)) {

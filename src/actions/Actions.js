@@ -20,7 +20,6 @@ import {
   SC_STORE_MODEL,
   DELETED_TAGS,
   UNUSED_TAGS,
-  REPLACED_TAGS,
   INIT_EMAIL_FLOW,
   GET_EMAIL_DATA,
   COMPLETE_DROPDOWN_CHANGE,
@@ -191,13 +190,6 @@ export function deletedTags(tags) {
 export function unusedTags(tags) {
   return {
     type: UNUSED_TAGS,
-    tags
-  }
-}
-
-export function replacedTags(tags) {
-  return {
-    type: REPLACED_TAGS,
     tags
   }
 }

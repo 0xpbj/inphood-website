@@ -44,27 +44,6 @@ export class SearchResult {
   }
 }
 
-// Old data model:
-//
-// FIREBASE DATA:
-// Data structure:
-//
-//  matchData: {
-//    searchTerm1: [
-//      [description1, ndbNo1, dataObj1],
-//      [description2, ndbNo2, dataObj2],
-//      ...
-//      ...
-//    ],
-//    searchTerm2: [
-//      [descriptionM, ndbNoM, dataObjM],
-//      [descriptionN, ndbNoN, dataObjN],
-//      ...
-//    ],
-//    ...
-//  }
-
-
 // This data model:
 //
 //  MatchResultsModel: {

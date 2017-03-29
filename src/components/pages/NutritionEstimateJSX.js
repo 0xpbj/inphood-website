@@ -282,7 +282,7 @@ export default class NutritionEstimateJSX extends React.Component {
   }
 
   getMicroNutrients(ingredientComposite, styles) {
-    const microNutrientsAndFnPfxs = NutritionEstimateJSX.microNutrientsAndFnPfxs
+    const microNutrientsAndFnPfxs = IngredientModel.microNutrientsAndFnPfxs
 
     let microNutrientRows = []
     const numNutrients = Object.keys(microNutrientsAndFnPfxs).length
@@ -312,7 +312,7 @@ export default class NutritionEstimateJSX extends React.Component {
           }
         }
         if (rda2k != '') {
-          rda2k = parseInt(rda2k) + '%'
+          rda2k = rda2k + '%'
         }
 
         let rowStyle = (idxNutrients === numNutrients) ? styles.thickEnd : {}
@@ -427,39 +427,11 @@ export default class NutritionEstimateJSX extends React.Component {
                 {microNutrients}
               </tbody>
             </table>
-            <p style={myStyles.smallInfo}>* Percent Daily Values are based on a 2,000 calorie diet. Your daily values may be higher or lower depending on your calorie needs:</p>
+            <p style={myStyles.smallInfo}>* Percent Daily Values are based on a 2,000 calorie diet. Your daily values may be higher or lower depending on your calorie needs.</p>
           </section>
           {this.getGeneratedStatement(displayGeneratedStatement)}
         </div>
       </div>
     )
   }
-}
-
-// This list composed based on the order in:
-//   https://www.fda.gov/downloads/Food/GuidanceRegulation/GuidanceDocumentsRegulatoryInformation/LabelingNutrition/UCM511964.pdf
-//
-// Notes:
-//   - Vitamin E did not feature so it has been added at the end.
-//   - Everything is straightforward except Folate which appears as:
-//       Folate 200mcg DFE (120 mcg folic acid)
-//
-// static:
-NutritionEstimateJSX.microNutrientsAndFnPfxs = {
-  'Vitamin D'  : 'get_vitaminD',
-  'Calcium'    : 'get_calcium',
-  'Iron'       : 'get_iron',
-  'Potassium'  : 'get_potassium',
-  'Vitamin A'  : 'get_vitaminA',
-  'Vitamin C'  : 'get_vitaminC',
-  'Thiamin'    : 'get_thiaminB1',
-  'Riboflavin' : 'get_riboflavinB2',
-  'Niacin'     : 'get_niacinB3',
-  'Vitamin B6' : 'get_vitaminB6',
-  'Folate'     : 'get_folicAcid',
-  'Vitamin B12': 'get_vitaminB12',
-  'Phosphorus' : 'get_phosphorus',
-  'Magnesium'  : 'get_magnesium',
-  'Zinc'       : 'get_zinc',
-  'Vitamin E'  : 'get_vitaminE'
 }

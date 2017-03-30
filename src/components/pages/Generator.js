@@ -22,6 +22,7 @@ import Chip from 'react-toolbox/lib/chip'
 import UploadModal from '../layout/UploadModal'
 import TagController from '../controllers/TagController'
 import ProgressBar from 'react-toolbox/lib/progress_bar'
+import domtoimage from 'dom-to-image'
 
 import MarginLayout from '../../helpers/MarginLayout'
 import TopBar from '../layout/TopBar'
@@ -49,50 +50,56 @@ export default class Generator extends React.Component {
     if (this.state.labelErrorFlag)
       this.setState({labelErrorFlag: false})
   }
-  transitionToLabelPage(composite, full) {
-    ReactGA.event({
-      category: 'User',
-      action: 'User sharing results',
-      nonInteraction: false
-    });
+  shareLabel(share) {
+    // this.props.saveToCloud()
     const {unusedTags, matchResultsModel} = this.props.tagModel
     const usefulIngredients = matchResultsModel.getNumberOfSearches() - unusedTags.length
     if (this.props.nutrition.key && usefulIngredients) {
+      const {nutritionModel} = this.props.nutritionModelRed
+      const full = nutritionModel.serialize()
+      const compositeModel = nutritionModel.getScaledCompositeIngredientModel()
+      const composite = compositeModel.serialize()
       this.props.sendSerializedData(composite, full)
-      const user = Config.DEBUG ? 'test' : 'anonymous'
-      this.props.router.push('/?user=' + user + '&label=' + this.props.nutrition.key)
+      if (share) {
+        ReactGA.event({
+          category: 'Share',
+          action: 'User sharing results',
+          nonInteraction: false
+        });
+        const user = Config.DEBUG ? 'test' : 'anonymous'
+        this.props.router.push('/?user=' + user + '&label=' + this.props.nutrition.key)
+      }
+      else {
+        ReactGA.event({
+          category: 'Save',
+          action: 'User saving label',
+          nonInteraction: false
+        });
+        domtoimage.toPng(document.getElementById('nutrition-label'), { quality: 1.0 })
+        .then(function (dataUrl) {
+          var link = document.createElement('a');
+          link.download = 'nutrition-label.png';
+          link.href = dataUrl;
+          link.click();
+        });
+      }
     }
     else {
       this.setState({labelErrorFlag: true})
     }
-  }
-  saveLabelToImage() {
-    ReactGA.event({
-      category: 'Share',
-      action: 'User saving label',
-      nonInteraction: false
-    });
-    // this.props.saveToCloud()
-    domtoimage.toPng(document.getElementById('nutrition-label'), { quality: 1.0 })
-    .then(function (dataUrl) {
-      var link = document.createElement('a');
-      link.download = 'nutrition-label.png';
-      link.href = dataUrl;
-      link.click();
-    });
   }
   shareLabelButton() {
     return (
       <DropdownButton bsStyle='success' title='Share Label' id='dropdwon'>
         <MenuItem
           eventKey='1'
-          onClick={() => this.saveLabelToImage()}>
+          onClick={() => this.shareLabel(false)}>
           Save Label
         </MenuItem>
         <MenuItem
           eventKey='2'
-          onClick={() => console.log('sharing label')}>
-          Share Label
+          onClick={() => this.shareLabel(true)}>
+          Share URL
         </MenuItem>
       </DropdownButton>
     )

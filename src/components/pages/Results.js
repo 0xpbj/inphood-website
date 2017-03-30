@@ -18,7 +18,6 @@ import {IngredientModel} from '../models/IngredientModel'
 import {NutritionModel} from '../models/NutritionModel'
 import TagController from '../controllers/TagController'
 import CopyToClipboard from 'react-copy-to-clipboard'
-import domtoimage from 'dom-to-image'
 import TopBar from '../layout/TopBar'
 import UploadModal from '../layout/UploadModal'
 const Config = require('Config')
@@ -48,7 +47,6 @@ export default class Results extends React.Component {
     }
   }
   componentWillMount() {
-    this.getLabelInfo()
     ReactGA.initialize('UA-88850545-2', {
       debug: Config.DEBUG,
       titleCase: false,
@@ -56,8 +54,6 @@ export default class Results extends React.Component {
         userId: 'websiteUser'
       }
     })
-  }
-  getLabelInfo() {
     const {label, user} = this.props
     if (label && label !== '') {
       const hUser = user ? user : Config.DEBUG ? 'test' : 'anonymous'

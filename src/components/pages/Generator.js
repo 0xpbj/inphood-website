@@ -25,6 +25,7 @@ import ProgressBar from 'react-toolbox/lib/progress_bar'
 import domtoimage from 'dom-to-image'
 
 import MarginLayout from '../../helpers/MarginLayout'
+import {getTextLabel} from '../../helpers/TextLabel'
 import TopBar from '../layout/TopBar'
 
 import Recipe from '../../containers/RecipeContainer'
@@ -60,6 +61,12 @@ export default class Generator extends React.Component {
       const full = nutritionModel.serialize()
       const compositeModel = nutritionModel.getScaledCompositeIngredientModel()
       const composite = compositeModel.serialize()
+      let recipeText = this.getRecipeText(nutritionModel)
+      if (recipeText !== '') {
+        const user = Config.DEBUG ? 'test' : 'anonymous'
+        const label = this.props.nutrition.key
+        this.props.sendUserGeneratedData(recipeText, label, user)
+      }
       this.props.sendSerializedData(composite, full)
       if (share) {
         ReactGA.event({
@@ -141,6 +148,12 @@ export default class Generator extends React.Component {
       </DropdownButton>
     )
   }
+  generateTextLabel(composite) {
+    let ingredientData = JSON.parse(composite)
+    let ingredient = new IngredientModel()
+    ingredient.initializeFromSerialization(ingredientData)
+    return getTextLabel(ingredient)
+  }
   render() {
     const {nutritionModel} = this.props.nutritionModelRed
     const full = nutritionModel.serialize()
@@ -168,6 +181,10 @@ export default class Generator extends React.Component {
         <pre>{shareUrl}</pre>
       </div>
     ) : null
+    const label = (nutritionModel.getLabelType() === 'text') ? this.generateTextLabel(composite)
+    : (
+      <Label id='nutritionLabel' ingredientComposite={compositeModel}/>
+    ) 
     return (
       <div>
         <TopBar step=""
@@ -207,8 +224,7 @@ export default class Generator extends React.Component {
                     <Col xs={0} sm={0} md={1} lg={1}/>
                   </Row>
                   <text>&nbsp;</text>
-                  <Label id='nutritionLabel'
-                         ingredientComposite={compositeModel}/>
+                    {label}
                   <text>&nbsp;</text>
                 </Row>
                 {/* temporary hack to align top to adjacent slider */}

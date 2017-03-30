@@ -1,3 +1,5 @@
+import {IngredientModel} from '../components/models/IngredientModel'
+
 export function getTextLabel(anIngredientModel) {
   const microNutrientsAndFnPfxs = IngredientModel.microNutrientsAndFnPfxs
 

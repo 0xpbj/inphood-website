@@ -42,7 +42,8 @@ export default class Generator extends React.Component {
     super()
     this.state = {
       labelErrorFlag: false,
-      showShareUrl: false
+      showShareUrl: false,
+      textLabel: false
     }
   }
   componentWillMount() {
@@ -52,6 +53,21 @@ export default class Generator extends React.Component {
   componentWillReceiveProps(nextProps) {
     if (this.state.labelErrorFlag)
       this.setState({labelErrorFlag: false})
+  }
+  getRecipeText(aNutritionModel) {
+    let recipeText = ''
+
+    const nmTags = aNutritionModel.getTags()
+    for (let index in nmTags) {
+      const tag = nmTags[index]
+      const scaledIngredient = aNutritionModel.getScaledIngredient(tag)
+      recipeText = recipeText +
+                   scaledIngredient.getQuantity().toFixed(2) + " " +
+                   scaledIngredient.getUnit() + " " +
+                   scaledIngredient.getIngredientModel().getKey() +
+                   "\n"
+    }
+    return recipeText
   }
   shareLabel(share) {
     // this.props.saveToCloud()
@@ -118,42 +134,51 @@ export default class Generator extends React.Component {
       <DropdownButton bsStyle='warning' title='Customize Label' id='dropdwon'>
         <MenuItem
           eventKey='1'
-          onClick={() => this.props.setLabelType(IngredientModel.labelTypes.standard)}>
+          onClick={() => {
+            this.setState({textLabel: false})
+            this.props.setLabelType(IngredientModel.labelTypes.standard)}}>
           Standard Label
         </MenuItem>
         <MenuItem
           eventKey='2'
-          onClick={() => this.props.setLabelType(IngredientModel.labelTypes.complete)}>
+          onClick={() => {
+            this.setState({textLabel: false})
+            this.props.setLabelType(IngredientModel.labelTypes.complete)}}>
           Complete Label
         </MenuItem>
         <MenuItem
           eventKey='3'
-          onClick={() => this.props.setLabelType(IngredientModel.labelTypes.micronut)}>
+          onClick={() => {
+            this.setState({textLabel: false})
+            this.props.setLabelType(IngredientModel.labelTypes.micronut)}}>
           Micro Nutrient Label
         </MenuItem>
         <MenuItem
           eventKey='4'
-          onClick={() => this.props.setLabelType(IngredientModel.labelTypes.sugarmicro)}>
+          onClick={() => {
+            this.setState({textLabel: false})
+            this.props.setLabelType(IngredientModel.labelTypes.sugarmic)}}>
           Sugar + Micro Label
         </MenuItem>
         <MenuItem
           eventKey='5'
-          onClick={() => this.props.setLabelType(IngredientModel.labelTypes.text)}>
+          onClick={() => {
+            this.setState({textLabel: true})
+            this.props.setLabelType(IngredientModel.labelTypes.text)}}>
           Text Label
         </MenuItem>
         <MenuItem
           eventKey='6'
-          onClick={() => this.props.setLabelType(IngredientModel.labelTypes.text)}>
+          onClick={() => {
+            this.setState({textLabel: false})
+            this.props.setLabelType(IngredientModel.labelTypes.personal)}}>
           Personal Label
         </MenuItem>
       </DropdownButton>
     )
   }
-  generateTextLabel(composite) {
-    let ingredientData = JSON.parse(composite)
-    let ingredient = new IngredientModel()
-    ingredient.initializeFromSerialization(ingredientData)
-    return getTextLabel(ingredient)
+  generateTextLabel(compositeModel) {
+    return <pre id='nutritionLabel'>{getTextLabel(compositeModel)}</pre>
   }
   render() {
     const {nutritionModel} = this.props.nutritionModelRed
@@ -181,10 +206,10 @@ export default class Generator extends React.Component {
         <pre style={{marginBottom:0, marginTop:constants.VERT_SPACE}}>{shareUrl}</pre>
       </div>
     ) : null
-    const label = (nutritionModel.getLabelType() === 'text') ? this.generateTextLabel(composite)
+    const label = (this.state.textLabel) ? this.generateTextLabel(compositeModel)
     : (
       <Label id='nutritionLabel' ingredientComposite={compositeModel}/>
-    ) 
+    )
     return (
       <div>
         <TopBar step=""
@@ -225,8 +250,7 @@ export default class Generator extends React.Component {
                 </Row>
                 <Row style={{marginTop:(constants.VERT_SPACE-2)}}>
                   <Col xs={12}>
-                    <Label id='nutritionLabel'
-                           ingredientComposite={compositeModel}/>
+                    {label}
                   </Col>
                 </Row>
                 <Row style={{marginTop: 9}}>

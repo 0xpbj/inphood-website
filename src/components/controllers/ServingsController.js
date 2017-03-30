@@ -165,8 +165,8 @@ export default class ServingsController extends React.Component {
                      borderStyle: 'solid',
                      borderRadius: 5,
                      padding: 10,
-                     marginRight: 10,
-                     marginLeft: 10}}>
+                     marginRight: 0,
+                     marginLeft: 0}}>
 
           <Row>
            <Col xs={3} md={3} style={{paddingTop: 6, paddingRight: 0}}>

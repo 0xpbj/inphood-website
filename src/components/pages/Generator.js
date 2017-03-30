@@ -224,7 +224,8 @@ export default class Generator extends React.Component {
                     <Col xs={0} sm={0} md={1} lg={1}/>
                   </Row>
                   <text>&nbsp;</text>
-                    {label}
+                    <Label id='nutritionLabel'
+                           ingredientComposite={compositeModel}/>
                   <text>&nbsp;</text>
                 </Row>
                 {/* temporary hack to align top to adjacent slider */}

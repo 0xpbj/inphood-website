@@ -244,4 +244,7 @@ export class NutritionModel {
   setLabelType(aLabelType) {
     this._labelType = aLabelType
   }
+  getLabelType() {
+    return this._labelType
+  }
 }

@@ -151,8 +151,8 @@ export default class IngredientController extends React.Component {
                    borderStyle: 'solid',
                    borderRadius: 5,
                    padding: 10,
-                   marginRight: 10,
-                   marginLeft: 10}}
+                   marginRight: 0,
+                   marginLeft: 0}}
             ref={tag}>
         <Row>
           <Col xs={7} md={7} style={{paddingLeft: 5, paddingRight: 5}}>

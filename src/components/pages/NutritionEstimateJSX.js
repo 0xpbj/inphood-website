@@ -2,6 +2,7 @@ const React = require('react')
 import Style from "../styles/NutritionEstimateStyles.js"
 import ProgressBar from 'react-bootstrap/lib/ProgressBar'
 import {IngredientModel} from '../models/IngredientModel'
+import * as constants from '../../constants/Constants'
 
 // TODO: Fix this in FDA2018 labels
 //
@@ -416,7 +417,7 @@ export default class NutritionEstimateJSX extends React.Component {
     // Other methods here: https://www.sitepoint.com/css-center-position-absolute-div/
     return(
       <div
-        style={{width:360, margin:'auto'}}>
+        style={{width:constants.LABEL_WIDTH, margin:'auto'}}>
         <div
           id="nutrition-label"
           style={{backgroundColor:'white', padding:2}}>

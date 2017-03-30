@@ -24,6 +24,8 @@ import TagController from '../controllers/TagController'
 import ProgressBar from 'react-toolbox/lib/progress_bar'
 import domtoimage from 'dom-to-image'
 
+import * as constants from '../../constants/Constants'
+
 import MarginLayout from '../../helpers/MarginLayout'
 import TopBar from '../layout/TopBar'
 
@@ -159,8 +161,7 @@ export default class Generator extends React.Component {
     const shareUrl = 'https://www.inphood.com/?user=' + user + '&label=' + this.props.nutrition.key
     const shareUrlBox = (this.state.showShareUrl) ? (
       <div>
-        <text>&nbsp;</text>
-        <pre>{shareUrl}</pre>
+        <pre style={{marginBottom:0, marginTop:constants.VERT_SPACE}}>{shareUrl}</pre>
       </div>
     ) : null
     return (
@@ -176,36 +177,40 @@ export default class Generator extends React.Component {
                md={ml.mdCol}
                lg={ml.lgCol}>
             <Row>
-              <Col xs={12} sm={7} md={8} lg={8}>
+              <Col xs={12} sm={6} md={7} lg={7}>
                 <div>
                   {labelError}
                   <Recipe router={this.props.router} route={this.props.route}/>
                   <Nutrition />
                 </div>
               </Col>
-              <Col xs={12} sm={5} md={4} lg={4}>
-                <Row>
-                  <Col xs={6} sm={2} md={2} lg={2}>
-                    {this.customLabelButton()}
-                  </Col>
-                  <Col xs={0} sm={5} md={5} lg={6}/>
-                  <Col xs={6} sm={2} md={2} lg={2}>
-                   {this.shareLabelButton()}
-                  </Col>
+              <Col xs={12} sm={6} md={5} lg={5}>
+                <Row style={{marginTop:25}}>
+                  <div style={{width:constants.LABEL_WIDTH, margin:'auto'}}>
+                    <Col xs={6} className='text-left' style={{paddingLeft: 2}}>
+                      {this.customLabelButton()}
+                    </Col>
+                    <Col xs={6} className='text-right' style={{paddingRight: 2}}>
+                      {this.shareLabelButton()}
+                    </Col>
+                  </div>
                 </Row>
+
                 <Row>
-                  <Row>
-                    <Col xs={0} sm={0} md={1} lg={1}/>
-                    <Col xs={12} sm={12} md={10} lg={10}>
+                  <div style={{width:constants.LABEL_WIDTH, margin:'auto'}}>
+                    <Col xs={12} style={{paddingLeft:2, paddingRight:2}}>
                       {shareUrlBox}
                     </Col>
-                    <Col xs={0} sm={0} md={1} lg={1}/>
-                  </Row>
-                  <text>&nbsp;</text>
-                  <Label id='nutritionLabel'
-                         ingredientComposite={compositeModel}/>
-                  <text>&nbsp;</text>
+                  </div>
                 </Row>
+
+                <Row style={{marginTop:(constants.VERT_SPACE-2)}}>
+                  <Col xs={12}>
+                    <Label id='nutritionLabel'
+                           ingredientComposite={compositeModel}/>
+                  </Col>
+                </Row>
+
                 {/* temporary hack to align top to adjacent slider */}
                 <Row style={{marginTop: 9}}>
                   <TagController

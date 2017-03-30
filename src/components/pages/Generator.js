@@ -143,6 +143,7 @@ export default class Generator extends React.Component {
       </DropdownButton>
     )
   }
+  //
   render() {
     const {nutritionModel} = this.props.nutritionModelRed
     const full = nutritionModel.serialize()

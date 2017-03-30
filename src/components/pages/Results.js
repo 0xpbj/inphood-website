@@ -384,7 +384,6 @@ export default class Results extends React.Component {
             <Row>
               <Col xs={12} sm={6} md={6} lg={6}>
                 <Row>
-                  {placeHolderCol}
                   <Col xs={12} sm={12} md={10} lg={8}>
                     <Row>
                       <Col xs={12} className="center-block">
@@ -392,12 +391,10 @@ export default class Results extends React.Component {
                       </Col>
                     </Row>
                   </Col>
-                  {placeHolderCol}
                 </Row>
               </Col>
               <Col xs={12} sm={6} md={6} lg={6}>
                 <Row>
-                  {placeHolderCol}
                   <Col xs={12} sm={10} md={10} lg={8}>
                     {/*<Row>
                       <div style={{marginBottom: 10}} className="text-center">
@@ -418,7 +415,6 @@ export default class Results extends React.Component {
                       <pre>{textLabel}</pre>
                     </Row>*/}
                   </Col>
-                  {placeHolderCol}
                 </Row>
               </Col>
             </Row>

@@ -9,6 +9,7 @@ import Modal from 'react-bootstrap/lib/Modal'
 import Image from 'react-bootstrap/lib/Image'
 import Button from 'react-bootstrap/lib/Button'
 import Popover from 'react-bootstrap/lib/Popover'
+import Dropdown from 'react-bootstrap/lib/Dropdown'
 import MenuItem from 'react-bootstrap/lib/MenuItem'
 import Glyphicon from 'react-bootstrap/lib/Glyphicon'
 import FormGroup from 'react-bootstrap/lib/FormGroup'
@@ -114,66 +115,76 @@ export default class Generator extends React.Component {
   }
   shareLabelButton() {
     return (
-      <DropdownButton bsStyle='success' title='Share Label' id='dropdwon'>
-        <MenuItem
-          eventKey='1'
-          onClick={() => this.shareLabel(false)}>
-          Save Label&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-save"></Glyphicon>
-        </MenuItem>
-        <MenuItem
-          eventKey='2'
-          onClick={() => this.shareLabel(true)}>
-          Share Link&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-share-alt"></Glyphicon>
-        </MenuItem>
-      </DropdownButton>
+      <Dropdown>
+        <Dropdown.Toggle bsStyle='success'>
+          <Glyphicon glyph="share" />&nbsp;&nbsp;Share Label
+        </Dropdown.Toggle>
+        <Dropdown.Menu>
+          <MenuItem
+            eventKey='1'
+            onClick={() => this.shareLabel(false)}>
+            Save Label&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-save"></Glyphicon>
+          </MenuItem>
+          <MenuItem
+            eventKey='2'
+            onClick={() => this.shareLabel(true)}>
+            Share Link&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-share-alt"></Glyphicon>
+          </MenuItem>
+        </Dropdown.Menu>
+      </Dropdown>
     )
   }
   customLabelButton() {
     return (
-      <DropdownButton bsStyle='warning' title='Customize Label' id='dropdwon'>
-        <MenuItem
-          eventKey='1'
-          onClick={() => {
-            this.setState({textLabel: false})
-            this.props.setLabelType(IngredientModel.labelTypes.standard)}}>
-          Standard Label&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-grain"></Glyphicon>
-        </MenuItem>
-        <MenuItem
-          eventKey='2'
-          onClick={() => {
-            this.setState({textLabel: false})
-            this.props.setLabelType(IngredientModel.labelTypes.complete)}}>
-          Complete Label&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-tree-deciduous"></Glyphicon>
-        </MenuItem>
-        <MenuItem
-          eventKey='3'
-          onClick={() => {
-            this.setState({textLabel: false})
-            this.props.setLabelType(IngredientModel.labelTypes.micronut)}}>
-          Micronutrient Label&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-stats"></Glyphicon>
-        </MenuItem>
-        {/*<MenuItem
-          eventKey='4'
-          onClick={() => {
-            this.setState({textLabel: false})
-            this.props.setLabelType(IngredientModel.labelTypes.sugarmic)}}>
-          Sugar + Micro Label
-        </MenuItem>*/}
-        <MenuItem
-          eventKey='5'
-          onClick={() => {
-            this.setState({textLabel: true})
-            this.props.setLabelType(IngredientModel.labelTypes.text)}}>
-          Text Label&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-text-color"></Glyphicon>
-        </MenuItem>
-        {/*<MenuItem
-          eventKey='6'
-          onClick={() => {
-            this.setState({textLabel: false})
-            this.props.setLabelType(IngredientModel.labelTypes.personal)}}>
-          Personal Label
-        </MenuItem>*/}
-      </DropdownButton>
+      <Dropdown>
+        <Dropdown.Toggle bsStyle='warning'>
+          <Glyphicon glyph="wrench" />&nbsp;&nbsp;Customize Label
+        </Dropdown.Toggle>
+        <Dropdown.Menu>
+          <MenuItem
+            eventKey='1'
+            onClick={() => {
+              this.setState({textLabel: false})
+              this.props.setLabelType(IngredientModel.labelTypes.standard)}}>
+            Standard Label&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-grain"></Glyphicon>
+          </MenuItem>
+          <MenuItem
+            eventKey='2'
+            onClick={() => {
+              this.setState({textLabel: false})
+              this.props.setLabelType(IngredientModel.labelTypes.complete)}}>
+            Complete Label&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-tree-deciduous"></Glyphicon>
+          </MenuItem>
+          <MenuItem
+            eventKey='3'
+            onClick={() => {
+              this.setState({textLabel: false})
+              this.props.setLabelType(IngredientModel.labelTypes.micronut)}}>
+            Micronutrient Label&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-stats"></Glyphicon>
+          </MenuItem>
+          {/*<MenuItem
+            eventKey='4'
+            onClick={() => {
+              this.setState({textLabel: false})
+              this.props.setLabelType(IngredientModel.labelTypes.sugarmic)}}>
+            Sugar + Micro Label
+          </MenuItem>*/}
+          <MenuItem
+            eventKey='5'
+            onClick={() => {
+              this.setState({textLabel: true})
+              this.props.setLabelType(IngredientModel.labelTypes.text)}}>
+            Text Label&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-text-color"></Glyphicon>
+          </MenuItem>
+          {/*<MenuItem
+            eventKey='6'
+            onClick={() => {
+              this.setState({textLabel: false})
+              this.props.setLabelType(IngredientModel.labelTypes.personal)}}>
+            Personal Label
+          </MenuItem>*/}
+        </Dropdown.Menu>
+      </Dropdown>
     )
   }
   generateTextLabel(compositeModel) {

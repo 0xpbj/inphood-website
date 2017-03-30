@@ -148,12 +148,16 @@ export default class Generator extends React.Component {
       </DropdownButton>
     )
   }
+<<<<<<< HEAD
   generateTextLabel(composite) {
     let ingredientData = JSON.parse(composite)
     let ingredient = new IngredientModel()
     ingredient.initializeFromSerialization(ingredientData)
     return getTextLabel(ingredient)
   }
+=======
+  //
+>>>>>>> 174acee0c008d06fc8bd23123043d68934873992
   render() {
     const {nutritionModel} = this.props.nutritionModelRed
     const full = nutritionModel.serialize()

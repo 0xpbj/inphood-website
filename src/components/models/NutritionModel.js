@@ -71,6 +71,7 @@ export class NutritionModel {
     //    - standard
     //    - complete
     //    - micronut
+    //    - sugarmic
     //    - text
     //    - personal
     //

@@ -118,12 +118,12 @@ export default class Generator extends React.Component {
         <MenuItem
           eventKey='1'
           onClick={() => this.shareLabel(false)}>
-          Save Label
+          Save Label&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-save"></Glyphicon>
         </MenuItem>
         <MenuItem
           eventKey='2'
           onClick={() => this.shareLabel(true)}>
-          Share URL
+          Share Link&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-share-alt"></Glyphicon>
         </MenuItem>
       </DropdownButton>
     )
@@ -136,35 +136,35 @@ export default class Generator extends React.Component {
           onClick={() => {
             this.setState({textLabel: false})
             this.props.setLabelType(IngredientModel.labelTypes.standard)}}>
-          Standard Label
+          Standard Label&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-grain"></Glyphicon>
         </MenuItem>
         <MenuItem
           eventKey='2'
           onClick={() => {
             this.setState({textLabel: false})
             this.props.setLabelType(IngredientModel.labelTypes.complete)}}>
-          Complete Label
+          Complete Label&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-tree-deciduous"></Glyphicon>
         </MenuItem>
         <MenuItem
           eventKey='3'
           onClick={() => {
             this.setState({textLabel: false})
             this.props.setLabelType(IngredientModel.labelTypes.micronut)}}>
-          Micro Nutrient Label
+          Micronutrient Label&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-stats"></Glyphicon>
         </MenuItem>
-        <MenuItem
+        {/*<MenuItem
           eventKey='4'
           onClick={() => {
             this.setState({textLabel: false})
             this.props.setLabelType(IngredientModel.labelTypes.sugarmic)}}>
           Sugar + Micro Label
-        </MenuItem>
+        </MenuItem>*/}
         <MenuItem
           eventKey='5'
           onClick={() => {
             this.setState({textLabel: true})
             this.props.setLabelType(IngredientModel.labelTypes.text)}}>
-          Text Label
+          Text Label&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-text-color"></Glyphicon>
         </MenuItem>
         {/*<MenuItem
           eventKey='6'

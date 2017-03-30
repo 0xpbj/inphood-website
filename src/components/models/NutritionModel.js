@@ -63,6 +63,9 @@ export class NutritionModel {
     this._displayServingCount = 1
     this._displayServingUnit = 'serving'
 
+    // 'Servings Per Recipe, About 4' or '1 serving per container'
+    this._displayServingRatio = 'Recipe, About'
+
     // Persist the type of label in the nutrition model and composite
     // ingredient model. Valid label types include:
     //    - standard
@@ -82,6 +85,10 @@ export class NutritionModel {
         nutritionData.hasOwnProperty('_displayServingUnit')) {
       this._displayServingCount = nutritionData._displayServingCount
       this._displayServingUnit = nutritionData._displayServingUnit
+    }
+
+    if (nutritionData.hasOwnProperty('_displayServingRatio')) {
+      this._displayServingRatio = nutritionData._displayServingRatio
     }
 
     //
@@ -176,11 +183,12 @@ export class NutritionModel {
     }
   }
 
-  setSuggestedServingAmount(value, unit, displayServingCount, displayServingUnit) {
+  setSuggestedServingAmount(value, unit, displayServingCount, displayServingUnit, displayServingRatio) {
     this._suggestedServingValue = value
     this._suggestedServingUnit = unit
     this._displayServingCount = displayServingCount
     this._displayServingUnit = displayServingUnit
+    this._displayServingRatio = displayServingRatio
   }
 
   getSuggestedServingValue() {
@@ -197,6 +205,10 @@ export class NutritionModel {
 
   getDisplayServingUnit() {
     return this._displayServingUnit
+  }
+
+  getDisplayServingRatio() {
+    return this._displayServingRatio
   }
 
   getIngredientScaledToServing(aTag) {
@@ -220,7 +232,8 @@ export class NutritionModel {
     compositeIngredient.setServingAmount(this._suggestedServingValue,
                                          this._suggestedServingUnit,
                                          this._displayServingCount,
-                                         this._displayServingUnit)
+                                         this._displayServingUnit,
+                                          this._displayServingRatio)
     compositeIngredient.setLabelType(this._labelType)
     return compositeIngredient
   }

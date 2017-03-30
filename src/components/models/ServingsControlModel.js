@@ -18,8 +18,11 @@ export class ServingsControlModel {
     this._max = 20
     this._step = 1
 
+    this._displayRatio = 'Recipe, About'   // i.e. Servings Per Recipe, About 4
     this._valueEditBox = '2'
+
     this._displayUnitEditBox = this.getDisplayUnit()
+    this._displayRatioEditBox = this.getDisplayRatio()
   }
 
   rescaleMinAndMax(aValue) {
@@ -58,6 +61,14 @@ export class ServingsControlModel {
     return this._displayUnit
   }
 
+  setDisplayRatio(aDisplayRatio) {
+    this._displayRatio = aDisplayRatio
+  }
+
+  getDisplayRatio() {
+    return this._displayRatio
+  }
+
   setDisplayUnitCount(aDisplayUnitCount) {
     this._displayUnitCount = aDisplayUnitCount
   }
@@ -92,5 +103,13 @@ export class ServingsControlModel {
 
   getDisplayUnitEditBox() {
     return this._displayUnitEditBox
+  }
+
+  setDisplayRatioEditBox(aDisplayRatio) {
+    this._displayRatioEditBox = aDisplayRatio
+  }
+
+  getDisplayRatioEditBox() {
+    return this._displayRatioEditBox
   }
 }

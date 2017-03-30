@@ -33,7 +33,10 @@ export default class NutritionEstimateJSX extends React.Component {
     let servingInfo = [servingSizeSentence]
     if (ingredientComposite.getSuggestedServingUnit() === 'people') {
       servingInfo.push(<br key={0}/>)
-      servingInfo.push('Servings Per Recipe about ' + ingredientComposite.getSuggestedServingAmount())
+      servingInfo.push('Servings Per ' +
+                       ingredientComposite.getDisplayServingRatio() +
+                       ' ' +
+                       ingredientComposite.getSuggestedServingAmount())
     }
 
     return (

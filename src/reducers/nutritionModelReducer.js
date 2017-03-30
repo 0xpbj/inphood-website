@@ -46,7 +46,8 @@ export default function nmModelFun(state = initialState, action) {
       nutritionModel.setSuggestedServingAmount(servingsControlModel.getValue(),
                                                servingsControlModel.getUnit(),
                                                servingsControlModel.getDisplayUnitCount(),
-                                               servingsControlModel.getDisplayUnit())
+                                               servingsControlModel.getDisplayUnit(),
+                                               servingsControlModel.getDisplayRatio())
       return {
         ...state,
         nutritionModel: nutritionModel

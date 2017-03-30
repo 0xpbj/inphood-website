@@ -13,30 +13,32 @@ export default class ServingsController extends React.Component {
     super(props)
   }
   //
-  handleServingsValueChange(servingsValue) {
-    const {servingsControlModel} = this.props.servings
-
-    servingsControlModel.setValue(servingsValue)
-    servingsControlModel.setValueEditBox(servingsValue.toString())
-    this.props.setServingsControllerModel(servingsControlModel)
-    this.props.nutritionModelSetServings(servingsControlModel)
-  }
-  //
-  handleServingsValueSliderChange(servingsValue) {
+  handleServingsValueChange(analyticsAction) {
     ReactGA.event({
       category: 'Nutrition Mixer',
-      action: 'Servings value slider changed',
-      nonInteraction: false,
+      action: analyticsAction,
+      nonInteraction: false
     });
 
-    this.handleServingsValueChange(servingsValue)
+    const {servingsControlModel} = this.props.servings
+
+    const servingsValue = Number(servingsControlModel.getValueEditBox())
+    servingsControlModel.setValue(servingsValue)
+    servingsControlModel.setValueEditBox(servingsValue.toString())
+
+    const servingsRatio = servingsControlModel.getDisplayRatioEditBox()
+    servingsControlModel.setDisplayRatio(servingsRatio)
+
+    this.props.setServingsControllerModel(servingsControlModel)
+    this.props.nutritionModelSetServings(servingsControlModel)
   }
   //
   //
   // Methods for servings amount form (edit box):
   //
-  submitNewServingsAmount(event) {
+  submitValues(event) {
     this.handleServingsAmountEditBoxBlurred()
+    this.handleServingsRatioEditBoxBlurred()
 
     // Prevent the default form submit behavior (causing full re-render)
     event.preventDefault()
@@ -53,23 +55,41 @@ export default class ServingsController extends React.Component {
   }
   //
   handleServingsAmountEditBoxBlurred() {
-    if (this.getServingsAmountValidationState() === 'success') {
-      ReactGA.event({
-        category: 'Nutrition Mixer',
-        action: 'Servings value edit box changed',
-        nonInteraction: false,
-      });
+    if (this.getServingsAmountValidationState() !== 'success')
+      return
 
-      const {servingsControlModel} = this.props.servings
-      const valueEditBox = servingsControlModel.getValueEditBox()
-      this.handleServingsValueChange(Number(valueEditBox))
-    }
+    this.handleServingsValueChange('Servings value edit box changed')
   }
   //
   handleServingsAmountEditBoxChange(formObject) {
     const amount = formObject.target.value
     const {servingsControlModel} = this.props.servings
     servingsControlModel.setValueEditBox(amount)
+
+    this.props.setServingsControllerModel(servingsControlModel)
+  }
+  //
+  getServingsRatioValidationState() {
+    const {servingsControlModel} = this.props.servings
+    const ratioEditBox = servingsControlModel.getDisplayRatioEditBox()
+    if (((typeof ratioEditBox) === 'string') && (ratioEditBox.trim().length > 0)) {
+      return 'success'
+    }
+
+    return 'error'
+  }
+  //
+  handleServingsRatioEditBoxBlurred() {
+    if (this.getServingsRatioValidationState() !== 'success')
+      return
+
+    this.handleServingsValueChange('Servings ratio edit box changed')
+  }
+  //
+  handleServingsRatioEditBoxChange(formObject) {
+    const ratio = formObject.target.value
+    const {servingsControlModel} = this.props.servings
+    servingsControlModel.setDisplayRatioEditBox(ratio)
 
     this.props.setServingsControllerModel(servingsControlModel)
   }
@@ -185,24 +205,34 @@ export default class ServingsController extends React.Component {
           </Row>
 
           <Row>
-            <Col xs={3} md={3} style={{paddingTop: 6, paddingRight: 0}}>
-              <text>Servings Per Recipe</text>
+            <Col xs={4} md={4}
+                 className='text-left'
+                 style={{paddingTop: 6, paddingRight: 0}}>
+              <text>Servings Per</text>
             </Col>
 
-            <Col xs={7} md={7} style={{paddingLeft: 5, paddingRight: 5}}>
-              <Slider
-                value={servingsControlModel.getValue()}
-                min={servingsControlModel.getMin()}
-                max={servingsControlModel.getMax()}
-                step={servingsControlModel.getStep()}
-                pinned snaps
-                onChange={this.handleServingsValueSliderChange.bind(this)}
-              />
-            </Col>
-
-            <Col xs={2} md={2} style={{paddingLeft: 0}}>
+            <Col xs={5} md={5} style={{paddingLeft: 2, paddingRight: 0}}>
               <form
-                onSubmit={(event) => this.submitNewServingsAmount(event)}
+                onSubmit={(event) => this.submitValues(event)}
+                autoComplete="off">
+                <FormGroup
+                  controlId='servingsControlRatioEditBox'
+                  validationState={this.getServingsRatioValidationState()}>
+                  <FormControl
+                    componentClass="input"
+                    className="text-left"
+                    type="text"
+                    label="Text"
+                    value={servingsControlModel.getDisplayRatioEditBox()}
+                    onBlur={this.handleServingsRatioEditBoxBlurred.bind(this)}
+                    onChange={this.handleServingsRatioEditBoxChange.bind(this)}/>
+                </FormGroup>
+              </form>
+            </Col>
+
+            <Col xs={3} md={3} style={{paddingLeft: 2}}>
+              <form
+                onSubmit={(event) => this.submitValues(event)}
                 autoComplete="off">
                 <FormGroup
                   controlId='servingsControlAmountEditBox'
@@ -218,6 +248,7 @@ export default class ServingsController extends React.Component {
                 </FormGroup>
               </form>
             </Col>
+
           </Row>
 
         </div>

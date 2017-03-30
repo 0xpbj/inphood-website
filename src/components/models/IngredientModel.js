@@ -46,6 +46,8 @@ export class IngredientModel {
     // these when read from serialization).
     this._displayServingCount = 1
     this._displayServingUnit = 'serving'
+
+    this._displayServingRatio = 'Recipe, About'
     //
     //   Generic measures/Unit:
     this._servingAmount = 1
@@ -148,7 +150,7 @@ export class IngredientModel {
     }
 
     this.setServingAmount(
-      100, 'g', this._displayServingCount, this._displayServingUnit)
+      100, 'g', this._displayServingCount, this._displayServingUnit, this._displayServingRatio)
   }
 
   initializeComposite(scaledIngredients) {
@@ -213,6 +215,9 @@ export class IngredientModel {
       this._displayServingCount = ingredientData._displayServingCount
       this._displayServingUnit = ingredientData._displayServingUnit
     }
+    if (ingredientData.hasOwnProperty('_displayServingRatio')) {
+      this._displayServingRatio = ingredientData._displayServingRatio
+    }
     // 9 calories per gram of fat:
     this._caloriesFromFat = ingredientData._caloriesFromFat
     //
@@ -261,7 +266,8 @@ export class IngredientModel {
     this.setServingAmount(ingredientData._suggestedServingAmount,
                           ingredientData._suggestedServingUnit,
                           this._displayServingCount,
-                          this._displayServingUnit)
+                          this._displayServingUnit,
+                          this._displayServingRatio)
   }
 
   initializeFromBrandedFdaObj(description, searchTerm, foodObject) {
@@ -356,13 +362,16 @@ export class IngredientModel {
   setServingAmount(suggestedServingAmount,
                    suggestedServingUnit,
                    displayServingCount,
-                   displayServingUnit) {
+                   displayServingUnit,
+                   displayServingRatio) {
 
     this._suggestedServingAmount = suggestedServingAmount
     this._suggestedServingUnit = suggestedServingUnit
 
     this._displayServingCount = displayServingCount
     this._displayServingUnit = displayServingUnit
+
+    this._displayServingRatio = displayServingRatio
 
     // TODO:
     if (suggestedServingUnit === 'people') {
@@ -433,6 +442,14 @@ export class IngredientModel {
 
   getDisplayServingUnit() {
     return this._displayServingUnit
+  }
+
+  setDisplayServingRatio(aDisplayServingRatio) {
+    this._displayServingRatio = aDisplayServingRatio
+  }
+
+  getDisplayServingRatio() {
+    return this._displayServingRatio
   }
 
   setLabelType(aLabelType) {

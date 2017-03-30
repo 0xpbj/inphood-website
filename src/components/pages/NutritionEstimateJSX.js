@@ -416,7 +416,7 @@ export default class NutritionEstimateJSX extends React.Component {
     // Other methods here: https://www.sitepoint.com/css-center-position-absolute-div/
     return(
       <div
-        style={{width:320, margin:'auto'}}>
+        style={{width:340, margin:'auto'}}>
         <div
           id="nutrition-label"
           style={{backgroundColor:'white', padding:2}}>

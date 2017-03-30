@@ -34,6 +34,88 @@ function bothDefined(obj1, obj2) {
   return ((obj1 !== undefined) && (obj2 !== undefined))
 }
 
+// The following methods are to support FDA guidelines for rounding values
+// on food labels. See:
+//   - https://www.fda.gov/Food/GuidanceRegulation/GuidanceDocumentsRegulatoryInformation/LabelingNutrition/ucm064932.htm
+//
+function snapTo(value, snapScale) {
+  const scaledValue = value / snapScale
+  const wholePortion = Math.trunc(scaledValue)
+
+  let snappedValue = wholePortion * snapScale
+
+  const remainingPortion = value - snappedValue
+  if (remainingPortion < (snapScale/2.0)) {
+    return snappedValue
+  }
+  return snappedValue + snapScale
+}
+//
+//  Calories, Calories from Fat, Calories from Saturated Fat:
+function getFdaRoundedCalories(value) {
+  if (value < 5) {
+    return 0
+  } else if (value < 50) {
+    return snapTo(value, .5)
+  }
+  return snapTo(value, 10)
+}
+//
+// Total Fat, Saturated Fat, Trans Fat, Polyunsaturated Fat, Monounsaturated Fat:
+function getFdaRoundedFats(value) {
+  if (value < 0.5) {
+    return 0
+  } else if (value < 5) {
+    return snapTo(value, .5)
+  }
+  return snapTo(value, 1)
+}
+//
+// Cholestrol:
+function getFdaRoundedCholesterol(value) {
+  if (value < 2) {
+    return 0
+  } else if (value <= 5) {
+    return 'less than 5'
+  }
+  return snapTo(value, 5)
+}
+//
+// Sodium, Potassium
+function getFdaRoundedNaK(value) {
+  if (value < 5) {
+    return 0
+  } else if (value <= 140) {
+    return snapTo(value, 5)
+  }
+  return snapTo(value, 10)
+}
+//
+// Total Carbohydrate, Dietary Fiber, Sugars:
+function getFdaRoundedCarbFiberSugar(value) {
+  if (value < 0.5) {
+    return 0
+  } else if (value < 1) {
+    return 'less than 1'
+  }
+  return snapTo(value, 1)
+}
+//
+// Protein
+function getFdaRoundedProtein(value) {
+  if (value < 0.5) {
+    return 0
+  } else if (value < 1) {
+    return 'less than 1'
+  }
+  return snapTo(value, 1)
+}
+
+
+function isRoundingStyleFda(aRoundingStyle) {
+  return (aRoundingStyle === 'fda')
+}
+
 export class IngredientModel {
   constructor() {
     this.decimalPlaces = 2
@@ -87,6 +169,8 @@ export class IngredientModel {
     //    - personal
     //
     this._labelType = ''
+
+    this._roundingStyle = 'fda'
 
     // The following loop creates all the boilerplate/data-driven
     // member variables for this class.
@@ -238,6 +322,12 @@ export class IngredientModel {
     this._labelType = IngredientModel.labelTypes.standard
     if (ingredientData.hasOwnProperty('_labelType')) {
       this._labelType = ingredientData._labelType
+    }
+    //
+    // Rounding style
+    this._roundingStyle = 'fda'
+    if (ingredientData.hasOwnProperty('_roundingStyle')) {
+      this._roundingStyle = ingredientData._roundingStyle
     }
     //
     // Nutrients
@@ -463,16 +553,36 @@ export class IngredientModel {
     return this._labelType
   }
 
+  setRoundingStyle(aRoundingStyle) {
+    this._roundingStyle = aRoundingStyle
+  }
+
+  getRoundingStyle() {
+    return this._roundingStyle
+  }
+
   getCalories() {
-    return (this._calories * this._scaleGettersTo).toFixed(this.decimalPlaces)
+    const scaledCalories = this._calories * this._scaleGettersTo
+    if (isRoundingStyleFda(this._roundingStyle)) {
+      return getFdaRoundedCalories(scaledCalories)
+    }
+    return scaledCalories.toFixed(this.decimalPlaces)
   }
 
   getCaloriesFromFat() {
-    return (this._caloriesFromFat * this._scaleGettersTo).toFixed(this.decimalPlaces)
+    const scaledCaloriesFromFat = this._caloriesFromFat * this._scaleGettersTo
+    if (isRoundingStyleFda(this._roundingStyle)) {
+      return getFdaRoundedCalories(scaledCaloriesFromFat)
+    }
+    return scaledCaloriesFromFat.toFixed(this.decimalPlaces)
   }
 
   getTotalFatPerServing() {
-    return (this._totalFatPerServing * this._scaleGettersTo).toFixed(this.decimalPlaces)
+    const scaledTotalFat = this._totalFatPerServing * this._scaleGettersTo
+    if (isRoundingStyleFda(this._roundingStyle)) {
+      return getFdaRoundedFats(scaledTotalFat)
+    }
+    return scaledTotalFat.toFixed(this.decimalPlaces)
   }
 
   getTotalFatUnit() {
@@ -484,7 +594,11 @@ export class IngredientModel {
   }
 
   getSaturatedFatPerServing() {
-    return (this._saturatedFatPerServing * this._scaleGettersTo).toFixed(this.decimalPlaces)
+    const scaledSatFat = this._saturatedFatPerServing * this._scaleGettersTo
+    if (isRoundingStyleFda(this._roundingStyle)) {
+      return getFdaRoundedFats(scaledSatFat)
+    }
+    return scaledSatFat.toFixed(this.decimalPlaces)
   }
 
   getSaturatedFatUnit() {
@@ -496,7 +610,11 @@ export class IngredientModel {
   }
 
   getTransFatPerServing() {
-    return (this._transFatPerServing * this._scaleGettersTo).toFixed(this.decimalPlaces)
+    const scaledTransFat = this._transFatPerServing * this._scaleGettersTo
+    if (isRoundingStyleFda(this._roundingStyle)) {
+      return getFdaRoundedFats(scaledTransFat)
+    }
+    return scaledTransFat.toFixed(this.decimalPlaces)
   }
 
   getTransFatUnit() {
@@ -504,7 +622,11 @@ export class IngredientModel {
   }
 
   getCholestorol() {
-    return (this._cholesterol * this._scaleGettersTo).toFixed(this.decimalPlaces)
+    const scaledCholesterol = this._cholesterol * this._scaleGettersTo
+    if (isRoundingStyleFda(this._roundingStyle)) {
+      return getFdaRoundedCholesterol(scaledCholesterol)
+    }
+    return scaledCholesterol.toFixed(this.decimalPlaces)
   }
 
   getCholestorolUnit() {
@@ -516,7 +638,11 @@ export class IngredientModel {
   }
 
   getSodium() {
-    return (this._sodium * this._scaleGettersTo).toFixed(this.decimalPlaces)
+    const scaledNa = this._sodium * this._scaleGettersTo
+    if (isRoundingStyleFda(this._roundingStyle)) {
+      return getFdaRoundedNaK(scaledNa)
+    }
+    return scaledNa.toFixed(this.decimalPlaces)
   }
 
   getSodiumUnit() {
@@ -528,7 +654,11 @@ export class IngredientModel {
   }
 
   getTotalCarbohydratePerServing() {
-    return (this._totalCarbohydratePerServing * this._scaleGettersTo).toFixed(this.decimalPlaces)
+    const scaledCarb = this._totalCarbohydratePerServing * this._scaleGettersTo
+    if (isRoundingStyleFda(this._roundingStyle)) {
+      return getFdaRoundedCarbFiberSugar(scaledCarb)
+    }
+    return scaledCarb.toFixed(this.decimalPlaces)
   }
 
   getTotalCarbohydrateUnit() {
@@ -540,7 +670,11 @@ export class IngredientModel {
   }
 
   getDietaryFiber() {
-    return (this._dietaryFiber * this._scaleGettersTo).toFixed(this.decimalPlaces)
+    const scaledFiber = this._dietaryFiber * this._scaleGettersTo
+    if (isRoundingStyleFda(this._roundingStyle)) {
+      return getFdaRoundedCarbFiberSugar(scaledFiber)
+    }
+    return scaledFiber.toFixed(this.decimalPlaces)
   }
 
   getDietaryFiberUnit() {
@@ -552,7 +686,11 @@ export class IngredientModel {
   }
 
   getSugars() {
-    return (this._sugars  * this._scaleGettersTo).toFixed(this.decimalPlaces)
+    const scaledSugar = this._sugars * this._scaleGettersTo
+    if (isRoundingStyleFda(this._roundingStyle)) {
+      return getFdaRoundedCarbFiberSugar(scaledSugar)
+    }
+    return scaledSugar.toFixed(this.decimalPlaces)
   }
 
   getSugarsUnit() {
@@ -560,7 +698,11 @@ export class IngredientModel {
   }
 
   getTotalProteinPerServing() {
-    return (this._totalProteinPerServing  * this._scaleGettersTo).toFixed(this.decimalPlaces)
+    const scaledProtein = this._totalProteinPerServing * this._scaleGettersTo
+    if (isRoundingStyleFda(this._roundingStyle)) {
+      return getFdaRoundedProtein(scaledProtein)
+    }
+    return scaledProtein.toFixed(this.decimalPlaces)
   }
 
   getTotalProteinUnit() {
@@ -760,7 +902,11 @@ export class IngredientModel {
   }
 
   get_potassium() {
-    return (this._potassium * this._scaleGettersTo).toFixed(this.decimalPlaces)
+    const scaledK = this._potassium * this._scaleGettersTo
+    if (isRoundingStyleFda(this._roundingStyle)) {
+      return getFdaRoundedNaK(scaledK)
+    }
+    return scaledK.toFixed(this.decimalPlaces)
   }
 
   get_potassiumUnit() {

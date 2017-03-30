@@ -39,7 +39,8 @@ export default class Generator extends React.Component {
   constructor() {
     super()
     this.state = {
-      labelErrorFlag: false
+      labelErrorFlag: false,
+      showShareUrl: false
     }
   }
   componentWillMount() {
@@ -66,8 +67,7 @@ export default class Generator extends React.Component {
           action: 'User sharing results',
           nonInteraction: false
         });
-        const user = Config.DEBUG ? 'test' : 'anonymous'
-        this.props.router.push('/?user=' + user + '&label=' + this.props.nutrition.key)
+        this.setState({showShareUrl: true})
       }
       else {
         ReactGA.event({
@@ -82,6 +82,7 @@ export default class Generator extends React.Component {
           link.href = dataUrl;
           link.click();
         });
+        this.setState({showShareUrl: false})
       }
     }
     else {
@@ -154,6 +155,14 @@ export default class Generator extends React.Component {
         <h4>Please add ingredients to your label!</h4>
       </Alert>
     ) : null
+    const user = Config.DEBUG ? 'test' : 'anonymous'
+    const shareUrl = 'https://www.inphood.com/?user=' + user + '&label=' + this.props.nutrition.key
+    const shareUrlBox = (this.state.showShareUrl) ? (
+      <div>
+        <text>&nbsp;</text>
+        <pre>{shareUrl}</pre>
+      </div>
+    ) : null
     return (
       <div>
         <TopBar step=""
@@ -167,7 +176,6 @@ export default class Generator extends React.Component {
                md={ml.mdCol}
                lg={ml.lgCol}>
             <Row>
-
               <Col xs={12} sm={7} md={8} lg={8}>
                 <div>
                   {labelError}
@@ -175,7 +183,6 @@ export default class Generator extends React.Component {
                   <Nutrition />
                 </div>
               </Col>
-
               <Col xs={12} sm={5} md={4} lg={4}>
                 <Row>
                   <Col xs={6} sm={2} md={2} lg={2}>
@@ -187,6 +194,13 @@ export default class Generator extends React.Component {
                   </Col>
                 </Row>
                 <Row>
+                  <Row>
+                    <Col xs={0} sm={0} md={1} lg={1}/>
+                    <Col xs={12} sm={12} md={10} lg={10}>
+                      {shareUrlBox}
+                    </Col>
+                    <Col xs={0} sm={0} md={1} lg={1}/>
+                  </Row>
                   <text>&nbsp;</text>
                   <Label id='nutritionLabel'
                          ingredientComposite={compositeModel}/>

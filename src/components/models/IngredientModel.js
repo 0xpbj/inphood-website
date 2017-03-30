@@ -82,6 +82,7 @@ export class IngredientModel {
     //    - standard
     //    - complete
     //    - micronut
+    //    - sugarmicro
     //    - text
     //    - personal
     //

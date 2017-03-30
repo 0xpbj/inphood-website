@@ -125,11 +125,16 @@ export default class Generator extends React.Component {
         </MenuItem>
         <MenuItem
           eventKey='4'
+          onClick={() => this.props.setLabelType(IngredientModel.labelTypes.sugarmicro)}>
+          Sugar + Micro Label
+        </MenuItem>
+        <MenuItem
+          eventKey='5'
           onClick={() => this.props.setLabelType(IngredientModel.labelTypes.text)}>
           Text Label
         </MenuItem>
         <MenuItem
-          eventKey='5'
+          eventKey='6'
           onClick={() => this.props.setLabelType(IngredientModel.labelTypes.text)}>
           Personal Label
         </MenuItem>

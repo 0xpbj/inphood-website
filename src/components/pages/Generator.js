@@ -178,7 +178,7 @@ export default class Generator extends React.Component {
     )
   }
   generateTextLabel(compositeModel) {
-    return <pre id='nutritionLabel'>{getTextLabel(compositeModel)}</pre>
+    return <pre id='nutrition-label'>{getTextLabel(compositeModel)}</pre>
   }
   render() {
     const {nutritionModel} = this.props.nutritionModelRed
@@ -208,7 +208,7 @@ export default class Generator extends React.Component {
     ) : null
     const label = (this.state.textLabel) ? this.generateTextLabel(compositeModel)
     : (
-      <Label id='nutritionLabel' ingredientComposite={compositeModel}/>
+      <Label id='nutrition-label' ingredientComposite={compositeModel}/>
     )
     return (
       <div>

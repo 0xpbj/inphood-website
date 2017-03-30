@@ -76,6 +76,7 @@ export class NutritionModel {
     //    - personal
     //
     this._labelType = IngredientModel.labelTypes.standard
+    this._roundingStyle = 'fda'
   }
 
   initializeFromSerialization(serializedData) {
@@ -99,6 +100,12 @@ export class NutritionModel {
     this._labelType = IngredientModel.labelTypes.standard
     if (nutritionData.hasOwnProperty('_labelType')) {
       this._labelType = nutritionData._labelType
+    }
+    //
+    // Rounding style
+    this._roundingStyle = 'fda'
+    if (nutritionData.hasOwnProperty('_roundingStyle')) {
+      this._roundingStyle = nutritionData._roundingStyle
     }
 
     for (let tag in nutritionData._scaledIngredients) {
@@ -238,10 +245,15 @@ export class NutritionModel {
                                          this._displayServingUnit,
                                           this._displayServingRatio)
     compositeIngredient.setLabelType(this._labelType)
+    compositeIngredient.setRoundingStyle(this._roundingStyle)
     return compositeIngredient
   }
 
   setLabelType(aLabelType) {
     this._labelType = aLabelType
+  }
+
+  setRoundingStyle(aRoundingStyle) {
+    this._roundingStyle = aRoundingStyle
   }
 }

@@ -81,7 +81,9 @@ export class IngredientModel {
     // Valid label types include:
     //    - standard
     //    - complete
-    //    - micronut  (Prabhaav)
+    //    - micronut
+    //    - text
+    //    - personal
     //
     this._labelType = ''
 
@@ -888,7 +890,10 @@ export class IngredientModel {
 IngredientModel.labelTypes = {
   standard: 0,
   complete: 1,
-  micronut: 2   // Prabhaav
+  micronut: 2,
+  sugarmic: 3,
+  text:     4,
+  personal: 5,
 }
 
 // rda2k from: https://www.dsld.nlm.nih.gov/dsld/dailyvalue.jsp

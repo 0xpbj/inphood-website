@@ -70,7 +70,9 @@ export class NutritionModel {
     // ingredient model. Valid label types include:
     //    - standard
     //    - complete
-    //    - micronut  (Prabhaav)
+    //    - micronut
+    //    - text
+    //    - personal
     //
     this._labelType = IngredientModel.labelTypes.standard
   }

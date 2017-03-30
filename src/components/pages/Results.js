@@ -48,11 +48,7 @@ export default class Results extends React.Component {
     }
   }
   componentWillMount() {
-    const {label, user} = this.props
-    if (label && label !== '') {
-      const hUser = user ? user : Config.DEBUG ? 'test' : 'anonymous'
-      this.props.getLabelId(hUser, label)
-    }
+    this.getLabelInfo()
     ReactGA.initialize('UA-88850545-2', {
       debug: Config.DEBUG,
       titleCase: false,
@@ -61,28 +57,12 @@ export default class Results extends React.Component {
       }
     })
   }
-  saveLabelToImage() {
-    ReactGA.event({
-      category: 'Share',
-      action: 'User saving label',
-      nonInteraction: false
-    });
-    if (this.getTitleValidationState() !== 'error') {
-      this.props.setTitle(this.state.title)
-      ReactGA.event({
-        category: 'User',
-        action: 'User added a meal title',
-        nonInteraction: false,
-      });
+  getLabelInfo() {
+    const {label, user} = this.props
+    if (label && label !== '') {
+      const hUser = user ? user : Config.DEBUG ? 'test' : 'anonymous'
+      this.props.getLabelId(hUser, label)
     }
-    this.props.saveToCloud()
-    domtoimage.toPng(document.getElementById('nutrition-label'), { quality: 1.0 })
-    .then(function (dataUrl) {
-      var link = document.createElement('a');
-      link.download = 'nutrition-label.png';
-      link.href = dataUrl;
-      link.click();
-    });
   }
   // From https://toddmotto.com/methods-to-determine-if-an-object-has-a-given-property/
   //  - addresses limitations of IE and other issues related to checking if an object
@@ -204,140 +184,130 @@ export default class Results extends React.Component {
     }
     return recipeText
   }
-  getTitleValidationState() {
-    const length = this.state.title.length
-    if (length === 1 || length > 100)
-      return 'error'
-    else if (length > 0)
-      return 'success'
-  }
-  getDietaryValidationState() {
-    const length = this.state.dietary.length
-    if (length === 1 || length > 100)
-      return 'error'
-    else if (length > 0)
-      return 'success'
-  }
-  getAllergenValidationState() {
-    const length = this.state.allergen.length
-    if (length === 1 || length > 100)
-      return 'error'
-    else if (length > 0)
-      return 'success'
-  }
-  onDrop(acceptedFiles, rejectedFiles) {
-    ReactGA.event({
-      category: 'User',
-      action: 'Image uploaded',
-      nonInteraction: false
-    })
-    acceptedFiles.forEach(file => {
-      this.props.selectedPhoto(file)
-    })
-  }
-  saveLabelPhotoButton() {
-    return (
-      <Button
-        className="btn-primary-spacing"
-        bsStyle="success"
-        onClick={() => {this.saveLabelToImage()}}>
-        Save Label&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-save"></Glyphicon>
-      </Button>
-    )
-  }
-  getMealPhoto() {
-    const {iUrl} = this.props.results.data
-    const pictureAlert = (this.state.pictureError) ? (
-      <Alert bsStyle="danger">
-        <h4>Oh snap! You forgot to add a picture of your meal!</h4>
-      </Alert>
-    ) : null
-    const picturePopover = this.state.picturePopoverFlag ? (
-      <div style={{ width: 300 }}>
-        <Popover
-          id="popover-basic"
-          placement="right"
-          positionLeft={20}
-          positionTop={-40}
-          title="Picture Help"
-        >
-          Add a meal photo to highlight recipe details
-        </Popover>
-      </div>
-    ) : null
-    const imLink = iUrl ? iUrl : this.props.results.picture
-    const image = imLink ? (
-      <div className="text-center">
-        <ControlLabel>Meal Photo</ControlLabel>
-        <Image className="center-block" src={imLink} responsive rounded/>
-      </div>
-    ) : (
-      <div className="text-center">
-        {pictureAlert}
-        <Button bsStyle="success" onClick={()=>this.setState({ showUploadModal: true })}>
-          Upload Meal Photo&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-open"></Glyphicon>
-        </Button>
-        <Glyphicon
-          onClick={()=>this.setState({picturePopoverFlag: !this.state.picturePopoverFlag})}
-          style={{marginLeft: 10}}
-          glyph="glyphicon glyphicon-info-sign">
-          {picturePopover}
-        </Glyphicon>
-        <UploadModal
-          onDrop={(acceptedFiles, rejectedFiles) => this.onDrop.bind(this)}
-          show={this.state.showUploadModal}
-          onHide={() => this.setState({showUploadModal: false})}
-        />
-      </div>
-    )
-    return image
-      // const mealPhoto = (true) ?
-      // (
-      //   <div>
-      //     <div className="text-center"><ControlLabel>Meal Photo</ControlLabel></div>
-      //     <Image className="center-block" src={iUrl} responsive rounded  style={{marginBottom: "20px"}}/>
-      //   </div>
-      // ) : null
-  }
-  getShareButtons() {
-    return (
-      <div className="text-center"
-           style={{marginTop: "15", marginBottom: "15"}}>
-        <Row>
-          <Col xs={1} md={1} />
-          <Col xs={5} md={5}>
-            {saveButton}
-          </Col>
-          <Col xs={5} md={5}>
-            <CopyToClipboard text={embedMsg}
-              onCopy={() => this.setState({ecopied: true, copied: false})}>
-              <Button className="btn-primary-spacing" bsStyle="success">
-                Embed Label&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-edit"></Glyphicon>
-              </Button>
-            </CopyToClipboard>
-          </Col>
-          <Col xs={1} md={1} />
-        </Row>
-        {this.state.copied ? <div style={{marginTop: "20px"}}><pre>{path}</pre><span style={{color: 'red'}}>&nbsp;Copied.</span></div> : null}
-        {this.state.ecopied ? <div style={{marginTop: "20px"}}><pre>{embedMsg}</pre><span style={{color: 'red'}}>&nbsp;Copied.</span></div> : null}
-      </div>
-    )
-  }
-  getTitleForm() {
-    let {title} = this.props.results.data
-    let titleForm = !title ? (
-      <FieldGroup
-        id="formControlsText"
-        spellCheck={true}
-        type="text"
-        value={this.state.title}
-        placeholder="Enter a recipe title..."
-        validationState={this.getTitleValidationState()}
-        onChange={(e) => this.setState({title: e.target.value})}
-      />
-    ) : <div className="text-center"><ControlLabel>{title}</ControlLabel></div>
-    return titleForm
-  }
+  // getTitleValidationState() {
+  //   const length = this.state.title.length
+  //   if (length === 1 || length > 100)
+  //     return 'error'
+  //   else if (length > 0)
+  //     return 'success'
+  // }
+  // getDietaryValidationState() {
+  //   const length = this.state.dietary.length
+  //   if (length === 1 || length > 100)
+  //     return 'error'
+  //   else if (length > 0)
+  //     return 'success'
+  // }
+  // getAllergenValidationState() {
+  //   const length = this.state.allergen.length
+  //   if (length === 1 || length > 100)
+  //     return 'error'
+  //   else if (length > 0)
+  //     return 'success'
+  // }
+  // onDrop(acceptedFiles, rejectedFiles) {
+  //   ReactGA.event({
+  //     category: 'User',
+  //     action: 'Image uploaded',
+  //     nonInteraction: false
+  //   })
+  //   acceptedFiles.forEach(file => {
+  //     this.props.selectedPhoto(file)
+  //   })
+  // }
+  // getMealPhoto() {
+  //   const {iUrl} = this.props.results.data
+  //   const pictureAlert = (this.state.pictureError) ? (
+  //     <Alert bsStyle="danger">
+  //       <h4>Oh snap! You forgot to add a picture of your meal!</h4>
+  //     </Alert>
+  //   ) : null
+  //   const picturePopover = this.state.picturePopoverFlag ? (
+  //     <div style={{ width: 300 }}>
+  //       <Popover
+  //         id="popover-basic"
+  //         placement="right"
+  //         positionLeft={20}
+  //         positionTop={-40}
+  //         title="Picture Help"
+  //       >
+  //         Add a meal photo to highlight recipe details
+  //       </Popover>
+  //     </div>
+  //   ) : null
+  //   const imLink = iUrl ? iUrl : this.props.results.picture
+  //   const image = imLink ? (
+  //     <div className="text-center">
+  //       <ControlLabel>Meal Photo</ControlLabel>
+  //       <Image className="center-block" src={imLink} responsive rounded/>
+  //     </div>
+  //   ) : (
+  //     <div className="text-center">
+  //       {pictureAlert}
+  //       <Button bsStyle="success" onClick={()=>this.setState({ showUploadModal: true })}>
+  //         Upload Meal Photo&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-open"></Glyphicon>
+  //       </Button>
+  //       <Glyphicon
+  //         onClick={()=>this.setState({picturePopoverFlag: !this.state.picturePopoverFlag})}
+  //         style={{marginLeft: 10}}
+  //         glyph="glyphicon glyphicon-info-sign">
+  //         {picturePopover}
+  //       </Glyphicon>
+  //       <UploadModal
+  //         onDrop={(acceptedFiles, rejectedFiles) => this.onDrop.bind(this)}
+  //         show={this.state.showUploadModal}
+  //         onHide={() => this.setState({showUploadModal: false})}
+  //       />
+  //     </div>
+  //   )
+  //   return image
+  //     // const mealPhoto = (true) ?
+  //     // (
+  //     //   <div>
+  //     //     <div className="text-center"><ControlLabel>Meal Photo</ControlLabel></div>
+  //     //     <Image className="center-block" src={iUrl} responsive rounded  style={{marginBottom: "20px"}}/>
+  //     //   </div>
+  //     // ) : null
+  // }
+  // getShareButtons() {
+  //   return (
+  //     <div className="text-center"
+  //          style={{marginTop: "15", marginBottom: "15"}}>
+  //       <Row>
+  //         <Col xs={1} md={1} />
+  //         <Col xs={5} md={5}>
+  //           {saveButton}
+  //         </Col>
+  //         <Col xs={5} md={5}>
+  //           <CopyToClipboard text={embedMsg}
+  //             onCopy={() => this.setState({ecopied: true, copied: false})}>
+  //             <Button className="btn-primary-spacing" bsStyle="success">
+  //               Embed Label&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-edit"></Glyphicon>
+  //             </Button>
+  //           </CopyToClipboard>
+  //         </Col>
+  //         <Col xs={1} md={1} />
+  //       </Row>
+  //       {this.state.copied ? <div style={{marginTop: "20px"}}><pre>{path}</pre><span style={{color: 'red'}}>&nbsp;Copied.</span></div> : null}
+  //       {this.state.ecopied ? <div style={{marginTop: "20px"}}><pre>{embedMsg}</pre><span style={{color: 'red'}}>&nbsp;Copied.</span></div> : null}
+  //     </div>
+  //   )
+  // }
+  // getTitleForm() {
+  //   let {title} = this.props.results.data
+  //   let titleForm = !title ? (
+  //     <FieldGroup
+  //       id="formControlsText"
+  //       spellCheck={true}
+  //       type="text"
+  //       value={this.state.title}
+  //       placeholder="Enter a recipe title..."
+  //       validationState={this.getTitleValidationState()}
+  //       onChange={(e) => this.setState({title: e.target.value})}
+  //     />
+  //   ) : <div className="text-center"><ControlLabel>{title}</ControlLabel></div>
+  //   return titleForm
+  // }
   render() {
     const containerStyle = {
       marginTop: "60px"
@@ -413,7 +383,7 @@ export default class Results extends React.Component {
       const placeHolderCol = <Col xs={0} sm={0} md={1} lg={2}/>
       return (
         <div style={{backgroundColor: 'white'}}>
-          <TopBar step="" stepText="" aButton={this.saveLabelPhotoButton()} router={this.props.router}/>
+          <TopBar step="" stepText="" aButton={null} router={this.props.router}/>
           <Grid>
             <Row>
               <Col xs={12} sm={6} md={6} lg={6}>
@@ -433,19 +403,24 @@ export default class Results extends React.Component {
                 <Row>
                   {placeHolderCol}
                   <Col xs={12} sm={10} md={10} lg={8}>
-                    <Row>
-                      {this.getMealPhoto()}
-                    </Row>
-                    <Row>
-                      <div style={{marginTop: 10}} className="text-center">
+                    {/*<Row>
+                      <div style={{marginBottom: 10}} className="text-center">
                       {this.getTitleForm()}
+                      </div>
+                      <div style={{marginBottom: 10}} className="text-center">
+                      {this.getMealPhoto()}
+                      </div>
+                    </Row>*/}
+                    <Row>
+                      <div className="text-center">
+                        <ControlLabel>Recipe</ControlLabel>
                       </div>
                       <pre>{recipeText}</pre>
                     </Row>
-                    <Row style={{marginTop: 10}}>
+                    {/*<Row style={{marginTop: 10}}>
                       <div className="text-center"><ControlLabel>Text Nutrition Label</ControlLabel></div>
                       <pre>{textLabel}</pre>
-                    </Row>
+                    </Row>*/}
                   </Col>
                   {placeHolderCol}
                 </Row>

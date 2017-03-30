@@ -66,6 +66,68 @@ export default class Generator extends React.Component {
       this.setState({labelErrorFlag: true})
     }
   }
+  saveLabelToImage() {
+    ReactGA.event({
+      category: 'Share',
+      action: 'User saving label',
+      nonInteraction: false
+    });
+    // this.props.saveToCloud()
+    domtoimage.toPng(document.getElementById('nutrition-label'), { quality: 1.0 })
+    .then(function (dataUrl) {
+      var link = document.createElement('a');
+      link.download = 'nutrition-label.png';
+      link.href = dataUrl;
+      link.click();
+    });
+  }
+  shareLabelButton() {
+    return (
+      <DropdownButton bsStyle='success' title='Share Label' id='dropdwon'>
+        <MenuItem
+          eventKey='1'
+          onClick={() => this.saveLabelToImage()}>
+          Save Label
+        </MenuItem>
+        <MenuItem
+          eventKey='2'
+          onClick={() => console.log('sharing label')}>
+          Share Label
+        </MenuItem>
+      </DropdownButton>
+    )
+  }
+  customLabelButton() {
+    return (
+      <DropdownButton bsStyle='success' title='Customize Label' id='dropdwon'>
+        <MenuItem
+          eventKey='1'
+          onClick={() => this.props.setLabelType(IngredientModel.labelTypes.standard)}>
+          Standard Label
+        </MenuItem>
+        <MenuItem
+          eventKey='2'
+          onClick={() => this.props.setLabelType(IngredientModel.labelTypes.complete)}>
+          Complete Label
+        </MenuItem>
+        <MenuItem
+          eventKey='3'
+          onClick={() => this.props.setLabelType(IngredientModel.labelTypes.micronut)}>
+          Micro Nutrient Label
+        </MenuItem>
+        <MenuItem
+          eventKey='4'
+          onClick={() => this.props.setLabelType(IngredientModel.labelTypes.text)}>
+          Text Label
+        </MenuItem>
+        <MenuItem
+          eventKey='5'
+          onClick={() => this.props.setLabelType(IngredientModel.labelTypes.text)}>
+          Personal Label
+        </MenuItem>
+      </DropdownButton>
+    )
+  }
   render() {
     const {nutritionModel} = this.props.nutritionModelRed
     const full = nutritionModel.serialize()
@@ -85,30 +147,11 @@ export default class Generator extends React.Component {
         <h4>Please add ingredients to your label!</h4>
       </Alert>
     ) : null
-    const customizeLabel = (
-      <DropdownButton bsStyle='success' title='Customize Label' id='dropdwon'>
-        <MenuItem
-          eventKey='1'
-          onClick={() => this.props.setLabelType(IngredientModel.labelTypes.standard)}>
-          Standard Label
-        </MenuItem>
-        <MenuItem
-          eventKey='2'
-          onClick={() => this.props.setLabelType(IngredientModel.labelTypes.complete)}>
-          Complete Label
-        </MenuItem>
-        <MenuItem
-          eventKey='3'
-          onClick={() => this.props.setLabelType(IngredientModel.labelTypes.micronut)}>
-          Micro Nutrient Label
-        </MenuItem>
-      </DropdownButton>
-    )
     return (
       <div>
         <TopBar step=""
                 stepText=""
-                aButton={shareResultsButton}
+                aButton={null}
                 router={this.props.router}/>
         <Row>
           {ml.marginCol}
@@ -126,15 +169,19 @@ export default class Generator extends React.Component {
               </Col>
               <Col xs={12} sm={6} md={6} lg={6}>
                 <Row>
+                  <Col xs={6} sm={2} md={2} lg={2}>
+                    {this.customLabelButton()}
+                  </Col>
+                  <Col xs={0} sm={5} md={5} lg={5}/>
+                  <Col xs={6} sm={2} md={2} lg={2}>
+                   {this.shareLabelButton()}
+                  </Col>
+                </Row>
+                <Row>
                   <text>&nbsp;</text>
                   <Label id='nutritionLabel'
                          ingredientComposite={compositeModel}/>
                   <text>&nbsp;</text>
-                </Row>
-                <Row>
-                  <div className="text-right" style={{marginTop: 10}}>
-                    {customizeLabel}
-                  </div>
                 </Row>
                 {/* temporary hack to align top to adjacent slider */}
                 <Row style={{marginTop: 9}}>

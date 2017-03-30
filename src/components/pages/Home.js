@@ -16,6 +16,9 @@ import Generator from '../../containers/GeneratorContainer'
 import Results from '../../containers/ResultsContainer'
 const Config = require('Config')
 import browser from 'detect-browser'
+import { InteractiveForceGraph, ForceGraphNode, ForceGraphLink } from 'react-vis-force'
+import { interpolateRainbow } from 'd3-scale'
+import exampleJSON from './example.json'
 
 export default class Home extends React.Component {
   constructor() {
@@ -96,6 +99,36 @@ export default class Home extends React.Component {
               Learn more&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-bell"></Glyphicon>
             </Button>*/}
           </p>
+        </div>
+      )
+      const homeForceGraph = (
+        <div className="text-center" style={{
+              borderWidth: 1,
+              borderColor: 'black',
+              borderStyle: 'dashed',
+              borderRadius: 5,
+              marginTop: 10,
+              marginBottom: 10}}>
+          <InteractiveForceGraph
+            highlightDependencies
+            simulationOptions={{ height: 400, width: 400, animate: true }}
+            onSelectNode={console.log('node selected')}
+            onDeselectNode={console.log('node deselected')}
+          >
+            {exampleJSON.nodes.map(node => (
+              <ForceGraphNode
+                key={node.id}
+                fill={interpolateRainbow(node.group/10)}
+                node={{ ...node, radius: 7 }}
+              />
+            ))}
+            {exampleJSON.links.map(link => (
+              <ForceGraphLink
+                key={`${link.source}=>${link.target}`}
+                link={{ ...link, value: 2 }}
+              />
+            ))}
+          </InteractiveForceGraph>
         </div>
       )
       let browserWarning = null

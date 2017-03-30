@@ -21,6 +21,7 @@ import CopyToClipboard from 'react-copy-to-clipboard'
 import TopBar from '../layout/TopBar'
 import UploadModal from '../layout/UploadModal'
 const Config = require('Config')
+import {getTextLabel} from '../../helpers/TextLabel'
 
 const FieldGroup = ({ id, label, ...props }) => {
   return (
@@ -47,13 +48,6 @@ export default class Results extends React.Component {
     }
   }
   componentWillMount() {
-    ReactGA.initialize('UA-88850545-2', {
-      debug: Config.DEBUG,
-      titleCase: false,
-      gaOptions: {
-        userId: 'websiteUser'
-      }
-    })
     const {label, user} = this.props
     if (label && label !== '') {
       const hUser = user ? user : Config.DEBUG ? 'test' : 'anonymous'
@@ -70,84 +64,6 @@ export default class Results extends React.Component {
     else
       return null
   }
-  getTextLabel(anIngredientModel) {
-    const microNutrientsAndFnPfxs = IngredientModel.microNutrientsAndFnPfxs
-
-    let textLabel = 'Nutrition Facts\n'
-    textLabel +=    'Serving Size       : ' + anIngredientModel.getServingAmount() + ' ' + anIngredientModel.getServingUnit() + '\n'
-    textLabel +=    '==========================================\n'
-    textLabel +=    'Calories           : ' + anIngredientModel.getCalories() + '\n'
-    textLabel +=    '------------------------------------------\n'
-    textLabel +=    'Total Fat          : ' + anIngredientModel.getTotalFatPerServing() + ' ' +  anIngredientModel.getTotalFatUnit() +
-                                              '    (' + anIngredientModel.getTotalFatRDA() + '% RDA)\n'
-    textLabel +=    '  Saturated Fat    : ' + anIngredientModel.getSaturatedFatPerServing() + ' ' + anIngredientModel.getSaturatedFatUnit() +
-                                              '    (' + anIngredientModel.getSaturatedFatRDA() + '% RDA)\n'
-    textLabel +=    '  Trans Fat        : ' + anIngredientModel.getTransFatPerServing() + ' ' + anIngredientModel.getTransFatUnit() + '\n'
-    textLabel +=    'Cholesterol        : ' + anIngredientModel.getCholestorol() + ' ' + anIngredientModel.getCholestorolUnit() +
-                                              '   (' + anIngredientModel.getCholestorolRDA() + '% RDA)\n'
-    textLabel +=    'Sodium             : ' + anIngredientModel.getSodium() + ' ' + anIngredientModel.getSodiumUnit() +
-                                              '  (' + anIngredientModel.getSodiumRDA() + '% RDA)\n'
-    textLabel +=    'Total Carbohydrate : ' + anIngredientModel.getTotalCarbohydratePerServing() + ' ' + anIngredientModel.getTotalCarbohydrateUnit() +
-                                              '    (' + anIngredientModel.getTotalCarbohydrateRDA() + '% RDA)\n'
-    textLabel +=    '  Dietary Fiber    : ' + anIngredientModel.getDietaryFiber() + ' ' + anIngredientModel.getDietaryFiberUnit() +
-                                              '    (' + anIngredientModel.getDietaryFiberRDA() + '% RDA)\n'
-    textLabel +=    '  Sugars           : ' + anIngredientModel.getSugars() + ' ' + anIngredientModel.getSugarsUnit() + '\n'
-    textLabel +=    'Protein            : ' + anIngredientModel.getTotalProteinPerServing() + ' ' + anIngredientModel.getTotalProteinUnit() + '\n'
-    textLabel +=    '------------------------------------------\n'
-    for (let nutrient in microNutrientsAndFnPfxs) {
-      // C+P straight out of NutritionEstimateJSX.
-      // TODO: think about re-use, non-repeat.
-      //
-      const functionPrefix = microNutrientsAndFnPfxs[nutrient]
-
-      const value = anIngredientModel[functionPrefix]()
-      let unit = anIngredientModel[functionPrefix + 'Unit']()
-      let rda2k = anIngredientModel[functionPrefix + 'RDA']()
-
-      if (unit === 'µg') {  // Convert 'µg' to 'mcg':
-        unit = 'mcg'
-      }
-
-      if (rda2k === undefined || isNaN(rda2k)) {  // Handle special cases:
-        if (functionPrefix === 'get_vitaminA') {
-          rda2k = anIngredientModel['get_vitaminA_IURDA']()
-        } else if (functionPrefix === 'get_vitaminD') {
-          rda2k = anIngredientModel['get_vitaminD_IURDA']()
-        } else {
-          console.log('RDA based on 2k calorie diet unavailable.');
-          rda2k = ''
-        }
-      }
-      if (rda2k != '') {
-        rda2k = rda2k + '%'
-      }
-
-      const charsToColon = 19
-      let rowText = nutrient
-      for (let i = 0; i < (charsToColon - nutrient.length); i++) {
-        rowText += ' '
-      }
-
-      rowText += ': ' + value + ' ' + unit
-
-
-      const charsToRDA = 31
-      const rowTextLength = rowText.length
-      for (let i = 0; i < (charsToRDA - rowTextLength); i++) {
-        rowText += ' '
-      }
-      rowText += '(' + rda2k + ' RDA)\n'
-
-      textLabel += rowText
-    }
-    textLabel +=    '==========================================\n'
-    textLabel +=    '* RDA (Recommended Daily Allowance) is\n' +
-                    'based on a 2,000 calorie diet. Your\n' +
-                    'daily values may be higher or lower\n' +
-                    'depending on your calorie needs.\n'
-    return textLabel
-  }
-
   // TODO: this should be a utility or a factory that constructs this from
   //       an ingredient model--it doesn't belong in results
   // getTextLabel(anIngredientModel) {
@@ -305,6 +221,11 @@ export default class Results extends React.Component {
   //   return titleForm
   // }
   render() {
+    ReactGA.event({
+      category: 'User',
+      action: 'User viewing results page',
+      nonInteraction: true
+    });
     const containerStyle = {
       marginTop: "60px"
     }
@@ -351,8 +272,8 @@ export default class Results extends React.Component {
         let ingredientData = JSON.parse(this.props.results.data.composite)
         let ingredient = new IngredientModel()
         ingredient.initializeFromSerialization(ingredientData)
-        textLabel = this.getTextLabel(ingredient)
-        nutritionLabel = <Label displayGeneratedStatement={true} ingredientComposite={ingredient}/>
+        console.log('\n\n\n\nINGREDIENT LABEL TYPE: ', ingredient.getLabelType())
+        nutritionLabel = (ingredient.getLabelType() !== 4) ? <Label displayGeneratedStatement={true} ingredientComposite={ingredient}/> : <pre>{getTextLabel(ingredient)}</pre>
         ReactGA.event({
           category: 'User',
           action: 'User results composite found',
@@ -405,9 +326,6 @@ export default class Results extends React.Component {
                       </div>
                     </Row>*/}
                     <Row>
-                      <div className="text-center">
-                        <ControlLabel>Recipe</ControlLabel>
-                      </div>
                       <pre>{recipeText}</pre>
                     </Row>
                     {/*<Row style={{marginTop: 10}}>

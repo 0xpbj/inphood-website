@@ -23,13 +23,6 @@ export default class Nutrition extends React.Component {
   constructor(props) {
     super(props)
   }
-  componentWillMount() {
-    ReactGA.event({
-      category: 'User',
-      action: 'User in nutrition page',
-      nonInteraction: false
-    });
-  }
   handleChipDelete(tag) {
     let {parsedData} = this.props.nutrition
 

@@ -36,11 +36,6 @@ class Recipe extends React.Component {
     }
   }
   componentWillMount() {
-    ReactGA.event({
-      category: 'User',
-      action: 'User in recipe page',
-      nonInteraction: false
-    });
     this.setState({isSaved: true})
     // user did not come from home page
     if (this.props.router.location.action !== 'PUSH') {

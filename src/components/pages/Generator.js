@@ -56,7 +56,6 @@ export default class Generator extends React.Component {
   }
   getRecipeText(aNutritionModel) {
     let recipeText = ''
-
     const nmTags = aNutritionModel.getTags()
     for (let index in nmTags) {
       const tag = nmTags[index]
@@ -87,7 +86,7 @@ export default class Generator extends React.Component {
       this.props.sendSerializedData(composite, full)
       if (share) {
         ReactGA.event({
-          category: 'Share',
+          category: 'Results',
           action: 'User sharing results',
           nonInteraction: false
         });
@@ -95,7 +94,7 @@ export default class Generator extends React.Component {
       }
       else {
         ReactGA.event({
-          category: 'Save',
+          category: 'Label',
           action: 'User saving label',
           nonInteraction: false
         });
@@ -167,17 +166,22 @@ export default class Generator extends React.Component {
             this.props.setLabelType(IngredientModel.labelTypes.text)}}>
           Text Label
         </MenuItem>
-        <MenuItem
+        {/*<MenuItem
           eventKey='6'
           onClick={() => {
             this.setState({textLabel: false})
             this.props.setLabelType(IngredientModel.labelTypes.personal)}}>
           Personal Label
-        </MenuItem>
+        </MenuItem>*/}
       </DropdownButton>
     )
   }
   generateTextLabel(compositeModel) {
+    ReactGA.event({
+      category: 'Label',
+      action: 'User viewing text label',
+      nonInteraction: false
+    });
     return <pre id='nutrition-label'>{getTextLabel(compositeModel)}</pre>
   }
   render() {

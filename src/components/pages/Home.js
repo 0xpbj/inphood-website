@@ -112,8 +112,8 @@ export default class Home extends React.Component {
           <InteractiveForceGraph
             highlightDependencies
             simulationOptions={{ height: 400, width: 400, animate: true }}
-            onSelectNode={console.log('node selected')}
-            onDeselectNode={console.log('node deselected')}
+            onSelectNode={console.log('')}
+            onDeselectNode={console.log('')}
           >
             {exampleJSON.nodes.map(node => (
               <ForceGraphNode

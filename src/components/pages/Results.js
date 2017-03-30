@@ -48,13 +48,6 @@ export default class Results extends React.Component {
     }
   }
   componentWillMount() {
-    ReactGA.initialize('UA-88850545-2', {
-      debug: Config.DEBUG,
-      titleCase: false,
-      gaOptions: {
-        userId: 'websiteUser'
-      }
-    })
     const {label, user} = this.props
     if (label && label !== '') {
       const hUser = user ? user : Config.DEBUG ? 'test' : 'anonymous'
@@ -228,6 +221,11 @@ export default class Results extends React.Component {
   //   return titleForm
   // }
   render() {
+    ReactGA.event({
+      category: 'User',
+      action: 'User viewing results page',
+      nonInteraction: true
+    });
     const containerStyle = {
       marginTop: "60px"
     }

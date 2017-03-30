@@ -12,7 +12,6 @@ import Glyphicon from 'react-bootstrap/lib/Glyphicon'
 import FormControl from 'react-bootstrap/lib/FormControl'
 import ControlLabel from 'react-bootstrap/lib/ControlLabel'
 
-import PieChart from './PieChart'
 import Label from './NutritionEstimateJSX'
 import {IngredientModel} from '../models/IngredientModel'
 import {rationalToFloat} from '../../helpers/ConversionUtils'
@@ -116,18 +115,15 @@ export default class Nutrition extends React.Component {
               <div key={tag}>
                 <Row>
                   <Col xs={10}>
-                    <Chip onDeleteClick={this.handleChipDelete.bind(this, tag)} deletable>
+                    <Chip>
                       {recipeLine}
                     </Chip>
-                  </Col>
-                  <Col className="text-right" xs={2}>
-                    <PieChart nutritionModel={nutritionModel} tag={tag}/>
                   </Col>
                 </Row>
               </div>
             </Col>
           </Row>
-          <IngredientController tag={tag}/>
+          <IngredientController onDeleteClick={this.handleChipDelete.bind(this, tag)} nutritionModel={nutritionModel} recipeLine={recipeLine} tag={tag}/>
         </div>
       )
     }

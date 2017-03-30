@@ -2,14 +2,16 @@ const React = require('react')
 import ReactGA from 'react-ga'
 import Row from 'react-bootstrap/lib/Row'
 import Col from 'react-bootstrap/lib/Col'
+import Button from 'react-bootstrap/lib/Button'
+import Glyphicon from 'react-bootstrap/lib/Glyphicon'
 import FormGroup from 'react-bootstrap/lib/FormGroup'
 import FormControl from 'react-bootstrap/lib/FormControl'
 import 'react-widgets/lib/less/react-widgets.less'
 import Dropdownlist from 'react-widgets/lib/Dropdownlist'
 import {IngredientModel} from '../models/IngredientModel'
 import {rationalToFloat} from '../../helpers/ConversionUtils'
-import Slider from 'react-toolbox/lib/slider'
 import renderHTML from 'react-render-html'
+import PieChart from '../pages/PieChart'
 
 const ListItem = React.createClass({
   render() {
@@ -21,17 +23,6 @@ const ListItem = React.createClass({
 export default class IngredientController extends React.Component {
   constructor(props) {
     super(props)
-  }
-  handleSliderValuesChange(value) {
-    const {tag} = this.props
-    const ingredientControlModel = this.props.ingredientModel.ingredientControlModels[tag]
-    const units = ingredientControlModel.getDropdownUnitValue()
-    ReactGA.event({
-      category: 'Nutrition Mixer',
-      action: 'Slider value changed',
-      nonInteraction: false,
-    });
-    this.updateReduxStore(tag, value, units)
   }
   handleEditBoxValueChange(formObject) {
     const {tag} = this.props
@@ -140,32 +131,15 @@ export default class IngredientController extends React.Component {
     this.updateReduxStoreIfValid()
   }
   render() {
-    const {tag} = this.props
+    const {tag, nutritionModel} = this.props
     const ingredientControlModel = this.props.ingredientModel.ingredientControlModels[tag]
     const formControlId = tag + "FormControlId"
     const sliderValue = ingredientControlModel.getSliderValue()
     const editBoxValue = ingredientControlModel.getEditBoxValue()
     return (
-      <div  style={{borderWidth: 1,
-                   borderColor: 'black',
-                   borderStyle: 'solid',
-                   borderRadius: 5,
-                   padding: 10,
-                   marginRight: 0,
-                   marginLeft: 0}}
-            ref={tag}>
+      <div ref={tag}>
         <Row>
-          <Col xs={7} md={7} style={{paddingLeft: 5, paddingRight: 5}}>
-            <Slider
-              value={sliderValue}
-              min={ingredientControlModel.getSliderMin()}
-              max={ingredientControlModel.getSliderMax()}
-              step={ingredientControlModel.getSliderStep()}
-              snaps
-              onChange={this.handleSliderValuesChange.bind(this)}
-            />
-          </Col>
-          <Col xs={2} md={2} style={{paddingLeft: 0, paddingRight: 5}}>
+          <Col xs={2} md={2} style={{paddingRight: 5}}>
             <form
               onSubmit={(event) => this.submitNewSliderValue(event)}
               autoComplete="off">
@@ -183,20 +157,24 @@ export default class IngredientController extends React.Component {
               </FormGroup>
             </form>
           </Col>
-          <Col xs={3} md={3} style={{paddingLeft: 0}}>
+          <Col xs={3} md={3} style={{paddingLeft: 5, paddingRight: 5}}>
             <Dropdownlist
               data={ingredientControlModel.getDropdownUnits()}
               value={ingredientControlModel.getDropdownUnitValue()}
               onChange={this.handleUnitDropdownChange.bind(this)}/>
           </Col>
-        </Row>
-        <Row>
-          <Col xs={12} md={12}>
-          <Dropdownlist
-            data={ingredientControlModel.getDropdownMatches()}
-            value={ingredientControlModel.getDropdownMatchValue()}
-            onChange={this.handleMatchDropdownChange.bind(this)}
-            itemComponent={ListItem}/>
+          <Col xs={5} md={5} style={{paddingLeft: 5, paddingRight: 5}}>
+            <Dropdownlist
+              data={ingredientControlModel.getDropdownMatches()}
+              value={ingredientControlModel.getDropdownMatchValue()}
+              onChange={this.handleMatchDropdownChange.bind(this)}
+              itemComponent={ListItem}/>
+          </Col>
+          <Col xs={1} md={1} style={{paddingLeft: 10, paddingRight: 5}}>
+            <PieChart nutritionModel={nutritionModel} tag={tag}/>
+          </Col>
+          <Col xs={1} md={1} style={{paddingLeft: 5, paddingRight: 5}}>
+            <Button onClick={()=>this.props.onDeleteClick()}><Glyphicon glyph="glyphicon glyphicon-trash" /></Button>
           </Col>
         </Row>
       </div>

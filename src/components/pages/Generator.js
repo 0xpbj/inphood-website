@@ -17,7 +17,6 @@ import ListGroup from 'react-bootstrap/lib/ListGroup'
 import FormControl from 'react-bootstrap/lib/FormControl'
 import ControlLabel from 'react-bootstrap/lib/ControlLabel'
 import ListGroupItem from 'react-bootstrap/lib/ListGroupItem'
-import DropdownButton from 'react-bootstrap/lib/DropdownButton'
 import {parseRecipe, parseCaption} from '../../helpers/parseRecipe'
 import Chip from 'react-toolbox/lib/chip'
 import UploadModal from '../layout/UploadModal'
@@ -115,7 +114,7 @@ export default class Generator extends React.Component {
   }
   shareLabelButton() {
     return (
-      <Dropdown>
+      <Dropdown id='shareDropdown'>
         <Dropdown.Toggle bsStyle='success'>
           <Glyphicon glyph="share" />&nbsp;&nbsp;Share Label
         </Dropdown.Toggle>
@@ -136,7 +135,7 @@ export default class Generator extends React.Component {
   }
   customLabelButton() {
     return (
-      <Dropdown>
+      <Dropdown id='customLabelDropdown'>
         <Dropdown.Toggle bsStyle='warning'>
           <Glyphicon glyph="wrench" />&nbsp;&nbsp;Customize Label
         </Dropdown.Toggle>

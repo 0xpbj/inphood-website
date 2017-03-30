@@ -107,7 +107,7 @@ export default class Generator extends React.Component {
   }
   customLabelButton() {
     return (
-      <DropdownButton bsStyle='success' title='Customize Label' id='dropdwon'>
+      <DropdownButton bsStyle='warning' title='Customize Label' id='dropdwon'>
         <MenuItem
           eventKey='1'
           onClick={() => this.props.setLabelType(IngredientModel.labelTypes.standard)}>
@@ -188,7 +188,7 @@ export default class Generator extends React.Component {
                   <Col xs={6} sm={2} md={2} lg={2}>
                     {this.customLabelButton()}
                   </Col>
-                  <Col xs={0} sm={5} md={5} lg={5}/>
+                  <Col xs={0} sm={5} md={5} lg={6}/>
                   <Col xs={6} sm={2} md={2} lg={2}>
                    {this.shareLabelButton()}
                   </Col>

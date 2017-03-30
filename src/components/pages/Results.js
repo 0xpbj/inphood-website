@@ -21,6 +21,7 @@ import CopyToClipboard from 'react-copy-to-clipboard'
 import TopBar from '../layout/TopBar'
 import UploadModal from '../layout/UploadModal'
 const Config = require('Config')
+import {getTextLabel} from '../../helpers/TextLabel'
 
 const FieldGroup = ({ id, label, ...props }) => {
   return (
@@ -273,8 +274,8 @@ export default class Results extends React.Component {
         let ingredientData = JSON.parse(this.props.results.data.composite)
         let ingredient = new IngredientModel()
         ingredient.initializeFromSerialization(ingredientData)
-        // textLabel = this.getTextLabel(ingredient)
-        nutritionLabel = <Label displayGeneratedStatement={true} ingredientComposite={ingredient}/>
+        console.log('\n\n\n\nINGREDIENT LABEL TYPE: ', ingredient.getLabelType())
+        nutritionLabel = (ingredient.getLabelType() !== 4) ? <Label displayGeneratedStatement={true} ingredientComposite={ingredient}/> : <pre>{getTextLabel(ingredient)}</pre>
         ReactGA.event({
           category: 'User',
           action: 'User results composite found',
@@ -327,9 +328,6 @@ export default class Results extends React.Component {
                       </div>
                     </Row>*/}
                     <Row>
-                      <div className="text-center">
-                        <ControlLabel>Recipe</ControlLabel>
-                      </div>
                       <pre>{recipeText}</pre>
                     </Row>
                     {/*<Row style={{marginTop: 10}}>

@@ -138,7 +138,7 @@ export default class Nutrition extends React.Component {
       }
       sliders.push(
         <div key={tag}>
-          <Row key={tag} style={{marginTop: 10, paddingRight: 15}}>
+          <Row style={{marginTop: 10, paddingRight: 15}}>
             <Col xs={10} sm={10} md={10} style={{paddingRight: 0}}>
               <Chip>
                 {recipeLine}

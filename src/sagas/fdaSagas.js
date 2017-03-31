@@ -58,6 +58,7 @@ function* searchFDA(searchIngredient) {
   else {
     yield put ({type: INITIALIZE_FIREBASE_DATA, foodName: searchIngredient, data: []})
     yield put ({type: GET_FIREBASE_DATA, foodName: searchIngredient, ingredient: searchIngredient, key: 'undefined', index: 0, length: 0})
+    yield put ({type: INITIALIZE_RECIPE_FLOW})
   }
 }
 

@@ -53,10 +53,10 @@ function snapTo(value, snapScale) {
 //
 //  Calories, Calories from Fat, Calories from Saturated Fat:
 function getFdaRoundedCalories(value) {
-  if (value < 5) {
+  if (value < 5.0) {
     return 0
-  } else if (value < 50) {
-    return snapTo(value, .5)
+  } else if (value < 50.0) {
+    return snapTo(value, 5)
   }
   return snapTo(value, 10)
 }
@@ -65,17 +65,17 @@ function getFdaRoundedCalories(value) {
 function getFdaRoundedFats(value) {
   if (value < 0.5) {
     return 0
-  } else if (value < 5) {
-    return snapTo(value, .5)
+  } else if (value < 5.0) {
+    return snapTo(value, 0.5)
   }
   return snapTo(value, 1)
 }
 //
 // Cholestrol:
 function getFdaRoundedCholesterol(value) {
-  if (value < 2) {
+  if (value < 2.0) {
     return 0
-  } else if (value <= 5) {
+  } else if (value <= 5.0) {
     return 'less than 5'
   }
   return snapTo(value, 5)
@@ -83,9 +83,9 @@ function getFdaRoundedCholesterol(value) {
 //
 // Sodium, Potassium
 function getFdaRoundedNaK(value) {
-  if (value < 5) {
+  if (value < 5.0) {
     return 0
-  } else if (value <= 140) {
+  } else if (value <= 140.0) {
     return snapTo(value, 5)
   }
   return snapTo(value, 10)
@@ -95,7 +95,7 @@ function getFdaRoundedNaK(value) {
 function getFdaRoundedCarbFiberSugar(value) {
   if (value < 0.5) {
     return 0
-  } else if (value < 1) {
+  } else if (value < 1.0) {
     return 'less than 1'
   }
   return snapTo(value, 1)
@@ -105,10 +105,39 @@ function getFdaRoundedCarbFiberSugar(value) {
 function getFdaRoundedProtein(value) {
   if (value < 0.5) {
     return 0
-  } else if (value < 1) {
+  } else if (value < 1.0) {
     return 'less than 1'
   }
   return snapTo(value, 1)
+}
+//
+// RDA for non vitamins and non minerals
+function getFdaRoundedRDA(value) {
+  return Math.round(value).toFixed(0)
+}
+//
+// RDA for vitamins and minerals
+function getFdaRoundedRDAVitAndMin(value) {
+  if (value <= 1.0) {
+    return 0
+  } else if (value <= 2.0) {
+    return 2
+  } else if (value <= 10.0) {
+    return snapTo(value, 2)
+  } else if (value <= 50.0) {
+    return snapTo(value, 5)
+  }
+  return snapTo(value, 10)
+}
+//
+// Beta-Carotene (Vitamin A)
+function getFdaRoundedRDAVitaminA(value) {
+  if (value <= 10.0) {
+    return snapTo(value, 2)
+  } else if (value <= 50.0) {
+    return snapTo(value, 5)
+  }
+  return snapTo(value, 10)
 }
 
 
@@ -497,6 +526,58 @@ export class IngredientModel {
     return
   }
 
+  // Private methods - do not call outside of this class
+  //
+  _getScaledRoundedCalories(aValue) {
+    const scaledValue = aValue * this._scaleGettersTo
+    if (isRoundingStyleFda(this._roundingStyle)) {
+      return getFdaRoundedCalories(scaledValue)
+    }
+    return scaledValue.toFixed(this.decimalPlaces)
+  }
+  //
+  _getScaledRoundedFat(aValue) {
+    const scaledValue = aValue * this._scaleGettersTo
+    if (isRoundingStyleFda(this._roundingStyle)) {
+      return getFdaRoundedFats(scaledValue)
+    }
+    return scaledValue.toFixed(this.decimalPlaces)
+  }
+  //
+  _getScaledRoundedNaK(aValue) {
+    const scaledValue = aValue * this._scaleGettersTo
+    if (isRoundingStyleFda(this._roundingStyle)) {
+      return getFdaRoundedNaK(scaledValue)
+    }
+    return scaledValue.toFixed(this.decimalPlaces)
+  }
+  //
+  _getScaledRoundedCarbFiberSugar(aValue) {
+    const scaledValue = aValue * this._scaleGettersTo
+    if (isRoundingStyleFda(this._roundingStyle)) {
+      return getFdaRoundedCarbFiberSugar(scaledValue)
+    }
+    return scaledValue.toFixed(this.decimalPlaces)
+  }
+  //
+  _getScaledRoundedRDA(aValue) {
+    const scaledValue = aValue * this._scaleGettersTo
+    if (isRoundingStyleFda(this._roundingStyle)) {
+      return getFdaRoundedRDA(scaledValue)
+    }
+    return scaledValue.toFixed(this.decimalPlaces)
+  }
+  // Gets a scaled, possibly rounded (depends on this._roundingStyle), vitamin
+  // or mineral RDA
+  _getScaledRoundedVitMinRDA(aValue) {
+    const scaledValue = aValue * this._scaleGettersTo
+    if (isRoundingStyleFda(this._roundingStyle)) {
+      return getFdaRoundedRDAVitAndMin(scaledValue)
+    }
+    return scaledValue.toFixed(this.decimalPlaces)
+  }
+  // End Private methods
+
   getKey() {
     return this._key
   }
@@ -562,27 +643,15 @@ export class IngredientModel {
   }
 
   getCalories() {
-    const scaledCalories = this._calories * this._scaleGettersTo
-    if (isRoundingStyleFda(this._roundingStyle)) {
-      return getFdaRoundedCalories(scaledCalories)
-    }
-    return scaledCalories.toFixed(this.decimalPlaces)
+    return this._getScaledRoundedCalories(this._calories)
   }
 
   getCaloriesFromFat() {
-    const scaledCaloriesFromFat = this._caloriesFromFat * this._scaleGettersTo
-    if (isRoundingStyleFda(this._roundingStyle)) {
-      return getFdaRoundedCalories(scaledCaloriesFromFat)
-    }
-    return scaledCaloriesFromFat.toFixed(this.decimalPlaces)
+    return this._getScaledRoundedCalories(this._caloriesFromFat)
   }
 
   getTotalFatPerServing() {
-    const scaledTotalFat = this._totalFatPerServing * this._scaleGettersTo
-    if (isRoundingStyleFda(this._roundingStyle)) {
-      return getFdaRoundedFats(scaledTotalFat)
-    }
-    return scaledTotalFat.toFixed(this.decimalPlaces)
+    return this._getScaledRoundedFat(this._totalFatPerServing)
   }
 
   getTotalFatUnit() {
@@ -590,15 +659,11 @@ export class IngredientModel {
   }
 
   getTotalFatRDA() {
-    return (this._totalFatRDA * this._scaleGettersTo).toFixed(this.decimalPlaces)
+    return this._getScaledRoundedRDA(this._totalFatRDA)
   }
 
   getSaturatedFatPerServing() {
-    const scaledSatFat = this._saturatedFatPerServing * this._scaleGettersTo
-    if (isRoundingStyleFda(this._roundingStyle)) {
-      return getFdaRoundedFats(scaledSatFat)
-    }
-    return scaledSatFat.toFixed(this.decimalPlaces)
+    return this._getScaledRoundedFat(this._saturatedFatPerServing)
   }
 
   getSaturatedFatUnit() {
@@ -606,15 +671,11 @@ export class IngredientModel {
   }
 
   getSaturatedFatRDA() {
-    return (this._saturatedFatRDA * this._scaleGettersTo).toFixed(this.decimalPlaces)
+    return this._getScaledRoundedRDA(this._saturatedFatRDA)
   }
 
   getTransFatPerServing() {
-    const scaledTransFat = this._transFatPerServing * this._scaleGettersTo
-    if (isRoundingStyleFda(this._roundingStyle)) {
-      return getFdaRoundedFats(scaledTransFat)
-    }
-    return scaledTransFat.toFixed(this.decimalPlaces)
+    return this._getScaledRoundedFat(this._transFatPerServing)
   }
 
   getTransFatUnit() {
@@ -634,15 +695,11 @@ export class IngredientModel {
   }
 
   getCholestorolRDA() {
-    return (this._cholesterolRDA * this._scaleGettersTo).toFixed(this.decimalPlaces)
+    return this._getScaledRoundedRDA(this._cholesterolRDA)
   }
 
   getSodium() {
-    const scaledNa = this._sodium * this._scaleGettersTo
-    if (isRoundingStyleFda(this._roundingStyle)) {
-      return getFdaRoundedNaK(scaledNa)
-    }
-    return scaledNa.toFixed(this.decimalPlaces)
+    return this._getScaledRoundedNaK(this._sodium)
   }
 
   getSodiumUnit() {
@@ -650,15 +707,11 @@ export class IngredientModel {
   }
 
   getSodiumRDA() {
-    return (this._sodiumRDA * this._scaleGettersTo).toFixed(this.decimalPlaces)
+    return this._getScaledRoundedVitMinRDA(this._sodiumRDA)
   }
 
   getTotalCarbohydratePerServing() {
-    const scaledCarb = this._totalCarbohydratePerServing * this._scaleGettersTo
-    if (isRoundingStyleFda(this._roundingStyle)) {
-      return getFdaRoundedCarbFiberSugar(scaledCarb)
-    }
-    return scaledCarb.toFixed(this.decimalPlaces)
+    return this._getScaledRoundedCarbFiberSugar(this._totalCarbohydratePerServing)
   }
 
   getTotalCarbohydrateUnit() {
@@ -666,15 +719,11 @@ export class IngredientModel {
   }
 
   getTotalCarbohydrateRDA() {
-    return (this._totalCarbohydrateRDA * this._scaleGettersTo).toFixed(this.decimalPlaces)
+    return this._getScaledRoundedRDA(this._totalCarbohydrateRDA)
   }
 
   getDietaryFiber() {
-    const scaledFiber = this._dietaryFiber * this._scaleGettersTo
-    if (isRoundingStyleFda(this._roundingStyle)) {
-      return getFdaRoundedCarbFiberSugar(scaledFiber)
-    }
-    return scaledFiber.toFixed(this.decimalPlaces)
+    return this._getScaledRoundedCarbFiberSugar(this._dietaryFiber)
   }
 
   getDietaryFiberUnit() {
@@ -682,15 +731,11 @@ export class IngredientModel {
   }
 
   getDietaryFiberRDA() {
-    return (this._dietaryFiberRDA * this._scaleGettersTo).toFixed(this.decimalPlaces)
+    return this._getScaledRoundedRDA(this._dietaryFiberRDA)
   }
 
   getSugars() {
-    const scaledSugar = this._sugars * this._scaleGettersTo
-    if (isRoundingStyleFda(this._roundingStyle)) {
-      return getFdaRoundedCarbFiberSugar(scaledSugar)
-    }
-    return scaledSugar.toFixed(this.decimalPlaces)
+    return this._getScaledRoundedCarbFiberSugar(this._sugars)
   }
 
   getSugarsUnit() {
@@ -718,7 +763,7 @@ export class IngredientModel {
   }
 
   get_vitaminB12RDA() {
-    return (this._vitaminB12RDA * this._scaleGettersTo).toFixed(this.decimalPlaces)
+    return this._getScaledRoundedVitMinRDA(this._vitaminB12RDA)
   }
 
   get_vitaminB12Visible() {
@@ -734,7 +779,7 @@ export class IngredientModel {
   }
 
   get_calciumRDA() {
-    return (this._calciumRDA * this._scaleGettersTo).toFixed(this.decimalPlaces)
+    return this._getScaledRoundedVitMinRDA(this._calciumRDA)
   }
 
   get_calciumVisible() {
@@ -750,7 +795,7 @@ export class IngredientModel {
   }
 
   get_ironRDA() {
-    return (this._ironRDA * this._scaleGettersTo).toFixed(this.decimalPlaces)
+    return this._getScaledRoundedVitMinRDA(this._ironRDA)
   }
 
   get_ironVisible() {
@@ -766,7 +811,7 @@ export class IngredientModel {
   }
 
   get_vitaminERDA() {
-    return (this._vitaminERDA * this._scaleGettersTo).toFixed(this.decimalPlaces)
+    return this._getScaledRoundedVitMinRDA(this._vitaminERDA)
   }
 
   get_vitaminEVisible() {
@@ -782,7 +827,7 @@ export class IngredientModel {
   }
 
   get_vitaminDRDA() {
-    return (this._vitaminDRDA * this._scaleGettersTo).toFixed(this.decimalPlaces)
+    return this._getScaledRoundedVitMinRDA(this._vitaminDRDA)
   }
 
   get_vitaminDVisible() {
@@ -798,7 +843,7 @@ export class IngredientModel {
   }
 
   get_niacinB3RDA() {
-    return (this._niacinB3RDA * this._scaleGettersTo).toFixed(this.decimalPlaces)
+    return this._getScaledRoundedVitMinRDA(this._niacinB3RDA)
   }
 
   get_niacinB3Visible() {
@@ -814,7 +859,7 @@ export class IngredientModel {
   }
 
   get_magnesiumRDA() {
-    return (this._magnesiumRDA * this._scaleGettersTo).toFixed(this.decimalPlaces)
+    return this._getScaledRoundedVitMinRDA(this._magnesiumRDA)
   }
 
   get_magnesiumVisible() {
@@ -830,7 +875,7 @@ export class IngredientModel {
   }
 
   get_riboflavinB2RDA() {
-    return (this._riboflavinB2RDA * this._scaleGettersTo).toFixed(this.decimalPlaces)
+    return this._getScaledRoundedVitMinRDA(this._riboflavinB2RDA)
   }
 
   get_riboflavinB2Visible() {
@@ -846,7 +891,7 @@ export class IngredientModel {
   }
 
   get_phosphorusRDA() {
-    return (this._phosphorusRDA * this._scaleGettersTo).toFixed(this.decimalPlaces)
+    return this._getScaledRoundedVitMinRDA(this._phosphorusRDA)
   }
 
   get_phosphorusVisible() {
@@ -862,7 +907,7 @@ export class IngredientModel {
   }
 
   get_zincRDA() {
-    return (this._zincRDA * this._scaleGettersTo).toFixed(this.decimalPlaces)
+    return this._getScaledRoundedVitMinRDA(this._zincRDA)
   }
 
   get_zincVisible() {
@@ -878,7 +923,7 @@ export class IngredientModel {
   }
 
   get_folicAcidRDA() {
-    return (this._folicAcidRDA * this._scaleGettersTo).toFixed(this.decimalPlaces)
+    return this._getScaledRoundedVitMinRDA(this._folicAcidRDA)
   }
 
   get_folicAcidVisible() {
@@ -894,7 +939,7 @@ export class IngredientModel {
   }
 
   get_vitaminB6RDA() {
-    return (this._vitaminB6RDA * this._scaleGettersTo).toFixed(this.decimalPlaces)
+    return this._getScaledRoundedVitMinRDA(this._vitaminB6RDA)
   }
 
   get_vitaminB6Visible() {
@@ -902,11 +947,7 @@ export class IngredientModel {
   }
 
   get_potassium() {
-    const scaledK = this._potassium * this._scaleGettersTo
-    if (isRoundingStyleFda(this._roundingStyle)) {
-      return getFdaRoundedNaK(scaledK)
-    }
-    return scaledK.toFixed(this.decimalPlaces)
+    return this._getScaledRoundedNaK(this._potassium)
   }
 
   get_potassiumUnit() {
@@ -914,7 +955,7 @@ export class IngredientModel {
   }
 
   get_potassiumRDA() {
-    return (this._potassiumRDA * this._scaleGettersTo).toFixed(this.decimalPlaces)
+    return this._getScaledRoundedVitMinRDA(this._potassiumRDA)
   }
 
   get_potassiumVisible() {
@@ -930,7 +971,7 @@ export class IngredientModel {
   }
 
   get_thiaminB1RDA() {
-    return (this._thiaminB1RDA * this._scaleGettersTo).toFixed(this.decimalPlaces)
+    return this._getScaledRoundedVitMinRDA(this._thiaminB1RDA)
   }
 
   get_thiaminB1Visible() {
@@ -946,7 +987,7 @@ export class IngredientModel {
   }
 
   get_vitaminCRDA() {
-    return (this._vitaminCRDA * this._scaleGettersTo).toFixed(this.decimalPlaces)
+    return this._getScaledRoundedVitMinRDA(this._vitaminCRDA)
   }
 
   get_vitaminCVisible() {
@@ -962,7 +1003,7 @@ export class IngredientModel {
   }
 
   get_vitaminKRDA() {
-    return (this._vitaminKRDA * this._scaleGettersTo).toFixed(this.decimalPlaces)
+    return this._getScaledRoundedVitMinRDA(this._vitaminKRDA)
   }
 
   get_vitaminKVisible() {
@@ -978,7 +1019,7 @@ export class IngredientModel {
   }
 
   get_vitaminARDA() {
-    return (this._vitaminARDA * this._scaleGettersTo).toFixed(this.decimalPlaces)
+    return getFdaRoundedRDAVitaminA(this._vitaminARDA)
   }
 
   get_vitaminAVisible() {
@@ -994,7 +1035,7 @@ export class IngredientModel {
   }
 
   get_vitaminA_IURDA() {
-    return (this._vitaminA_IURDA * this._scaleGettersTo).toFixed(this.decimalPlaces)
+    return getFdaRoundedRDAVitaminA(this._vitaminA_IURDA)
   }
 
   get_vitaminA_IUVisible() {
@@ -1010,7 +1051,7 @@ export class IngredientModel {
   }
 
   get_vitaminD_IURDA() {
-    return (this._vitaminD_IURDA * this._scaleGettersTo).toFixed(this.decimalPlaces)
+    return this._getScaledRoundedVitMinRDA(this._vitaminD_IURDA)
   }
 
   get_vitaminD_IUVisible() {

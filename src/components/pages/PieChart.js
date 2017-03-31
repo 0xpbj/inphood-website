@@ -68,7 +68,7 @@ export default class NutritionChart extends React.Component {
       const calories = getScaledValue(ingredientModel.getCalories(), scale)
       return (
         <div>
-          <Button onClick={()=>this.setState({ showNutritionModal: true })}><Glyphicon glyph="glyphicon glyphicon-eye-open" /></Button>
+          <Button bsStyle='primary' onClick={()=>this.setState({ showNutritionModal: true })}><Glyphicon glyph="glyphicon glyphicon-info-sign" /></Button>
           <Modal show={showNutritionModal} bsSize="large" aria-labelledby="contained-modal-title-lg">
             <Modal.Header closeButton onClick={()=>this.setState({ showNutritionModal: false })}>
               <Modal.Title id="contained-modal-title-lg">Nutrition Facts: {quantity} {unit} of <i>{key}</i> has <b>{calories}</b> calories</Modal.Title>

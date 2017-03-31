@@ -174,7 +174,7 @@ export default class IngredientController extends React.Component {
             <PieChart nutritionModel={nutritionModel} tag={tag}/>
           </Col>
           <Col xs={1} md={1} style={{paddingLeft: 5, paddingRight: 5}}>
-            <Button onClick={()=>this.props.onDeleteClick()}><Glyphicon glyph="glyphicon glyphicon-trash" /></Button>
+            <Button bsStyle='danger' onClick={()=>this.props.onDeleteClick()}><Glyphicon glyph="glyphicon glyphicon-trash" /></Button>
           </Col>
         </Row>
       </div>

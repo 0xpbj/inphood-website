@@ -11,7 +11,6 @@ import Dropdownlist from 'react-widgets/lib/Dropdownlist'
 import {IngredientModel} from '../models/IngredientModel'
 import {rationalToFloat} from '../../helpers/ConversionUtils'
 import renderHTML from 'react-render-html'
-import PieChart from '../pages/PieChart'
 
 const ListItem = React.createClass({
   render() {
@@ -170,12 +169,6 @@ export default class IngredientController extends React.Component {
               value={ingredientControlModel.getDropdownMatchValue()}
               onChange={this.handleMatchDropdownChange.bind(this)}
               itemComponent={ListItem}/>
-          </Col>
-          <Col xs={1} md={1} style={{paddingLeft: 10, paddingRight: 5}}>
-            <PieChart nutritionModel={nutritionModel} tag={tag}/>
-          </Col>
-          <Col xs={1} md={1} style={{paddingLeft: 5, paddingRight: 5}}>
-            <Button bsStyle='danger' onClick={()=>this.props.onDeleteClick()}><Glyphicon glyph="glyphicon glyphicon-trash" /></Button>
           </Col>
         </Row>
       </div>

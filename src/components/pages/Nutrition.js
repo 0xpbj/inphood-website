@@ -17,6 +17,7 @@ import {IngredientModel} from '../models/IngredientModel'
 import {rationalToFloat} from '../../helpers/ConversionUtils'
 import {IngredientControlModel} from '../models/IngredientControlModel'
 import IngredientController from '../../containers/IngredientControllerContainer'
+import PieChart from './PieChart'
 
 export default class Nutrition extends React.Component {
   constructor(props) {
@@ -145,12 +146,18 @@ export default class Nutrition extends React.Component {
                     <Chip>
                       {recipeLine}
                     </Chip>
+                    <Col xs={1} md={1}>
+                      <PieChart nutritionModel={nutritionModel} tag={tag}/>
+                    </Col>
+                    <Col xs={1} md={1}>
+                      <Button bsStyle='danger' onClick={()=>this.handleChipDelete.bind(this, tag)}><Glyphicon glyph="glyphicon glyphicon-trash" /></Button>
+                    </Col>
                   </Col>
                 </Row>
               </div>
             </Col>
           </Row>
-          <IngredientController onDeleteClick={this.handleChipDelete.bind(this, tag)} nutritionModel={nutritionModel} recipeLine={recipeLine} tag={tag}/>
+          <IngredientController recipeLine={recipeLine} tag={tag}/>
         </div>
       )
     }

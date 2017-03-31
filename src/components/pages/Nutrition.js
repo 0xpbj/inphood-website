@@ -138,23 +138,17 @@ export default class Nutrition extends React.Component {
       }
       sliders.push(
         <div key={tag}>
-          <Row style={{marginTop: 10}}>
-            <Col xs={12} md={12}>
-              <div key={tag}>
-                <Row>
-                  <Col xs={10}>
-                    <Chip>
-                      {recipeLine}
-                    </Chip>
-                    <Col xs={1} md={1}>
-                      <PieChart nutritionModel={nutritionModel} tag={tag}/>
-                    </Col>
-                    <Col xs={1} md={1}>
-                      <Button bsStyle='danger' onClick={this.handleChipDelete.bind(this, tag)}><Glyphicon glyph="glyphicon glyphicon-trash" /></Button>
-                    </Col>
-                  </Col>
-                </Row>
-              </div>
+          <Row key={tag} style={{marginTop: 10, paddingRight: 15}}>
+            <Col xs={10} sm={10} md={10} style={{paddingRight: 0}}>
+              <Chip>
+                {recipeLine}
+              </Chip>
+            </Col>
+            <Col xs={1} sm={1} md={1} style={{paddingLeft:0, paddingRight:0}}>
+              <PieChart nutritionModel={nutritionModel} tag={tag}/>
+            </Col>
+            <Col xs={1} sm={1} md={1} style={{paddingLeft:5}}>
+              <Button bsStyle='danger' onClick={this.handleChipDelete.bind(this, tag)}><Glyphicon glyph="glyphicon glyphicon-trash" /></Button>
             </Col>
           </Row>
           <IngredientController recipeLine={recipeLine} tag={tag}/>

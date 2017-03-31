@@ -123,7 +123,6 @@ export default class NutritionEstimateJSX extends React.Component {
     let dotHtml = []
     const dotPosition = 35
     const dotOffset = dotPosition - columnTextLength
-    console.log('  dotOffset = ', dotOffset)
     if (dotOffset > 0) {
       for (let i = 0; i < dotOffset; i++) {
         dotHtml.push(<span key={this.getKey()}>&nbsp;</span>)

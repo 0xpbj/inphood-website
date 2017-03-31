@@ -137,7 +137,7 @@ export default class IngredientController extends React.Component {
     const editBoxValue = ingredientControlModel.getEditBoxValue()
     return (
       <div ref={tag}>
-        <Row>
+        <Row style={{paddingRight:15}}>
           <Col xs={2} md={2} style={{paddingRight: 5}}>
             <form
               onSubmit={(event) => this.submitNewSliderValue(event)}
@@ -157,13 +157,13 @@ export default class IngredientController extends React.Component {
               </FormGroup>
             </form>
           </Col>
-          <Col xs={3} md={3} style={{paddingLeft: 5, paddingRight: 5}}>
+          <Col xs={3} md={3} style={{paddingLeft: 0, paddingRight: 5}}>
             <Dropdownlist
               data={ingredientControlModel.getDropdownUnits()}
               value={ingredientControlModel.getDropdownUnitValue()}
               onChange={this.handleUnitDropdownChange.bind(this)}/>
           </Col>
-          <Col xs={5} md={5} style={{paddingLeft: 5, paddingRight: 5}}>
+          <Col xs={7} md={7} style={{paddingLeft: 0, paddingRight: 0}}>
             <Dropdownlist
               data={ingredientControlModel.getDropdownMatches()}
               value={ingredientControlModel.getDropdownMatchValue()}

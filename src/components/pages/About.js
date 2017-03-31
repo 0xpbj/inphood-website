@@ -39,7 +39,7 @@ export default class About extends React.Component {
         <Grid>
           <Row className="show-grid">
             <TopBar step="" stepText="" router={this.props.router}/>
-            <Col>
+            <Col xs={11} sm={11} md={11} lg={11}>
               <h1 className="page-header">About Us</h1>
               <h4>inPhood LLC founded in 2016, labels food images across the internet.</h4>
               <h4>Our products help users generate shareable nutrition labels, based on USDA information and proprietary sources.</h4>

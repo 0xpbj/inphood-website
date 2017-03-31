@@ -150,7 +150,7 @@ export default class Nutrition extends React.Component {
                       <PieChart nutritionModel={nutritionModel} tag={tag}/>
                     </Col>
                     <Col xs={1} md={1}>
-                      <Button bsStyle='danger' onClick={()=>this.handleChipDelete.bind(this, tag)}><Glyphicon glyph="glyphicon glyphicon-trash" /></Button>
+                      <Button bsStyle='danger' onClick={this.handleChipDelete.bind(this, tag)}><Glyphicon glyph="glyphicon glyphicon-trash" /></Button>
                     </Col>
                   </Col>
                 </Row>

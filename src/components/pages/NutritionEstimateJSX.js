@@ -121,8 +121,9 @@ export default class NutritionEstimateJSX extends React.Component {
   // of the nutrition label. Then inserts those spaces in an array of html.
   getDotHtml(columnTextLength) {
     let dotHtml = []
-    const dotPosition = 28
+    const dotPosition = 35
     const dotOffset = dotPosition - columnTextLength
+    console.log('  dotOffset = ', dotOffset)
     if (dotOffset > 0) {
       for (let i = 0; i < dotOffset; i++) {
         dotHtml.push(<span key={this.getKey()}>&nbsp;</span>)
@@ -138,7 +139,7 @@ export default class NutritionEstimateJSX extends React.Component {
   getDoubleNutrientRow(
     styles, leftName, leftValue, rightName, rightValue, rowStyle={}) {
 
-    const leftChars = leftName.length + leftValue.length + 2 // 2 for spaces below
+    let leftChars = leftName.length + leftValue.length + 2 // 2 for spaces below
     const dotHtml = this.getDotHtml(leftChars)
 
     return (

@@ -270,6 +270,9 @@ export class IngredientModel {
   }
 
   initializeComposite(scaledIngredients) {
+    this._servingAmount = 0
+    this._servingUnit = 'g'
+
     // console.log('initializeComposite ------------------------------------------');
     for (var key in scaledIngredients) {
       var scaledIngredient = scaledIngredients[key]

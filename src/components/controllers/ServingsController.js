@@ -13,12 +13,18 @@ export default class ServingsController extends React.Component {
     super(props)
   }
   //
+  componentWillMount() {
+    this.handleServingsValueChange(undefined)
+  }
+  //
   handleServingsValueChange(analyticsAction) {
-    ReactGA.event({
-      category: 'Nutrition Mixer',
-      action: analyticsAction,
-      nonInteraction: false
-    });
+    if (analyticsAction !== undefined) {
+      ReactGA.event({
+        category: 'Nutrition Mixer',
+        action: analyticsAction,
+        nonInteraction: false
+      });
+    }
 
     const {servingsControlModel} = this.props.servings
 

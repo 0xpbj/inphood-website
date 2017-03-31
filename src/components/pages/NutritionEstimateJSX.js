@@ -361,10 +361,13 @@ export default class NutritionEstimateJSX extends React.Component {
     const myStyles = new Style()
     let resultIsNan = false
 
-    let displayGeneratedStatement = this.props.displayGeneratedStatement
-    if (displayGeneratedStatement === undefined) {
-      displayGeneratedStatement = false
-    }
+    // TODO: rip this out of props etc
+    // let displayGeneratedStatement = this.props.displayGeneratedStatement
+    // if (displayGeneratedStatement === undefined) {
+    //   displayGeneratedStatement = false
+    // }
+    const displayGeneratedStatement = true
+
     // TODO: We should change this to always load from one or the other (one
     //       code path vs. these two--it creates problems for setting whether
     //       things are visible.)

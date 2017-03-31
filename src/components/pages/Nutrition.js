@@ -22,6 +22,20 @@ export default class Nutrition extends React.Component {
   constructor(props) {
     super(props)
   }
+  getRecipeText(aNutritionModel) {
+    let recipeText = ''
+    const nmTags = aNutritionModel.getTags()
+    for (let index in nmTags) {
+      const tag = nmTags[index]
+      const scaledIngredient = aNutritionModel.getScaledIngredient(tag)
+      recipeText = recipeText +
+                   scaledIngredient.getQuantity().toFixed(2) + " " +
+                   scaledIngredient.getUnit() + " " +
+                   scaledIngredient.getIngredientModel().getKey() +
+                   "\n"
+    }
+    return recipeText
+  }
   handleChipDelete(tag) {
     let {parsedData} = this.props.nutrition
 
@@ -40,6 +54,19 @@ export default class Nutrition extends React.Component {
     let {matchResultsModel} = this.props.tagModel
     matchResultsModel.removeSearch(tag)
     this.props.updateMatchResultsModel(matchResultsModel)
+
+    // Send updated model to firebase
+    const {nutritionModel} = this.props.nutritionModelRed
+    const full = nutritionModel.serialize()
+    const compositeModel = nutritionModel.getScaledCompositeIngredientModel()
+    const composite = compositeModel.serialize()
+    let recipeText = this.getRecipeText(nutritionModel)
+    if (recipeText !== '') {
+      const user = Config.DEBUG ? 'test' : 'anonymous'
+      const label = this.props.nutrition.key
+      this.props.sendUserGeneratedData(recipeText, label, user)
+    }
+    this.props.sendSerializedData(composite, full)
 
     ReactGA.event({
       category: 'Nutrition Mixer',

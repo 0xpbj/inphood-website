@@ -101,36 +101,36 @@ export default class Home extends React.Component {
           </p>
         </div>
       )
-      const homeForceGraph = (
-        <div className="text-center" style={{
-              borderWidth: 1,
-              borderColor: 'black',
-              borderStyle: 'dashed',
-              borderRadius: 5,
-              marginTop: 10,
-              marginBottom: 10}}>
-          <InteractiveForceGraph
-            highlightDependencies
-            simulationOptions={{ height: 400, width: 400, animate: true }}
-            onSelectNode={console.log('')}
-            onDeselectNode={console.log('')}
-          >
-            {exampleJSON.nodes.map(node => (
-              <ForceGraphNode
-                key={node.id}
-                fill={interpolateRainbow(node.group/10)}
-                node={{ ...node, radius: 7 }}
-              />
-            ))}
-            {exampleJSON.links.map(link => (
-              <ForceGraphLink
-                key={`${link.source}=>${link.target}`}
-                link={{ ...link, value: 2 }}
-              />
-            ))}
-          </InteractiveForceGraph>
-        </div>
-      )
+      // const homeForceGraph = (
+      //   <div className="text-center" style={{
+      //         borderWidth: 1,
+      //         borderColor: 'black',
+      //         borderStyle: 'dashed',
+      //         borderRadius: 5,
+      //         marginTop: 10,
+      //         marginBottom: 10}}>
+      //     <InteractiveForceGraph
+      //       highlightDependencies
+      //       simulationOptions={{ height: 400, width: 400, animate: true }}
+      //       onSelectNode={console.log('')}
+      //       onDeselectNode={console.log('')}
+      //     >
+      //       {exampleJSON.nodes.map(node => (
+      //         <ForceGraphNode
+      //           key={node.id}
+      //           fill={interpolateRainbow(node.group/10)}
+      //           node={{ ...node, radius: 7 }}
+      //         />
+      //       ))}
+      //       {exampleJSON.links.map(link => (
+      //         <ForceGraphLink
+      //           key={`${link.source}=>${link.target}`}
+      //           link={{ ...link, value: 2 }}
+      //         />
+      //       ))}
+      //     </InteractiveForceGraph>
+      //   </div>
+      // )
       let browserWarning = null
       if (showBrowserWarning) {
         if (browser.name === "chrome" || browser.name === "firefox")
@@ -158,7 +158,7 @@ export default class Home extends React.Component {
             <Row>
               <div className="text-center">
                 <Button bsStyle="success" onClick={() => this.transitionToGenerator()}>
-                  Get Started&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-flash"></Glyphicon>
+                  Create Label&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-list-alt"></Glyphicon>
                 </Button>
               </div>
             </Row>

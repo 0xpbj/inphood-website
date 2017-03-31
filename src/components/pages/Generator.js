@@ -54,36 +54,11 @@ export default class Generator extends React.Component {
     if (this.state.labelErrorFlag)
       this.setState({labelErrorFlag: false})
   }
-  getRecipeText(aNutritionModel) {
-    let recipeText = ''
-    const nmTags = aNutritionModel.getTags()
-    for (let index in nmTags) {
-      const tag = nmTags[index]
-      const scaledIngredient = aNutritionModel.getScaledIngredient(tag)
-      recipeText = recipeText +
-                   scaledIngredient.getQuantity().toFixed(2) + " " +
-                   scaledIngredient.getUnit() + " " +
-                   scaledIngredient.getIngredientModel().getKey() +
-                   "\n"
-    }
-    return recipeText
-  }
   shareLabel(share) {
     // this.props.saveToCloud()
     const {unusedTags, matchResultsModel} = this.props.tagModel
     const usefulIngredients = matchResultsModel.getNumberOfSearches() - unusedTags.length
     if (this.props.nutrition.key && usefulIngredients) {
-      const {nutritionModel} = this.props.nutritionModelRed
-      const full = nutritionModel.serialize()
-      const compositeModel = nutritionModel.getScaledCompositeIngredientModel()
-      const composite = compositeModel.serialize()
-      let recipeText = this.getRecipeText(nutritionModel)
-      if (recipeText !== '') {
-        const user = Config.DEBUG ? 'test' : 'anonymous'
-        const label = this.props.nutrition.key
-        this.props.sendUserGeneratedData(recipeText, label, user)
-      }
-      this.props.sendSerializedData(composite, full)
       if (share) {
         ReactGA.event({
           category: 'Results',
@@ -109,7 +84,7 @@ export default class Generator extends React.Component {
       }
     }
     else {
-      this.setState({labelErrorFlag: true})
+      this.setState({labelErrorFlag: true, showShareUrl: false})
     }
   }
   shareLabelButton() {
@@ -240,7 +215,7 @@ export default class Generator extends React.Component {
               <Col xs={12} sm={6} md={7} lg={7}>
                 <div>
                   {labelError}
-                  <Recipe router={this.props.router} route={this.props.route}/>
+                  <Recipe router={this.props.router} route={this.props.route} nutritionModelRed={this.props.nutritionModelRed}/>
                   <Nutrition />
                 </div>
               </Col>

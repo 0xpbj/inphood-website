@@ -16,9 +16,7 @@ import {
   SEARCH_TIMED_OUT,
   INITIALIZE_FIREBASE_DATA,
   INGREDIENT_FIREBASE_DATA,
-  SEND_SERIALIZED_DATA,
-  SEND_USER_GENERATED_DATA,
-  UPDATE_MATCH_RESULTS_SEARCH_INDEX
+  INIT_SERIALIZED_DATA
 } from '../constants/ActionTypes'
 
 import ReactGA from 'react-ga'
@@ -46,22 +44,6 @@ const Config = require('Config')
 //     put({type: SEARCH_TIMED_OUT})
 //   }
 // }
-
-
-const getRecipeText = (aNutritionModel) => {
-  let recipeText = ''
-  const nmTags = aNutritionModel.getTags()
-  for (let index in nmTags) {
-    const tag = nmTags[index]
-    const scaledIngredient = aNutritionModel.getScaledIngredient(tag)
-    recipeText = recipeText +
-                 scaledIngredient.getQuantity().toFixed(2) + " " +
-                 scaledIngredient.getUnit() + " " +
-                 scaledIngredient.getIngredientModel().getKey() +
-                 "\n"
-  }
-  return recipeText
-}
 
 function* changesFromRecipe() {
   console.log('changesFromRecipe ---------------------------------------------');
@@ -227,19 +209,9 @@ function* changesFromRecipe() {
     nonInteraction: false,
   });
   const {servingsControlModel} = yield select(state => state.servingsControlsReducer)
-  const {nutritionModel} = yield select(state => state.nutritionModelReducer)
-  const full = nutritionModel.serialize()
-  const compositeModel = nutritionModel.getScaledCompositeIngredientModel()
-  const composite = compositeModel.serialize()
-  const data = getRecipeText(nutritionModel)
-  if (data !== '') {
-    const userId = Config.DEBUG ? 'test' : 'anonymous'
-    const labelId = (yield select(state => state.nutritionReducer)).key
-    yield put({type: SEND_USER_GENERATED_DATA, data, labelId, userId})
-  }
-  yield put ({type: SEND_SERIALIZED_DATA, composite, full})
   yield put ({type: NM_SET_SERVINGS, servingsControlModel})
   yield put ({type: UNUSED_TAGS, tags: missingData})
+  yield put ({type: INIT_SERIALIZED_DATA})
 }
 
 export default function* root() {

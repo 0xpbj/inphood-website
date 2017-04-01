@@ -28,7 +28,8 @@ var unitsOfMeasure = module.exports.unitsOfMeasure = {
   'package': ['pkg', 'Pkg', 'PKG'],
   pound: ['lb', 'Lb', 'LB', 'lb.', 'Lb.', 'LB.'],
   bunch: ['bunch', 'Bunch'],
-  piece: ['piece', 'Piece']
+  piece: ['piece', 'Piece'],
+  slice: ['slice', 'Slice']
 };
 
 var fluidicWords = module.exports.fluidicWords = [

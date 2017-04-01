@@ -36,6 +36,7 @@ export default class ServingsController extends React.Component {
 
       this.props.setServingsControllerModel(servingsControlModel)
       this.props.nutritionModelSetServings(servingsControlModel)
+      this.props.initSerializedData()
     }
   }
   //
@@ -75,8 +76,8 @@ export default class ServingsController extends React.Component {
     if (!isNaN(amount) && amount > 0 && amount < 1001) {
       const {servingsControlModel} = this.props.servings
       servingsControlModel.setValueEditBox(amount)
-
       this.props.setServingsControllerModel(servingsControlModel)
+      this.props.initSerializedData()
     }
   }
   //
@@ -106,6 +107,7 @@ export default class ServingsController extends React.Component {
     servingsControlModel.setDisplayRatioEditBox(ratio)
 
     this.props.setServingsControllerModel(servingsControlModel)
+    this.props.initSerializedData()
   }
   //
   //
@@ -152,6 +154,7 @@ export default class ServingsController extends React.Component {
       servingsControlModel.setDisplayUnit(displayUnitEditBox)
       this.props.setServingsControllerModel(servingsControlModel)
       this.props.nutritionModelSetServings(servingsControlModel)
+      this.props.initSerializedData()
     }
   }
   //

@@ -17,7 +17,7 @@ import Label from './NutritionEstimateJSX'
 import {IngredientModel} from '../models/IngredientModel'
 import {NutritionModel} from '../models/NutritionModel'
 import TagController from '../controllers/TagController'
-import CopyToClipboard from 'react-copy-to-clipboard'
+// import CopyToClipboard from 'react-copy-to-clipboard'
 import TopBar from '../layout/TopBar'
 import UploadModal from '../layout/UploadModal'
 const Config = require('Config')
@@ -287,8 +287,6 @@ export default class Results extends React.Component {
         let nutritionModel = new NutritionModel()
         nutritionModel.initializeFromSerialization(nutritionModelData)
         recipeText = this.getRecipeText(nutritionModel)
-        if (recipeText !== '')
-          this.props.sendUserGeneratedData(recipeText, label, rUser)
       }
       // const path = 'http://www.label.inphood.com/?user=' + rUser + '&label=' + label + '&embed=false'
       // const epath = 'http://www.label.inphood.com/?user=' + rUser + '&label=' + label + '&embed=true'

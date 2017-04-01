@@ -24,6 +24,7 @@ import TagController from '../controllers/TagController'
 import ProgressBar from 'react-toolbox/lib/progress_bar'
 import domtoimage from 'dom-to-image'
 import * as constants from '../../constants/Constants'
+import CopyToClipboard from 'react-copy-to-clipboard'
 
 import MarginLayout from '../../helpers/MarginLayout'
 import {getTextLabel} from '../../helpers/TextLabel'
@@ -43,7 +44,8 @@ export default class Generator extends React.Component {
     this.state = {
       labelErrorFlag: false,
       showShareUrl: false,
-      textLabel: false
+      textLabel: false,
+      copiedUrl: false
     }
   }
   componentWillMount() {
@@ -80,11 +82,11 @@ export default class Generator extends React.Component {
           link.href = dataUrl;
           link.click();
         });
-        this.setState({showShareUrl: false})
+        this.setState({showShareUrl: false, copiedUrl: false})
       }
     }
     else {
-      this.setState({labelErrorFlag: true, showShareUrl: false})
+      this.setState({labelErrorFlag: true, showShareUrl: false, copiedUrl: false})
     }
   }
   shareLabelButton() {
@@ -169,6 +171,10 @@ export default class Generator extends React.Component {
     });
     return <pre id='nutrition-label'>{getTextLabel(compositeModel)}</pre>
   }
+  copyUrlToClipboard(shareUrl) {
+    <div>
+    </div>
+  }
   render() {
     const {nutritionModel} = this.props.nutritionModelRed
     const full = nutritionModel.serialize()
@@ -192,7 +198,18 @@ export default class Generator extends React.Component {
     const shareUrl = 'https://www.inphood.com/?user=' + user + '&label=' + this.props.nutrition.key
     const shareUrlBox = (this.state.showShareUrl) ? (
       <div>
-        <pre style={{marginBottom:0, marginTop:constants.VERT_SPACE}}>{shareUrl}</pre>
+        <Col xs={10} sm={10} md={10} lg={10}>
+          <pre style={{marginBottom:0, marginTop:constants.VERT_SPACE}}>{shareUrl}</pre>
+        </Col>
+        <Col xs={2} sm={2} md={2} lg={2}>
+          <CopyToClipboard text={shareUrl}
+            onCopy={() => this.setState({copiedUrl: true})}>
+            <Button className="btn-primary-spacing" bsStyle="success" style={{marginBottom:0, marginTop:constants.VERT_SPACE}}>
+              <Glyphicon glyph="glyphicon glyphicon-copy"></Glyphicon>
+            </Button>
+          </CopyToClipboard>
+          {this.state.copiedUrl ? <div><span style={{color: 'red'}}>&nbsp;Copied.</span></div> : null}
+        </Col>
       </div>
     ) : null
     const label = (this.state.textLabel) ? this.generateTextLabel(compositeModel)

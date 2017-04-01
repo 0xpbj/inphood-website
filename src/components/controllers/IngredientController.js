@@ -26,9 +26,11 @@ export default class IngredientController extends React.Component {
   handleEditBoxValueChange(formObject) {
     const {tag} = this.props
     const value = formObject.target.value
-    let ingredientControlModel = this.props.ingredientModel.ingredientControlModels[tag]
-    ingredientControlModel.setEditBoxValue(value)
-    this.props.updateIngredientControlModel(tag, ingredientControlModel)
+    if (!isNaN(value) && value > 0 && value < 1001) {
+      let ingredientControlModel = this.props.ingredientModel.ingredientControlModels[tag]
+      ingredientControlModel.setEditBoxValue(value)
+      this.props.updateIngredientControlModel(tag, ingredientControlModel)
+    }
   }
   handleUnitDropdownChange(units) {
     const {tag} = this.props
@@ -83,10 +85,13 @@ export default class IngredientController extends React.Component {
     // rationalToFloat expects a string. This also helps to catch things like
     // "" and " " which evaluate to numbers (isNan===false) with the second
     // predicate checking for string type.
-    if (! isNaN(editBoxValue)) {
+    if (!isNaN(editBoxValue) && editBoxValue > 0 && editBoxValue < 1001) {
       if ((typeof editBoxValue) !== "string") {
         return 'success'
       }
+    }
+    else {
+      return 'error'
     }
     // Try and convert to a rational number from a variety of string
     // representations (i.e. "1/2" "024" etc.), failing that, return error.

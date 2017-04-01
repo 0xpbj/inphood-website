@@ -10,8 +10,6 @@ import Jumbotron from 'react-bootstrap/lib/Jumbotron'
 import Glyphicon from 'react-bootstrap/lib/Glyphicon'
 import UploadModal from '../layout/UploadModal'
 import MarginLayout from '../../helpers/MarginLayout'
-// import ImageGallery from 'react-image-gallery'
-// import 'react-image-gallery/styles/css/image-gallery.css'
 import Generator from '../../containers/GeneratorContainer'
 import Results from '../../containers/ResultsContainer'
 const Config = require('Config')
@@ -61,76 +59,8 @@ export default class Home extends React.Component {
       return <Results label={label} user={user} router={this.props.router}/>
     }
     else {
-      // const images = [
-      //   { 
-      //     original: require('../../images/howto/recipe.jpg'),
-      //     description: 'Write recipe details'
-      //   },
-      //   { 
-      //     original: require('../../images/howto/mixers.jpg'),
-      //     description: 'Mix ingredient quantites'
-      //   },
-      //   { 
-      //     original: require('../../images/howto/result.jpg'),
-      //     description: 'Share your results'
-      //   }
-      // ]
       const {showHelp, showBrowserWarning} = this.state
-      const jumbo = (
-      // showHelp ? (
-      //   <ImageGallery
-      //     items={images}
-      //     slideInterval={2000}
-      //     showThumbnails={false}
-      //     showFullscreenButton={false}
-      //     showPlayButton={false}
-      //     showNav={false}
-      //     autoPlay={true}
-      //     infinite={false}
-      //     disableArrowKeys={false}
-      //     showBullets={true}
-      //     onImageLoad={this.handleImageLoad}/>
-      // ) : (
-        <div>
-          <h1 className="text-center">Make free nutrition labels!</h1>
-          <h3 className="text-center">Understand what you are eating.</h3>
-          <p className="text-right">
-            {/*<Button bsStyle="default" onClick={() => this.showHelp()}>
-              Learn more&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-bell"></Glyphicon>
-            </Button>*/}
-          </p>
-        </div>
-      )
-      // const homeForceGraph = (
-      //   <div className="text-center" style={{
-      //         borderWidth: 1,
-      //         borderColor: 'black',
-      //         borderStyle: 'dashed',
-      //         borderRadius: 5,
-      //         marginTop: 10,
-      //         marginBottom: 10}}>
-      //     <InteractiveForceGraph
-      //       highlightDependencies
-      //       simulationOptions={{ height: 400, width: 400, animate: true }}
-      //       onSelectNode={console.log('')}
-      //       onDeselectNode={console.log('')}
-      //     >
-      //       {exampleJSON.nodes.map(node => (
-      //         <ForceGraphNode
-      //           key={node.id}
-      //           fill={interpolateRainbow(node.group/10)}
-      //           node={{ ...node, radius: 7 }}
-      //         />
-      //       ))}
-      //       {exampleJSON.links.map(link => (
-      //         <ForceGraphLink
-      //           key={`${link.source}=>${link.target}`}
-      //           link={{ ...link, value: 2 }}
-      //         />
-      //       ))}
-      //     </InteractiveForceGraph>
-      //   </div>
-      // )
+      const home = require('../../images/home.jpg')
       let browserWarning = null
       if (showBrowserWarning) {
         if (browser.name === "chrome" || browser.name === "firefox")
@@ -146,16 +76,8 @@ export default class Home extends React.Component {
         <div>
           <Grid>
            {browserWarning}
-            <Jumbotron style={{
-              backgroundColor: 'MintCream', 
-              borderWidth: 1,
-              borderColor: 'black',
-              borderStyle: 'solid',
-              borderRadius: 5}}
-            >
-              {jumbo}
-            </Jumbotron>
             <Row>
+              <img src={home} className="img-responsive"/>
               <div className="text-center">
                 <Button bsStyle="success" onClick={() => this.transitionToGenerator()}>
                   Create Label&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-list-alt"></Glyphicon>

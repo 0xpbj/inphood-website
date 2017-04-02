@@ -114,7 +114,7 @@ class Recipe extends React.Component {
         <FormGroup controlId="formControlsTextarea">
           <ControlLabel>Recipe Ingredients</ControlLabel>
           {recipeAlert}
-          <TooltipButton floating accent tooltip='Enter recipe ingredients and quantities for the nutrition label' />
+          {/*<TooltipButton floating accent tooltip='Enter recipe ingredients and quantities for the nutrition label' />*/}
           <FormControl
             componentClass="textarea"
             rows={textRows}

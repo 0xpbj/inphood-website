@@ -22,6 +22,7 @@ const home = require('../../images/home.jpg')
 const sectionStyle = {
   width: "100%",
   height: "600px",
+  marginTop: 20,
   backgroundImage: `url(${home})`
 };
 

@@ -18,6 +18,13 @@ import { InteractiveForceGraph, ForceGraphNode, ForceGraphLink } from 'react-vis
 import { interpolateRainbow } from 'd3-scale'
 import exampleJSON from './example.json'
 
+const home = require('../../images/home.jpg')
+const sectionStyle = {
+  width: "100%",
+  height: "600px",
+  backgroundImage: `url(${home})`
+};
+
 export default class Home extends React.Component {
   constructor() {
     super()
@@ -60,7 +67,6 @@ export default class Home extends React.Component {
     }
     else {
       const {showHelp, showBrowserWarning} = this.state
-      const home = require('../../images/home.jpg')
       let browserWarning = null
       if (showBrowserWarning) {
         if (browser.name === "chrome" || browser.name === "firefox")
@@ -73,13 +79,12 @@ export default class Home extends React.Component {
           )
       }
       return (
-        <div>
+        <div style={ sectionStyle }>
           <Grid>
            {browserWarning}
             <Row>
-              <img src={home} className="img-responsive"/>
-              <div className="text-center">
-                <Button bsStyle="success" onClick={() => this.transitionToGenerator()}>
+              <div className="text-center" style={{marginTop: 300}}>
+                <Button onClick={() => this.transitionToGenerator()}>
                   Create Label&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-list-alt"></Glyphicon>
                 </Button>
               </div>

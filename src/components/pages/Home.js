@@ -12,19 +12,12 @@ import UploadModal from '../layout/UploadModal'
 import MarginLayout from '../../helpers/MarginLayout'
 import Generator from '../../containers/GeneratorContainer'
 import Results from '../../containers/ResultsContainer'
+import Footer from "../../containers/FooterContainer"
 const Config = require('Config')
 import browser from 'detect-browser'
 import { InteractiveForceGraph, ForceGraphNode, ForceGraphLink } from 'react-vis-force'
 import { interpolateRainbow } from 'd3-scale'
 import exampleJSON from './example.json'
-
-const home = require('../../images/home.jpg')
-const sectionStyle = {
-  width: "100%",
-  height: "600px",
-  marginTop: 20,
-  backgroundImage: `url(${home})`
-};
 
 export default class Home extends React.Component {
   constructor() {
@@ -79,21 +72,34 @@ export default class Home extends React.Component {
             </Alert>
           )
       }
+      const home = require('../../images/home4K.jpg')
+      const sectionStyle = {
+        backgroundImage:`url(${home})`,
+        backgroundRepeat:'no-repeat',
+        backgroundSize:'cover',
+        width:'100%'
+      };
       return (
-        <div style={ sectionStyle }>
-          <Grid>
-           {browserWarning}
-            <Row>
-              <div className="text-center" style={{marginTop: 300}}>
-                <Button onClick={() => this.transitionToGenerator()}>
-                  Create Label&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-list-alt"></Glyphicon>
-                </Button>
-              </div>
-            </Row>
-          </Grid>
-        </div>
+        <Grid style={sectionStyle}>
+          <Row style={{height:'100vh'}}>
+            <Col>
+                <Row style={{height:'65vh'}}>
+                  {browserWarning}
+                </Row>
+                <Row className="text-center">
+                    <Button onClick={() => this.transitionToGenerator()}>
+                      Create Label&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-list-alt"></Glyphicon>
+                    </Button>
+                </Row>
+                <Row style={{height:'20vh'}}>
+                </Row>
+                <Row>
+                  <Footer/>
+                </Row>
+            </Col>
+          </Row>
+        </Grid>
       )
     }
   }
 }
-

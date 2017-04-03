@@ -22,7 +22,6 @@ import Chip from 'react-toolbox/lib/chip'
 import UploadModal from '../layout/UploadModal'
 import TagController from '../controllers/TagController'
 import ProgressBar from 'react-toolbox/lib/progress_bar'
-import domtoimage from 'dom-to-image'
 import * as constants from '../../constants/Constants'
 import CopyToClipboard from 'react-copy-to-clipboard'
 
@@ -56,58 +55,44 @@ export default class Generator extends React.Component {
     if (this.state.labelErrorFlag)
       this.setState({labelErrorFlag: false})
   }
-  shareLabel(share) {
-    // this.props.saveToCloud()
+  shareLabel() {
     const {unusedTags, matchResultsModel} = this.props.tagModel
     const usefulIngredients = matchResultsModel.getNumberOfSearches() - unusedTags.length
     if (this.props.nutrition.key && usefulIngredients) {
-      if (share) {
-        ReactGA.event({
-          category: 'Results',
-          action: 'User sharing results',
-          nonInteraction: false
-        });
-        this.setState({showShareUrl: true})
-      }
-      else {
-        ReactGA.event({
-          category: 'Label',
-          action: 'User saving label',
-          nonInteraction: false
-        });
-        domtoimage.toPng(document.getElementById('nutrition-label'), { quality: 1.0 })
-        .then(function (dataUrl) {
-          var link = document.createElement('a');
-          link.download = 'nutrition-label.png';
-          link.href = dataUrl;
-          link.click();
-        });
-        this.setState({showShareUrl: false, copiedUrl: false})
-      }
-    }
-    else {
-      this.setState({labelErrorFlag: true, showShareUrl: false, copiedUrl: false})
+      this.props.saveLabelToAws()
+      ReactGA.event({
+        category: 'Results',
+        action: 'User sharing results',
+        nonInteraction: false
+      });
     }
   }
+  // shareLabelButton() {
+  //   return (
+  //     <Dropdown id='shareDropdown'>
+  //       <Dropdown.Toggle bsStyle='success'>
+  //         <Glyphicon glyph="share" />&nbsp;&nbsp;Share Label
+  //       </Dropdown.Toggle>
+  //       <Dropdown.Menu>
+  //         <MenuItem
+  //           eventKey='1'
+  //           onClick={() => this.shareLabel(false)}>
+  //           Save Label&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-save"></Glyphicon>
+  //         </MenuItem>
+  //         <MenuItem
+  //           eventKey='2'
+  //           onClick={() => this.shareLabel(true)}>
+  //           Share Link&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-share-alt"></Glyphicon>
+  //         </MenuItem>
+  //       </Dropdown.Menu>
+  //     </Dropdown>
+  //   )
+  // }
   shareLabelButton() {
     return (
-      <Dropdown id='shareDropdown'>
-        <Dropdown.Toggle bsStyle='success'>
-          <Glyphicon glyph="share" />&nbsp;&nbsp;Share Label
-        </Dropdown.Toggle>
-        <Dropdown.Menu>
-          <MenuItem
-            eventKey='1'
-            onClick={() => this.shareLabel(false)}>
-            Save Label&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-save"></Glyphicon>
-          </MenuItem>
-          <MenuItem
-            eventKey='2'
-            onClick={() => this.shareLabel(true)}>
-            Share Link&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-share-alt"></Glyphicon>
-          </MenuItem>
-        </Dropdown.Menu>
-      </Dropdown>
+      <Button bsStyle='success' onClick={() => this.shareLabel(false)}>
+        <Glyphicon glyph="share" />&nbsp;&nbsp;Share Label
+      </Button>
     )
   }
   customLabelButton() {
@@ -195,14 +180,15 @@ export default class Generator extends React.Component {
       </Alert>
     ) : null
     const user = Config.DEBUG ? 'test' : 'anonymous'
-    const shareUrl = 'https://www.inphood.com/?user=' + user + '&label=' + this.props.nutrition.key
-    const shareUrlBox = (this.state.showShareUrl) ? (
+    // const shareUrl = 'https://www.inphood.com/?user=' + user + '&label=' + this.props.nutrition.key
+    const {shareUrl, embedUrl} = this.props.results
+    const shareUrlBox = (embedUrl) ? (
       <div>
         <Col xs={10} sm={10} md={10} lg={10}>
-          <pre style={{marginBottom:0, marginTop:constants.VERT_SPACE}}>{shareUrl}</pre>
+          <pre style={{marginBottom:0, marginTop:constants.VERT_SPACE}}>{embedUrl}</pre>
         </Col>
         <Col xs={2} sm={2} md={2} lg={2}>
-          <CopyToClipboard text={shareUrl}
+          <CopyToClipboard text={embedUrl}
             onCopy={() => this.setState({copiedUrl: true})}>
             <Button className="btn-primary-spacing" bsStyle="success" style={{marginBottom:0, marginTop:constants.VERT_SPACE}}>
               <Glyphicon glyph="glyphicon glyphicon-copy"></Glyphicon>

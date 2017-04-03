@@ -3,7 +3,8 @@ import {
   GET_LABEL_ID,
   SET_TITLE,
   SELECTED_PHOTO,
-  CLEAR_DATA
+  CLEAR_DATA,
+  SET_SHARE_URL
 } from '../constants/ActionTypes'
 
 const initialState = {
@@ -11,7 +12,9 @@ const initialState = {
   labelId: '',
   data: {},
   title: '',
-  picture: ''
+  picture: '',
+  shareUrl: '',
+  embedUrl: ''
 }
 export default function results(state = initialState, action) {
   switch (action.type) {
@@ -21,7 +24,8 @@ export default function results(state = initialState, action) {
         labelId: '',
         data: {},
         title: '',
-        picture: ''
+        picture: '',
+        shareUrl: ''
       }
     case LABEL_DATA:
       return {
@@ -44,6 +48,12 @@ export default function results(state = initialState, action) {
       return {
         ...state,
         title: action.title
+      }
+    case SET_SHARE_URL:
+      return {
+        ...state,
+        shareUrl: action.shareUrl,
+        embedUrl: action.embedUrl
       }
     default:
       return state

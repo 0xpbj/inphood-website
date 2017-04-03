@@ -28,7 +28,8 @@ import {
   GET_MORE_DATA,
   SET_PARSED_DATA,
   SET_TITLE,
-  INIT_SERIALIZED_DATA
+  INIT_SERIALIZED_DATA,
+  SAVE_LABEL_AWS
 } from '../constants/ActionTypes'
 
 export function saveToCloud() {
@@ -237,5 +238,11 @@ export function setTitle(title) {
 export function initSerializedData() {
   return {
     type: INIT_SERIALIZED_DATA
+  }
+}
+
+export function saveLabelToAws() {
+  return {
+    type: SAVE_LABEL_AWS
   }
 }

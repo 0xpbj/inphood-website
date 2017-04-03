@@ -5,6 +5,8 @@ export const SELECTED_PHOTO = 'SELECTED_PHOTO'
 export const GET_MORE_DATA = 'GET_MORE_DATA'
 export const GET_COMMERCIAL_DATA = 'GET_COMMERCIAL_DATA'
 export const SET_TITLE = 'SET_TITLE'
+export const SAVE_LABEL_AWS = 'SAVE_LABEL_AWS'
+
 
 // Results Actions
 export const LABEL_DATA = 'LABEL_DATA'
@@ -20,6 +22,7 @@ export const INGREDIENT_FIREBASE_DATA = 'INGREDIENT_FIREBASE_DATA'
 export const LAZY_FETCH_FIREBASE = 'LAZY_FETCH_FIREBASE'
 export const LAZY_LOAD_FIREBASE = 'LAZY_LOAD_FIREBASE'
 export const UNUSED_TAGS = 'UNUSED_TAGS'
+export const SET_SHARE_URL = 'SET_SHARE_URL'
 
 
 // Model Actions

@@ -26,14 +26,16 @@ export default class IngredientController extends React.Component {
   handleEditBoxValueChange(formObject) {
     const {tag} = this.props
     const value = formObject.target.value
-    let ingredientControlModel = this.props.ingredientModel.ingredientControlModels[tag]
-    ingredientControlModel.setEditBoxValue(value)
-    this.props.updateIngredientControlModel(tag, ingredientControlModel)
+    if (!isNaN(value) && value > 0 && value < 1001) {
+      let ingredientControlModel = this.props.ingredientModel.ingredientControlModels[tag]
+      ingredientControlModel.setEditBoxValue(value)
+      this.props.updateIngredientControlModel(tag, ingredientControlModel)
+    }
   }
   handleUnitDropdownChange(units) {
     const {tag} = this.props
     const ingredientControlModel = this.props.ingredientModel.ingredientControlModels[tag]
-    const value = ingredientControlModel.getSliderValue()
+    const value = ingredientControlModel.getEditBoxValue()
     ReactGA.event({
       category: 'Nutrition Mixer',
       action: 'User changed units for ingredient',
@@ -46,7 +48,6 @@ export default class IngredientController extends React.Component {
     const {tag} = this.props
     const {matchResultsModel} = this.props.tagModel
     const searchResult = matchResultsModel.getSearchResultByDesc(tag, value)
-
     if ((searchResult.getStandardRefDataObj() === undefined) &&
         (searchResult.getBrandedDataObj() === undefined)) {
       if (value === '.....') {
@@ -70,7 +71,6 @@ export default class IngredientController extends React.Component {
         this.props.lazyFetchFirebase(value, tag, searchResult.getNdbNo(), index)
       }
     }
-    //
     else {
       this.props.completeMatchDropdownChange(tag, value)
     }
@@ -83,10 +83,13 @@ export default class IngredientController extends React.Component {
     // rationalToFloat expects a string. This also helps to catch things like
     // "" and " " which evaluate to numbers (isNan===false) with the second
     // predicate checking for string type.
-    if (! isNaN(editBoxValue)) {
+    if (!isNaN(editBoxValue) && editBoxValue > 0 && editBoxValue < 1001) {
       if ((typeof editBoxValue) !== "string") {
         return 'success'
       }
+    }
+    else {
+      return 'error'
     }
     // Try and convert to a rational number from a variety of string
     // representations (i.e. "1/2" "024" etc.), failing that, return error.
@@ -103,6 +106,7 @@ export default class IngredientController extends React.Component {
     ingredientControlModel.setDropdownUnitValue(units)
     this.props.updateIngredientControlModel(tag, ingredientControlModel)
     this.props.nutritionModelScaleIng(tag, value, units)
+    this.props.initSerializedData()
   }
   updateReduxStoreIfValid() {
     if (this.getValidationState() === 'success') {
@@ -119,28 +123,27 @@ export default class IngredientController extends React.Component {
       this.updateReduxStore(tag, value, units)
     }
   }
-  submitNewSliderValue(event) {
+  onEditBoxBlurred() {
+    this.updateReduxStoreIfValid()
+  }
+  submitNewValue(event) {
     this.updateReduxStoreIfValid()
 
     // This prevents the default behavior of a form submit which causes a full
     // re-render / re-state!
     event.preventDefault()
   }
-  onEditBoxBlurred() {
-    this.updateReduxStoreIfValid()
-  }
   render() {
     const {tag, nutritionModel} = this.props
     const ingredientControlModel = this.props.ingredientModel.ingredientControlModels[tag]
     const formControlId = tag + "FormControlId"
-    const sliderValue = ingredientControlModel.getSliderValue()
     const editBoxValue = ingredientControlModel.getEditBoxValue()
     return (
       <div ref={tag}>
         <Row style={{paddingRight:15}}>
           <Col xs={2} md={2} style={{paddingRight: 5}}>
             <form
-              onSubmit={(event) => this.submitNewSliderValue(event)}
+              onSubmit={(event) => this.submitNewValue(event)}
               autoComplete="off">
               <FormGroup
                 style={{marginBottom: 0}}

@@ -4,7 +4,6 @@ import {
   CLEAR_DATA,
   GET_LABEL_ID,
   POST_LABEL_ID,
-  SEND_SERIALIZED_DATA,
   STORE_PARSED_DATA,
   LAZY_FETCH_FIREBASE,
   MODEL_RESET,
@@ -28,7 +27,8 @@ import {
   CLOSE_SEARCH_MODAL,
   GET_MORE_DATA,
   SET_PARSED_DATA,
-  SET_TITLE
+  SET_TITLE,
+  INIT_SERIALIZED_DATA
 } from '../constants/ActionTypes'
 
 export function saveToCloud() {
@@ -63,14 +63,6 @@ export function postLabelId(labelId, comment) {
     type: POST_LABEL_ID,
     labelId,
     comment
-  }
-}
-
-export function sendSerializedData(composite, full) {
-  return {
-    type: SEND_SERIALIZED_DATA,
-    composite,
-    full
   }
 }
 
@@ -207,15 +199,6 @@ export function completeMatchDropdownChange(tag, value) {
   }
 }
 
-export function sendUserGeneratedData(data, labelId, userId) {
-  return {
-    type: SEND_USER_GENERATED_DATA,
-    data,
-    labelId,
-    userId
-  }
-}
-
 export function addSearchSelection(searchResult, index) {
   return {
     type: ADD_SEARCH_SELECTION,
@@ -243,9 +226,16 @@ export function setLabelType(labelType) {
     labelType
   }
 }
+
 export function setTitle(title) {
   return {
     type: SET_TITLE,
     title
+  }
+}
+
+export function initSerializedData() {
+  return {
+    type: INIT_SERIALIZED_DATA
   }
 }

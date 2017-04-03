@@ -25,18 +25,19 @@ export default class ServingsController extends React.Component {
         nonInteraction: false
       });
     }
-
     const {servingsControlModel} = this.props.servings
-
     const servingsValue = Number(servingsControlModel.getValueEditBox())
-    servingsControlModel.setValue(servingsValue)
-    servingsControlModel.setValueEditBox(servingsValue.toString())
+    if (!isNaN(servingsValue) && servingsValue > 0 && servingsValue < 1001) {
+      servingsControlModel.setValue(servingsValue)
+      servingsControlModel.setValueEditBox(servingsValue.toString())
 
-    const servingsRatio = servingsControlModel.getDisplayRatioEditBox()
-    servingsControlModel.setDisplayRatio(servingsRatio)
+      const servingsRatio = servingsControlModel.getDisplayRatioEditBox()
+      servingsControlModel.setDisplayRatio(servingsRatio)
 
-    this.props.setServingsControllerModel(servingsControlModel)
-    this.props.nutritionModelSetServings(servingsControlModel)
+      this.props.setServingsControllerModel(servingsControlModel)
+      this.props.nutritionModelSetServings(servingsControlModel)
+      this.props.initSerializedData()
+    }
   }
   //
   //
@@ -45,7 +46,6 @@ export default class ServingsController extends React.Component {
   submitValues(event) {
     this.handleServingsAmountEditBoxBlurred()
     this.handleServingsRatioEditBoxBlurred()
-
     // Prevent the default form submit behavior (causing full re-render)
     event.preventDefault()
   }
@@ -53,26 +53,32 @@ export default class ServingsController extends React.Component {
   getServingsAmountValidationState() {
     const {servingsControlModel} = this.props.servings
     const valueEditBox = servingsControlModel.getValueEditBox()
-    if (! isNaN(Number(valueEditBox))) {
+    const number = Number(valueEditBox)
+    if (!isNaN(number) && number > 0 && number < 1001) {
       return 'success'
     }
-
-    return 'error'
+    else {
+      return 'error'
+    }
   }
   //
   handleServingsAmountEditBoxBlurred() {
-    if (this.getServingsAmountValidationState() !== 'success')
+    if (this.getServingsAmountValidationState() !== 'success') {
       return
-
-    this.handleServingsValueChange('Servings value edit box changed')
+    }
+    else {
+      this.handleServingsValueChange('Servings value edit box changed')
+    }
   }
   //
   handleServingsAmountEditBoxChange(formObject) {
     const amount = formObject.target.value
-    const {servingsControlModel} = this.props.servings
-    servingsControlModel.setValueEditBox(amount)
-
-    this.props.setServingsControllerModel(servingsControlModel)
+    if (!isNaN(amount) && amount > 0 && amount < 1001) {
+      const {servingsControlModel} = this.props.servings
+      servingsControlModel.setValueEditBox(amount)
+      this.props.setServingsControllerModel(servingsControlModel)
+      this.props.initSerializedData()
+    }
   }
   //
   getServingsRatioValidationState() {
@@ -81,15 +87,18 @@ export default class ServingsController extends React.Component {
     if (((typeof ratioEditBox) === 'string') && (ratioEditBox.trim().length > 0)) {
       return 'success'
     }
-
-    return 'error'
+    else {
+      return 'error'
+    }
   }
   //
   handleServingsRatioEditBoxBlurred() {
-    if (this.getServingsRatioValidationState() !== 'success')
+    if (this.getServingsRatioValidationState() !== 'success') {
       return
-
-    this.handleServingsValueChange('Servings ratio edit box changed')
+    }
+    else {
+      this.handleServingsValueChange('Servings ratio edit box changed')
+    }
   }
   //
   handleServingsRatioEditBoxChange(formObject) {
@@ -98,6 +107,7 @@ export default class ServingsController extends React.Component {
     servingsControlModel.setDisplayRatioEditBox(ratio)
 
     this.props.setServingsControllerModel(servingsControlModel)
+    this.props.initSerializedData()
   }
   //
   //
@@ -144,6 +154,7 @@ export default class ServingsController extends React.Component {
       servingsControlModel.setDisplayUnit(displayUnitEditBox)
       this.props.setServingsControllerModel(servingsControlModel)
       this.props.nutritionModelSetServings(servingsControlModel)
+      this.props.initSerializedData()
     }
   }
   //

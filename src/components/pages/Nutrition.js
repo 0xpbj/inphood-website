@@ -50,25 +50,11 @@ export default class Nutrition extends React.Component {
       }
     }
     this.props.setParsedData(parsedData)
-
     // Remove the tag from the matchResultsModel:
     let {matchResultsModel} = this.props.tagModel
     matchResultsModel.removeSearch(tag)
     this.props.updateMatchResultsModel(matchResultsModel)
-
-    // Send updated model to firebase
-    const {nutritionModel} = this.props.nutritionModelRed
-    const full = nutritionModel.serialize()
-    const compositeModel = nutritionModel.getScaledCompositeIngredientModel()
-    const composite = compositeModel.serialize()
-    let recipeText = this.getRecipeText(nutritionModel)
-    if (recipeText !== '') {
-      const user = Config.DEBUG ? 'test' : 'anonymous'
-      const label = this.props.nutrition.key
-      this.props.sendUserGeneratedData(recipeText, label, user)
-    }
-    this.props.sendSerializedData(composite, full)
-
+    this.props.initSerializedData()
     ReactGA.event({
       category: 'Nutrition Mixer',
       action: 'User deleted ingredient',

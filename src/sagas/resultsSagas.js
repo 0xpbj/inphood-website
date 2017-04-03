@@ -1,11 +1,10 @@
 import {
   CLEAR_DATA,
-  RESULT_URL,
+  RESULT_KEY,
   LABEL_DATA,
   GET_LABEL_ID,
   STORE_PARSED_DATA,
-  SEND_SERIALIZED_DATA,
-  SEND_USER_GENERATED_DATA,
+  INIT_SERIALIZED_DATA,
 } from '../constants/ActionTypes'
 
 import { call, fork, put, select, take, takeLatest } from 'redux-saga/effects'
@@ -19,15 +18,36 @@ const firebaseLogin = () => {
   .catch(error => ({ error }))
 }
 
+const getRecipeText = (aNutritionModel) => {
+  let recipeText = ''
+  const nmTags = aNutritionModel.getTags()
+  for (let index in nmTags) {
+    const tag = nmTags[index]
+    const scaledIngredient = aNutritionModel.getScaledIngredient(tag)
+    recipeText = recipeText +
+                 scaledIngredient.getQuantity().toFixed(2) + " " +
+                 scaledIngredient.getUnit() + " " +
+                 scaledIngredient.getIngredientModel().getKey() +
+                 "\n"
+  }
+  return recipeText
+}
+
 function* loadFirebaseData() {
-  const {composite, full, parsedData, rawData, key} = yield select(state => state.nutritionReducer)
-  let user = Config.DEBUG ? 'test' : 'anonymous'
+  const {parsedData, rawData, key} = yield select(state => state.nutritionReducer)
+  const {nutritionModel} = yield select(state => state.nutritionModelReducer)
+  const user = Config.DEBUG ? 'test' : 'anonymous'
+  const full = nutritionModel.serialize()
+  const compositeModel = nutritionModel.getScaledCompositeIngredientModel()
+  const composite = compositeModel.serialize()
+  const userGeneratedData = getRecipeText(nutritionModel)
   firebase.database().ref('/global/nutritionLabel/' + user + '/' + key).update({
     full,
     user,
     rawData,
     parsedData,
-    composite
+    composite,
+    userGeneratedData
   })
 }
 
@@ -40,27 +60,16 @@ function* getLabelData() {
   }
 }
 
-function* sendUserGeneratedData() {
-  while (true) {
-    const {data, labelId, userId} = yield take (SEND_USER_GENERATED_DATA)
-    firebase.database().ref('/global/nutritionLabel/'+userId+'/'+labelId).update({
-      userGeneratedData: data
-    })
-  }
-}
-
 function* initFirebaseKeys() {
   yield take (STORE_PARSED_DATA)
   yield call (firebaseLogin)
-  let user = Config.DEBUG ? 'test' : 'anonymous'
-  let key = firebase.database().ref('/global/nutritionLabel/' + user).push().key
-  const url = "http://www.inphood.com/" + key
-  yield put ({type: RESULT_URL, url, key, anonymous: true})
+  const user = Config.DEBUG ? 'test' : 'anonymous'
+  const key = firebase.database().ref('/global/nutritionLabel/' + user).push().key
+  yield put ({type: RESULT_KEY, key})
 }
 
 export default function* root() {
   yield fork(getLabelData)
-  yield fork(sendUserGeneratedData)
   yield fork(takeLatest, CLEAR_DATA, initFirebaseKeys)
-  yield fork(takeLatest, SEND_SERIALIZED_DATA, loadFirebaseData)
+  yield fork(takeLatest, INIT_SERIALIZED_DATA, loadFirebaseData)
 }

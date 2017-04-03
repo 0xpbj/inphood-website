@@ -16,10 +16,13 @@ import ControlLabel from 'react-bootstrap/lib/ControlLabel'
 import DropdownButton from 'react-bootstrap/lib/DropdownButton'
 import {parseRecipe, parseCaption} from '../../helpers/parseRecipe'
 import Chip from 'react-toolbox/lib/chip'
-
+import TButton from 'react-toolbox/lib/button'
+import Tooltip from 'react-toolbox/lib/tooltip'
 import MarginLayout from '../../helpers/MarginLayout'
 import ServingsController from '../../containers/ServingsControllerContainer'
 import { withRouter } from 'react-router'
+
+const TooltipButton = Tooltip(TButton)
 
 class Recipe extends React.Component {
   constructor() {
@@ -106,38 +109,19 @@ class Recipe extends React.Component {
         <h4>You forgot to enter an ingredient!</h4>
       </Alert>
     ) : null
-    const recipePopover = this.state.recipePopoverFlag ? (
-      <div style={{ width: 300 }}>
-        <Popover
-          id="popover-basic"
-          placement="right"
-          positionLeft={20}
-          positionTop={-40}
-          title="Recipe Help"
-        >
-          Enter recipe ingredients and quantities for the nutrition label
-        </Popover>
-      </div>
-    ) : null
     return (
       <div>
         <FormGroup controlId="formControlsTextarea">
           <ControlLabel>Recipe Ingredients</ControlLabel>
           {recipeAlert}
-          <Glyphicon
-            onClick={()=>this.setState({recipePopoverFlag: !this.state.recipePopoverFlag})}
-            style={{marginLeft: 10}}
-            glyph="glyphicon glyphicon-info-sign">
-            {recipePopover}
-          </Glyphicon>
+          {/*<TooltipButton floating accent tooltip='Enter recipe ingredients and quantities for the nutrition label' />*/}
           <FormControl
             componentClass="textarea"
             rows={textRows}
             value={this.state.ingredients}
             placeholder={"1 cup spinach (sliced)\n..."}
             onChange={(e) => this.setState({ingredients: e.target.value, recipeError: false})}
-          >
-          </FormControl>
+          />
         </FormGroup>
         <div style={{marginTop: 10}} className="text-right">
           {this.getAddIngredientButton()}

@@ -4,6 +4,7 @@ import {
   NM_ADD_INGREDIENT,
   NM_REM_INGREDIENT,
   IM_UPDATE_MODEL,
+  INIT_SERIALIZED_DATA,
   COMPLETE_DROPDOWN_CHANGE,
 } from '../constants/ActionTypes'
 
@@ -75,6 +76,7 @@ function* completeMatchDropdownChange() {
       label: tag
     });
     yield put.resolve({type: NM_ADD_INGREDIENT, tag, ingredientModel, quantity: currentValue, unit: newUnit})
+    yield put ({type: INIT_SERIALIZED_DATA})
   }
 }
 

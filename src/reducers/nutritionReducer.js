@@ -1,16 +1,12 @@
 import {
   CLEAR_DATA,
-  RESULT_URL,
-  SEND_SERIALIZED_DATA,
+  RESULT_KEY,
   STORE_PARSED_DATA,
   SET_PARSED_DATA
 } from '../constants/ActionTypes'
 
 const initialState = {
-  resultUrl: '',
   key: '',
-  composite: '',
-  full: '',
   parsedData: [],
   rawData: [],
   newData: [],
@@ -20,26 +16,16 @@ export default function nutrition(state = initialState, action) {
   switch (action.type) {
     case CLEAR_DATA:
       return {
-        resultUrl: '',
         key: '',
-        composite: '',
-        full: '',
         parsedData: [],
         rawData: [],
         newData: [],
         missingData: []
       }
-    case RESULT_URL:
+    case RESULT_KEY:
       return {
         ...state,
-        resultUrl: action.url,
         key: action.key,
-      }
-    case SEND_SERIALIZED_DATA:
-      return {
-        ...state,
-        composite: action.composite,
-        full: action.full
       }
     case SET_PARSED_DATA:
       return {

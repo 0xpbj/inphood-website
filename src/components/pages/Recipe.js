@@ -103,7 +103,7 @@ class Recipe extends React.Component {
     let textRows = 3
     const recipeAlert = (this.state.recipeError) ? (
       <Alert bsStyle="danger">
-        <h4>You forgot to enter a ingredient!</h4>
+        <h4>You forgot to enter an ingredient!</h4>
       </Alert>
     ) : null
     const recipePopover = this.state.recipePopoverFlag ? (

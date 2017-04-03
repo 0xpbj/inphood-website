@@ -38,7 +38,7 @@ export default class RecipeForm extends React.Component {
     ) : null
     const recipeAlert = (this.state.recipeError) ? (
       <Alert bsStyle="danger">
-        <h4>You forgot to enter a ingredient!</h4>
+        <h4>You forgot to enter an ingredient!</h4>
       </Alert>
     ) : null
     return (

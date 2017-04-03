@@ -117,35 +117,17 @@ class Recipe extends React.Component {
       )
     } else {
       return(
-        <div style={{marginTop: 10}}>
-          <Row>
-            <Col xs={1} sm={1} md={1} lg={1}/>
-            <Col xs={3} sm={3} md={3} lg={3}>
-              <TooltipButton 
-                tooltip='Click to try a sample recipe' 
-                tooltipPosition='right'
-                tooltipDelay={500} 
-                icon='add' 
-                label='Sample Ingredients'
-                mini raised 
-                onClick={() => this.sampleRecipeFlow()}
-              />
-            </Col>
-            <Col xs={4} sm={4} md={4} lg={4}/>
-            <Col xs={3} sm={3} md={3} lg={3}>
-              <TooltipButton 
-                tooltip='Click to add ingredient to label' 
-                tooltipPosition='left'
-                tooltipDelay={500} 
-                icon='add' 
-                label='Add Ingredient' 
-                mini raised
-                style={{backgroundColor: 'green'}}
-                onClick={() => this.recipeFlow()}
-              />
-            </Col>
-            <Col xs={1} sm={1} md={1} lg={1}/>
-          </Row>
+        <div style={{marginTop: 10}} className="text-right">
+          <TooltipButton 
+            tooltip='Click to add ingredient to label' 
+            tooltipPosition='left'
+            tooltipDelay={500} 
+            icon='add' 
+            label='Add Ingredient' 
+            mini raised
+            style={{backgroundColor: 'green'}}
+            onClick={() => this.recipeFlow()}
+          />
         </div>
       )
     }
@@ -158,6 +140,16 @@ class Recipe extends React.Component {
     ) : null
     return (
       <div>
+        <div className="text-right">
+          <TooltipButton 
+            tooltip='Click to try a sample recipe' 
+            tooltipPosition='left'
+            tooltipDelay={500} 
+            icon='' 
+            label='Sample Recipe'
+            onClick={() => this.sampleRecipeFlow()}
+          />
+        </div>
         <FormGroup controlId="formControlsTextarea">
           {recipeAlert}
           <TooltipInput 

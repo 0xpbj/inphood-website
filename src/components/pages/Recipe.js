@@ -6,7 +6,7 @@ import Well from 'react-bootstrap/lib/Well'
 import Grid from 'react-bootstrap/lib/Grid'
 import Alert from 'react-bootstrap/lib/Alert'
 import Image from 'react-bootstrap/lib/Image'
-import Button from 'react-bootstrap/lib/Button'
+// import Button from 'react-bootstrap/lib/Button'
 import Popover from 'react-bootstrap/lib/Popover'
 import Glyphicon from 'react-bootstrap/lib/Glyphicon'
 import FormGroup from 'react-bootstrap/lib/FormGroup'
@@ -18,11 +18,14 @@ import {parseRecipe, parseCaption} from '../../helpers/parseRecipe'
 import Chip from 'react-toolbox/lib/chip'
 import Input from 'react-toolbox/lib/input'
 import Tooltip from 'react-toolbox/lib/tooltip'
+import {Button, IconButton} from 'react-toolbox/lib/button'
+import FontIcon from 'react-toolbox/lib/font_icon'
 import MarginLayout from '../../helpers/MarginLayout'
 import ServingsController from '../../containers/ServingsControllerContainer'
 import { withRouter } from 'react-router'
 
 const TooltipInput = Tooltip(Input)
+const TooltipButton = Tooltip(Button)
 
 class Recipe extends React.Component {
   constructor() {
@@ -59,6 +62,23 @@ class Recipe extends React.Component {
   }
   handleChange = (value) => {
     this.setState({...this.state, ingredients: value});
+  }
+  sampleRecipeFlow() {
+    ReactGA.event({
+      category: 'User',
+      action: 'User trying sample recipe',
+      nonInteraction: true
+    });
+    // const {ingredients} = this.state
+    const ingredients = '1 c chard\n2 c spinach\n3 tbsp olive oil\n4 fl-oz water\n1 tsp salt'
+    let data = parseRecipe(ingredients)
+    if (data.found) {
+      this.props.storeParsedData(data.found, data.missing, ingredients)
+      if (!this.state.showNutritionMixers) {
+        this.setState({showNutritionMixers: true})
+      }
+      this.setState({ingredients: '', isSaved: false})
+    }
   }
   recipeFlow() {
     if (this.state.ingredients === '') {
@@ -97,16 +117,40 @@ class Recipe extends React.Component {
       )
     } else {
       return(
-        <Button className="btn-primary-spacing"
-                bsStyle="success"
-                onClick={() => this.recipeFlow()}>
-          Add Ingredients&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-apple"></Glyphicon>
-        </Button>
+        <div style={{marginTop: 10}}>
+          <Row>
+            <Col xs={1} sm={1} md={1} lg={1}/>
+            <Col xs={3} sm={3} md={3} lg={3}>
+              <TooltipButton 
+                tooltip='Click to try a sample recipe' 
+                tooltipPosition='right'
+                tooltipDelay={500} 
+                icon='add' 
+                label='Sample Ingredients'
+                mini raised 
+                onClick={() => this.sampleRecipeFlow()}
+              />
+            </Col>
+            <Col xs={4} sm={4} md={4} lg={4}/>
+            <Col xs={3} sm={3} md={3} lg={3}>
+              <TooltipButton 
+                tooltip='Click to add ingredient to label' 
+                tooltipPosition='left'
+                tooltipDelay={500} 
+                icon='add' 
+                label='Add Ingredient' 
+                mini raised
+                style={{backgroundColor: 'green'}}
+                onClick={() => this.recipeFlow()}
+              />
+            </Col>
+            <Col xs={1} sm={1} md={1} lg={1}/>
+          </Row>
+        </div>
       )
     }
   }
   render() {
-    let textRows = 3
     const recipeAlert = (this.state.recipeError) ? (
       <Alert bsStyle="danger">
         <h4>You forgot to enter an ingredient!</h4>
@@ -126,9 +170,7 @@ class Recipe extends React.Component {
             onChange={this.handleChange.bind(this)} 
           />
         </FormGroup>
-        <div style={{marginTop: 10}} className="text-right">
-          {this.getAddIngredientButton()}
-        </div>
+        {this.getAddIngredientButton()}
         <div style={{marginTop: 15, marginBottom: 15}}>
           <ServingsController/>
         </div>

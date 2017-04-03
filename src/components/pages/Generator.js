@@ -66,6 +66,9 @@ export default class Generator extends React.Component {
         nonInteraction: false
       });
     }
+    else {
+      this.setState({labelErrorFlag: true, showShareUrl: false, copiedUrl: false})
+    }
   }
   // shareLabelButton() {
   //   return (

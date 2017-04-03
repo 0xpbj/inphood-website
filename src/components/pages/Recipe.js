@@ -16,13 +16,13 @@ import ControlLabel from 'react-bootstrap/lib/ControlLabel'
 import DropdownButton from 'react-bootstrap/lib/DropdownButton'
 import {parseRecipe, parseCaption} from '../../helpers/parseRecipe'
 import Chip from 'react-toolbox/lib/chip'
-import TButton from 'react-toolbox/lib/button'
+import Input from 'react-toolbox/lib/input'
 import Tooltip from 'react-toolbox/lib/tooltip'
 import MarginLayout from '../../helpers/MarginLayout'
 import ServingsController from '../../containers/ServingsControllerContainer'
 import { withRouter } from 'react-router'
 
-const TooltipButton = Tooltip(TButton)
+const TooltipInput = Tooltip(Input)
 
 class Recipe extends React.Component {
   constructor() {
@@ -56,6 +56,9 @@ class Recipe extends React.Component {
       else if (nextLocation.search)
         return 'Happy with the recipe ingredients?'
     }
+  }
+  handleChange = (value) => {
+    this.setState({...this.state, ingredients: value});
   }
   recipeFlow() {
     if (this.state.ingredients === '') {
@@ -112,15 +115,15 @@ class Recipe extends React.Component {
     return (
       <div>
         <FormGroup controlId="formControlsTextarea">
-          <ControlLabel>Recipe Ingredients</ControlLabel>
           {recipeAlert}
-          {/*<TooltipButton floating accent tooltip='Enter recipe ingredients and quantities for the nutrition label' />*/}
-          <FormControl
-            componentClass="textarea"
-            rows={textRows}
-            value={this.state.ingredients}
-            placeholder={"1 cup spinach (sliced)\n..."}
-            onChange={(e) => this.setState({ingredients: e.target.value, recipeError: false})}
+          <TooltipInput 
+            tooltip='Type your ingredients here' 
+            tooltipPosition='top'
+            type='text' 
+            multiline label='Recipe Ingredients' 
+            maxLength={5000} 
+            value={this.state.ingredients} 
+            onChange={this.handleChange.bind(this)} 
           />
         </FormGroup>
         <div style={{marginTop: 10}} className="text-right">

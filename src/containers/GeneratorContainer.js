@@ -8,7 +8,8 @@ function mapStateToProps (state) {
     tagModel: state.tagModelReducer,
     nutrition: state.nutritionReducer,
     nutritionModelRed: state.nutritionModelReducer,
-    search: state.searchReducer
+    search: state.searchReducer,
+    results: state.resultsReducer
   }
 }
 

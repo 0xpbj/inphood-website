@@ -38,7 +38,7 @@ export default class About extends React.Component {
       <div style={{backgroundColor: 'white'}}>
         <Grid>
           <Row className="show-grid">
-            <TopBar step="" stepText="" router={this.props.router}/>
+            <TopBar router={this.props.router}/>
             <Col xs={11} sm={11} md={11} lg={11}>
               <h1 className="page-header">About Us</h1>
               <h4>inPhood LLC founded in 2016, labels food images across the internet.</h4>

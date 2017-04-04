@@ -97,10 +97,10 @@ export default class Generator extends React.Component {
   // }
   shareLabelButton() {
     return (
-      <TooltipButton 
-        tooltip='Click to share your label' 
+      <TooltipButton
+        tooltip='Click to share your label'
         tooltipPosition='right'
-        tooltipDelay={500} 
+        tooltipDelay={500}
         icon='share'
         label='Share Label'
         style={{textColor: 'white', backgroundColor: 'green'}}
@@ -211,10 +211,7 @@ export default class Generator extends React.Component {
     )
     return (
       <div>
-        <TopBar step=""
-                stepText=""
-                aButton={null}
-                router={this.props.router}/>
+        <TopBar router={this.props.router}/>
         <Row>
           {ml.marginCol}
           <Col xs={ml.xsCol}

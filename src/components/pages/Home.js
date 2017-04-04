@@ -10,7 +10,8 @@ import UploadModal from '../layout/UploadModal'
 import MarginLayout from '../../helpers/MarginLayout'
 import Generator from '../../containers/GeneratorContainer'
 import Results from '../../containers/ResultsContainer'
-import Footer from "../../containers/FooterContainer"
+import TopBar from '../layout/TopBar'
+import Footer from "../layout/Footer"
 const Config = require('Config')
 import browser from 'detect-browser'
 import { InteractiveForceGraph, ForceGraphNode, ForceGraphLink } from 'react-vis-force'
@@ -73,7 +74,7 @@ export default class Home extends React.Component {
             </Alert>
           )
       }
-      const home = require('../../images/home4K.jpg')
+      const home = require('../../images/homeHD.jpg')
       const sectionStyle = {
         backgroundImage:`url(${home})`,
         backgroundRepeat:'no-repeat',
@@ -84,9 +85,12 @@ export default class Home extends React.Component {
         <Grid style={sectionStyle}>
           <Row style={{height:'100vh'}}>
             <Col>
-                <Row style={{height:'65vh'}}>
+                <TopBar router={this.props.router}/>
+
+                <Row style={{height:'50vh'}}>
                   {browserWarning}
                 </Row>
+
                 <Row className="text-center">
                   <TooltipButton 
                     tooltip='Click to create a nutrition label' 
@@ -99,11 +103,10 @@ export default class Home extends React.Component {
                     onClick={() => this.transitionToGenerator()}
                   />
                 </Row>
-                <Row style={{height:'20vh'}}>
-                </Row>
-                <Row>
-                  <Footer/>
-                </Row>
+
+                <Row style={{height:'40vh'}}/>
+
+                <Footer/>
             </Col>
           </Row>
         </Grid>

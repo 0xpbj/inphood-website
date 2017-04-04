@@ -298,7 +298,7 @@ export default class Results extends React.Component {
       const placeHolderCol = <Col xs={0} sm={0} md={1} lg={2}/>
       return (
         <div style={{backgroundColor: 'white'}}>
-          <TopBar step="" stepText="" aButton={null} router={this.props.router}/>
+          <TopBar router={this.props.router}/>
           <Grid>
             <Row>
               <Col xs={12} sm={6} md={6} lg={6}>

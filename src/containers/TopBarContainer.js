@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import Footer from '../components/layout/Footer'
+import TopBar from '../components/layout/TopBar'
 import * as actionCreators from '../actions/Actions'
 
 function mapStateToProps (state) {
@@ -14,4 +14,4 @@ function mapDispatchToProps (dispatch) {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(Footer)
+)(TopBar)

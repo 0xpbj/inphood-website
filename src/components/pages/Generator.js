@@ -104,7 +104,7 @@ export default class Generator extends React.Component {
         tooltipDelay={500}
         icon='share'
         label='Share Label'
-        style={{textColor: 'white', backgroundColor: 'green'}}
+        style={{color: 'white', backgroundColor: 'forestgreen'}}
         onClick={() => this.shareLabel()}
       />
     )

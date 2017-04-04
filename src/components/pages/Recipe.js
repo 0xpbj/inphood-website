@@ -115,7 +115,7 @@ class Recipe extends React.Component {
             icon='add' 
             label='Add Ingredient' 
             mini raised
-            style={{backgroundColor: 'green'}}
+            style={{color: 'white', backgroundColor: 'forestgreen'}}
             onClick={() => this.recipeFlow()}
           />
         </div>

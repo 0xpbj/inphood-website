@@ -145,7 +145,7 @@ class Recipe extends React.Component {
             tooltip='Click to try a sample recipe' 
             tooltipPosition='left'
             tooltipDelay={500} 
-            icon='' 
+            icon='cached'
             label='Sample Recipe'
             onClick={() => this.sampleRecipeFlow()}
           />

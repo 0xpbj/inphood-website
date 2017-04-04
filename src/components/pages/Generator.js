@@ -7,7 +7,6 @@ import Grid from 'react-bootstrap/lib/Grid'
 import Alert from 'react-bootstrap/lib/Alert'
 import Modal from 'react-bootstrap/lib/Modal'
 import Image from 'react-bootstrap/lib/Image'
-import Button from 'react-bootstrap/lib/Button'
 import Popover from 'react-bootstrap/lib/Popover'
 import Dropdown from 'react-bootstrap/lib/Dropdown'
 import MenuItem from 'react-bootstrap/lib/MenuItem'
@@ -36,6 +35,11 @@ import {getPossibleUnits, rationalToFloat} from '../../helpers/ConversionUtils'
 import {IngredientModel} from '../models/IngredientModel'
 import {IngredientControlModel} from '../models/IngredientControlModel'
 const Config = require('Config')
+
+import {Button} from 'react-toolbox/lib/button'
+import Tooltip from 'react-toolbox/lib/tooltip'
+const TooltipButton = Tooltip(Button)
+
 
 export default class Generator extends React.Component {
   constructor() {
@@ -93,9 +97,15 @@ export default class Generator extends React.Component {
   // }
   shareLabelButton() {
     return (
-      <Button bsStyle='success' onClick={() => this.shareLabel(false)}>
-        <Glyphicon glyph="share" />&nbsp;&nbsp;Share Label
-      </Button>
+      <TooltipButton 
+        tooltip='Click to share your label' 
+        tooltipPosition='right'
+        tooltipDelay={500} 
+        icon='share'
+        label='Share Label'
+        style={{textColor: 'white', backgroundColor: 'green'}}
+        onClick={() => this.shareLabel()}
+      />
     )
   }
   customLabelButton() {
@@ -171,12 +181,6 @@ export default class Generator extends React.Component {
     const {unusedTags, matchResultsModel}
       = this.props.tagModel
     const ml = new MarginLayout()
-    const shareResultsButton = (
-      <Button bsStyle="success"
-              onClick={() => this.transitionToLabelPage(composite, full)}>
-        Share Results&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-send"></Glyphicon>
-      </Button>
-    )
     const labelError = (this.state.labelErrorFlag) ? (
       <Alert bsStyle="warning">
         <h4>Please add ingredients to your label!</h4>

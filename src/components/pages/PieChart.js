@@ -1,12 +1,13 @@
 const React = require('react')
 import ReactGA from 'react-ga'
 import Modal from 'react-bootstrap/lib/Modal'
-import Button from 'react-bootstrap/lib/Button'
 import Legend from 'recharts/lib/component/Legend'
-import Tooltip from 'recharts/lib/component/Tooltip'
 import RadialBar from 'recharts/lib/polar/RadialBar'
-import Glyphicon from 'react-bootstrap/lib/Glyphicon'
 import RadialBarChart from 'recharts/lib/chart/RadialBarChart'
+
+import {IconButton} from 'react-toolbox/lib/button'
+import Tooltip from 'react-toolbox/lib/tooltip'
+const TooltipButton = Tooltip(IconButton)
 
 const style = {
   top: 0,
@@ -68,7 +69,15 @@ export default class NutritionChart extends React.Component {
       const calories = getScaledValue(ingredientModel.getCalories(), scale)
       return (
         <div>
-          <Button bsStyle='primary' onClick={()=>this.setState({ showNutritionModal: true })}><Glyphicon glyph="glyphicon glyphicon-info-sign" /></Button>
+          <TooltipButton 
+            tooltip='Click to get ingredient nutrients' 
+            tooltipPosition='left'
+            tooltipDelay={500} 
+            icon='info'
+            accent 
+            inverse
+            onClick={()=>this.setState({ showNutritionModal: true })}
+          />
           <Modal show={showNutritionModal} bsSize="large" aria-labelledby="contained-modal-title-lg">
             <Modal.Header closeButton onClick={()=>this.setState({ showNutritionModal: false })}>
               <Modal.Title id="contained-modal-title-lg">Nutrition Facts: {quantity} {unit} of <i>{key}</i> has <b>{calories}</b> calories</Modal.Title>

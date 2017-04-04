@@ -6,7 +6,6 @@ import Col from 'react-bootstrap/lib/Col'
 import Chip from 'react-toolbox/lib/chip'
 import Grid from 'react-bootstrap/lib/Grid'
 import Alert from 'react-bootstrap/lib/Alert'
-import Button from 'react-bootstrap/lib/Button'
 import MenuItem from 'react-bootstrap/lib/MenuItem'
 import Glyphicon from 'react-bootstrap/lib/Glyphicon'
 import FormControl from 'react-bootstrap/lib/FormControl'
@@ -18,6 +17,10 @@ import {rationalToFloat} from '../../helpers/ConversionUtils'
 import {IngredientControlModel} from '../models/IngredientControlModel'
 import IngredientController from '../../containers/IngredientControllerContainer'
 import PieChart from './PieChart'
+
+import {IconButton} from 'react-toolbox/lib/button'
+import Tooltip from 'react-toolbox/lib/tooltip'
+const TooltipButton = Tooltip(IconButton)
 
 export default class Nutrition extends React.Component {
   constructor(props) {
@@ -130,11 +133,18 @@ export default class Nutrition extends React.Component {
                 {recipeLine}
               </Chip>
             </Col>
-            <Col xs={1} sm={1} md={1} style={{paddingLeft:0, paddingRight:0}}>
+            <Col xs={1} sm={1} md={1}>
               <PieChart nutritionModel={nutritionModel} tag={tag}/>
             </Col>
-            <Col xs={1} sm={1} md={1} style={{paddingLeft:5}}>
-              <Button bsStyle='danger' onClick={this.handleChipDelete.bind(this, tag)}><Glyphicon glyph="glyphicon glyphicon-trash" /></Button>
+            <Col xs={1} sm={1} md={1}>
+              <TooltipButton 
+                tooltip='Click to delete ingredient' 
+                tooltipPosition='right'
+                tooltipDelay={500} 
+                icon='delete'
+                primary
+                onClick={this.handleChipDelete.bind(this, tag)}
+              />
             </Col>
           </Row>
           <IngredientController recipeLine={recipeLine} tag={tag}/>

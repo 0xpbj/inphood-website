@@ -90,33 +90,33 @@ export default class Home extends React.Component {
           <Row>
             <Col>
                 <TopBar router={this.props.router}/>
-                <Row style={{height:'30vh'}}>
+                <Row style={{height:'40vh'}}>
                   {browserWarning}
                 </Row>
                 <Row>
-                  <Col xs={0} sm={3} md={4} lg={4}/>
-                  <Col xs={12} sm={6} md={4} lg={4}
+                  <Col xs={0} sm={3} md={4} lg={4.25} xl={5}/>
+                  <Col xs={12} sm={6} md={4} lg={3.5} xl={2}
                        className="text-center"
-                       style={{borderWidth:1,
+                       style={{borderWidth:0,
                                borderColor:'gray',
                                borderStyle:'solid',
                                borderRadius:15,
-                               backgroundColor:'rgba(255,255,255,0.75)',
+                               backgroundColor:'rgba(0,0,0,0.25)',
                                padding: 30}}>
                     <TooltipButton
-                      tooltip='Click to create a nutrition label'
-                      tooltipPosition='bottom'
+                      tooltip="It's Free!"
+                      tooltipPosition='top'
                       tooltipDelay={500}
                       icon='input'
                       label='&nbsp;&nbsp;Create Nutrition Label&nbsp;'
                       raised
-                      style={{color: 'white', backgroundColor: '#BD362F', fontSize: 18}}
+                      style={{color: 'white', backgroundColor: '#0088CC', fontSize: 18}}
                       onClick={() => this.transitionToGenerator()}
                     />
                   </Col>
-                  <Col xs={0} sm={3} md={4} lg={4}/>
+                  <Col xs={0} sm={3} md={4} lg={4.25} xl={5}/>
                 </Row>
-                <Row style={{height:'56vh'}}/>
+                <Row style={{height:'43vh'}}/>
                 <Footer router={this.props.router}/>
             </Col>
           </Row>

@@ -58,12 +58,12 @@ export default class TopBar extends React.Component {
               </Button>
             </Col>
             <Col className='text-right' xs={6} style={{bottom:0, right:0, position:'absolute'}}>
-              <Button bsStyle="link" onClick={open}>
-                Say Hi&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-envelope" />
+              <Button bsStyle="link" onClick={open} style={{fontSize: 18}}>
+                <Glyphicon glyph="glyphicon glyphicon-comment" />&nbsp;&nbsp;Say Hello!
               </Button>
               <Modal onHide={close} show={this.state.show} bsSize="small" aria-labelledby="contained-modal-title-sm">
                 <Modal.Header>
-                  <Modal.Title id="contained-modal-title-sm">Say Hi</Modal.Title>
+                  <Modal.Title id="contained-modal-title-sm">Say Hello</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                   <EmailForm data={(data) => this.getData(data)}/>
@@ -74,7 +74,6 @@ export default class TopBar extends React.Component {
               </Modal>
             </Col>
           </Row>
-
         </Col>
         {ml.marginCol}
       </Row>

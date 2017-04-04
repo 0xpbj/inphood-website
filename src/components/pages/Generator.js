@@ -219,10 +219,10 @@ export default class Generator extends React.Component {
     const url = (embed) ? embedUrl : shareUrl
     const shareUrlBox = (url && showShareUrl) ? (
       <div>
-        <Col xs={10} sm={10} md={10} lg={10}>
+        <Col xs={11}>
           <pre style={{marginBottom:0, marginTop:constants.VERT_SPACE}}>{url}</pre>
         </Col>
-        <Col xs={2} sm={2} md={2} lg={2}>
+        <Col xs={1} style={{padding: 0, marginRight: -12, marginLeft: -12}}>
           <CopyToClipboard text={url}
             onCopy={() => this.setState({copiedUrl: true})}>
             <Button className="btn-primary-spacing" bsStyle="success" style={{marginBottom:0, marginTop:constants.VERT_SPACE}}>

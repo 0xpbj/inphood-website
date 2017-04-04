@@ -109,6 +109,15 @@ class Recipe extends React.Component {
       return(
         <div style={{marginTop: 10}} className="text-right">
           <TooltipButton 
+            tooltip='Click to try a sample recipe' 
+            tooltipPosition='left'
+            tooltipDelay={500} 
+            icon='cached'
+            label='Sample Recipe'
+            onClick={() => this.sampleRecipeFlow()}
+            style={{marginRight: 30}}
+          />
+          <TooltipButton 
             tooltip='Click to add ingredient to label' 
             tooltipPosition='left'
             tooltipDelay={500} 
@@ -130,16 +139,6 @@ class Recipe extends React.Component {
     ) : null
     return (
       <div>
-        <div className="text-right">
-          <TooltipButton 
-            tooltip='Click to try a sample recipe' 
-            tooltipPosition='left'
-            tooltipDelay={500} 
-            icon='cached'
-            label='Sample Recipe'
-            onClick={() => this.sampleRecipeFlow()}
-          />
-        </div>
         <FormGroup controlId="formControlsTextarea">
           {recipeAlert}
           <TooltipInput 

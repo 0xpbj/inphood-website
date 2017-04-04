@@ -25,12 +25,10 @@ export default class Footer extends React.Component {
 
         <Col xs={ml.xsCol} sm={ml.smCol} md={ml.mdCol} lg={ml.lgCol}>
           <Row>
-            <Col xs={6} className='text-right'>
+            <Col xs={12} className='text-center'>
               <Button bsStyle="link" onClick={() => router.push('/about')}>
                 About Us
               </Button>
-            </Col>
-            <Col xs={6} className='text-left'>
               <Button bsStyle="link">
                 <Link to="http://www.inphood.com/privacy_policy.pdf" target="_blank">Privacy Policy</Link>
               </Button>

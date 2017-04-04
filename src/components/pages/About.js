@@ -9,6 +9,7 @@ import linkedin from '../../images/linkedin.svg'
 import {Link} from 'react-router'
 import Footer from '../../containers/FooterContainer'
 import TopBar from '../../containers/TopBarContainer'
+import MarginLayout from '../../helpers/MarginLayout'
 
 export default class About extends React.Component {
   getTeamMember(memberName, title, flag, instagramUrl, linkedInUrl) {
@@ -30,38 +31,45 @@ export default class About extends React.Component {
     )
   }
   render() {
+    const ml = new MarginLayout()
     ReactGA.event({
       category: 'User',
       action: 'User visited about page',
       nonInteraction: false
     });
     return (
-      <div style={{backgroundColor: 'white'}}>
-        <TopBar router={this.props.router}/>
-        <Grid>
-          <Row className="show-grid">
-            <h1 className="page-header">About Us</h1>
-            <h4>inPhood LLC founded in 2016, labels food images across the internet.</h4>
-            <h4>Our products help users generate shareable nutrition labels, based on USDA information and proprietary sources.</h4>
-            <h2 className="page-header">Our Team</h2>
-            <div className="row">
-              <div className="col-sm-6">
+      <div>
+      <TopBar router={this.props.router}/>
+        <Row style={{backgroundColor:'white'}}>
+          {ml.marginCol}
+          <Col xs={ml.xsCol} sm={ml.smCol} md={ml.mdCol} lg={ml.lgCol}>
+            <Row>
+              <h1 className="page-header">About Us</h1>
+              <h4>inPhood LLC founded in 2016, labels food images across the internet.</h4>
+              <h4>Our products help users generate shareable nutrition labels, based on USDA information and proprietary sources.</h4>
+              <h2 className="page-header">Our Team</h2>
+            </Row>
+            <Row>
+              <Col sm={6}>
                 {this.getTeamMember("Prabhaav Bhardwaj", "CEO",
                   true,
                   "https://www.instagram.com/pv.bj",
                   "https://www.linkedin.com/in/prabhaav"
                 )}
-              </div>
-              <div className="col-sm-6">
+              </Col>
+              <Col sm={6}>
                 {this.getTeamMember("Alex Carreira", "CTO",
                   false,
                   "https://www.instagram.com/ac4tw",
                   "https://www.linkedin.com/in/alex-carreira-6a2a711"
                 )}
-              </div>
-            </div>
-          </Row>
-        </Grid>
+              </Col>
+            </Row>
+          </Col>
+          {ml.marginCol}
+        </Row>
+        <Row style={{height:'38vh'}}/>
+        <Footer router={this.props.router}/>
       </div>
     )
   }

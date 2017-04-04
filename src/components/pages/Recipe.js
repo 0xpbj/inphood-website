@@ -67,16 +67,8 @@ class Recipe extends React.Component {
       action: 'User trying sample recipe',
       nonInteraction: true
     });
-    // const {ingredients} = this.state
     const ingredients = '1 c chard\n2 c spinach\n3 tbsp olive oil\n4 fl-oz water\n1 tsp salt'
-    let data = parseRecipe(ingredients)
-    if (data.found) {
-      this.props.storeParsedData(data.found, data.missing, ingredients)
-      if (!this.state.showNutritionMixers) {
-        this.setState({showNutritionMixers: true})
-      }
-      this.setState({ingredients: '', isSaved: false})
-    }
+    this.setState({ingredients})
   }
   recipeFlow() {
     if (this.state.ingredients === '') {

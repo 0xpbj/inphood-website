@@ -154,20 +154,11 @@ export default class ServingsController extends React.Component {
   }
   //
   handleServingsSizeEditBoxBlurred() {
-    const {servingsControlModel} = this.props.servings
-    const valueEditBox = Number(servingsControlModel.getDisplayUnitCount())
-    if (!isNaN(valueEditBox) && valueEditBox > 0 && valueEditBox < 1001) {
-      ReactGA.event({
-        category: 'Nutrition Mixer',
-        action: 'Servings size edit box changed',
-        nonInteraction: false,
-      });
-      const {servingsControlModel} = this.props.servings
-      const displayUnitEditBox = servingsControlModel.getDisplayUnitCount()
-      servingsControlModel.setDisplayUnit(displayUnitEditBox)
-      this.props.setServingsControllerModel(servingsControlModel)
-      this.props.nutritionModelSetServings(servingsControlModel)
-      this.props.initSerializedData()
+    if (this.getServingsSizeValidationState() !== 'success') {
+      return
+    }
+    else {
+      this.handleServingsSizeValueChange('Servings value edit box changed')
     }
   }
   //
@@ -187,10 +178,13 @@ export default class ServingsController extends React.Component {
   // Methods for number of display unit (servings) slider:
   //
   handleServingsSizeValueChange(value) {
-    const {servingsControlModel} = this.props.servings
-    const valueEditBox = Number(value)
-    debugger
-    if (!isNaN(valueEditBox) && valueEditBox > 0 && valueEditBox < 1001) {
+    if (!isNaN(value) && value > 0 && value < 1001) {
+      ReactGA.event({
+        category: 'Nutrition Mixer',
+        action: 'Servings size edit box changed',
+        nonInteraction: false,
+      });
+      const {servingsControlModel} = this.props.servings
       servingsControlModel.setDisplayUnitCount(value)
       this.props.setServingsControllerModel(servingsControlModel)
       this.props.nutritionModelSetServings(servingsControlModel)

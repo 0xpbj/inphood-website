@@ -78,7 +78,9 @@ export default class Home extends React.Component {
       const sectionStyle = {
         backgroundImage:`url(${home})`,
         backgroundRepeat:'no-repeat',
-        backgroundSize:'cover',
+        backgroundSize:'contain',
+        backgroundAttachment: 'fixed',
+        backgroundPosition: 'center',
         width:'100%'
       };
       return (

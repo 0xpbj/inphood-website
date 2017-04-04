@@ -113,7 +113,7 @@ export default class Generator extends React.Component {
     return (
       <Dropdown id='customLabelDropdown'>
         <Dropdown.Toggle bsStyle='warning'>
-          <Glyphicon glyph="wrench" />&nbsp;&nbsp;Customize Label
+          <Glyphicon glyph="wrench" />&nbsp;&nbsp;CUSTOMIZE LABEL
         </Dropdown.Toggle>
         <Dropdown.Menu>
           <MenuItem
@@ -162,13 +162,36 @@ export default class Generator extends React.Component {
       </Dropdown>
     )
   }
+  getInPhoodLogo() {
+    return(
+      <span>
+        <span style={{color:'black'}}>i</span>
+        <span style={{color:'green'}}>n</span>
+        <span style={{color:'blue'}}>P</span>
+        <span style={{color:'red'}}>h</span>
+        <span style={{color:'green'}}>o</span>
+        <span style={{color:'blue'}}>o</span>
+        <span style={{color:'red'}}>d</span>
+        .com
+      </span>
+    )
+  }
   generateTextLabel(compositeModel) {
     ReactGA.event({
       category: 'Label',
       action: 'User viewing text label',
       nonInteraction: false
     });
-    return <pre id='nutrition-label'>{getTextLabel(compositeModel)}</pre>
+    return (
+      <div>
+        <pre id='nutrition-label'>{getTextLabel(compositeModel)}</pre>
+        <a href="http://www.inphood.com"
+           className="text-center"
+           style={{backgroundColor: 'white'}}>
+          <h6 style={{marginBottom: 0}}>Estimated at {this.getInPhoodLogo()}</h6>
+        </a>
+      </div>
+    )
   }
   copyUrlToClipboard(shareUrl) {
     <div>
@@ -253,7 +276,7 @@ export default class Generator extends React.Component {
                 <Row style={{marginTop:(constants.VERT_SPACE-2)}}>
                   <OverlayTrigger placement="bottom" overlay={popoverHoverFocus} trigger={['hover', 'focus', 'click']}>
                     <Col xs={12}>
-                        {label}
+                      {label}
                     </Col>
                   </OverlayTrigger>
                 </Row>

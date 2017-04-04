@@ -64,7 +64,7 @@ export default class TopBar extends React.Component {
           <Row>
             <Col xs={12} sm={3} style={{paddingLeft: 0, paddingRight: 0}}>
               <Button bsStyle="link" onClick={() => router.push('/')}>
-                <img src={require('../../images/logoOnClear.png')} width="147" height="35"/>
+                <img src={require('../../images/logoOnClear.png')}/>
               </Button>
             </Col>
             <Col xs={12} sm={3}>

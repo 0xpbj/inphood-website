@@ -39,9 +39,6 @@ class Recipe extends React.Component {
       recipePopoverFlag: false,
     }
   }
-  componentWillMount() {
-    this.setState({isSaved: true})
-  }
   componentDidMount() {
     this.props.router.setRouteLeaveHook(this.props.route, this.routerWillLeave.bind(this))
   }

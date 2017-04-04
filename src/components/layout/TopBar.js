@@ -56,7 +56,7 @@ export default class TopBar extends React.Component {
                 <img src={require('../../images/logoOnClear.png')}/>
               </Button>
             </Col>
-            <Col className='text-right' xs={6}>
+            <Col className='text-right' xs={6} style={{bottom:0, right:0, position:'absolute'}}>
               <Button bsStyle="link" onClick={open}>
                 Say Hi&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-envelope" />
               </Button>

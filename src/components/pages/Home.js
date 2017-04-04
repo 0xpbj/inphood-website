@@ -79,7 +79,7 @@ export default class Home extends React.Component {
       const sectionStyle = {
         backgroundImage:`url(${home})`,
         backgroundRepeat:'no-repeat',
-        backgroundSize:'contain',
+        backgroundSize:'cover',
         backgroundAttachment: 'fixed',
         backgroundPosition: 'center',
         width:'100vw',
@@ -108,7 +108,7 @@ export default class Home extends React.Component {
                   </div>
                 </Row>
                 <Row style={{height:'56vh'}}/>
-                <Footer/>
+                <Footer router={this.props.router}/>
             </Col>
           </Row>
         </Grid>

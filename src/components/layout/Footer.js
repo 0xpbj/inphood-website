@@ -13,9 +13,10 @@ export default class Footer extends React.Component {
     const currentYear = new Date().getFullYear()
 
     const {router} = this.props
-    
+
     const whiteBackground={
-      backgroundColor:'white'
+      borderWidth:0, borderTop:1, borderColor:'gray', borderStyle:'solid',
+      backgroundColor:'rgba(255,255,255,0.75)'
     }
 
     return (

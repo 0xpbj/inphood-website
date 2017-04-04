@@ -93,8 +93,16 @@ export default class Home extends React.Component {
                 <Row style={{height:'30vh'}}>
                   {browserWarning}
                 </Row>
-                <Row className="text-center">
-                  <div>
+                <Row>
+                  <Col xs={0} sm={3} md={4} lg={4}/>
+                  <Col xs={12} sm={6} md={4} lg={4}
+                       className="text-center"
+                       style={{borderWidth:1,
+                               borderColor:'gray',
+                               borderStyle:'solid',
+                               borderRadius:15,
+                               backgroundColor:'rgba(255,255,255,0.75)',
+                               padding: 30}}>
                     <TooltipButton
                       tooltip='Click to create a nutrition label'
                       tooltipPosition='bottom'
@@ -105,7 +113,8 @@ export default class Home extends React.Component {
                       style={{color: 'white', backgroundColor: '#BD362F', fontSize: 18}}
                       onClick={() => this.transitionToGenerator()}
                     />
-                  </div>
+                  </Col>
+                  <Col xs={0} sm={3} md={4} lg={4}/>
                 </Row>
                 <Row style={{height:'56vh'}}/>
                 <Footer router={this.props.router}/>

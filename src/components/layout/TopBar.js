@@ -43,7 +43,8 @@ export default class TopBar extends React.Component {
     const {router} = this.props
 
     const whiteBackground={
-      backgroundColor:'white'
+      borderWidth:0, borderBottom:1, borderColor:'gray', borderStyle:'solid',
+      backgroundColor:'rgba(255,255,255,0.75)'
     }
 
     return (

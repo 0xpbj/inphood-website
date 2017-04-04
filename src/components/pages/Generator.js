@@ -16,6 +16,7 @@ import ListGroup from 'react-bootstrap/lib/ListGroup'
 import FormControl from 'react-bootstrap/lib/FormControl'
 import ControlLabel from 'react-bootstrap/lib/ControlLabel'
 import ListGroupItem from 'react-bootstrap/lib/ListGroupItem'
+import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger'
 import {parseRecipe, parseCaption} from '../../helpers/parseRecipe'
 import Chip from 'react-toolbox/lib/chip'
 import UploadModal from '../layout/UploadModal'
@@ -205,9 +206,14 @@ export default class Generator extends React.Component {
         </Col>
       </div>
     ) : null
+    const popoverHoverFocus = (
+      <Popover id="popover-trigger-hover-focus" title="Rounding Information">
+        <strong>Nutrition values estimated based on USDA standards</strong>.
+      </Popover>
+    );
     const label = (this.state.textLabel) ? this.generateTextLabel(compositeModel)
     : (
-      <Label id='nutrition-label' ingredientComposite={compositeModel}/>
+        <Label id='nutrition-label' ingredientComposite={compositeModel}/>
     )
     return (
       <div>
@@ -245,9 +251,11 @@ export default class Generator extends React.Component {
                   </div>
                 </Row>
                 <Row style={{marginTop:(constants.VERT_SPACE-2)}}>
-                  <Col xs={12}>
-                    {label}
-                  </Col>
+                  <OverlayTrigger placement="bottom" overlay={popoverHoverFocus} trigger={['hover', 'focus', 'click']}>
+                    <Col xs={12}>
+                        {label}
+                    </Col>
+                  </OverlayTrigger>
                 </Row>
                 <Row style={{marginTop: 9}}>
                   <TagController

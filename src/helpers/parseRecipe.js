@@ -127,8 +127,17 @@ function combineData(data) {
   for (let i of data) {
     let index = names.indexOf(i.name)
     if (index === -1) {
-      names.push(i.name)
-      ret.push(i)
+      if (i.name.toLowerCase() === 'salt and pepper' || i.name.toLowerCase() === 'salt & pepper') {
+        names.push('salt')
+        names.push('pepper')
+        const {unit, amount} = i
+        ret.push({amount, name: 'salt', unit})
+        ret.push({amount, name: 'pepper', unit})
+      }
+      else {
+        names.push(i.name)
+        ret.push(i)
+      }
     }
     // else {
     //   let info1 = {

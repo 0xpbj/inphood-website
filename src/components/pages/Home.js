@@ -102,7 +102,7 @@ export default class Home extends React.Component {
                       icon='input'
                       label='&nbsp;&nbsp;Create Nutrition Label&nbsp;'
                       raised
-                      style={{color: 'white', backgroundColor: 'darkmagenta', fontSize: 18}}
+                      style={{color: 'white', backgroundColor: '#BD362F', fontSize: 18}}
                       onClick={() => this.transitionToGenerator()}
                     />
                   </div>

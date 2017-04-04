@@ -50,7 +50,8 @@ export default class Generator extends React.Component {
       labelErrorFlag: false,
       showShareUrl: false,
       textLabel: false,
-      copiedUrl: false
+      copiedUrl: false,
+      embed: false
     }
   }
   componentWillMount() {
@@ -58,10 +59,14 @@ export default class Generator extends React.Component {
     this.props.clearData()
   }
   componentWillReceiveProps(nextProps) {
-    if (this.state.labelErrorFlag)
+    if (this.state.labelErrorFlag) {
       this.setState({labelErrorFlag: false})
+    }
+    if (this.props.nutritionModelRed !== nextProps.nutritionModelRed) {
+      this.setState({copiedUrl: false, showShareUrl: false})
+    }
   }
-  shareLabel() {
+  shareLabel(flag) {
     const {unusedTags, matchResultsModel} = this.props.tagModel
     const usefulIngredients = matchResultsModel.getNumberOfSearches() - unusedTags.length
     if (this.props.nutrition.key && usefulIngredients) {
@@ -71,50 +76,51 @@ export default class Generator extends React.Component {
         action: 'User sharing results',
         nonInteraction: false
       });
+      this.setState({embed: flag, showShareUrl: true})
     }
     else {
       this.setState({labelErrorFlag: true, showShareUrl: false, copiedUrl: false})
     }
   }
-  // shareLabelButton() {
-  //   return (
-  //     <Dropdown id='shareDropdown'>
-  //       <Dropdown.Toggle bsStyle='success'>
-  //         <Glyphicon glyph="share" />&nbsp;&nbsp;Share Label
-  //       </Dropdown.Toggle>
-  //       <Dropdown.Menu>
-  //         <MenuItem
-  //           eventKey='1'
-  //           onClick={() => this.shareLabel(false)}>
-  //           Save Label&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-save"></Glyphicon>
-  //         </MenuItem>
-  //         <MenuItem
-  //           eventKey='2'
-  //           onClick={() => this.shareLabel(true)}>
-  //           Share Link&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-share-alt"></Glyphicon>
-  //         </MenuItem>
-  //       </Dropdown.Menu>
-  //     </Dropdown>
-  //   )
-  // }
   shareLabelButton() {
     return (
-      <TooltipButton
-        tooltip='Click to share your label'
-        tooltipPosition='right'
-        tooltipDelay={500}
-        icon='share'
-        label='Share Label'
-        style={{color: 'white', backgroundColor: 'forestgreen'}}
-        onClick={() => this.shareLabel()}
-      />
+      <Dropdown id='shareDropdown'>
+        <Dropdown.Toggle bsStyle='success'>
+          <Glyphicon glyph="share-alt" />&nbsp;&nbsp;SHARE LABEL
+        </Dropdown.Toggle>
+        <Dropdown.Menu>
+          <MenuItem
+            eventKey='1'
+            onClick={() => this.shareLabel(true)}>
+            Embed Link&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-edit"></Glyphicon>
+          </MenuItem>
+          <MenuItem
+            eventKey='2'
+            onClick={() => this.shareLabel(false)}>
+            Share Link&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-share"></Glyphicon>
+          </MenuItem>
+        </Dropdown.Menu>
+      </Dropdown>
     )
   }
+  // shareLabelButton() {
+  //   return (
+  //     <TooltipButton
+  //       tooltip='Click to share your label'
+  //       tooltipPosition='right'
+  //       tooltipDelay={500}
+  //       icon='share'
+  //       label='Share Label'
+  //       style={{color: 'white', backgroundColor: 'forestgreen'}}
+  //       onClick={() => this.shareLabel()}
+  //     />
+  //   )
+  // }
   customLabelButton() {
     return (
       <Dropdown id='customLabelDropdown'>
         <Dropdown.Toggle bsStyle='warning'>
-          <Glyphicon glyph="wrench" />&nbsp;&nbsp;CUSTOMIZE LABEL
+          <Glyphicon glyph="wrench" />&nbsp;&nbsp;CUSTOM LABEL
         </Dropdown.Toggle>
         <Dropdown.Menu>
           <MenuItem
@@ -194,10 +200,6 @@ export default class Generator extends React.Component {
       </div>
     )
   }
-  copyUrlToClipboard(shareUrl) {
-    <div>
-    </div>
-  }
   render() {
     const {nutritionModel} = this.props.nutritionModelRed
     const full = nutritionModel.serialize()
@@ -212,21 +214,22 @@ export default class Generator extends React.Component {
       </Alert>
     ) : null
     const user = Config.DEBUG ? 'test' : 'anonymous'
-    // const shareUrl = 'https://www.inphood.com/?user=' + user + '&label=' + this.props.nutrition.key
     const {shareUrl, embedUrl} = this.props.results
-    const shareUrlBox = (embedUrl) ? (
+    const {embed, showShareUrl, copiedUrl, textLabel} = this.state
+    const url = (embed) ? embedUrl : shareUrl
+    const shareUrlBox = (url && showShareUrl) ? (
       <div>
         <Col xs={10} sm={10} md={10} lg={10}>
-          <pre style={{marginBottom:0, marginTop:constants.VERT_SPACE}}>{embedUrl}</pre>
+          <pre style={{marginBottom:0, marginTop:constants.VERT_SPACE}}>{url}</pre>
         </Col>
         <Col xs={2} sm={2} md={2} lg={2}>
-          <CopyToClipboard text={embedUrl}
+          <CopyToClipboard text={url}
             onCopy={() => this.setState({copiedUrl: true})}>
             <Button className="btn-primary-spacing" bsStyle="success" style={{marginBottom:0, marginTop:constants.VERT_SPACE}}>
               <Glyphicon glyph="glyphicon glyphicon-copy"></Glyphicon>
             </Button>
           </CopyToClipboard>
-          {this.state.copiedUrl ? <div><span style={{color: 'red'}}>&nbsp;Copied.</span></div> : null}
+          {copiedUrl ? <div><span style={{color: 'red'}}>&nbsp;Copied.</span></div> : null}
         </Col>
       </div>
     ) : null
@@ -235,7 +238,7 @@ export default class Generator extends React.Component {
         <strong>Nutrition values estimated based on USDA standards</strong>.
       </Popover>
     );
-    const label = (this.state.textLabel) ? this.generateTextLabel(compositeModel)
+    const label = (textLabel) ? this.generateTextLabel(compositeModel)
     : (
         <Label id='nutrition-label' ingredientComposite={compositeModel}/>
     )

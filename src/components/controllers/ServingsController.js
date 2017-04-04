@@ -187,12 +187,15 @@ export default class ServingsController extends React.Component {
   // Methods for number of display unit (servings) slider:
   //
   handleServingsSizeValueChange(value) {
-    const unit = value
     const {servingsControlModel} = this.props.servings
-    servingsControlModel.setDisplayUnitCount(unit)
-    this.props.setServingsControllerModel(servingsControlModel)
-    this.props.nutritionModelSetServings(servingsControlModel)
-    this.props.initSerializedData()
+    const valueEditBox = Number(value)
+    debugger
+    if (!isNaN(valueEditBox) && valueEditBox > 0 && valueEditBox < 1001) {
+      servingsControlModel.setDisplayUnitCount(value)
+      this.props.setServingsControllerModel(servingsControlModel)
+      this.props.nutritionModelSetServings(servingsControlModel)
+      this.props.initSerializedData()
+    }
   }
   //
   render() {

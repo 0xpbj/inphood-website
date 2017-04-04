@@ -39,14 +39,6 @@ class Recipe extends React.Component {
       recipePopoverFlag: false,
     }
   }
-  componentWillMount() {
-    this.setState({isSaved: true})
-    // user did not come from home page
-    if (this.props.router.location.action !== 'PUSH') {
-      // send user back to home page
-      this.props.router.push('/')
-    }
-  }
   componentDidMount() {
     this.props.router.setRouteLeaveHook(this.props.route, this.routerWillLeave.bind(this))
   }

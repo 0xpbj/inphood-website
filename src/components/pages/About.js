@@ -12,6 +12,13 @@ import TopBar from '../../containers/TopBarContainer'
 import MarginLayout from '../../helpers/MarginLayout'
 
 export default class About extends React.Component {
+  componentWillMount() {
+    // user did not come from home page
+    if (this.props.router.location.action !== 'PUSH') {
+      // send user back to home page
+      this.props.router.push('/')
+    }
+  }
   getTeamMember(memberName, title, flag, instagramUrl, linkedInUrl) {
     const pbj = require('../../images/PBJ.jpg')
     const ayc = require('../../images/AC.jpg')

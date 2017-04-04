@@ -82,7 +82,7 @@ class Recipe extends React.Component {
         if (!this.state.showNutritionMixers) {
           this.setState({showNutritionMixers: true})
         }
-        this.setState({ingredients: '', isSaved: false})
+        this.setState({ingredients: '', isSaved: false, recipeError: false})
       }
     }
   }

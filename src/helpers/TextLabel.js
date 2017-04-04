@@ -1,26 +1,62 @@
 import {IngredientModel} from '../components/models/IngredientModel'
 
+function padLineWithSpaces(charsToPad, line) {
+  console.log('padLineWithSpaces:')
+  console.log('---------------------------------------------------------------')
+  console.log(line)
+  console.log(charsToPad)
+  console.log(line.length)
+  console.log(charsToPad - line.length)
+
+  const lineLength = line.length
+  for (let i = 0; i < (charsToPad - lineLength); i++) {
+    line += ' '
+  }
+  return line
+}
+
 export function getTextLabel(anIngredientModel) {
   const microNutrientsAndFnPfxs = IngredientModel.microNutrientsAndFnPfxs
 
+  const numSpacesToRDA = 35
   let textLabel = 'Nutrition Facts\n'
   textLabel +=    'Serving Size       : ' + anIngredientModel.getServingAmount() + ' ' + anIngredientModel.getServingUnit() + '\n'
   textLabel +=    '==========================================\n'
   textLabel +=    'Calories           : ' + anIngredientModel.getCalories() + '\n'
   textLabel +=    '------------------------------------------\n'
-  textLabel +=    'Total Fat          : ' + anIngredientModel.getTotalFatPerServing() + ' ' +  anIngredientModel.getTotalFatUnit() +
-                                            '    (' + anIngredientModel.getTotalFatRDA() + '% RDA)\n'
-  textLabel +=    '  Saturated Fat    : ' + anIngredientModel.getSaturatedFatPerServing() + ' ' + anIngredientModel.getSaturatedFatUnit() +
-                                            '    (' + anIngredientModel.getSaturatedFatRDA() + '% RDA)\n'
+
+  let line =      'Total Fat          : ' + anIngredientModel.getTotalFatPerServing() + ' ' +  anIngredientModel.getTotalFatUnit();
+  line = padLineWithSpaces(numSpacesToRDA, line);
+  line +=  '(' + anIngredientModel.getTotalFatRDA() + '% RDA)\n'
+  textLabel += line
+
+  line =          '  Saturated Fat    : ' +  anIngredientModel.getSaturatedFatPerServing() + ' ' + anIngredientModel.getSaturatedFatUnit()
+  line = padLineWithSpaces(numSpacesToRDA, line)
+  line += '(' + anIngredientModel.getSaturatedFatRDA() + '% RDA)\n'
+  textLabel += line
+
   textLabel +=    '  Trans Fat        : ' + anIngredientModel.getTransFatPerServing() + ' ' + anIngredientModel.getTransFatUnit() + '\n'
-  textLabel +=    'Cholesterol        : ' + anIngredientModel.getCholestorol() + ' ' + anIngredientModel.getCholestorolUnit() +
-                                            '   (' + anIngredientModel.getCholestorolRDA() + '% RDA)\n'
-  textLabel +=    'Sodium             : ' + anIngredientModel.getSodium() + ' ' + anIngredientModel.getSodiumUnit() +
-                                            '  (' + anIngredientModel.getSodiumRDA() + '% RDA)\n'
-  textLabel +=    'Total Carbohydrate : ' + anIngredientModel.getTotalCarbohydratePerServing() + ' ' + anIngredientModel.getTotalCarbohydrateUnit() +
-                                            '    (' + anIngredientModel.getTotalCarbohydrateRDA() + '% RDA)\n'
-  textLabel +=    '  Dietary Fiber    : ' + anIngredientModel.getDietaryFiber() + ' ' + anIngredientModel.getDietaryFiberUnit() +
-                                            '    (' + anIngredientModel.getDietaryFiberRDA() + '% RDA)\n'
+
+  line =          'Cholesterol        : ' + anIngredientModel.getCholestorol() + ' ' + anIngredientModel.getCholestorolUnit()
+  line = padLineWithSpaces(numSpacesToRDA, line)
+  line += '(' + anIngredientModel.getCholestorolRDA() + '% RDA)\n'
+  textLabel += line
+
+  line =          'Sodium             : ' + anIngredientModel.getSodium() + ' ' + anIngredientModel.getSodiumUnit()
+  line = padLineWithSpaces(numSpacesToRDA, line)
+  line += '(' + anIngredientModel.getSodiumRDA() + '% RDA)\n'
+  textLabel += line
+
+  line =          'Total Carbohydrate : ' + anIngredientModel.getTotalCarbohydratePerServing() + ' ' + anIngredientModel.getTotalCarbohydrateUnit()
+  line = padLineWithSpaces(numSpacesToRDA, line)
+  line += '(' + anIngredientModel.getTotalCarbohydrateRDA() + '% RDA)\n'
+  textLabel += line
+
+  line =          '  Dietary Fiber    : ' + anIngredientModel.getDietaryFiber() + ' ' + anIngredientModel.getDietaryFiberUnit()
+  line = padLineWithSpaces(numSpacesToRDA, line)
+  line += '(' + anIngredientModel.getDietaryFiberRDA() + '% RDA)\n'
+  textLabel += line
+
   textLabel +=    '  Sugars           : ' + anIngredientModel.getSugars() + ' ' + anIngredientModel.getSugarsUnit() + '\n'
   textLabel +=    'Protein            : ' + anIngredientModel.getTotalProteinPerServing() + ' ' + anIngredientModel.getTotalProteinUnit() + '\n'
   textLabel +=    '------------------------------------------\n'
@@ -61,7 +97,7 @@ export function getTextLabel(anIngredientModel) {
     rowText += ': ' + value + ' ' + unit
 
 
-    const charsToRDA = 31
+    const charsToRDA = 32
     const rowTextLength = rowText.length
     for (let i = 0; i < (charsToRDA - rowTextLength); i++) {
       rowText += ' '

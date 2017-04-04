@@ -1,4 +1,5 @@
 const React = require('react')
+import ReactGA from 'react-ga'
 import Row from 'react-bootstrap/lib/Row'
 import Col from 'react-bootstrap/lib/Col'
 import Modal from 'react-bootstrap/lib/Modal'
@@ -69,16 +70,14 @@ export default class TopBar extends React.Component {
 
             <Col xs={12} sm={3}>
               <Button bsStyle="info" onClick={open}>
-                Contact Us&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-envelope" />
+                Say Hi!&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-envelope" />
               </Button>
               <Modal show={this.state.show} bsSize="small" aria-labelledby="contained-modal-title-sm">
                 <Modal.Header>
-                  <Modal.Title id="contained-modal-title-sm">Contact Us</Modal.Title>
+                  <Modal.Title id="contained-modal-title-sm">Say Hi!</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                  <EmailForm
-                    data={(data) => this.getData(data)}
-                  />
+                  <EmailForm data={(data) => this.getData(data)}/>
                 </Modal.Body>
                 <Modal.Footer>
                   <Button onClick={this.onSubmit.bind(this)}>Submit</Button>
@@ -87,11 +86,7 @@ export default class TopBar extends React.Component {
             </Col>
 
             <Col xs={12} sm={3}>
-              <Button
-                bsStyle="info"
-                onClick={window.open('http://www.inphood.com/about','_blank','resizable=yes')} >
-                About Us&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-envelope" />
-              </Button>
+              <Link to="http://www.inphood.com/about" target="_blank">About Us</Link>
             </Col>
 
             <Col xs={12} sm={3}>

@@ -13,7 +13,7 @@ import MarginLayout from '../../helpers/MarginLayout'
 import Generator from '../../containers/GeneratorContainer'
 import Results from '../../containers/ResultsContainer'
 import TopBar from '../layout/TopBar'
-import Footer from "../../containers/FooterContainer"
+import Footer from "../layout/Footer"
 const Config = require('Config')
 import browser from 'detect-browser'
 import { InteractiveForceGraph, ForceGraphNode, ForceGraphLink } from 'react-vis-force'

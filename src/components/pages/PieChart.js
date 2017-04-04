@@ -74,7 +74,7 @@ export default class NutritionChart extends React.Component {
             tooltipPosition='left'
             tooltipDelay={500} 
             icon='info'
-            style={{color: 'blue'}}
+            style={{color: '#0088CC'}}
             onClick={()=>this.setState({ showNutritionModal: true })}
           />
           <Modal show={showNutritionModal} bsSize="large" aria-labelledby="contained-modal-title-lg">

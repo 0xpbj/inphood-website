@@ -45,7 +45,6 @@ function* loadLabelToAWS() {
   const user = Config.DEBUG ? 'test' : 'anonymous'
   const extension = '.jpeg'
   const {data} = yield call (getDomJpeg)
-  console.log('\n\n\n\nDATATAT: ', data)
   const buffer = new Buffer(data.replace(/^data:image\/\w+;base64,/, ""),'base64')
   yield call (uploadToAWS, buffer, user, key, extension)
   const shareUrl = 'http://www.image.inphood.com/' + user + '/' + key + extension

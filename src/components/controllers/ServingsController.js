@@ -3,10 +3,9 @@ import ReactGA from 'react-ga'
 import Row from 'react-bootstrap/lib/Row'
 import Col from 'react-bootstrap/lib/Col'
 import FormGroup from 'react-bootstrap/lib/FormGroup'
-import FormControl from 'react-bootstrap/lib/FormControl'
-import Slider from 'react-toolbox/lib/slider'
-import 'react-widgets/lib/less/react-widgets.less'
-import Dropdownlist from 'react-widgets/lib/Dropdownlist'
+import Input from 'react-toolbox/lib/input'
+import Tooltip from 'react-toolbox/lib/tooltip'
+const TooltipInput = Tooltip(Input)
 
 export default class ServingsController extends React.Component {
   constructor(props) {
@@ -46,7 +45,6 @@ export default class ServingsController extends React.Component {
   submitValues(event) {
     this.handleServingsAmountEditBoxBlurred()
     this.handleServingsRatioEditBoxBlurred()
-    // Prevent the default form submit behavior (causing full re-render)
     event.preventDefault()
   }
   //
@@ -71,8 +69,8 @@ export default class ServingsController extends React.Component {
     }
   }
   //
-  handleServingsAmountEditBoxChange(formObject) {
-    const amount = formObject.target.value
+  handleServingsAmountEditBoxChange(value) {
+    const amount = value
     if (!isNaN(amount) && amount > 0 && amount < 1001) {
       const {servingsControlModel} = this.props.servings
       servingsControlModel.setValueEditBox(amount)
@@ -101,23 +99,12 @@ export default class ServingsController extends React.Component {
     }
   }
   //
-  handleServingsRatioEditBoxChange(formObject) {
-    const ratio = formObject.target.value
+  handleServingsRatioEditBoxChange(value) {
+    const ratio = value
     const {servingsControlModel} = this.props.servings
     servingsControlModel.setDisplayRatioEditBox(ratio)
-
     this.props.setServingsControllerModel(servingsControlModel)
     this.props.initSerializedData()
-  }
-  //
-  //
-  // Methods for number of display unit (servings) slider:
-  //
-  handleDisplayUnitCountSliderChange(servingUnitCount) {
-    const {servingsControlModel} = this.props.servings
-    servingsControlModel.setDisplayUnitCount(servingUnitCount)
-    this.props.setServingsControllerModel(servingsControlModel)
-    this.props.nutritionModelSetServings(servingsControlModel)
   }
   //
   //
@@ -125,19 +112,15 @@ export default class ServingsController extends React.Component {
   //
   submitNewDisplayUnit(event) {
     this.handleDisplayUnitEditBoxBlurred()
-
-    // Prevent the default form submit behavior (causing full re-render)
     event.preventDefault()
   }
   //
   getDisplayUnitValidationState() {
     const {servingsControlModel} = this.props.servings
     const displayUnitEditBox = servingsControlModel.getDisplayUnitEditBox()
-
     if (((typeof displayUnitEditBox) === 'string') && (displayUnitEditBox.trim().length > 0)) {
       return 'success'
     }
-
     return 'error'
   }
   //
@@ -148,7 +131,6 @@ export default class ServingsController extends React.Component {
         action: 'Servings unit edit box changed',
         nonInteraction: false,
       });
-
       const {servingsControlModel} = this.props.servings
       const displayUnitEditBox = servingsControlModel.getDisplayUnitEditBox()
       servingsControlModel.setDisplayUnit(displayUnitEditBox)
@@ -158,18 +140,63 @@ export default class ServingsController extends React.Component {
     }
   }
   //
-  handleDisplayUnitEditBoxChange(formObject) {
-    const unit = formObject.target.value
-
+  handleDisplayUnitEditBoxChange(value) {
+    const unit = value
+    const valueEditBox = Number(unit)
+    if (!isNaN(valueEditBox) && valueEditBox > 0 && valueEditBox < 1001) {
+      servingsControlModel.setDisplayUnitEditBox(unit)
+      this.props.setServingsControllerModel(servingsControlModel)
+    }
+  }
+  submitNewServingUnit(event) {
+    this.handleServingsSizeEditBoxBlurred()
+    event.preventDefault()
+  }
+  //
+  handleServingsSizeEditBoxBlurred() {
     const {servingsControlModel} = this.props.servings
-    servingsControlModel.setDisplayUnitEditBox(unit)
-
+    const valueEditBox = Number(servingsControlModel.getDisplayUnitCount())
+    if (!isNaN(valueEditBox) && valueEditBox > 0 && valueEditBox < 1001) {
+      ReactGA.event({
+        category: 'Nutrition Mixer',
+        action: 'Servings size edit box changed',
+        nonInteraction: false,
+      });
+      const {servingsControlModel} = this.props.servings
+      const displayUnitEditBox = servingsControlModel.getDisplayUnitCount()
+      servingsControlModel.setDisplayUnit(displayUnitEditBox)
+      this.props.setServingsControllerModel(servingsControlModel)
+      this.props.nutritionModelSetServings(servingsControlModel)
+      this.props.initSerializedData()
+    }
+  }
+  //
+  getServingsSizeValidationState() {
+    const {servingsControlModel} = this.props.servings
+    const valueEditBox = servingsControlModel.getDisplayUnitCount()
+    const number = Number(valueEditBox)
+    if (!isNaN(number) && number > 0 && number < 1001) {
+      return 'success'
+    }
+    else {
+      return 'error'
+    }
+  }
+  //
+  //
+  // Methods for number of display unit (servings) slider:
+  //
+  handleServingsSizeValueChange(value) {
+    const unit = value
+    const {servingsControlModel} = this.props.servings
+    servingsControlModel.setDisplayUnitCount(unit)
     this.props.setServingsControllerModel(servingsControlModel)
+    this.props.nutritionModelSetServings(servingsControlModel)
+    this.props.initSerializedData()
   }
   //
   render() {
     const {servingsControlModel} = this.props.servings
-
     return (
       <div>
         <Row>
@@ -184,90 +211,92 @@ export default class ServingsController extends React.Component {
                      padding: 10,
                      marginRight: 0,
                      marginLeft: 0}}>
-
           <Row>
-           <Col xs={3} md={3} style={{paddingTop: 6, paddingRight: 0}}>
-             <text>Serving Size</text>
+           <Col xs={5} md={5} style={{paddingRigh: 10}}>
+            <form
+              onSubmit={(event) => this.submitNewServingUnit(event)}
+              autoComplete="off">
+              <FormGroup style={{marginBottom: 0}}
+                controlId='servingsControlUnitEditBox'
+                validationState={this.getServingsSizeValidationState()}>
+                <TooltipInput 
+                  tooltip='Type your servings size here' 
+                  tooltipPosition='bottom'
+                  type='text' 
+                  label='Serving Size' 
+                  maxLength={50} 
+                  value={servingsControlModel.getDisplayUnitCount()}
+                  onBlur={this.handleServingsSizeEditBoxBlurred.bind(this)}
+                  onChange={this.handleServingsSizeValueChange.bind(this)}
+                />
+              </FormGroup>
+            </form>
            </Col>
-
-           <Col xs={6} md={6} style={{paddingLeft: 5, paddingRight: 5}}>
-             <Slider
-               value={servingsControlModel.getDisplayUnitCount()}
-               min={1}
-               max={20}
-               step={1}
-               pinned snaps editable
-               onChange={this.handleDisplayUnitCountSliderChange.bind(this)}
-             />
-           </Col>
-
-           <Col xs={3} md={3} style={{paddingLeft: 0}}>
-             <form
-               onSubmit={(event) => this.submitNewDisplayUnit(event)}
-               autoComplete="off">
-               <FormGroup style={{marginBottom: 0}}
-                 controlId='servingsControlUnitEditBox'
-                 validationState={this.getDisplayUnitValidationState()}>
-                 <FormControl
-                   componentClass="input"
-                   className="text-right"
-                   type="text"
-                   label="Text"
-                   value={servingsControlModel.getDisplayUnitEditBox()}
-                   onBlur={this.handleDisplayUnitEditBoxBlurred.bind(this)}
-                   onChange={this.handleDisplayUnitEditBoxChange.bind(this)}/>
-               </FormGroup>
-             </form>
+           <Col xs={1} md={1} />
+           <Col xs={5} md={5}>
+            <form
+              onSubmit={(event) => this.submitNewDisplayUnit(event)}
+              autoComplete="off">
+              <FormGroup style={{marginBottom: 0}}
+                controlId='servingsControlUnitEditBox'
+                validationState={this.getDisplayUnitValidationState()}>
+                <TooltipInput 
+                  tooltip='Type your servings units here' 
+                  tooltipPosition='bottom'
+                  type='text' 
+                  label='Serving Units' 
+                  maxLength={50} 
+                  value={servingsControlModel.getDisplayUnitEditBox()}
+                  onBlur={this.handleDisplayUnitEditBoxBlurred.bind(this)}
+                  onChange={this.handleDisplayUnitEditBoxChange.bind(this)}
+                />
+              </FormGroup>
+            </form>
            </Col>
           </Row>
-
           <Row>
-            <Col xs={4} md={4}
-                 className='text-left'
-                 style={{paddingTop: 6, paddingRight: 0}}>
-              <text>Servings Per</text>
-            </Col>
-
-            <Col xs={5} md={5} style={{paddingLeft: 2, paddingRight: 0}}>
+            <Col xs={5} md={5} style={{paddingRight: 10}}>
               <form
                 onSubmit={(event) => this.submitValues(event)}
                 autoComplete="off">
                 <FormGroup
                   controlId='servingsControlRatioEditBox'
                   validationState={this.getServingsRatioValidationState()}>
-                  <FormControl
-                    componentClass="input"
-                    className="text-left"
-                    type="text"
-                    label="Text"
+                  <TooltipInput 
+                    tooltip='Type your servings ratio here' 
+                    tooltipPosition='bottom'
+                    type='text' 
+                    label='Serving Per Recipe' 
+                    maxLength={50} 
                     value={servingsControlModel.getDisplayRatioEditBox()}
                     onBlur={this.handleServingsRatioEditBoxBlurred.bind(this)}
-                    onChange={this.handleServingsRatioEditBoxChange.bind(this)}/>
+                    onChange={this.handleServingsRatioEditBoxChange.bind(this)}
+                  />
                 </FormGroup>
               </form>
             </Col>
-
-            <Col xs={3} md={3} style={{paddingLeft: 2}}>
+            <Col xs={1} md={1} />
+            <Col xs={5} md={5}>
               <form
                 onSubmit={(event) => this.submitValues(event)}
                 autoComplete="off">
                 <FormGroup
                   controlId='servingsControlAmountEditBox'
                   validationState={this.getServingsAmountValidationState()}>
-                  <FormControl
-                    componentClass="input"
-                    className="text-right"
-                    type="text"
-                    label="Text"
+                  <TooltipInput 
+                    tooltip='Type your servings amount here' 
+                    tooltipPosition='bottom'
+                    type='text' 
+                    label='Serving Amount' 
+                    maxLength={50} 
                     value={servingsControlModel.getValueEditBox()}
                     onBlur={this.handleServingsAmountEditBoxBlurred.bind(this)}
-                    onChange={this.handleServingsAmountEditBoxChange.bind(this)}/>
+                    onChange={this.handleServingsAmountEditBoxChange.bind(this)}
+                  />
                 </FormGroup>
               </form>
             </Col>
-
           </Row>
-
         </div>
       </div>
     )

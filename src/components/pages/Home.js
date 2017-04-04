@@ -94,8 +94,8 @@ export default class Home extends React.Component {
                   {browserWarning}
                 </Row>
                 <Row>
-                  <Col xs={0} sm={3} md={4} lg={4.25} xl={5}/>
-                  <Col xs={12} sm={6} md={4} lg={3.5} xl={2}
+                  <Col xs={0} sm={3} md={4} lg={4.25}/>
+                  <Col xs={12} sm={6} md={4} lg={3.5}
                        className="text-center"
                        style={{borderWidth:0,
                                borderColor:'gray',
@@ -114,7 +114,7 @@ export default class Home extends React.Component {
                       onClick={() => this.transitionToGenerator()}
                     />
                   </Col>
-                  <Col xs={0} sm={3} md={4} lg={4.25} xl={5}/>
+                  <Col xs={0} sm={3} md={4} lg={4.25}/>
                 </Row>
                 <Row style={{height:'43vh'}}/>
                 <Footer router={this.props.router}/>

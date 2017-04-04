@@ -142,8 +142,8 @@ export default class ServingsController extends React.Component {
   //
   handleDisplayUnitEditBoxChange(value) {
     const unit = value
-    const valueEditBox = Number(unit)
-    if (!isNaN(valueEditBox) && valueEditBox > 0 && valueEditBox < 1001) {
+    if (((typeof unit) === 'string') && (unit.trim().length > 0)) {
+      const {servingsControlModel} = this.props.servings
       servingsControlModel.setDisplayUnitEditBox(unit)
       this.props.setServingsControllerModel(servingsControlModel)
     }

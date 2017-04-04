@@ -10,6 +10,7 @@ import Image from 'react-bootstrap/lib/Image'
 import Popover from 'react-bootstrap/lib/Popover'
 import Dropdown from 'react-bootstrap/lib/Dropdown'
 import MenuItem from 'react-bootstrap/lib/MenuItem'
+import Button from 'react-bootstrap/lib/Button'
 import Glyphicon from 'react-bootstrap/lib/Glyphicon'
 import FormGroup from 'react-bootstrap/lib/FormGroup'
 import ListGroup from 'react-bootstrap/lib/ListGroup'
@@ -38,9 +39,9 @@ import {IngredientModel} from '../models/IngredientModel'
 import {IngredientControlModel} from '../models/IngredientControlModel'
 const Config = require('Config')
 
-import {Button} from 'react-toolbox/lib/button'
-import Tooltip from 'react-toolbox/lib/tooltip'
-const TooltipButton = Tooltip(Button)
+// import {Button} from 'react-toolbox/lib/button'
+// import Tooltip from 'react-toolbox/lib/tooltip'
+// const TooltipButton = Tooltip(Button)
 
 
 export default class Generator extends React.Component {
@@ -218,20 +219,18 @@ export default class Generator extends React.Component {
     const {embed, showShareUrl, copiedUrl, textLabel} = this.state
     const url = (embed) ? embedUrl : shareUrl
     const shareUrlBox = (url && showShareUrl) ? (
-      <div>
+      <Row style={{marginBottom:0, marginTop:constants.VERT_SPACE}}>
         <Col xs={11}>
-          <pre style={{marginBottom:0, marginTop:constants.VERT_SPACE}}>{url}</pre>
+          <pre>{url}</pre>
         </Col>
-        <Col xs={1} style={{padding: 0, marginRight: -12, marginLeft: -12}}>
+        <Col xs={1}>
           <CopyToClipboard text={url}
             onCopy={() => this.setState({copiedUrl: true})}>
-            <Button className="btn-primary-spacing" bsStyle="success" style={{marginBottom:0, marginTop:constants.VERT_SPACE}}>
-              <Glyphicon glyph="glyphicon glyphicon-copy"></Glyphicon>
-            </Button>
+            <Button><Glyphicon glyph="glyphicon glyphicon-copy"></Glyphicon></Button>
           </CopyToClipboard>
           {copiedUrl ? <div><span style={{color: 'red'}}>&nbsp;Copied.</span></div> : null}
         </Col>
-      </div>
+      </Row>
     ) : null
     const popoverHoverFocus = (
       <Popover id="popover-trigger-hover-focus" title="Rounding Information">

@@ -12,6 +12,7 @@ import UploadModal from '../layout/UploadModal'
 import MarginLayout from '../../helpers/MarginLayout'
 import Generator from '../../containers/GeneratorContainer'
 import Results from '../../containers/ResultsContainer'
+import TopBar from '../layout/TopBar'
 import Footer from "../../containers/FooterContainer"
 const Config = require('Config')
 import browser from 'detect-browser'
@@ -72,7 +73,7 @@ export default class Home extends React.Component {
             </Alert>
           )
       }
-      const home = require('../../images/home4K.jpg')
+      const home = require('../../images/homeHD.jpg')
       const sectionStyle = {
         backgroundImage:`url(${home})`,
         backgroundRepeat:'no-repeat',
@@ -81,6 +82,7 @@ export default class Home extends React.Component {
       };
       return (
         <Grid style={sectionStyle}>
+          <TopBar router={this.props.router}/>
           <Row style={{height:'100vh'}}>
             <Col>
                 <Row style={{height:'65vh'}}>
@@ -93,9 +95,7 @@ export default class Home extends React.Component {
                 </Row>
                 <Row style={{height:'20vh'}}>
                 </Row>
-                <Row>
-                  <Footer/>
-                </Row>
+                <Footer/>
             </Col>
           </Row>
         </Grid>

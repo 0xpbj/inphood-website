@@ -36,31 +36,29 @@ export default class About extends React.Component {
     });
     return (
       <div style={{backgroundColor: 'white'}}>
+        <TopBar router={this.props.router}/>
         <Grid>
           <Row className="show-grid">
-            <TopBar router={this.props.router}/>
-            <Col xs={11} sm={11} md={11} lg={11}>
-              <h1 className="page-header">About Us</h1>
-              <h4>inPhood LLC founded in 2016, labels food images across the internet.</h4>
-              <h4>Our products help users generate shareable nutrition labels, based on USDA information and proprietary sources.</h4>
-              <h2 className="page-header">Our Team</h2>
-              <div className="row">
-                <div className="col-sm-6">
-                  {this.getTeamMember("Prabhaav Bhardwaj", "CEO",
-                    true,
-                    "https://www.instagram.com/pv.bj",
-                    "https://www.linkedin.com/in/prabhaav"
-                  )}
-                </div>
-                <div className="col-sm-6">
-                  {this.getTeamMember("Alex Carreira", "CTO",
-                    false,
-                    "https://www.instagram.com/ac4tw",
-                    "https://www.linkedin.com/in/alex-carreira-6a2a711"
-                  )}
-                </div>
+            <h1 className="page-header">About Us</h1>
+            <h4>inPhood LLC founded in 2016, labels food images across the internet.</h4>
+            <h4>Our products help users generate shareable nutrition labels, based on USDA information and proprietary sources.</h4>
+            <h2 className="page-header">Our Team</h2>
+            <div className="row">
+              <div className="col-sm-6">
+                {this.getTeamMember("Prabhaav Bhardwaj", "CEO",
+                  true,
+                  "https://www.instagram.com/pv.bj",
+                  "https://www.linkedin.com/in/prabhaav"
+                )}
               </div>
-            </Col>
+              <div className="col-sm-6">
+                {this.getTeamMember("Alex Carreira", "CTO",
+                  false,
+                  "https://www.instagram.com/ac4tw",
+                  "https://www.linkedin.com/in/alex-carreira-6a2a711"
+                )}
+              </div>
+            </div>
           </Row>
         </Grid>
       </div>

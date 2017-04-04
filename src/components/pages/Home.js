@@ -82,19 +82,22 @@ export default class Home extends React.Component {
       };
       return (
         <Grid style={sectionStyle}>
-          <TopBar router={this.props.router}/>
           <Row style={{height:'100vh'}}>
             <Col>
-                <Row style={{height:'65vh'}}>
+                <TopBar router={this.props.router}/>
+
+                <Row style={{height:'50vh'}}>
                   {browserWarning}
                 </Row>
+
                 <Row className="text-center">
                     <Button onClick={() => this.transitionToGenerator()}>
                       Create Label&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-list-alt"></Glyphicon>
                     </Button>
                 </Row>
-                <Row style={{height:'20vh'}}>
-                </Row>
+
+                <Row style={{height:'40vh'}}/>
+
                 <Footer/>
             </Col>
           </Row>

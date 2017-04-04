@@ -8,16 +8,12 @@ export default class Footer extends React.Component {
     const ml = new MarginLayout()
     const currentYear = new Date().getFullYear()
     return (
-      <Row
-        style={{borderWidth:0,
-                borderBottomWidth:1,
-                borderColor:'gray',
-                borderStyle:'solid',
-                backgroundColor:'rgba(0,0,0,0.25)',
-                padding:10}}>
+      <Row>
         {ml.marginCol}
         <Col xs={ml.xsCol} sm={ml.smCol} md={ml.mdCol} lg={ml.lgCol}>
-          <p className="text-center"> Copyright &copy; {currentYear} inPhood Inc., All rights reserved.</p>
+          <h4 className="text-center">
+            <b>Copyright &copy; {currentYear} inPhood Inc., All rights reserved.</b>
+          </h4>
         </Col>
         {ml.marginCol}
       </Row>

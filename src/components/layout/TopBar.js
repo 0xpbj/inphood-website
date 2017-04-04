@@ -47,14 +47,15 @@ export default class TopBar extends React.Component {
       borderBottomWidth:1,
       borderColor:'gray',
       borderStyle:'solid',
-      backgroundColor:'rgba(255,255,255,0.40)'
+      backgroundColor:'rgba(255,255,255,0.60)'
     }
-    const whiteBackroundStyle={
-      marginLeft: 0,
-      marginRight: 0,
-      marginBottom: 30,
-      padding: 5
-    }
+
+    // const whiteBackroundStyle={
+    //   marginLeft: 0,
+    //   marginRight: 0,
+    //   marginBottom: 30,
+    //   padding: 5
+    // }
 
     return (
       <Row style={picBackgroundStyle}>
@@ -70,11 +71,11 @@ export default class TopBar extends React.Component {
 
             <Col xs={12} sm={3}>
               <Button bsStyle="info" onClick={open}>
-                Say Hi!&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-envelope" />
+                Say Hi&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-envelope" />
               </Button>
               <Modal show={this.state.show} bsSize="small" aria-labelledby="contained-modal-title-sm">
                 <Modal.Header>
-                  <Modal.Title id="contained-modal-title-sm">Say Hi!</Modal.Title>
+                  <Modal.Title id="contained-modal-title-sm">Say Hi</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                   <EmailForm data={(data) => this.getData(data)}/>

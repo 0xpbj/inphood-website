@@ -11,8 +11,8 @@ export default class Footer extends React.Component {
       <Row>
         {ml.marginCol}
         <Col xs={ml.xsCol} sm={ml.smCol} md={ml.mdCol} lg={ml.lgCol}>
-          <h4 className="text-center">
-            <b>Copyright &copy; {currentYear} inPhood Inc., All rights reserved.</b>
+          <h4 className="text-center" style={{color:'orange'}}>
+            Copyright &copy; {currentYear} inPhood Inc., All rights reserved.
           </h4>
         </Col>
         {ml.marginCol}

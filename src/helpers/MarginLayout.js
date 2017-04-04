@@ -14,12 +14,13 @@ export default class MarginLayout {
     const smOffset = 1
     const mdOffset = 2
     const lgOffset = 3
-    const margins = [0, 1, 2, 3]
+
+    const margins = [0.0, 1.0, 1.0, 1.5]
 
     let centers = []
 
     for (let margin of margins) {
-      let center = 12 - (2*margin)
+      let center = 12.0 - (2.0*margin)
       centers.push(center)
     }
 

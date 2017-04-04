@@ -100,21 +100,21 @@ class Recipe extends React.Component {
     } else {
       return(
         <div style={{marginTop: 10}} className="text-right">
-          <TooltipButton 
-            tooltip='Click to try a sample recipe' 
+          <TooltipButton
+            tooltip='Click to try a sample recipe'
             tooltipPosition='left'
-            tooltipDelay={500} 
+            tooltipDelay={500}
             icon='cached'
             label='Sample Recipe'
             onClick={() => this.sampleRecipeFlow()}
             style={{marginRight: 30, textTransform: 'none'}}
           />
-          <TooltipButton 
-            tooltip='Click to add ingredient to label' 
+          <TooltipButton
+            tooltip='Click to add ingredient(s) to label' 
             tooltipPosition='left'
-            tooltipDelay={500} 
-            icon='add' 
-            label='Add Ingredient' 
+            tooltipDelay={500}
+            icon='add'
+            label='Add Ingredient(s)'
             raised
             style={{color: 'white', backgroundColor: '#51A351', textTransform: 'none'}}
             onClick={() => this.recipeFlow()}
@@ -133,13 +133,13 @@ class Recipe extends React.Component {
       <div>
         <FormGroup controlId="formControlsTextarea">
           {recipeAlert}
-          <TooltipInput 
-            tooltip='Type your ingredients here' 
+          <TooltipInput
+            tooltip='Type your ingredients here'
             tooltipPosition='top'
-            type='text' 
-            multiline label='Recipe Ingredients' 
-            maxLength={5000} 
-            value={this.state.ingredients} 
+            type='text'
+            multiline label='Recipe Ingredients'
+            maxLength={5000}
+            value={this.state.ingredients}
             onChange={this.handleChange.bind(this)}
             hint='1 c spinach'
             required

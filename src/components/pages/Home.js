@@ -98,8 +98,6 @@ export default class Home extends React.Component {
                   <Col xs={12} sm={6} md={4} lg={3.5}
                        className="text-center"
                        style={{borderWidth:0,
-                               borderColor:'gray',
-                               borderStyle:'solid',
                                borderRadius:15,
                                backgroundColor:'rgba(0,0,0,0.25)',
                                padding: 30}}>
@@ -116,7 +114,7 @@ export default class Home extends React.Component {
                   </Col>
                   <Col xs={0} sm={3} md={4} lg={4.25}/>
                 </Row>
-                <Row style={{height:'43vh'}}/>
+                <Row style={{height:'32vh'}}/>
                 <Footer router={this.props.router}/>
             </Col>
           </Row>

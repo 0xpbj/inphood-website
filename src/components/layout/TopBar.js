@@ -42,33 +42,21 @@ export default class TopBar extends React.Component {
 
     const {router} = this.props
 
-    const picBackgroundStyle={
-      borderWidth:0,
-      borderBottomWidth:1,
-      borderColor:'gray',
-      borderStyle:'solid',
-      backgroundColor:'rgba(255,255,255,0.60)'
+    const whiteBackground={
+      backgroundColor:'white'
     }
 
-    // const whiteBackroundStyle={
-    //   marginLeft: 0,
-    //   marginRight: 0,
-    //   marginBottom: 30,
-    //   padding: 5
-    // }
-
     return (
-      <Row style={picBackgroundStyle}>
+      <Row style={whiteBackground}>
         {ml.marginCol}
         <Col xs={ml.xsCol} sm={ml.smCol} md={ml.mdCol} lg={ml.lgCol}>
           <Row>
-            <Col xs={12} sm={3} style={{paddingLeft: 0, paddingRight: 0}}>
+            <Col style={{paddingLeft: 0, paddingRight: 0}} xs={6}>
               <Button bsStyle="link" onClick={() => router.push('/')}>
                 <img src={require('../../images/logoOnClear.png')}/>
               </Button>
             </Col>
-            <Col xs={12} sm={5}/>
-            <Col xs={12} sm={2}>
+            <Col className='text-right' xs={6}>
               <Button bsStyle="link" onClick={open}>
                 Say Hi&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-envelope" />
               </Button>
@@ -83,11 +71,6 @@ export default class TopBar extends React.Component {
                   <Button onClick={this.onSubmit.bind(this)}>Submit</Button>
                 </Modal.Footer>
               </Modal>
-            </Col>
-            <Col xs={12} sm={2}>
-              <Button bsStyle="link" onClick={() => router.push('/about')}>
-                About Us&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-question-sign" />
-              </Button>
             </Col>
           </Row>
 

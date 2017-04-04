@@ -74,6 +74,7 @@ export default class Home extends React.Component {
             </Alert>
           )
       }
+      // TODO: if screen size <= xs, make the backgroundSize = cover (mobile first)
       const home = require('../../images/homeHD.jpg')
       const sectionStyle = {
         backgroundImage:`url(${home})`,
@@ -81,14 +82,15 @@ export default class Home extends React.Component {
         backgroundSize:'contain',
         backgroundAttachment: 'fixed',
         backgroundPosition: 'center',
-        width:'100%'
+        width:'100vw',
+        height:'100vh'
       };
       return (
         <Grid style={sectionStyle}>
-          <Row style={{height:'100vh'}}>
+          <Row>
             <Col>
                 <TopBar router={this.props.router}/>
-                <Row style={{height:'50vh'}}>
+                <Row style={{height:'30vh'}}>
                   {browserWarning}
                 </Row>
                 <Row className="text-center">
@@ -105,7 +107,7 @@ export default class Home extends React.Component {
                     />
                   </div>
                 </Row>
-                <Row style={{height:'37vh'}}/>
+                <Row style={{height:'56vh'}}/>
                 <Footer/>
             </Col>
           </Row>

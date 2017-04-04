@@ -61,19 +61,17 @@ export default class TopBar extends React.Component {
       <Row style={picBackgroundStyle}>
         {ml.marginCol}
         <Col xs={ml.xsCol} sm={ml.smCol} md={ml.mdCol} lg={ml.lgCol}>
-
           <Row>
             <Col xs={12} sm={3} style={{paddingLeft: 0, paddingRight: 0}}>
               <Button bsStyle="link" onClick={() => router.push('/')}>
                 <img src={require('../../images/logoOnClear.png')}/>
               </Button>
             </Col>
-
             <Col xs={12} sm={3}>
-              <Button bsStyle="info" onClick={open}>
+              <Button bsStyle="link" onClick={open}>
                 Say Hi&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-envelope" />
               </Button>
-              <Modal show={this.state.show} bsSize="small" aria-labelledby="contained-modal-title-sm">
+              <Modal onHide={close} show={this.state.show} bsSize="small" aria-labelledby="contained-modal-title-sm">
                 <Modal.Header>
                   <Modal.Title id="contained-modal-title-sm">Say Hi</Modal.Title>
                 </Modal.Header>
@@ -85,13 +83,15 @@ export default class TopBar extends React.Component {
                 </Modal.Footer>
               </Modal>
             </Col>
-
             <Col xs={12} sm={3}>
-              <Link to="http://www.inphood.com/about" target="_blank">About Us</Link>
+              <Button bsStyle="link" onClick={() => router.push('/about')}>
+                About Us&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-question-sign" />
+              </Button>
             </Col>
-
             <Col xs={12} sm={3}>
-              <Link to="http://www.inphood.com/privacy_policy.pdf" target="_blank">Privacy Policy</Link>
+              <Button bsStyle="link">
+                <Link to="http://www.inphood.com/privacy_policy.pdf" target="_blank">Privacy Policy&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-briefcase" /></Link>
+              </Button>
             </Col>
           </Row>
 

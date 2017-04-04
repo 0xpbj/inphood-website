@@ -5,9 +5,7 @@ import Col from 'react-bootstrap/lib/Col'
 import Grid from 'react-bootstrap/lib/Grid'
 import Alert from 'react-bootstrap/lib/Alert'
 import Image from 'react-bootstrap/lib/Image'
-import Button from 'react-bootstrap/lib/Button'
 import Jumbotron from 'react-bootstrap/lib/Jumbotron'
-import Glyphicon from 'react-bootstrap/lib/Glyphicon'
 import UploadModal from '../layout/UploadModal'
 import MarginLayout from '../../helpers/MarginLayout'
 import Generator from '../../containers/GeneratorContainer'
@@ -19,6 +17,9 @@ import browser from 'detect-browser'
 import { InteractiveForceGraph, ForceGraphNode, ForceGraphLink } from 'react-vis-force'
 import { interpolateRainbow } from 'd3-scale'
 import exampleJSON from './example.json'
+import Tooltip from 'react-toolbox/lib/tooltip'
+import {Button} from 'react-toolbox/lib/button'
+const TooltipButton = Tooltip(Button)
 
 export default class Home extends React.Component {
   constructor() {
@@ -91,9 +92,16 @@ export default class Home extends React.Component {
                 </Row>
 
                 <Row className="text-center">
-                    <Button onClick={() => this.transitionToGenerator()}>
-                      Create Label&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-list-alt"></Glyphicon>
-                    </Button>
+                  <TooltipButton 
+                    tooltip='Click to create a nutrition label' 
+                    tooltipPosition='bottom'
+                    tooltipDelay={500} 
+                    icon='input' 
+                    label='Create Nutrition Label' 
+                    raised
+                    primary
+                    onClick={() => this.transitionToGenerator()}
+                  />
                 </Row>
 
                 <Row style={{height:'40vh'}}/>

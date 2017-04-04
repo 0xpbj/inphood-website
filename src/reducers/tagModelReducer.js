@@ -100,7 +100,7 @@ export default function modelFun(state = initialState, action) {
       matchResultsModel.addSearch(searchTerm)
       for (let obj of action.data) {
         const displayDescription = obj.highlight.Description[0]
-        const description = obj._source.Description
+        const description = obj._source.inPhood001
         const ndbNo = obj._id
         const searchResult = new SearchResult(description, ndbNo, displayDescription)
         matchResultsModel.appendSearchResult(searchTerm, searchResult)

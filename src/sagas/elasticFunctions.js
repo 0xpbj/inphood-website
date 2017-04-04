@@ -46,7 +46,7 @@ export function* callElasticSearchLambda(foodName, size, index, length) {
   const info = data[0]
   if (info) {
     yield put ({type: INITIALIZE_FIREBASE_DATA, foodName, data})
-    yield put ({type: GET_FIREBASE_DATA, foodName, ingredient: info._source.Description, key: info._id, index, length})
+    yield put ({type: GET_FIREBASE_DATA, foodName, ingredient: info._source.inPhood001, key: info._id, index, length})
   }
   else {
     yield put ({type: GET_COMMERCIAL_DATA, foodName})

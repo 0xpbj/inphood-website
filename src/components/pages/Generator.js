@@ -276,7 +276,7 @@ export default class Generator extends React.Component {
                 <Row style={{marginTop:(constants.VERT_SPACE-2)}}>
                   <OverlayTrigger placement="bottom" overlay={popoverHoverFocus} trigger={['hover', 'focus', 'click']}>
                     <Col xs={12}>
-                        {label}
+                      {label}
                     </Col>
                   </OverlayTrigger>
                 </Row>

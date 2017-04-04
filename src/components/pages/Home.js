@@ -77,8 +77,10 @@ export default class Home extends React.Component {
       const home = require('../../images/homeHD.jpg')
       const sectionStyle = {
         backgroundImage:`url(${home})`,
-        backgroundRepeat:'repeat',
-        backgroundSize:'cover',
+        backgroundRepeat:'no-repeat',
+        backgroundSize:'contain',
+        backgroundAttachment: 'fixed',
+        backgroundPosition: 'center',
         width:'100%'
       };
       return (

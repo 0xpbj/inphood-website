@@ -143,6 +143,7 @@ export default class Nutrition extends React.Component {
                 tooltipDelay={500} 
                 icon='delete'
                 primary
+                style={{color: 'red'}}
                 onClick={this.handleChipDelete.bind(this, tag)}
               />
             </Col>

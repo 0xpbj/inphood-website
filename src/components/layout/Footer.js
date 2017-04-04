@@ -12,6 +12,8 @@ export default class Footer extends React.Component {
     const ml = new MarginLayout()
     const currentYear = new Date().getFullYear()
 
+    const {router} = this.props
+    
     const whiteBackground={
       backgroundColor:'white'
     }

@@ -7,7 +7,8 @@ import Alert from 'react-bootstrap/lib/Alert'
 import instagram from '../../images/instagram.svg'
 import linkedin from '../../images/linkedin.svg'
 import {Link} from 'react-router'
-import TopBar from '../layout/TopBar'
+import Footer from '../../containers/FooterContainer'
+import TopBar from '../../containers/TopBarContainer'
 
 export default class About extends React.Component {
   getTeamMember(memberName, title, flag, instagramUrl, linkedInUrl) {

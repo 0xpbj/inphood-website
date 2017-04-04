@@ -27,7 +27,8 @@ import CopyToClipboard from 'react-copy-to-clipboard'
 
 import MarginLayout from '../../helpers/MarginLayout'
 import {getTextLabel} from '../../helpers/TextLabel'
-import TopBar from '../layout/TopBar'
+import Footer from '../../containers/FooterContainer'
+import TopBar from '../../containers/TopBarContainer'
 
 import Recipe from '../../containers/RecipeContainer'
 import Nutrition from '../../containers/NutritionContainer'

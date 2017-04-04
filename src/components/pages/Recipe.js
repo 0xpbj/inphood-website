@@ -115,7 +115,7 @@ class Recipe extends React.Component {
             icon='cached'
             label='Sample Recipe'
             onClick={() => this.sampleRecipeFlow()}
-            style={{marginRight: 30}}
+            style={{marginRight: 30, textTransform: 'none'}}
           />
           <TooltipButton 
             tooltip='Click to add ingredient to label' 
@@ -124,7 +124,7 @@ class Recipe extends React.Component {
             icon='add' 
             label='Add Ingredient' 
             raised
-            style={{color: 'white', backgroundColor: '#51A351'}}
+            style={{color: 'white', backgroundColor: '#51A351', textTransform: 'none'}}
             onClick={() => this.recipeFlow()}
           />
         </div>

@@ -87,7 +87,7 @@ export default class Generator extends React.Component {
     return (
       <Dropdown id='shareDropdown'>
         <Dropdown.Toggle bsStyle='success'>
-          <Glyphicon glyph="share-alt" />&nbsp;&nbsp;SHARE LABEL
+          <Glyphicon glyph="share-alt" />&nbsp;&nbsp;Share Label
         </Dropdown.Toggle>
         <Dropdown.Menu>
           <MenuItem
@@ -121,7 +121,7 @@ export default class Generator extends React.Component {
     return (
       <Dropdown id='customLabelDropdown'>
         <Dropdown.Toggle bsStyle='warning'>
-          <Glyphicon glyph="wrench" />&nbsp;&nbsp;CUSTOM LABEL
+          <Glyphicon glyph="wrench" />&nbsp;&nbsp;Custom Label
         </Dropdown.Toggle>
         <Dropdown.Menu>
           <MenuItem

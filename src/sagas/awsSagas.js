@@ -48,7 +48,7 @@ function* loadLabelToAWS() {
   const buffer = new Buffer(data.replace(/^data:image\/\w+;base64,/, ""),'base64')
   yield call (uploadToAWS, buffer, user, key, extension)
   const shareUrl = 'http://www.image.inphood.com/' + user + '/' + key + extension
-  const embedUrl = '<a href=\'https://www.inphood.com/?user='+user+'/&label='+key+'\' target=\'_blank\'><img width="340" height="542" src=\''+shareUrl+'\'/></a>'
+  const embedUrl = '<a href=\'https://www.inphood.com/?user='+user+'/&label='+key+'\' target=\'_blank\'><img width="340" src=\''+shareUrl+'\'/></a>'
   yield put ({type: SET_SHARE_URL, shareUrl, embedUrl})
 }
 

@@ -114,7 +114,7 @@ class Recipe extends React.Component {
             tooltipDelay={500} 
             icon='add' 
             label='Add Ingredient' 
-            mini raised
+            raised
             style={{color: 'white', backgroundColor: 'forestgreen'}}
             onClick={() => this.recipeFlow()}
           />
@@ -149,7 +149,10 @@ class Recipe extends React.Component {
             multiline label='Recipe Ingredients' 
             maxLength={5000} 
             value={this.state.ingredients} 
-            onChange={this.handleChange.bind(this)} 
+            onChange={this.handleChange.bind(this)}
+            hint='1 c spinach'
+            required
+            icon='restaurant'
           />
         </FormGroup>
         {this.getAddIngredientButton()}

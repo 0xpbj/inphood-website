@@ -67,7 +67,8 @@ export default class TopBar extends React.Component {
                 <img src={require('../../images/logoOnClear.png')}/>
               </Button>
             </Col>
-            <Col xs={12} sm={3}>
+            <Col xs={12} sm={5}/>
+            <Col xs={12} sm={2}>
               <Button bsStyle="link" onClick={open}>
                 Say Hi&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-envelope" />
               </Button>
@@ -83,14 +84,9 @@ export default class TopBar extends React.Component {
                 </Modal.Footer>
               </Modal>
             </Col>
-            <Col xs={12} sm={3}>
+            <Col xs={12} sm={2}>
               <Button bsStyle="link" onClick={() => router.push('/about')}>
                 About Us&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-question-sign" />
-              </Button>
-            </Col>
-            <Col xs={12} sm={3}>
-              <Button bsStyle="link">
-                <Link to="http://www.inphood.com/privacy_policy.pdf" target="_blank">Privacy Policy&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-briefcase" /></Link>
               </Button>
             </Col>
           </Row>

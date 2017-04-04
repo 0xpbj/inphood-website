@@ -92,19 +92,19 @@ export default class Home extends React.Component {
                 </Row>
 
                 <Row className="text-center">
-                  <TooltipButton 
-                    tooltip='Click to create a nutrition label' 
+                  <TooltipButton
+                    tooltip='Click to create a nutrition label'
                     tooltipPosition='bottom'
-                    tooltipDelay={500} 
-                    icon='input' 
-                    label='Create Nutrition Label' 
+                    tooltipDelay={500}
+                    icon='input'
+                    label='Create Nutrition Label'
                     raised
                     primary
                     onClick={() => this.transitionToGenerator()}
                   />
                 </Row>
 
-                <Row style={{height:'40vh'}}/>
+                <Row style={{height:'37vh'}}/>
 
                 <Footer/>
             </Col>

@@ -28,7 +28,7 @@ export default class NutritionEstimateJSX extends React.Component {
       "Serving Size " +
       ingredientComposite.getDisplayServingCount() + " " +
       ingredientComposite.getDisplayServingUnit() + " (" +
-      ingredientComposite.getServingAmount().toFixed(2) +
+      ingredientComposite.getServingAmount() +
       ingredientComposite.getServingUnit() + ")"
 
     let servingInfo = [servingSizeSentence]

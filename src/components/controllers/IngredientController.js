@@ -38,26 +38,27 @@ export default class IngredientController extends React.Component {
   }
   handleEditBoxValueChange() {
     debugger
-    const value = this.state.editBoxValue
-    console.log(Number(value))
-    if (isNumeric(value) !== 'success') {
+    if (isNumeric(this.state.editBoxValue) !== 'success') {
       return 
     }
-    else if (Number(value) !== 0) {
-      const {tag} = this.props
-      ReactGA.event({
-        category: 'Ingredient Model',
-        action: 'Ingredient unit changed',
-        nonInteraction: false,
-        tag
-      });
-      let ingredientControlModel = this.props.ingredientModel.ingredientControlModels[tag]
-      ingredientControlModel.setEditBoxValue(value)
-      const units = ingredientControlModel.getDropdownUnitValue()
-      this.updateReduxStore(tag, value, units)
+    else {
+      const value = rationalToFloat(this.state.editBoxValue)
+      if (value) {
+        const {tag} = this.props
+        ReactGA.event({
+          category: 'Ingredient Model',
+          action: 'Ingredient unit changed',
+          nonInteraction: false,
+          tag
+        });
+        let ingredientControlModel = this.props.ingredientModel.ingredientControlModels[tag]
+        ingredientControlModel.setEditBoxValue(value)
+        const units = ingredientControlModel.getDropdownUnitValue()
+        this.updateReduxStore(tag, value, units)
+      }
+      else
+        return
     }
-    else
-      return
   }
   handleUnitDropdownChange(units) {
     const {tag} = this.props

@@ -1,115 +1,35 @@
 export class ServingsControlModel {
   constructor() {
-    // WARNING: we keep things this way b/c the serialized data in firebase
-    // depends upon this._value and this._unit to be handled properly. Changing
-    // these will break customer labels:
-    //
-    // Used to be possible to choose 'people' or 'grams'.
-    // We've now locked it to 'people', which divides the total number of grams
-    // in a recipe by this._value:
-    this._value = 2
-    this._unit = 'people'
-    //
-    // _displayUnit and _displayUnitCount are solely for display purposes on the
-    // label--i.e. 2 tacos.  The real math is done with this._value above.
-    this._displayUnit = 'plate'
-    this._displayUnitCount = 1
-    this._min = 1
-    this._max = 20
-    this._step = 1
-
-    this._displayRatio = 'Recipe, About'   // i.e. Servings Per Recipe, About 4
-    this._valueEditBox = '2'
-
-    this._displayUnitEditBox = this.getDisplayUnit()
-    this._displayRatioEditBox = this.getDisplayRatio()
+    this._servingSize = 2
+    // _servingUnit, _servingRatio and _servingAmount are solely for display purposes on the
+    // label--i.e. 2 tacos.  The real math is done with this._servingSize above.
+    this._servingUnit = 'plate'
+    this._servingAmount = 'About, 1'
+    // i.e. Servings Per Recipe, About 4
+    this._servingRatio = 'Recipe'
   }
-
-  rescaleMinAndMax(aValue) {
-    if ((aValue >= this._min) && (aValue <= this._max)) {
-      return
-    }
-
-    const numUnitPositions = 20
-
-    this._min = Math.floor(aValue - (numUnitPositions / 2))
-    if (this._min < 1) {
-      this._min = 1
-    }
-
-    this._max = this._min + (numUnitPositions - 1)
+  setServingSize(aValue) {
+    this._servingSize = aValue
   }
-
-  setValue(aValue) {
-    this.rescaleMinAndMax(aValue)
-    this._value = aValue
+  getServingSize() {
+    return this._servingSize
   }
-
-  getValue() {
-    return this._value
+  setServingUnit(aServingUnit) {
+    this._servingUnit = aServingUnit
   }
-
-  getUnit() {
-    return this._unit
+  getServingUnit() {
+    return this._servingUnit
   }
-
-  setDisplayUnit(aDisplayUnit) {
-    this._displayUnit = aDisplayUnit
+  setServingRatio(aServingRatio) {
+    this._servingRatio = aServingRatio
   }
-
-  getDisplayUnit() {
-    return this._displayUnit
+  getServingRatio() {
+    return this._servingRatio
   }
-
-  setDisplayRatio(aDisplayRatio) {
-    this._displayRatio = aDisplayRatio
+  setServingAmount(aServingAmount) {
+    this._servingAmount = aServingAmount
   }
-
-  getDisplayRatio() {
-    return this._displayRatio
-  }
-
-  setDisplayUnitCount(aDisplayUnitCount) {
-    this._displayUnitCount = aDisplayUnitCount
-  }
-
-  getDisplayUnitCount() {
-    return this._displayUnitCount
-  }
-
-  getMin() {
-    return this._min
-  }
-
-  getMax() {
-    return this._max
-  }
-
-  getStep() {
-    return this._step
-  }
-
-  setValueEditBox(aValue) {
-    this._valueEditBox = aValue
-  }
-
-  getValueEditBox() {
-    return this._valueEditBox
-  }
-
-  setDisplayUnitEditBox(aDisplayUnit) {
-    this._displayUnitEditBox = aDisplayUnit
-  }
-
-  getDisplayUnitEditBox() {
-    return this._displayUnitEditBox
-  }
-
-  setDisplayRatioEditBox(aDisplayRatio) {
-    this._displayRatioEditBox = aDisplayRatio
-  }
-
-  getDisplayRatioEditBox() {
-    return this._displayRatioEditBox
+  getServingAmount() {
+    return this._servingAmount
   }
 }

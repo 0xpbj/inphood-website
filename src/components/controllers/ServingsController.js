@@ -6,192 +6,174 @@ import FormGroup from 'react-bootstrap/lib/FormGroup'
 import Input from 'react-toolbox/lib/input'
 import Tooltip from 'react-toolbox/lib/tooltip'
 const TooltipInput = Tooltip(Input)
+import {rationalToFloat} from '../../helpers/ConversionUtils'
+
+function isNumeric(n) {
+  // Check to see if editBoxValue is a number--if so, return success because
+  // rationalToFloat expects a string. This also helps to catch things like
+  // "" and " " which evaluate to numbers (isNan===false) with the second
+  // predicate checking for string type.
+  if (!isNaN(n)) {
+    if ((typeof n) !== "string") {
+      return 'success'
+    }
+  }
+  else {
+    // Try and convert to a rational number from a variety of string
+    // representations (i.e. "1/2" "024" etc.), failing that, return error.
+    try {
+      const value = rationalToFloat(n)
+    } catch(err) {
+      return 'error'
+    }
+  }
+  return 'success'
+}
+
+function isValidString(s) {
+  if (((typeof s) === 'string') && (s.trim().length > 0)) {
+    return 'success'
+  }
+  else {
+    return 'error'
+  }
+}
 
 export default class ServingsController extends React.Component {
   constructor(props) {
     super(props)
-  }
-  //
-  componentWillMount() {
-    this.handleServingsValueChange(undefined)
-  }
-  //
-  handleServingsValueChange(analyticsAction) {
-    if (analyticsAction !== undefined) {
-      ReactGA.event({
-        category: 'Nutrition Mixer',
-        action: analyticsAction,
-        nonInteraction: false
-      });
-    }
-    const {servingsControlModel} = this.props.servings
-    const servingsValue = Number(servingsControlModel.getValueEditBox())
-    if (!isNaN(servingsValue) && servingsValue > 0 && servingsValue < 1001) {
-      servingsControlModel.setValue(servingsValue)
-      servingsControlModel.setValueEditBox(servingsValue.toString())
-
-      const servingsRatio = servingsControlModel.getDisplayRatioEditBox()
-      servingsControlModel.setDisplayRatio(servingsRatio)
-
-      this.props.setServingsControllerModel(servingsControlModel)
-      this.props.nutritionModelSetServings(servingsControlModel)
-      this.props.initSerializedData()
+    this.state = {
+      servingSize: 2,
+      servingUnit: 'plate',
+      servingAmount: 'About, 1',
+      servingRatio: 'Recipe'
     }
   }
-  //
-  //
-  // Methods for servings amount form (edit box):
-  //
-  submitValues(event) {
-    this.handleServingsAmountEditBoxBlurred()
-    this.handleServingsRatioEditBoxBlurred()
-    event.preventDefault()
-  }
-  //
-  getServingsAmountValidationState() {
-    const {servingsControlModel} = this.props.servings
-    const valueEditBox = servingsControlModel.getValueEditBox()
-    const number = Number(valueEditBox)
-    if (!isNaN(number) && number > 0 && number < 1001) {
-      return 'success'
-    }
-    else {
-      return 'error'
-    }
-  }
-  //
-  handleServingsAmountEditBoxBlurred() {
-    if (this.getServingsAmountValidationState() !== 'success') {
-      return
-    }
-    else {
-      this.handleServingsValueChange('Servings value edit box changed')
-    }
-  }
-  //
-  handleServingsAmountEditBoxChange(value) {
-    const amount = value
-    if (!isNaN(amount) && amount > 0 && amount < 1001) {
-      const {servingsControlModel} = this.props.servings
-      servingsControlModel.setValueEditBox(amount)
-      this.props.setServingsControllerModel(servingsControlModel)
-      this.props.initSerializedData()
-    }
-  }
-  //
-  getServingsRatioValidationState() {
-    const {servingsControlModel} = this.props.servings
-    const ratioEditBox = servingsControlModel.getDisplayRatioEditBox()
-    if (((typeof ratioEditBox) === 'string') && (ratioEditBox.trim().length > 0)) {
-      return 'success'
-    }
-    else {
-      return 'error'
-    }
-  }
-  //
-  handleServingsRatioEditBoxBlurred() {
-    if (this.getServingsRatioValidationState() !== 'success') {
-      return
-    }
-    else {
-      this.handleServingsValueChange('Servings ratio edit box changed')
-    }
-  }
-  //
-  handleServingsRatioEditBoxChange(value) {
-    const ratio = value
-    const {servingsControlModel} = this.props.servings
-    servingsControlModel.setDisplayRatioEditBox(ratio)
+  updateReduxStore(servingsControlModel) {
     this.props.setServingsControllerModel(servingsControlModel)
+    this.props.nutritionModelSetServings(servingsControlModel)
     this.props.initSerializedData()
   }
   //
   //
-  // Methods for servings unit form (edit box):
+  // Methods for servings size:
   //
-  submitNewDisplayUnit(event) {
-    this.handleDisplayUnitEditBoxBlurred()
+  submitServingSize(event) {
+    this.handleServingsSizeChange()
     event.preventDefault()
   }
-  //
-  getDisplayUnitValidationState() {
-    const {servingsControlModel} = this.props.servings
-    const displayUnitEditBox = servingsControlModel.getDisplayUnitEditBox()
-    if (((typeof displayUnitEditBox) === 'string') && (displayUnitEditBox.trim().length > 0)) {
-      return 'success'
-    }
-    return 'error'
+  getServingsSizeValidationState() {
+    return isNumeric(this.state.servingSize)
   }
-  //
-  handleDisplayUnitEditBoxBlurred() {
-    if (this.getDisplayUnitValidationState() === 'success') {
-      ReactGA.event({
-        category: 'Nutrition Mixer',
-        action: 'Servings unit edit box changed',
-        nonInteraction: false,
-      });
-      const {servingsControlModel} = this.props.servings
-      const displayUnitEditBox = servingsControlModel.getDisplayUnitEditBox()
-      servingsControlModel.setDisplayUnit(displayUnitEditBox)
-      this.props.setServingsControllerModel(servingsControlModel)
-      this.props.nutritionModelSetServings(servingsControlModel)
-      this.props.initSerializedData()
-    }
+  handleServingsSizeBlurred() {
+    this.handleServingsSizeChange()
   }
-  //
-  handleDisplayUnitEditBoxChange(value) {
-    const unit = value
-    if (((typeof unit) === 'string') && (unit.trim().length > 0)) {
-      const {servingsControlModel} = this.props.servings
-      servingsControlModel.setDisplayUnitEditBox(unit)
-      this.props.setServingsControllerModel(servingsControlModel)
-    }
-  }
-  submitNewServingUnit(event) {
-    this.handleServingsSizeEditBoxBlurred()
-    event.preventDefault()
-  }
-  //
-  handleServingsSizeEditBoxBlurred() {
+  handleServingsSizeChange() {
     if (this.getServingsSizeValidationState() !== 'success') {
       return
     }
     else {
-      this.handleServingsSizeValueChange('Servings value edit box changed')
-    }
-  }
-  //
-  getServingsSizeValidationState() {
-    const {servingsControlModel} = this.props.servings
-    const valueEditBox = servingsControlModel.getDisplayUnitCount()
-    const number = Number(valueEditBox)
-    if (!isNaN(number) && number > 0 && number < 1001) {
-      return 'success'
-    }
-    else {
-      return 'error'
-    }
-  }
-  //
-  //
-  // Methods for number of display unit (servings) slider:
-  //
-  handleServingsSizeValueChange(value) {
-    if (!isNaN(value) && value > 0 && value < 1001) {
       ReactGA.event({
         category: 'Nutrition Mixer',
-        action: 'Servings size edit box changed',
+        action: 'Servings size changed',
         nonInteraction: false,
       });
       const {servingsControlModel} = this.props.servings
-      servingsControlModel.setDisplayUnitCount(value)
-      this.props.setServingsControllerModel(servingsControlModel)
-      this.props.nutritionModelSetServings(servingsControlModel)
-      this.props.initSerializedData()
+      servingsControlModel.setServingSize(this.state.servingSize)
+      this.updateReduxStore(servingsControlModel)
     }
   }
   //
+  //
+  // Methods for servings unit:
+  //
+  submitServingUnit(event) {
+    this.handleServingUnitChange()
+    event.preventDefault()
+  }
+  getServingUnitValidationState() {
+    const {servingUnit} = this.state
+    return isValidString(servingUnit)
+  }
+  handleServingUnitBlurred() {
+    this.handleServingUnitChange()
+  }
+  handleServingUnitChange() {
+    if (this.getServingUnitValidationState() !== 'success') {
+      console.log('error')
+      return 
+    }
+    else {
+      ReactGA.event({
+        category: 'Nutrition Mixer',
+        action: 'Servings unit changed',
+        nonInteraction: false,
+      });
+      const {servingsControlModel} = this.props.servings
+      servingsControlModel.setServingUnit(this.state.servingUnit)
+      this.updateReduxStore(servingsControlModel)
+    }
+  }
+  //
+  //
+  // Methods for servings ratio:
+  //
+  submitServingRatio(event) {
+    this.handleServingsRatioChange()
+    event.preventDefault()
+  }
+  getServingsRatioValidationState() {
+    const {servingRatio} = this.state
+    return isValidString(servingRatio)
+  }
+  handleServingsRatioBlurred() {
+    this.handleServingsRatioChange()
+  }
+  handleServingsRatioChange() {
+    if (this.getServingsRatioValidationState() !== 'success') {
+      return
+    }
+    else {
+      ReactGA.event({
+        category: 'Nutrition Mixer',
+        action: 'Servings ratio changed',
+        nonInteraction: false,
+      });
+      const {servingsControlModel} = this.props.servings
+      servingsControlModel.setServingRatio(this.state.servingRatio)
+      this.updateReduxStore(servingsControlModel)
+    }
+  }
+  //
+  //
+  // Methods for servings amount:
+  //
+  submitServingsAmount(event) {
+    this.handleServingsAmountChange()
+    event.preventDefault()
+  }
+  getServingsAmountValidationState() {
+    const {servingAmount} = this.state
+    return isValidString(servingAmount)
+  }
+  handleServingsAmountBlurred() {
+    this.handleServingsAmountChange()
+  }
+  handleServingsAmountChange() {
+    if (this.getServingsAmountValidationState() !== 'success') {
+      return
+    }
+    else {
+      ReactGA.event({
+        category: 'Nutrition Mixer',
+        action: 'Servings amount changed',
+        nonInteraction: false,
+      });
+      const {servingsControlModel} = this.props.servings
+      servingsControlModel.setServingAmount(this.state.servingAmount)
+      this.updateReduxStore(servingsControlModel)
+    }
+  }
   render() {
     const {servingsControlModel} = this.props.servings
     return (
@@ -211,10 +193,10 @@ export default class ServingsController extends React.Component {
           <Row>
            <Col xs={5} md={5} style={{paddingRigh: 10}}>
             <form
-              onSubmit={(event) => this.submitNewServingUnit(event)}
+              onSubmit={(event) => this.submitServingSize(event)}
               autoComplete="off">
               <FormGroup style={{marginBottom: 0}}
-                controlId='servingsControlUnitEditBox'
+                controlId='servingsControlUnit'
                 validationState={this.getServingsSizeValidationState()}>
                 <TooltipInput 
                   tooltip='Type your servings size here' 
@@ -222,9 +204,9 @@ export default class ServingsController extends React.Component {
                   type='text' 
                   label='Serving Size' 
                   maxLength={50} 
-                  value={servingsControlModel.getDisplayUnitCount()}
-                  onBlur={this.handleServingsSizeEditBoxBlurred.bind(this)}
-                  onChange={this.handleServingsSizeValueChange.bind(this)}
+                  value={this.state.servingSize}
+                  onBlur={this.handleServingsSizeBlurred.bind(this)}
+                  onChange={(value) => this.setState({servingSize: value})}
                 />
               </FormGroup>
             </form>
@@ -232,20 +214,20 @@ export default class ServingsController extends React.Component {
            <Col xs={1} md={1} />
            <Col xs={5} md={5}>
             <form
-              onSubmit={(event) => this.submitNewDisplayUnit(event)}
+              onSubmit={(event) => this.submitServingUnit(event)}
               autoComplete="off">
               <FormGroup style={{marginBottom: 0}}
-                controlId='servingsControlUnitEditBox'
-                validationState={this.getDisplayUnitValidationState()}>
+                controlId='servingsControlUnit'
+                validationState={this.getServingUnitValidationState()}>
                 <TooltipInput 
                   tooltip='Type your servings units here' 
                   tooltipPosition='bottom'
                   type='text' 
                   label='Serving Units' 
                   maxLength={50} 
-                  value={servingsControlModel.getDisplayUnitEditBox()}
-                  onBlur={this.handleDisplayUnitEditBoxBlurred.bind(this)}
-                  onChange={this.handleDisplayUnitEditBoxChange.bind(this)}
+                  value={this.state.servingUnit}
+                  onBlur={this.handleServingUnitBlurred.bind(this)}
+                  onChange={(value) => this.setState({servingUnit: value})}
                 />
               </FormGroup>
             </form>
@@ -254,20 +236,20 @@ export default class ServingsController extends React.Component {
           <Row>
             <Col xs={5} md={5} style={{paddingRight: 10}}>
               <form
-                onSubmit={(event) => this.submitValues(event)}
+                onSubmit={(event) => this.submitServingRatio(event)}
                 autoComplete="off">
                 <FormGroup
-                  controlId='servingsControlRatioEditBox'
+                  controlId='servingsControlRatio'
                   validationState={this.getServingsRatioValidationState()}>
                   <TooltipInput 
                     tooltip='Type your servings ratio here' 
                     tooltipPosition='bottom'
                     type='text' 
-                    label='Serving Per Recipe' 
+                    label='Serving Per' 
                     maxLength={50} 
-                    value={servingsControlModel.getDisplayRatioEditBox()}
-                    onBlur={this.handleServingsRatioEditBoxBlurred.bind(this)}
-                    onChange={this.handleServingsRatioEditBoxChange.bind(this)}
+                    value={this.state.servingRatio}
+                    onBlur={this.handleServingsRatioBlurred.bind(this)}
+                    onChange={(value) => this.setState({servingRatio: value})}
                   />
                 </FormGroup>
               </form>
@@ -275,10 +257,10 @@ export default class ServingsController extends React.Component {
             <Col xs={1} md={1} />
             <Col xs={5} md={5}>
               <form
-                onSubmit={(event) => this.submitValues(event)}
+                onSubmit={(event) => this.submitServingsAmount(event)}
                 autoComplete="off">
                 <FormGroup
-                  controlId='servingsControlAmountEditBox'
+                  controlId='servingsControlAmount'
                   validationState={this.getServingsAmountValidationState()}>
                   <TooltipInput 
                     tooltip='Type your servings amount here' 
@@ -286,9 +268,9 @@ export default class ServingsController extends React.Component {
                     type='text' 
                     label='Serving Amount' 
                     maxLength={50} 
-                    value={servingsControlModel.getValueEditBox()}
-                    onBlur={this.handleServingsAmountEditBoxBlurred.bind(this)}
-                    onChange={this.handleServingsAmountEditBoxChange.bind(this)}
+                    value={this.state.servingAmount}
+                    onBlur={this.handleServingsAmountBlurred.bind(this)}
+                    onChange={(value) => this.setState({servingAmount: value})}
                   />
                 </FormGroup>
               </form>

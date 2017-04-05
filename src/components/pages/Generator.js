@@ -59,10 +59,10 @@ export default class Generator extends React.Component {
     this.props.modelReset()
     this.props.clearData()
     // user did not come from home page
-    if (this.props.router.location.action !== 'PUSH') {
+    // if (this.props.router.location.action !== 'PUSH') {
       // send user back to home page
-      this.props.router.push('/')
-    }
+      // this.props.router.push('/')
+    // }
   }
   componentWillReceiveProps(nextProps) {
     if (this.state.labelErrorFlag) {
@@ -239,7 +239,7 @@ export default class Generator extends React.Component {
     ) : null
     const popoverHoverFocus = (
       <Popover id="popover-trigger-hover-focus" title="Rounding Information">
-        <strong>Nutrition values calculated using FDA rounding recommendations.</strong>
+        <strong>Nutrition values estimated based on USDA standards</strong>.
       </Popover>
     );
     const label = (textLabel) ? this.generateTextLabel(compositeModel)
@@ -256,14 +256,14 @@ export default class Generator extends React.Component {
                md={ml.mdCol}
                lg={ml.lgCol}>
             <Row>
-              <Col xs={12} sm={6} md={6} lg={7}>
+              <Col xs={12} sm={6} md={7} lg={7}>
                 <div>
                   {labelError}
                   <Recipe router={this.props.router} route={this.props.route} nutritionModelRed={this.props.nutritionModelRed}/>
                   <Nutrition />
                 </div>
               </Col>
-              <Col xs={12} sm={6} md={6} lg={5}>
+              <Col xs={12} sm={6} md={5} lg={5}>
                 <Row style={{marginTop:25}}>
                   <div style={{width:constants.LABEL_WIDTH, margin:'auto'}}>
                     <Col xs={6} className='text-left' style={{paddingLeft: 2}}>

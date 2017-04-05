@@ -43,11 +43,11 @@ export default function nmModelFun(state = initialState, action) {
     {
       let {nutritionModel} = state
       const servingsControlModel = action.servingsControlModel
-      nutritionModel.setSuggestedServingAmount(servingsControlModel.getValue(),
-                                               servingsControlModel.getUnit(),
-                                               servingsControlModel.getDisplayUnitCount(),
-                                               servingsControlModel.getDisplayUnit(),
-                                               servingsControlModel.getDisplayRatio())
+      nutritionModel.setSuggestedServingAmount(servingsControlModel.getServingAmount(),
+                                               'people',
+                                               servingsControlModel.getServingSize(),
+                                               servingsControlModel.getServingUnit(),
+                                               servingsControlModel.getServingRatio())
       return {
         ...state,
         nutritionModel: nutritionModel

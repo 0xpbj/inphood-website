@@ -59,10 +59,10 @@ export default class Generator extends React.Component {
     this.props.modelReset()
     this.props.clearData()
     // user did not come from home page
-    // if (this.props.router.location.action !== 'PUSH') {
+    if (this.props.router.location.action !== 'PUSH') {
       // send user back to home page
-      // this.props.router.push('/')
-    // }
+      this.props.router.push('/')
+    }
   }
   componentWillReceiveProps(nextProps) {
     if (this.state.labelErrorFlag) {

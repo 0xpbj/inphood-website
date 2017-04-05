@@ -15,9 +15,17 @@ export default class ServingsController extends React.Component {
     this.state = {
       servingSize: 2,
       servingUnit: 'plate',
-      servingAmount: 'About, 1',
-      servingRatio: 'Recipe'
+      servingAmount: '1',
+      servingRatio: 'Recipe, About'
     }
+  }
+  componentWillMount() {
+    const {servingsControlModel} = this.props.servings
+    servingsControlModel.setServingSize(this.state.servingSize)
+    servingsControlModel.setServingUnit(this.state.servingUnit)
+    servingsControlModel.setServingRatio(this.state.servingRatio)
+    servingsControlModel.setServingAmount(this.state.servingAmount)
+    this.updateReduxStore(servingsControlModel)
   }
   updateReduxStore(servingsControlModel) {
     this.props.setServingsControllerModel(servingsControlModel)

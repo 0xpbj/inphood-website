@@ -4,9 +4,9 @@ export class ServingsControlModel {
     // _servingUnit, _servingRatio and _servingAmount are solely for display purposes on the
     // label--i.e. 2 tacos.  The real math is done with this._servingSize above.
     this._servingUnit = 'plate'
-    this._servingAmount = 'About, 1'
+    this._servingAmount = '1'
     // i.e. Servings Per Recipe, About 4
-    this._servingRatio = 'Recipe'
+    this._servingRatio = 'Recipe, About'
   }
   setServingSize(aValue) {
     this._servingSize = aValue

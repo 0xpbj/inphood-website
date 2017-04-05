@@ -53,7 +53,7 @@ function* completeMatchDropdownChange() {
     //    b. See if the current unit is within the new possibilies, if not
     //       then set to the FDA measure defaults
     //    (TODO: or perhaps fallback to the recipe amount/unit if they worked)
-    const currentValue = ingredientControlModel.getSliderValue()
+    const currentValue = ingredientControlModel.getEditBoxValue()
     const currentUnit = ingredientControlModel.getDropdownUnitValue()
     let newUnit = currentUnit
     if (! newUnits.includes(currentUnit)) {

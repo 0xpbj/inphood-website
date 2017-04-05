@@ -237,7 +237,7 @@ export function getValueInUnits(currentValue, currentUnit, newUnit, ingredientMo
 export function getIngredientValueInUnits(newUnit, ingredientModel, ingredientControlModel) {
   // 1. Determine the type of measure for the current and proposed units:
   //
-  const currentValue = ingredientControlModel.getSliderValue()
+  const currentValue = ingredientControlModel.getEditBoxValue()
   const currentUnit = ingredientControlModel.getDropdownUnitValue()
 
   return getValueInUnits(currentValue, currentUnit, newUnit, ingredientModel)

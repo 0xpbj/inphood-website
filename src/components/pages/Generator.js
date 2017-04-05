@@ -37,6 +37,9 @@ import Label from './NutritionEstimateJSX'
 import {getPossibleUnits, rationalToFloat} from '../../helpers/ConversionUtils'
 import {IngredientModel} from '../models/IngredientModel'
 import {IngredientControlModel} from '../models/IngredientControlModel'
+
+import {Link} from 'react-router'
+
 const Config = require('Config')
 
 // import {Button} from 'react-toolbox/lib/button'
@@ -289,11 +292,14 @@ export default class Generator extends React.Component {
                   </OverlayTrigger>
                 </Row>
                 <Row style={{marginTop:(constants.VERT_SPACE-2)}}>
-                  <Col xs={3}/>
-                  <Col xs={6}>
-                    <pre>That's what she said</pre>
-                  </Col>
-                  <Col xs={3}/>
+                  <div style={{width:constants.LABEL_WIDTH, margin:'auto'}}>
+                    <Well>
+                      Values above are rounded according to FDA
+                      guidelines, which differ significantly from mathematical
+                      rounding. Read more here:
+                      <Link to="https://www.fda.gov/Food/GuidanceRegulation/GuidanceDocumentsRegulatoryInformation/LabelingNutrition/ucm064932.htm" target="_blank"> Labeling Nutrition</Link>
+                    </Well>
+                  </div>
                 </Row>
                 <Row style={{marginTop: 9}}>
                   <TagController

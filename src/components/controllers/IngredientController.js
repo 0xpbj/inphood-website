@@ -37,10 +37,13 @@ export default class IngredientController extends React.Component {
     return isNumeric(this.state.editBoxValue)
   }
   handleEditBoxValueChange() {
-    if (this.getValidationState() !== 'success') {
+    debugger
+    const value = this.state.editBoxValue
+    console.log(Number(value))
+    if (isNumeric(value) !== 'success') {
       return 
     }
-    else {
+    else if (Number(value) !== 0) {
       const {tag} = this.props
       ReactGA.event({
         category: 'Ingredient Model',
@@ -49,9 +52,12 @@ export default class IngredientController extends React.Component {
         tag
       });
       let ingredientControlModel = this.props.ingredientModel.ingredientControlModels[tag]
-      ingredientControlModel.setEditBoxValue(this.state.editBoxValue)
-      this.props.updateIngredientControlModel(tag, ingredientControlModel)
+      ingredientControlModel.setEditBoxValue(value)
+      const units = ingredientControlModel.getDropdownUnitValue()
+      this.updateReduxStore(tag, value, units)
     }
+    else
+      return
   }
   handleUnitDropdownChange(units) {
     const {tag} = this.props
@@ -71,26 +77,15 @@ export default class IngredientController extends React.Component {
     const searchResult = matchResultsModel.getSearchResultByDesc(tag, value)
     if ((searchResult.getStandardRefDataObj() === undefined) &&
         (searchResult.getBrandedDataObj() === undefined)) {
-      if (value === '.....') {
-        // Ellipses search:
-        ReactGA.event({
-          category: 'Nutrition Mixer',
-          action: 'User triggered elipses search',
-          nonInteraction: false,
-          label: tag
-        });
-        this.props.getMoreData(tag)
-      } else {
-        // Firebase lazy fetch
-        ReactGA.event({
-          category: 'Nutrition Mixer',
-          action: 'User triggered dropdown lazy firebase fetch',
-          nonInteraction: false,
-          label: tag
-        });
-        let index = matchResultsModel.getIndexForDescription(tag, value)
-        this.props.lazyFetchFirebase(value, tag, searchResult.getNdbNo(), index)
-      }
+      // Firebase lazy fetch
+      ReactGA.event({
+        category: 'Nutrition Mixer',
+        action: 'User triggered dropdown lazy firebase fetch',
+        nonInteraction: false,
+        label: tag
+      });
+      let index = matchResultsModel.getIndexForDescription(tag, value)
+      this.props.lazyFetchFirebase(value, tag, searchResult.getNdbNo(), index)
     }
     else {
       this.props.completeMatchDropdownChange(tag, value)
@@ -98,26 +93,11 @@ export default class IngredientController extends React.Component {
   }
   updateReduxStore(tag, value, units) {
     let ingredientControlModel = this.props.ingredientModel.ingredientControlModels[tag]
-    ingredientControlModel.setSliderValue(value)
+    ingredientControlModel.setEditBoxValue(value)
     ingredientControlModel.setDropdownUnitValue(units)
     this.props.updateIngredientControlModel(tag, ingredientControlModel)
     this.props.nutritionModelScaleIng(tag, value, units)
     this.props.initSerializedData()
-  }
-  updateReduxStoreIfValid() {
-    if (this.getValidationState() === 'success') {
-      const {tag} = this.props
-      const ingredientControlModel = this.props.ingredientModel.ingredientControlModels[tag]
-
-      const editBoxValue = ingredientControlModel.getEditBoxValue()
-      let value = editBoxValue
-      if ((typeof editBoxValue) !== 'number') {
-        value = rationalToFloat(editBoxValue)
-      }
-      const units = ingredientControlModel.getDropdownUnitValue()
-
-      this.updateReduxStore(tag, value, units)
-    }
   }
   render() {
     const {tag, nutritionModel} = this.props

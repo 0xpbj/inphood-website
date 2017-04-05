@@ -288,6 +288,13 @@ export default class Generator extends React.Component {
                     </Col>
                   </OverlayTrigger>
                 </Row>
+                <Row style={{marginTop:(constants.VERT_SPACE-2)}}>
+                  <Col xs={3}/>
+                  <Col xs={6}>
+                    <pre>That's what she said</pre>
+                  </Col>
+                  <Col xs={3}/>
+                </Row>
                 <Row style={{marginTop: 9}}>
                   <TagController
                     tags={unusedTags}

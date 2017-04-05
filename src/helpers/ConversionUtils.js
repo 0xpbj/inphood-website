@@ -273,3 +273,34 @@ export function getPossibleUnits(measureUnit) {
   }
   return unitData
 }
+
+export function isNumeric(n) {
+  // Check to see if editBoxValue is a number--if so, return success because
+  // rationalToFloat expects a string. This also helps to catch things like
+  // "" and " " which evaluate to numbers (isNan===false) with the second
+  // predicate checking for string type.
+  if (!isNaN(n)) {
+    if ((typeof n) !== "string") {
+      return 'success'
+    }
+  }
+  else {
+    // Try and convert to a rational number from a variety of string
+    // representations (i.e. "1/2" "024" etc.), failing that, return error.
+    try {
+      const value = rationalToFloat(n)
+    } catch(err) {
+      return 'error'
+    }
+  }
+  return 'success'
+}
+
+export function isValidString(s) {
+  if (((typeof s) === 'string') && (s.trim().length > 0)) {
+    return 'success'
+  }
+  else {
+    return 'error'
+  }
+}

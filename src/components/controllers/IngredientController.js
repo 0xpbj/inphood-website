@@ -9,7 +9,7 @@ import FormControl from 'react-bootstrap/lib/FormControl'
 import 'react-widgets/lib/less/react-widgets.less'
 import Dropdownlist from 'react-widgets/lib/Dropdownlist'
 import {IngredientModel} from '../models/IngredientModel'
-import {rationalToFloat} from '../../helpers/ConversionUtils'
+import {isNumeric, rationalToFloat} from '../../helpers/ConversionUtils'
 import renderHTML from 'react-render-html'
 
 const ListItem = React.createClass({
@@ -22,13 +22,34 @@ const ListItem = React.createClass({
 export default class IngredientController extends React.Component {
   constructor(props) {
     super(props)
+    this.state = {
+      editBoxValue: 1
+    }
   }
-  handleEditBoxValueChange(formObject) {
-    const {tag} = this.props
-    const value = formObject.target.value
-    if (!isNaN(value) && value > 0 && value < 1001) {
+  submitNewValue(event) {
+    this.handleEditBoxValueChange()
+    event.preventDefault()
+  }
+  onEditBoxBlurred() {
+    this.handleEditBoxValueChange()
+  }
+  getValidationState() {
+    return isNumeric(this.state.editBoxValue)
+  }
+  handleEditBoxValueChange() {
+    if (this.getValidationState() !== 'success') {
+      return 
+    }
+    else {
+      const {tag} = this.props
+      ReactGA.event({
+        category: 'Ingredient Model',
+        action: 'Ingredient unit changed',
+        nonInteraction: false,
+        tag
+      });
       let ingredientControlModel = this.props.ingredientModel.ingredientControlModels[tag]
-      ingredientControlModel.setEditBoxValue(value)
+      ingredientControlModel.setEditBoxValue(this.state.editBoxValue)
       this.props.updateIngredientControlModel(tag, ingredientControlModel)
     }
   }
@@ -75,31 +96,6 @@ export default class IngredientController extends React.Component {
       this.props.completeMatchDropdownChange(tag, value)
     }
   }
-  getValidationState() {
-    const {tag} = this.props
-    const ingredientControlModel = this.props.ingredientModel.ingredientControlModels[tag]
-    const editBoxValue = ingredientControlModel.getEditBoxValue()
-    // Check to see if editBoxValue is a number--if so, return success because
-    // rationalToFloat expects a string. This also helps to catch things like
-    // "" and " " which evaluate to numbers (isNan===false) with the second
-    // predicate checking for string type.
-    if (!isNaN(editBoxValue) && editBoxValue > 0 && editBoxValue < 1001) {
-      if ((typeof editBoxValue) !== "string") {
-        return 'success'
-      }
-    }
-    else {
-      return 'error'
-    }
-    // Try and convert to a rational number from a variety of string
-    // representations (i.e. "1/2" "024" etc.), failing that, return error.
-    try {
-      const value = rationalToFloat(editBoxValue)
-    } catch(err) {
-      return 'error'
-    }
-    return 'success'
-  }
   updateReduxStore(tag, value, units) {
     let ingredientControlModel = this.props.ingredientModel.ingredientControlModels[tag]
     ingredientControlModel.setSliderValue(value)
@@ -123,21 +119,11 @@ export default class IngredientController extends React.Component {
       this.updateReduxStore(tag, value, units)
     }
   }
-  onEditBoxBlurred() {
-    this.updateReduxStoreIfValid()
-  }
-  submitNewValue(event) {
-    this.updateReduxStoreIfValid()
-
-    // This prevents the default behavior of a form submit which causes a full
-    // re-render / re-state!
-    event.preventDefault()
-  }
   render() {
     const {tag, nutritionModel} = this.props
     const ingredientControlModel = this.props.ingredientModel.ingredientControlModels[tag]
     const formControlId = tag + "FormControlId"
-    const editBoxValue = ingredientControlModel.getEditBoxValue()
+    const {editBoxValue} = this.state
     return (
       <div ref={tag}>
         <Row style={{paddingRight:15}}>
@@ -156,7 +142,7 @@ export default class IngredientController extends React.Component {
                   label="Text"
                   value={editBoxValue}
                   onBlur={this.onEditBoxBlurred.bind(this)}
-                  onChange={this.handleEditBoxValueChange.bind(this)}/>
+                  onChange={(event) => this.setState({editBoxValue: event.target.value})}/>
               </FormGroup>
             </form>
           </Col>

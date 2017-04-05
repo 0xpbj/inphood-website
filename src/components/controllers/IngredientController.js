@@ -37,7 +37,6 @@ export default class IngredientController extends React.Component {
     return isNumeric(this.state.editBoxValue)
   }
   handleEditBoxValueChange() {
-    debugger
     if (isNumeric(this.state.editBoxValue) !== 'success') {
       return 
     }

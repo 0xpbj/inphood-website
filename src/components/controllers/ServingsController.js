@@ -147,7 +147,8 @@ export default class ServingsController extends React.Component {
         nonInteraction: false,
       });
       const {servingsControlModel} = this.props.servings
-      servingsControlModel.setServingAmount(this.state.servingAmount)
+      const value = rationalToFloat(this.state.servingAmount)
+      servingsControlModel.setServingAmount(value)
       this.updateReduxStore(servingsControlModel)
     }
   }

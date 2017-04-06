@@ -13,6 +13,7 @@ import domtoimage from 'dom-to-image'
 const getDomJpeg = () => {
   return domtoimage.toJpeg(document.getElementById('nutrition-label'), { quality: 1.0 })
   .then(data => ({data}))
+  .catch(error => console.error('*****&&&&&&DOM ERROR oops, something went wrong!', error));
 }
 
 const uploadToAWS = (data, user, key, format, extension) => {

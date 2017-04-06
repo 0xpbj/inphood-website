@@ -215,12 +215,12 @@ export default class Generator extends React.Component {
       const {showHelp, showBrowserWarning} = this.state
       let browserWarning = null
       if (showBrowserWarning) {
-        if (browser.name === "chrome" || browser.name === "firefox")
+        if (browser.name === "chrome")
           browserWarning = null
         else
           browserWarning = (
             <Alert bsStyle="warning" onDismiss={() => this.setState({showBrowserWarning: false})}>
-              <h4>inPhood works best with Chrome or Firebox</h4>
+              <h4 className="text-center">inPhood works best with Chrome</h4>
             </Alert>
           )
       }

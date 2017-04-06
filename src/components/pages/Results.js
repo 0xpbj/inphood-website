@@ -136,7 +136,6 @@ export default class Results extends React.Component {
         let nutritionModelData = JSON.parse(this.props.results.data.full)
         let nutritionModel = new NutritionModel()
         nutritionModel.initializeFromSerialization(nutritionModelData)
-        console.log('\n\n\n\nNutrition Label Type: ', nutritionModel, nutritionModel.getLabelType())
         nutritionLabel = (nutritionModel.getLabelType() !== 4) ? <Label displayGeneratedStatement={true} ingredientComposite={ingredient}/> : <pre>{getTextLabel(ingredient)}</pre>
         recipeText = this.getRecipeText(nutritionModel)
         ReactGA.event({

@@ -6,6 +6,7 @@ import Well from 'react-bootstrap/lib/Well'
 import Grid from 'react-bootstrap/lib/Grid'
 import Alert from 'react-bootstrap/lib/Alert'
 import Image from 'react-bootstrap/lib/Image'
+import BButton from 'react-bootstrap/lib/Button'
 import Popover from 'react-bootstrap/lib/Popover'
 import FormGroup from 'react-bootstrap/lib/FormGroup'
 import ProgressBar from 'react-toolbox/lib/progress_bar'
@@ -37,12 +38,14 @@ class Recipe extends React.Component {
       ingredients: '',
       recipeError: false,
       recipePopoverFlag: false,
+      newRecipe: false
     }
   }
   componentDidMount() {
     this.props.router.setRouteLeaveHook(this.props.route, this.routerWillLeave.bind(this))
   }
   routerWillLeave(nextLocation) {
+    debugger
     if (!this.state.isSaved) {
       if (!nextLocation.search)
         return 'Your work is not saved! Are you sure you want to leave?'
@@ -52,6 +55,11 @@ class Recipe extends React.Component {
   }
   handleChange = (value) => {
     this.setState({...this.state, ingredients: value});
+  }
+  newRecipeFlow() {
+    this.props.modelReset()
+    this.props.clearData()
+    this.setState({newRecipe: false})
   }
   sampleRecipeFlow() {
     ReactGA.event({
@@ -98,17 +106,33 @@ class Recipe extends React.Component {
         </div>
       )
     } else {
+      const {matchResultsModel} = this.props.tagModel
+      const newRecipe = (matchResultsModel.getNumberOfSearches() > 0) ? (
+        <TooltipButton
+          tooltip='Click to start a new recipe'
+          tooltipPosition='left'
+          tooltipDelay={500}
+          icon='cake'
+          label='New Recipe'
+          onClick={() => this.setState({newRecipe: true})}
+          raised
+          style={{marginRight: 30, color: 'white', backgroundColor: '#BD362F', textTransform: 'none'}}
+        />
+      ) : (
+        <TooltipButton
+          tooltip='Click to try a sample recipe'
+          tooltipPosition='left'
+          tooltipDelay={500}
+          icon='cached'
+          label='Sample Recipe'
+          onClick={() => this.sampleRecipeFlow()}
+          style={{marginRight: 30, color: 'black', backgroundColor: 'white', textTransform: 'none'}}
+        />
+      )
+
       return(
         <div style={{marginTop: 10}} className="text-right">
-          <TooltipButton
-            tooltip='Click to try a sample recipe'
-            tooltipPosition='left'
-            tooltipDelay={500}
-            icon='cached'
-            label='Sample Recipe'
-            onClick={() => this.sampleRecipeFlow()}
-            style={{marginRight: 30, textTransform: 'none'}}
-          />
+          {newRecipe}
           <TooltipButton
             tooltip='Click to add ingredient(s) to label'
             tooltipPosition='left'
@@ -124,24 +148,33 @@ class Recipe extends React.Component {
     }
   }
   render() {
+    const newRecipeAlert = (this.state.newRecipe) ? (
+      <Alert bsStyle="danger" style={{marginTop: 10}} onDismiss={() => this.setState({newRecipe: false})}>
+        <h4>Are you sure you want to start a new recipe?</h4>
+        <h2><BButton bsStyle="danger" onClick={() => this.newRecipeFlow()}>Continue</BButton></h2>
+      </Alert>
+    ) : null
     const recipeAlert = (this.state.recipeError) ? (
-      <Alert bsStyle="danger">
+      <Alert bsStyle="danger" style={{marginTop: 10}}>
         <h4>You forgot to enter an ingredient!</h4>
       </Alert>
     ) : null
+    const {matchResultsModel} = this.props.tagModel
+    const pad = (matchResultsModel.getNumberOfSearches() > 0) ? 0 : 15
+    const servingsController = (matchResultsModel.getNumberOfSearches() > 0) ? <ServingsController /> : null
     return (
       <div>
+        {recipeAlert}
+        {newRecipeAlert}
         <FormGroup controlId="formControlsTextarea"
-          style={{marginTop:10,
+          style={{marginTop:25 + pad,
                   backgroundColor:'white',
                   borderColor:'black',
                   borderRadius:5,
                   borderWidth:1,
                   padding:10,
                   borderStyle:'solid'}}>
-          {recipeAlert}
           <TooltipInput
-
             tooltip='Type your ingredients here'
             tooltipPosition='top'
             type='text'
@@ -156,7 +189,7 @@ class Recipe extends React.Component {
         </FormGroup>
         {this.getAddIngredientButton()}
         <div style={{marginTop: 15, marginBottom: 15}}>
-          <ServingsController/>
+          {servingsController}
         </div>
       </div>
     )

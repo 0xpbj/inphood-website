@@ -338,7 +338,6 @@ export default class Generator extends React.Component {
                           tags={unusedTags}
                           tagName={'Unfound Ingredients:'}
                           deletable={false}
-                          style={{backgroundColor:'rgba(255,255,255,0.85)'}}
                         />
                       </Row>
                     </Col>

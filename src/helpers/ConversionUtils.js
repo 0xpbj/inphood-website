@@ -279,11 +279,9 @@ export function isNumeric(n) {
   // rationalToFloat expects a string. This also helps to catch things like
   // "" and " " which evaluate to numbers (isNan===false) with the second
   // predicate checking for string type.
-  console.log('\n\n\n\nVALLLLL: ', n)
   if (n === '0' || n === '' || n === '0.')
     return 'error'
   else if (!isNaN(n)) {
-    console.log('nanananana')
     if ((typeof n) !== "string" && n !== 0) {
       return 'success'
     }
@@ -292,7 +290,6 @@ export function isNumeric(n) {
     }
   }
   else {
-    console.log('rational')
     if (n.indexOf('-') !== -1) {
       return 'error'
     }

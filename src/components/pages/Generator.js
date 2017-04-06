@@ -288,90 +288,92 @@ export default class Generator extends React.Component {
         backgroundAttachment: 'fixed',
         backgroundPosition: 'center',
         width:'100vw',
-        height:'100vh'
+        height:'150vh'
       }
       const fullPage = matchResultsModel.getNumberOfSearches() > 0
       const backgroundStyle = (fullPage) ?
-        {backgroundColor:'rgba(255,255,255,0.85)',width:'100vw',height:'100vh'} :
-        {backgroundColor:'rgba(255,255,255,0)',width:'100vw',height:'100vh'}
+        {backgroundColor:'rgba(255,255,255,0.85)',width:'100vw',height:'150vh'} :
+        {backgroundColor:'rgba(255,255,255,0)',width:'100vw',height:'150vh'}
 
       const nutrition = (fullPage) ? <Nutrition /> : null
       return (
         <div style={sectionStyle}>
-          <TopBar router={this.props.router}/>
-          <Row style={backgroundStyle}>
-            <Row style={{height:'40vh'}}>
+          <div style={backgroundStyle}>
+            <TopBar router={this.props.router}/>
+            <Row>
+              <Row style={{height:'40vh'}}>
+                {ml.marginCol}
+                <Col xs={ml.xsCol}
+                     sm={ml.smCol}
+                     md={ml.mdCol}
+                     lg={ml.lgCol}>
+                  <Row>
+                    {browserWarning}
+                    <Col xs={12} sm={6} md={7} lg={7}>
+                      <div>
+                        {labelError}
+                        <Recipe router={this.props.router} route={this.props.route} nutritionModelRed={this.props.nutritionModelRed}/>
+                        {nutrition}
+                      </div>
+                    </Col>
+                    <Col xs={12} sm={6} md={5} lg={5}>
+                      <Row style={{marginTop:25}}>
+                        <div style={{width:constants.LABEL_WIDTH, margin:'auto'}}>
+                          <Col xs={6} className='text-left' style={{paddingLeft: 2}}>
+                            {this.customLabelButton(fullPage)}
+                          </Col>
+                          <Col xs={6} className='text-right' style={{paddingRight: 2}}>
+                            {this.shareLabelButton(fullPage)}
+                          </Col>
+                        </div>
+                      </Row>
+                      <Row>
+                        <div style={{width:constants.LABEL_WIDTH, margin:'auto'}}>
+                          <Col xs={12} style={{paddingLeft:2, paddingRight:2}}>
+                            {shareUrlBox}
+                          </Col>
+                        </div>
+                      </Row>
+                      <Row style={{marginTop:(constants.VERT_SPACE-2)}}>
+                        <Col xs={12}>
+                          {label}
+                        </Col>
+                      </Row>
+                      <Row style={{marginTop:(constants.VERT_SPACE-2)}}>
+                        <div style={{width:constants.LABEL_WIDTH, margin:'auto'}}>
+                          <Well style={{background: 'white'}}>
+                            Values above are rounded according to FDA
+                            guidelines, which differ significantly from mathematical
+                            rounding. Read more here:
+                            <Link to="https://www.fda.gov/Food/GuidanceRegulation/GuidanceDocumentsRegulatoryInformation/LabelingNutrition/ucm064932.htm" target="_blank"> Labeling Nutrition</Link>
+                          </Well>
+                        </div>
+                      </Row>
+                      <Row style={{marginTop: 9}}>
+                        <TagController
+                          tags={unusedTags}
+                          tagName={'Unfound Ingredients:'}
+                          deletable={false}
+                        />
+                      </Row>
+                    </Col>
+                  </Row>
+                </Col>
+                {ml.marginCol}
+              </Row>
+              <Row style={{height:'32vh'}}/>
+              <Footer fullPage={fullPage}router={this.props.router}/>
+            </Row>
+            <Row>
               {ml.marginCol}
               <Col xs={ml.xsCol}
                    sm={ml.smCol}
                    md={ml.mdCol}
                    lg={ml.lgCol}>
-                <Row>
-                  {browserWarning}
-                  <Col xs={12} sm={6} md={7} lg={7}>
-                    <div>
-                      {labelError}
-                      <Recipe router={this.props.router} route={this.props.route} nutritionModelRed={this.props.nutritionModelRed}/>
-                      {nutrition}
-                    </div>
-                  </Col>
-                  <Col xs={12} sm={6} md={5} lg={5}>
-                    <Row style={{marginTop:25}}>
-                      <div style={{width:constants.LABEL_WIDTH, margin:'auto'}}>
-                        <Col xs={6} className='text-left' style={{paddingLeft: 2}}>
-                          {this.customLabelButton(fullPage)}
-                        </Col>
-                        <Col xs={6} className='text-right' style={{paddingRight: 2}}>
-                          {this.shareLabelButton(fullPage)}
-                        </Col>
-                      </div>
-                    </Row>
-                    <Row>
-                      <div style={{width:constants.LABEL_WIDTH, margin:'auto'}}>
-                        <Col xs={12} style={{paddingLeft:2, paddingRight:2}}>
-                          {shareUrlBox}
-                        </Col>
-                      </div>
-                    </Row>
-                    <Row style={{marginTop:(constants.VERT_SPACE-2)}}>
-                      <Col xs={12}>
-                        {label}
-                      </Col>
-                    </Row>
-                    <Row style={{marginTop:(constants.VERT_SPACE-2)}}>
-                      <div style={{width:constants.LABEL_WIDTH, margin:'auto'}}>
-                        <Well style={{background: 'white'}}>
-                          Values above are rounded according to FDA
-                          guidelines, which differ significantly from mathematical
-                          rounding. Read more here:
-                          <Link to="https://www.fda.gov/Food/GuidanceRegulation/GuidanceDocumentsRegulatoryInformation/LabelingNutrition/ucm064932.htm" target="_blank"> Labeling Nutrition</Link>
-                        </Well>
-                      </div>
-                    </Row>
-                    <Row style={{marginTop: 9}}>
-                      <TagController
-                        tags={unusedTags}
-                        tagName={'Unfound Ingredients:'}
-                        deletable={false}
-                      />
-                    </Row>
-                  </Col>
-                </Row>
               </Col>
               {ml.marginCol}
             </Row>
-            <Row style={{height:'32vh'}}/>
-            <Footer fullPage={fullPage}router={this.props.router}/>
-          </Row>
-          <Row>
-            {ml.marginCol}
-            <Col xs={ml.xsCol}
-                 sm={ml.smCol}
-                 md={ml.mdCol}
-                 lg={ml.lgCol}>
-            </Col>
-            {ml.marginCol}
-          </Row>
+          </div>
         </div>
       )
     }

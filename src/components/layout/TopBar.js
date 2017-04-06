@@ -40,12 +40,15 @@ export default class TopBar extends React.Component {
 
     const ml = new MarginLayout()
 
-    const {router} = this.props
+    const {router, transparent} = this.props
 
-    const whiteBackground={
-      borderWidth:0, borderBottom:1, borderColor:'gray', borderStyle:'solid',
-      backgroundColor:'rgba(255,255,255,0.85)'
-    }
+    const whiteBackground = transparent ?
+      {
+        backgroundColor:'rgba(255,255,255,0.0)'
+      } :
+      {
+        backgroundColor:'rgba(255,255,255,0.85)'
+      }
 
     return (
       <Row style={whiteBackground}>

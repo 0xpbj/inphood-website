@@ -44,9 +44,11 @@ export default class TopBar extends React.Component {
 
     const whiteBackground = transparent ?
       {
+        borderWidth:0, borderBottom:1, borderColor:'gray', borderStyle:'solid',
         backgroundColor:'rgba(255,255,255,0.0)'
       } :
       {
+        borderWidth:0, borderBottom:1, borderColor:'gray', borderStyle:'solid',
         backgroundColor:'rgba(255,255,255,0.85)'
       }
 

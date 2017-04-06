@@ -129,10 +129,11 @@ function combineData(data) {
     if (index === -1) {
       if (i.name.toLowerCase() === 'salt and pepper' || i.name.toLowerCase() === 'salt & pepper') {
         names.push('salt')
-        names.push('pepper')
-        const {unit, amount} = i
-        ret.push({amount, name: 'salt', unit})
-        ret.push({amount, name: 'pepper', unit})
+        names.push('black pepper')
+
+        const {unit, amount, id} = i
+        ret.push({amount, unit, name: 'salt', id: id + '_salt'})
+        ret.push({amount, unit, name: 'black pepper',id: id + '_pepper'})
       }
       else {
         names.push(i.name)
@@ -156,7 +157,7 @@ function combineData(data) {
   return ret
 }
 
-export function parseRecipe(data) {
+export function parseRecipe(data, id) {
   const regex = /[^\r\n]+/g
   const sRegex = /([^\*:><^#~] ?)([\.\-a-zA-Z0-9½⅓⅔¼¾⅕⅖⅗⅘⅙⅚⅛⅜⅝⅞/, ()]+)/g
   let phrases = data.match(regex)
@@ -173,6 +174,7 @@ export function parseRecipe(data) {
         }
         let clean = str !== '' ? removeSpecialChars(str) : i
         let parsed = ingp.parse(clean.toLowerCase())
+        parsed.id = id
         parsedData.push(parsed)
       }
     }

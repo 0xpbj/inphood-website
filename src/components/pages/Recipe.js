@@ -36,8 +36,12 @@ class Recipe extends React.Component {
       parse: false,
       ingredients: '',
       recipeError: false,
-      recipePopoverFlag: false,
+      recipePopoverFlag: false
     }
+    this._id = 0
+  }
+  getId() {
+    return this._id++
   }
   componentDidMount() {
     this.props.router.setRouteLeaveHook(this.props.route, this.routerWillLeave.bind(this))
@@ -76,7 +80,7 @@ class Recipe extends React.Component {
         nonInteraction: true
       });
       const {ingredients} = this.state
-      let data = parseRecipe(ingredients)
+      let data = parseRecipe(ingredients, this.getId())
       if (data.found) {
         this.props.storeParsedData(data.found, data.missing, ingredients)
         if (!this.state.showNutritionMixers) {

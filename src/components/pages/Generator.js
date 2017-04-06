@@ -299,7 +299,7 @@ export default class Generator extends React.Component {
       return (
         <div style={sectionStyle}>
           <div style={backgroundStyle}>
-            <TopBar router={this.props.router}/>
+            <TopBar router={this.props.router} transparent={fullPage} />
             <Row>
               <Row style={{height:'40vh'}}>
                 {ml.marginCol}

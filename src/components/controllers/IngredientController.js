@@ -38,7 +38,7 @@ export default class IngredientController extends React.Component {
   }
   handleEditBoxValueChange() {
     if (isNumeric(this.state.editBoxValue) !== 'success') {
-      return 
+      return
     }
     else {
       const value = rationalToFloat(this.state.editBoxValue)
@@ -50,7 +50,7 @@ export default class IngredientController extends React.Component {
           nonInteraction: false,
           tag
         });
-        let ingredientControlModel = this.props.ingredientModel.ingredientControlModels[tag]
+        let ingredientControlModel = this.props.ingredientControlModelRed.ingredientControlModels[tag]
         ingredientControlModel.setEditBoxValue(value)
         const units = ingredientControlModel.getDropdownUnitValue()
         this.updateReduxStore(tag, value, units)
@@ -61,7 +61,7 @@ export default class IngredientController extends React.Component {
   }
   handleUnitDropdownChange(units) {
     const {tag} = this.props
-    const ingredientControlModel = this.props.ingredientModel.ingredientControlModels[tag]
+    const ingredientControlModel = this.props.ingredientControlModelRed.ingredientControlModels[tag]
     const value = ingredientControlModel.getEditBoxValue()
     ReactGA.event({
       category: 'Nutrition Mixer',
@@ -92,7 +92,7 @@ export default class IngredientController extends React.Component {
     }
   }
   updateReduxStore(tag, value, units) {
-    let ingredientControlModel = this.props.ingredientModel.ingredientControlModels[tag]
+    let ingredientControlModel = this.props.ingredientControlModelRed.ingredientControlModels[tag]
     ingredientControlModel.setEditBoxValue(value)
     ingredientControlModel.setDropdownUnitValue(units)
     this.props.updateIngredientControlModel(tag, ingredientControlModel)
@@ -101,7 +101,7 @@ export default class IngredientController extends React.Component {
   }
   render() {
     const {tag, nutritionModel} = this.props
-    const ingredientControlModel = this.props.ingredientModel.ingredientControlModels[tag]
+    const ingredientControlModel = this.props.ingredientControlModelRed.ingredientControlModels[tag]
     const formControlId = tag + "FormControlId"
     const {editBoxValue} = this.state
     return (

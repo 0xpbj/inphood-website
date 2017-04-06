@@ -60,10 +60,10 @@ export default class Generator extends React.Component {
     this.props.modelReset()
     this.props.clearData()
     // user did not come from home page
-    if (this.props.router.location.action !== 'PUSH') {
-      // send user back to home page
-      this.props.router.push('/')
-    }
+    // if (this.props.router.location.action !== 'PUSH') {
+    //   // send user back to home page
+    //   this.props.router.push('/')
+    // }
   }
   componentWillReceiveProps(nextProps) {
     if (this.state.labelErrorFlag) {
@@ -242,10 +242,30 @@ export default class Generator extends React.Component {
     : (
         <Label id='nutrition-label' ingredientComposite={compositeModel}/>
     )
+    // TODO: if screen size <= xs, make the backgroundSize = cover (mobile first)
+    const home = require('../../images/homeHD.jpg')
+    const sectionStyle = {
+      backgroundImage:`url(${home})`,
+      backgroundRepeat:'no-repeat',
+      backgroundSize:'cover',
+      backgroundAttachment: 'fixed',
+      backgroundPosition: 'center',
+      width:'100vw',
+      height:'100vh'
+    };
+    const backgroundStyle = (matchResultsModel.getNumberOfSearches() > 0) ?
+      {backgroundColor:'rgba(255,255,255,0.85)',width:'100vw',height:'100vh'} :
+      {backgroundColor:'rgba(255,255,255,0)',width:'100vw',height:'100vh'}
+
+    // TODO: Prabhaav
+    //         - change the <Well> background color to 'white' or something that
+    //           works better than gray
+    //         - add the footer to this page
+    //
     return (
-      <div>
+      <div style={sectionStyle}>
         <TopBar router={this.props.router}/>
-        <Row>
+        <Row style={backgroundStyle}>
           {ml.marginCol}
           <Col xs={ml.xsCol}
                sm={ml.smCol}

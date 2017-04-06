@@ -300,7 +300,7 @@ export default class Generator extends React.Component {
         <div style={sectionStyle}>
           <TopBar router={this.props.router}/>
           <Row style={backgroundStyle}>
-            <Row style={{height:'42vh'}}>
+            <Row style={{height:'40vh'}}>
               {ml.marginCol}
               <Col xs={ml.xsCol}
                    sm={ml.smCol}
@@ -360,7 +360,7 @@ export default class Generator extends React.Component {
               </Col>
               {ml.marginCol}
             </Row>
-            <Row style={{height:'30vh'}}/>
+            <Row style={{height:'32vh'}}/>
             <Footer fullPage={fullPage}router={this.props.router}/>
           </Row>
           <Row>

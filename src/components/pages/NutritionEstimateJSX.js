@@ -121,7 +121,7 @@ export default class NutritionEstimateJSX extends React.Component {
   // of the nutrition label. Then inserts those spaces in an array of html.
   getDotHtml(columnTextLength) {
     let dotHtml = []
-    const dotPosition = 35
+    const dotPosition = 30
     const dotOffset = dotPosition - columnTextLength
     if (dotOffset > 0) {
       for (let i = 0; i < dotOffset; i++) {

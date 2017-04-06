@@ -13,7 +13,6 @@ import {
   NM_SET_SERVINGS,
   NM_SCALE_INGREDIENT,
   NM_SET_LABEL_TYPE,
-  IM_ADD_CONTROL_MODEL,
   IM_UPDATE_MODEL,
   IM_REM_INGREDIENT_TAG,
   SC_STORE_MODEL,
@@ -139,14 +138,6 @@ export function nutritionModelScaleIng(tag, value, units) {
     tag,
     value,
     units
-  }
-}
-
-export function ingredientAddModel(tag, ingredientControlModel) {
-  return {
-    type: IM_ADD_CONTROL_MODEL,
-    tag,
-    ingredientControlModel
   }
 }
 

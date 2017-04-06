@@ -128,10 +128,8 @@ export default class Nutrition extends React.Component {
       sliders.push(
         <div key={tag}>
           <Row style={{marginTop: 10, paddingRight: 15}}>
-            <Col xs={10} sm={10} md={10} style={{paddingRight: 0}}>
-              <Chip>
-                {recipeLine}
-              </Chip>
+            <Col xs={10} sm={10} md={10} style={{paddingRight:0, paddingTop:10}}>
+              <text style={{fontWeight: 'bold'}}>{recipeLine}</text>
             </Col>
             <Col xs={1} sm={1} md={1}>
               <PieChart nutritionModel={nutritionModel} tag={tag}/>
@@ -152,7 +150,15 @@ export default class Nutrition extends React.Component {
       )
     }
     return (
-      <div>
+      <div
+        style={{marginTop:10,
+                backgroundColor:'white',
+                borderColor:'black',
+                borderRadius:5,
+                borderWidth:1,
+                padding:10,
+                paddingBottom:30,
+                borderStyle:'solid'}}>
         {sliders}
       </div>
     )

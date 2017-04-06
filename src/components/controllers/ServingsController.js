@@ -78,7 +78,7 @@ export default class ServingsController extends React.Component {
   }
   handleServingUnitChange() {
     if (this.getServingUnitValidationState() !== 'success') {
-      return 
+      return
     }
     else {
       ReactGA.event({
@@ -167,7 +167,8 @@ export default class ServingsController extends React.Component {
                      borderRadius: 5,
                      padding: 10,
                      marginRight: 0,
-                     marginLeft: 0}}>
+                     marginLeft: 0,
+                     backgroundColor: 'white'}}>
           <Row>
            <Col xs={5} md={5} style={{paddingRigh: 10}}>
             <form
@@ -176,12 +177,12 @@ export default class ServingsController extends React.Component {
               <FormGroup style={{marginBottom: 0}}
                 controlId='servingsControlUnit'
                 validationState={this.getServingsSizeValidationState()}>
-                <TooltipInput 
-                  tooltip='Type your servings size here' 
+                <TooltipInput
+                  tooltip='Type your servings size here'
                   tooltipPosition='bottom'
-                  type='text' 
-                  label='Serving Size' 
-                  maxLength={50} 
+                  type='text'
+                  label='Serving Size'
+                  maxLength={50}
                   value={this.state.servingSize}
                   onBlur={this.handleServingsSizeBlurred.bind(this)}
                   onChange={(value) => this.setState({servingSize: value})}
@@ -197,12 +198,12 @@ export default class ServingsController extends React.Component {
               <FormGroup style={{marginBottom: 0}}
                 controlId='servingsControlUnit'
                 validationState={this.getServingUnitValidationState()}>
-                <TooltipInput 
-                  tooltip='Type your servings units here' 
+                <TooltipInput
+                  tooltip='Type your servings units here'
                   tooltipPosition='bottom'
-                  type='text' 
-                  label='Serving Units' 
-                  maxLength={50} 
+                  type='text'
+                  label='Serving Units'
+                  maxLength={50}
                   value={this.state.servingUnit}
                   onBlur={this.handleServingUnitBlurred.bind(this)}
                   onChange={(value) => this.setState({servingUnit: value})}
@@ -219,12 +220,12 @@ export default class ServingsController extends React.Component {
                 <FormGroup
                   controlId='servingsControlRatio'
                   validationState={this.getServingsRatioValidationState()}>
-                  <TooltipInput 
-                    tooltip='Type your servings ratio here' 
+                  <TooltipInput
+                    tooltip='Type your servings ratio here'
                     tooltipPosition='bottom'
-                    type='text' 
-                    label='Serving Per' 
-                    maxLength={50} 
+                    type='text'
+                    label='Serving Per'
+                    maxLength={50}
                     value={this.state.servingRatio}
                     onBlur={this.handleServingsRatioBlurred.bind(this)}
                     onChange={(value) => this.setState({servingRatio: value})}
@@ -240,12 +241,12 @@ export default class ServingsController extends React.Component {
                 <FormGroup
                   controlId='servingsControlAmount'
                   validationState={this.getServingsAmountValidationState()}>
-                  <TooltipInput 
-                    tooltip='Type your servings amount here' 
+                  <TooltipInput
+                    tooltip='Type your servings amount here'
                     tooltipPosition='bottom'
-                    type='text' 
-                    label='Serving Amount' 
-                    maxLength={50} 
+                    type='text'
+                    label='Serving Amount'
+                    maxLength={50}
                     value={this.state.servingAmount}
                     onBlur={this.handleServingsAmountBlurred.bind(this)}
                     onChange={(value) => this.setState({servingAmount: value})}

@@ -110,7 +110,7 @@ class Recipe extends React.Component {
             style={{marginRight: 30, textTransform: 'none'}}
           />
           <TooltipButton
-            tooltip='Click to add ingredient(s) to label' 
+            tooltip='Click to add ingredient(s) to label'
             tooltipPosition='left'
             tooltipDelay={500}
             icon='add'
@@ -131,9 +131,17 @@ class Recipe extends React.Component {
     ) : null
     return (
       <div>
-        <FormGroup controlId="formControlsTextarea">
+        <FormGroup controlId="formControlsTextarea"
+          style={{marginTop:10,
+                  backgroundColor:'white',
+                  borderColor:'black',
+                  borderRadius:5,
+                  borderWidth:1,
+                  padding:10,
+                  borderStyle:'solid'}}>
           {recipeAlert}
           <TooltipInput
+
             tooltip='Type your ingredients here'
             tooltipPosition='top'
             type='text'

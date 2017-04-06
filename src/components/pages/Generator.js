@@ -285,7 +285,7 @@ export default class Generator extends React.Component {
         150 :
         150 + 20 * (numSearches-3)
       const height = heightInVH.toString() + 'vh'
-
+      console.log('HEIGHT: ', height)
       const home = require('../../images/homeHD.jpg')
       const sectionStyle = {
         backgroundImage:`url(${home})`,
@@ -370,6 +370,7 @@ export default class Generator extends React.Component {
               </Row>
               <Row style={{height:'32vh'}}/>
               <Footer fullPage={fullPage} router={this.props.router}/>
+              <Row style={{height:'50vh'}}/>
             </Row>
             <Row>
               {ml.marginCol}

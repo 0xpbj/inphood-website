@@ -76,7 +76,7 @@ export default class About extends React.Component {
           {ml.marginCol}
         </Row>
         <Row style={{height:'38vh'}}/>
-        <Footer router={this.props.router}/>
+        <Footer fullPage={true} router={this.props.router}/>
       </div>
     )
   }

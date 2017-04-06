@@ -369,7 +369,7 @@ export default class Generator extends React.Component {
                 {ml.marginCol}
               </Row>
               <Row style={{height:'32vh'}}/>
-              <Footer fullPage={fullPage}router={this.props.router}/>
+              <Footer fullPage={fullPage} router={this.props.router}/>
             </Row>
             <Row>
               {ml.marginCol}

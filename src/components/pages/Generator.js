@@ -225,9 +225,7 @@ export default class Generator extends React.Component {
           )
       }
       const {nutritionModel} = this.props.nutritionModelRed
-      const full = nutritionModel.serialize()
       const compositeModel = nutritionModel.getScaledCompositeIngredientModel()
-      const composite = compositeModel.serialize()
       const {unusedTags, matchResultsModel}
         = this.props.tagModel
       const ml = new MarginLayout()

@@ -1,13 +1,12 @@
 import {IngredientModel} from '../components/models/IngredientModel'
 
 function padLineWithSpaces(charsToPad, line) {
-  console.log('padLineWithSpaces:')
-  console.log('---------------------------------------------------------------')
-  console.log(line)
-  console.log(charsToPad)
-  console.log(line.length)
-  console.log(charsToPad - line.length)
-
+  // console.log('padLineWithSpaces:')
+  // console.log('---------------------------------------------------------------')
+  // console.log(line)
+  // console.log(charsToPad)
+  // console.log(line.length)
+  // console.log(charsToPad - line.length)
   const lineLength = line.length
   for (let i = 0; i < (charsToPad - lineLength); i++) {
     line += ' '
@@ -80,7 +79,7 @@ export function getTextLabel(anIngredientModel) {
       } else if (functionPrefix === 'get_vitaminD') {
         rda2k = anIngredientModel['get_vitaminD_IURDA']()
       } else {
-        console.log('RDA based on 2k calorie diet unavailable.');
+        // console.log('RDA based on 2k calorie diet unavailable.');
         rda2k = ''
       }
     }

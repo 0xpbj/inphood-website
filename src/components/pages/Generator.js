@@ -197,14 +197,14 @@ export default class Generator extends React.Component {
       nonInteraction: false
     });
     return (
-      <div>
-        <pre id='nutrition-label'>{getTextLabel(compositeModel)}</pre>
+      <Row>
+        <pre id='nutrition-label' style={{background: 'white'}}>{getTextLabel(compositeModel)}</pre>
         <a href="http://www.inphood.com"
            className="text-center"
            style={{backgroundColor: 'white'}}>
           <h6 style={{marginBottom: 0}}>Estimated at {this.getInPhoodLogo()}</h6>
         </a>
-      </div>
+      </Row>
     )
   }
   render() {

@@ -26,6 +26,12 @@ export default class IngredientController extends React.Component {
       editBoxValue: 1
     }
   }
+  componentWillMount() {
+    const {tag} = this.props
+    let ingredientControlModel = this.props.ingredientControlModelRed.ingredientControlModels[tag]
+    const editBoxValue = ingredientControlModel.getEditBoxValue()
+    this.setState({editBoxValue})
+  }
   submitNewValue(event) {
     this.handleEditBoxValueChange()
     event.preventDefault()
@@ -48,7 +54,7 @@ export default class IngredientController extends React.Component {
           category: 'Ingredient Model',
           action: 'Ingredient unit changed',
           nonInteraction: false,
-          tag
+          label: tag
         });
         let ingredientControlModel = this.props.ingredientControlModelRed.ingredientControlModels[tag]
         ingredientControlModel.setEditBoxValue(value)

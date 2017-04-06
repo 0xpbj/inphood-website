@@ -502,7 +502,13 @@ export class IngredientModel {
     if (suggestedServingUnit === 'people') {
       this._scaleGettersTo = 1 / suggestedServingAmount
     } else {
-      this._scaleGettersTo = suggestedServingAmount / this._servingAmount
+      // Workaround for initializeComposite--_servingAmount is zero in that method,
+      // which causes _scaleGettersTo to get to Infinity and make the label show NaN
+      if (this._servingAmount === 0) {
+        this._scaleGettersTo = 0
+      } else {
+        this._scaleGettersTo = suggestedServingAmount / this._servingAmount
+      }
     }
   }
 

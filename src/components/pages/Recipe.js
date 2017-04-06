@@ -49,7 +49,6 @@ class Recipe extends React.Component {
     this.props.router.setRouteLeaveHook(this.props.route, this.routerWillLeave.bind(this))
   }
   routerWillLeave(nextLocation) {
-    debugger
     if (!this.state.isSaved) {
       if (!nextLocation.search)
         return 'Your work is not saved! Are you sure you want to leave?'

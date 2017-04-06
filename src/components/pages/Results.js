@@ -65,26 +65,8 @@ export default class Results extends React.Component {
     else
       return null
   }
-  // TODO: this should be a utility or a factory that constructs this from
-  //       an ingredient model--it doesn't belong in results
-  // getTextLabel(anIngredientModel) {
-  //   let textLabel =
-  //     'Serving Size : ' + anIngredientModel.getServingAmount() + ' ' + anIngredientModel.getServingUnit() + '\n' +
-  //     'Calories     : ' + anIngredientModel.getCalories() + '\n' +
-  //     'Fat          : ' + anIngredientModel.getTotalFatPerServing() + ' ' +  anIngredientModel.getTotalFatUnit() + '\n' +
-  //     'Carbs        : ' + anIngredientModel.getTotalCarbohydratePerServing() + ' ' + anIngredientModel.getTotalCarbohydrateUnit() + '\n' +
-  //     'Fiber        : ' + anIngredientModel.getDietaryFiber() + ' ' + anIngredientModel.getDietaryFiberUnit() + '\n' +
-  //     'Protein      : ' + anIngredientModel.getTotalProteinPerServing() + ' ' + anIngredientModel.getTotalProteinUnit() + '\n' +
-  //     'Sugars       : ' + anIngredientModel.getSugars() + ' ' + anIngredientModel.getSugarsUnit() + '\n' +
-  //     'Sodium       : ' + anIngredientModel.getSodium() + ' ' + anIngredientModel.getSodiumUnit() + '\n'
-  //
-  //   return textLabel
-  // }
-  // TODO: this should be a utility or a factory that constructs this from
-  //       a nutrition model--it doesn't belong in results
   getRecipeText(aNutritionModel) {
     let recipeText = ''
-
     const nmTags = aNutritionModel.getTags()
     for (let index in nmTags) {
       const tag = nmTags[index]
@@ -97,130 +79,6 @@ export default class Results extends React.Component {
     }
     return recipeText
   }
-  // getTitleValidationState() {
-  //   const length = this.state.title.length
-  //   if (length === 1 || length > 100)
-  //     return 'error'
-  //   else if (length > 0)
-  //     return 'success'
-  // }
-  // getDietaryValidationState() {
-  //   const length = this.state.dietary.length
-  //   if (length === 1 || length > 100)
-  //     return 'error'
-  //   else if (length > 0)
-  //     return 'success'
-  // }
-  // getAllergenValidationState() {
-  //   const length = this.state.allergen.length
-  //   if (length === 1 || length > 100)
-  //     return 'error'
-  //   else if (length > 0)
-  //     return 'success'
-  // }
-  // onDrop(acceptedFiles, rejectedFiles) {
-  //   ReactGA.event({
-  //     category: 'User',
-  //     action: 'Image uploaded',
-  //     nonInteraction: false
-  //   })
-  //   acceptedFiles.forEach(file => {
-  //     this.props.selectedPhoto(file)
-  //   })
-  // }
-  // getMealPhoto() {
-  //   const {iUrl} = this.props.results.data
-  //   const pictureAlert = (this.state.pictureError) ? (
-  //     <Alert bsStyle="danger">
-  //       <h4>Oh snap! You forgot to add a picture of your meal!</h4>
-  //     </Alert>
-  //   ) : null
-  //   const picturePopover = this.state.picturePopoverFlag ? (
-  //     <div style={{ width: 300 }}>
-  //       <Popover
-  //         id="popover-basic"
-  //         placement="right"
-  //         positionLeft={20}
-  //         positionTop={-40}
-  //         title="Picture Help"
-  //       >
-  //         Add a meal photo to highlight recipe details
-  //       </Popover>
-  //     </div>
-  //   ) : null
-  //   const imLink = iUrl ? iUrl : this.props.results.picture
-  //   const image = imLink ? (
-  //     <div className="text-center">
-  //       <ControlLabel>Meal Photo</ControlLabel>
-  //       <Image className="center-block" src={imLink} responsive rounded/>
-  //     </div>
-  //   ) : (
-  //     <div className="text-center">
-  //       {pictureAlert}
-  //       <Button bsStyle="success" onClick={()=>this.setState({ showUploadModal: true })}>
-  //         Upload Meal Photo&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-open"></Glyphicon>
-  //       </Button>
-  //       <Glyphicon
-  //         onClick={()=>this.setState({picturePopoverFlag: !this.state.picturePopoverFlag})}
-  //         style={{marginLeft: 10}}
-  //         glyph="glyphicon glyphicon-info-sign">
-  //         {picturePopover}
-  //       </Glyphicon>
-  //       <UploadModal
-  //         onDrop={(acceptedFiles, rejectedFiles) => this.onDrop.bind(this)}
-  //         show={this.state.showUploadModal}
-  //         onHide={() => this.setState({showUploadModal: false})}
-  //       />
-  //     </div>
-  //   )
-  //   return image
-  //     // const mealPhoto = (true) ?
-  //     // (
-  //     //   <div>
-  //     //     <div className="text-center"><ControlLabel>Meal Photo</ControlLabel></div>
-  //     //     <Image className="center-block" src={iUrl} responsive rounded  style={{marginBottom: "20px"}}/>
-  //     //   </div>
-  //     // ) : null
-  // }
-  // getShareButtons() {
-  //   return (
-  //     <div className="text-center"
-  //          style={{marginTop: "15", marginBottom: "15"}}>
-  //       <Row>
-  //         <Col xs={1} md={1} />
-  //         <Col xs={5} md={5}>
-  //           {saveButton}
-  //         </Col>
-  //         <Col xs={5} md={5}>
-  //           <CopyToClipboard text={embedMsg}
-  //             onCopy={() => this.setState({ecopied: true, copied: false})}>
-  //             <Button className="btn-primary-spacing" bsStyle="success">
-  //               Embed Label&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-edit"></Glyphicon>
-  //             </Button>
-  //           </CopyToClipboard>
-  //         </Col>
-  //         <Col xs={1} md={1} />
-  //       </Row>
-  //       {this.state.copied ? <div style={{marginTop: "20px"}}><pre>{path}</pre><span style={{color: 'red'}}>&nbsp;Copied.</span></div> : null}
-  //       {this.state.ecopied ? <div style={{marginTop: "20px"}}><pre>{embedMsg}</pre><span style={{color: 'red'}}>&nbsp;Copied.</span></div> : null}
-  //     </div>
-  //   )
-  // }
-  // getTitleForm() {
-  //   let {title} = this.props.results.data
-  //   let titleForm = !title ? (
-  //     <FieldGroup
-  //       id="formControlsText"
-  //       spellCheck={true}
-  //       type="text"
-  //       value={this.state.title}
-  //       placeholder="Enter a recipe title..."
-  //       validationState={this.getTitleValidationState()}
-  //       onChange={(e) => this.setState({title: e.target.value})}
-  //     />
-  //   ) : <div className="text-center"><ControlLabel>{title}</ControlLabel></div>
-  //   return titleForm
-  // }
   render() {
     ReactGA.event({
       category: 'User',
@@ -238,7 +96,7 @@ export default class Results extends React.Component {
       });
       return (
         <Alert bsStyle="danger" onDismiss={() => this.props.router.push('/')}>
-          <h4>Oh snap! Label not found!</h4>
+          <h4>Woaaaah! Label not found!</h4>
           <p>
             <Button bsStyle="danger" onClick={() => this.props.router.push('/')}>Go Home</Button>
           </p>
@@ -269,69 +127,35 @@ export default class Results extends React.Component {
       // rendering, otherwise display a loading message.
       //   - TODO: make the loading message suck less
       let nutritionLabel = <text> Loading ...</text>
-      if (this.hasProp(this.props.results.data, 'composite')) {
+      const rUser =  user ? user : Config.DEBUG ? 'test' : 'anonymous'
+      let recipeText = ''
+      if (this.hasProp(this.props.results.data, 'composite') && this.hasProp(this.props.results.data, 'full')) {
         let ingredientData = JSON.parse(this.props.results.data.composite)
         let ingredient = new IngredientModel()
         ingredient.initializeFromSerialization(ingredientData)
-        nutritionLabel = (ingredient.getLabelType() !== 4) ? <Label displayGeneratedStatement={true} ingredientComposite={ingredient}/> : <pre>{getTextLabel(ingredient)}</pre>
+        let nutritionModelData = JSON.parse(this.props.results.data.full)
+        let nutritionModel = new NutritionModel()
+        nutritionModel.initializeFromSerialization(nutritionModelData)
+        console.log('\n\n\n\nNutrition Label Type: ', nutritionModel, nutritionModel.getLabelType())
+        nutritionLabel = (nutritionModel.getLabelType() !== 4) ? <Label displayGeneratedStatement={true} ingredientComposite={ingredient}/> : <pre>{getTextLabel(ingredient)}</pre>
+        recipeText = this.getRecipeText(nutritionModel)
         ReactGA.event({
           category: 'User',
           action: 'User results composite found',
           nonInteraction: false
         });
       }
-      const rUser =  user ? user : Config.DEBUG ? 'test' : 'anonymous'
-      let recipeText = ''
-      if (this.hasProp(this.props.results.data, 'full')) {
-        let nutritionModelData = JSON.parse(this.props.results.data.full)
-        let nutritionModel = new NutritionModel()
-        nutritionModel.initializeFromSerialization(nutritionModelData)
-        recipeText = this.getRecipeText(nutritionModel)
-      }
-      // const path = 'http://www.label.inphood.com/?user=' + rUser + '&label=' + label + '&embed=false'
-      // const epath = 'http://www.label.inphood.com/?user=' + rUser + '&label=' + label + '&embed=true'
-      // const embedMsg = '<embed src=' + epath + ' height=600 width=400>'
-      // const {iUrl, title} = this.props.results.data
-      // let modTitle = ''
-      // if (title && title !== '')
-      //   modTitle = ': ' + title
-      const placeHolderCol = <Col xs={0} sm={0} md={1} lg={2}/>
       return (
         <div style={{backgroundColor: 'white'}}>
           <TopBar router={this.props.router}/>
           <Grid>
             <Row style={{marginTop: 25}}>
-              <Col xs={12} sm={6} md={6} lg={6}>
-                <Row>
-                  <Col xs={12} sm={12} md={10} lg={8}>
-                    <Row>
-                      <Col xs={12} className="center-block">
-                        {nutritionLabel}
-                      </Col>
-                    </Row>
-                  </Col>
-                </Row>
+              <Col xs={12} sm={4} md={4} lg={4} className="text-left">
+                {nutritionLabel}
               </Col>
-              <Col xs={12} sm={6} md={6} lg={6}>
-                <Row>
-                  <Col xs={12} sm={10} md={10} lg={8}>
-                    {/*<Row>
-                      <div style={{marginBottom: 10}} className="text-center">
-                      {this.getTitleForm()}
-                      </div>
-                      <div style={{marginBottom: 10}} className="text-center">
-                      {this.getMealPhoto()}
-                      </div>
-                    </Row>*/}
-                    <Row>
-                      <pre>{recipeText}</pre>
-                    </Row>
-                    {/*<Row style={{marginTop: 10}}>
-                      <div className="text-center"><ControlLabel>Text Nutrition Label</ControlLabel></div>
-                      <pre>{textLabel}</pre>
-                    </Row>*/}
-                  </Col>
-                </Row>
+              <Col xs={0} sm={4} md={4} lg={4}/>
+              <Col xs={12} sm={4} md={4} lg={4}>
+                <pre>{recipeText}</pre>
               </Col>
             </Row>
           </Grid>

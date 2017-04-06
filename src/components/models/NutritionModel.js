@@ -249,6 +249,10 @@ export class NutritionModel {
     return compositeIngredient
   }
 
+  getLabelType() {
+    return this._labelType
+  }
+  
   setLabelType(aLabelType) {
     this._labelType = aLabelType
   }

@@ -126,19 +126,10 @@ export default class Generator extends React.Component {
     else
       return null
   }
-  // shareLabelButton() {
-  //   return (
-  //     <TooltipButton
-  //       tooltip='Click to share your label'
-  //       tooltipPosition='right'
-  //       tooltipDelay={500}
-  //       icon='share'
-  //       label='Share Label'
-  //       style={{color: 'white', backgroundColor: 'forestgreen'}}
-  //       onClick={() => this.shareLabel()}
-  //     />
-  //   )
-  // }
+  customLabelFlow(textLabel, labelType) {
+    this.setState({textLabel})
+    this.props.setLabelType(labelType)
+  }
   customLabelButton(fullPage) {
     if (fullPage) {
       return (
@@ -149,44 +140,32 @@ export default class Generator extends React.Component {
           <Dropdown.Menu>
             <MenuItem
               eventKey='1'
-              onClick={() => {
-                this.setState({textLabel: false})
-                this.props.setLabelType(IngredientModel.labelTypes.standard)}}>
+              onClick={() => this.customLabelFlow(false, IngredientModel.labelTypes.standard)}>
               Standard Label&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-grain"></Glyphicon>
             </MenuItem>
             <MenuItem
               eventKey='2'
-              onClick={() => {
-                this.setState({textLabel: false})
-                this.props.setLabelType(IngredientModel.labelTypes.complete)}}>
+              onClick={() => this.customLabelFlow(false, IngredientModel.labelTypes.complete)}>
               Complete Label&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-tree-deciduous"></Glyphicon>
             </MenuItem>
             <MenuItem
               eventKey='3'
-              onClick={() => {
-                this.setState({textLabel: false})
-                this.props.setLabelType(IngredientModel.labelTypes.micronut)}}>
+              onClick={() => this.customLabelFlow(false, IngredientModel.labelTypes.micronut)}>
               Micronutrient Label&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-stats"></Glyphicon>
             </MenuItem>
             {/*<MenuItem
               eventKey='4'
-              onClick={() => {
-                this.setState({textLabel: false})
-                this.props.setLabelType(IngredientModel.labelTypes.sugarmic)}}>
+              onClick={() => this.customLabelFlow(false, IngredientModel.labelTypes.sugarmic)}>
               Sugar + Micro Label
             </MenuItem>*/}
             <MenuItem
               eventKey='5'
-              onClick={() => {
-                this.setState({textLabel: true})
-                this.props.setLabelType(IngredientModel.labelTypes.text)}}>
+              onClick={() => this.customLabelFlow(true, IngredientModel.labelTypes.text)}>
               Text Label&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-text-color"></Glyphicon>
             </MenuItem>
             {/*<MenuItem
               eventKey='6'
-              onClick={() => {
-                this.setState({textLabel: false})
-                this.props.setLabelType(IngredientModel.labelTypes.personal)}}>
+              onClick={() => this.customLabelFlow(false, IngredientModel.labelTypes.personal)}>
               Personal Label
             </MenuItem>*/}
           </Dropdown.Menu>
@@ -285,7 +264,6 @@ export default class Generator extends React.Component {
         150 :
         150 + 20 * (numSearches-3)
       const height = heightInVH.toString() + 'vh'
-      console.log('HEIGHT: ', height)
       const home = require('../../images/homeHD.jpg')
       const sectionStyle = {
         backgroundImage:`url(${home})`,

@@ -280,6 +280,12 @@ export default class Generator extends React.Component {
           <Label id='nutrition-label' ingredientComposite={compositeModel}/>
       )
       // TODO: if screen size <= xs, make the backgroundSize = cover (mobile first)
+      const numSearches = matchResultsModel.getNumberOfSearches()
+      const heightInVH = (numSearches < 4) ?
+        150 :
+        150 + 20 * (numSearches-3)
+      const height = heightInVH.toString() + 'vh'
+
       const home = require('../../images/homeHD.jpg')
       const sectionStyle = {
         backgroundImage:`url(${home})`,
@@ -288,12 +294,13 @@ export default class Generator extends React.Component {
         backgroundAttachment: 'fixed',
         backgroundPosition: 'center',
         width:'100vw',
-        height:'150vh'
+        height:{height}
       }
-      const fullPage = matchResultsModel.getNumberOfSearches() > 0
+
+      const fullPage = numSearches > 0
       const backgroundStyle = (fullPage) ?
-        {backgroundColor:'rgba(255,255,255,0.85)',width:'100vw',height:'150vh'} :
-        {backgroundColor:'rgba(255,255,255,0)',width:'100vw',height:'150vh'}
+        {backgroundColor:'rgba(255,255,255,0.85)',width:'100vw',height:{height}} :
+        {backgroundColor:'rgba(255,255,255,0)',width:'100vw',height:{height}}
 
       const nutrition = (fullPage) ? <Nutrition /> : null
       return (

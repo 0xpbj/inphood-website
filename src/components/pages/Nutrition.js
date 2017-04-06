@@ -158,9 +158,7 @@ export default class Nutrition extends React.Component {
                 borderWidth:1,
                 padding:10,
                 paddingBottom:30,
-                borderStyle:'solid'}}
-        className="pre-scrollable"
-      >
+                borderStyle:'solid'}}>
         {sliders}
       </div>
     )

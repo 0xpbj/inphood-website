@@ -7,7 +7,6 @@ import Grid from 'react-bootstrap/lib/Grid'
 import Alert from 'react-bootstrap/lib/Alert'
 import Modal from 'react-bootstrap/lib/Modal'
 import Image from 'react-bootstrap/lib/Image'
-import Popover from 'react-bootstrap/lib/Popover'
 import Dropdown from 'react-bootstrap/lib/Dropdown'
 import MenuItem from 'react-bootstrap/lib/MenuItem'
 import Button from 'react-bootstrap/lib/Button'
@@ -17,7 +16,6 @@ import ListGroup from 'react-bootstrap/lib/ListGroup'
 import FormControl from 'react-bootstrap/lib/FormControl'
 import ControlLabel from 'react-bootstrap/lib/ControlLabel'
 import ListGroupItem from 'react-bootstrap/lib/ListGroupItem'
-import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger'
 import {parseRecipe, parseCaption} from '../../helpers/parseRecipe'
 import Chip from 'react-toolbox/lib/chip'
 import UploadModal from '../layout/UploadModal'
@@ -240,11 +238,6 @@ export default class Generator extends React.Component {
         </Col>
       </Row>
     ) : null
-    const popoverHoverFocus = (
-      <Popover id="popover-trigger-hover-focus" title="Rounding Information">
-        <strong>Nutrition values estimated based on USDA standards</strong>.
-      </Popover>
-    );
     const label = (textLabel) ? this.generateTextLabel(compositeModel)
     : (
         <Label id='nutrition-label' ingredientComposite={compositeModel}/>
@@ -285,11 +278,9 @@ export default class Generator extends React.Component {
                   </div>
                 </Row>
                 <Row style={{marginTop:(constants.VERT_SPACE-2)}}>
-                  <OverlayTrigger placement="bottom" overlay={popoverHoverFocus} trigger={['hover', 'focus', 'click']}>
-                    <Col xs={12}>
-                      {label}
-                    </Col>
-                  </OverlayTrigger>
+                  <Col xs={12}>
+                    {label}
+                  </Col>
                 </Row>
                 <Row style={{marginTop:(constants.VERT_SPACE-2)}}>
                   <div style={{width:constants.LABEL_WIDTH, margin:'auto'}}>

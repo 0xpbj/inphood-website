@@ -15,7 +15,7 @@ export default class MarginLayout {
     const mdOffset = 2
     const lgOffset = 3
 
-    const margins = [0.0, 1.0, 1.0, 2.0]
+    const margins = [1.0, 1.0, 1.0, 2.0]
 
     let centers = []
 

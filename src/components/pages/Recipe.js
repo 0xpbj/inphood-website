@@ -58,7 +58,7 @@ class Recipe extends React.Component {
     }
   }
   handleChange = (value) => {
-    this.setState({...this.state, ingredients: value});
+    this.setState({...this.state, ingredients: value, recipeError: false});
   }
   newRecipeFlow() {
     this.props.modelReset()
@@ -158,17 +158,12 @@ class Recipe extends React.Component {
         <h2><BButton bsStyle="danger" onClick={() => this.newRecipeFlow()}>Continue</BButton></h2>
       </Alert>
     ) : null
-    const recipeAlert = (this.state.recipeError) ? (
-      <Alert bsStyle="danger" style={{marginTop: 10}}>
-        <h4>You forgot to enter an ingredient!</h4>
-      </Alert>
-    ) : null
+    const recipeAlert = (this.state.recipeError) ? 'You forgot to enter an ingredient!' : ''
     const {matchResultsModel} = this.props.tagModel
     const pad = (matchResultsModel.getNumberOfSearches() > 0) ? 0 : 15
     const servingsController = (matchResultsModel.getNumberOfSearches() > 0) ? <ServingsController /> : null
     return (
       <div>
-        {recipeAlert}
         {newRecipeAlert}
         <FormGroup controlId="formControlsTextarea"
           style={{marginTop:25 + pad,
@@ -186,6 +181,7 @@ class Recipe extends React.Component {
             maxLength={5000}
             value={this.state.ingredients}
             onChange={this.handleChange.bind(this)}
+            error={recipeAlert}
             hint='1 c spinach'
             required
             icon='restaurant'

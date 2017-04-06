@@ -16,7 +16,11 @@ export default class ServingsController extends React.Component {
       servingSize: 2,
       servingUnit: 'plate',
       servingAmount: '1',
-      servingRatio: 'Recipe, About'
+      servingRatio: 'Recipe, About',
+      servingSizeError: '',
+      servingUnitError: '',
+      servingAmountError: '',
+      servingRatioError: ''
     }
   }
   componentWillMount() {
@@ -48,9 +52,11 @@ export default class ServingsController extends React.Component {
   }
   handleServingsSizeChange() {
     if (this.getServingsSizeValidationState() !== 'success') {
+      this.setState({servingSizeError: 'Invalid Input'})
       return
     }
     else {
+      this.setState({servingSizeError: ''})
       ReactGA.event({
         category: 'Nutrition Mixer',
         action: 'Servings size changed',
@@ -78,9 +84,11 @@ export default class ServingsController extends React.Component {
   }
   handleServingUnitChange() {
     if (this.getServingUnitValidationState() !== 'success') {
+      this.setState({servingUnitError: 'Invalid Input'})
       return
     }
     else {
+      this.setState({servingUnitError: ''})
       ReactGA.event({
         category: 'Nutrition Mixer',
         action: 'Servings unit changed',
@@ -108,9 +116,11 @@ export default class ServingsController extends React.Component {
   }
   handleServingsRatioChange() {
     if (this.getServingsRatioValidationState() !== 'success') {
+      this.setState({servingRatioError: 'Invalid Input'})
       return
     }
     else {
+      this.setState({servingRatioError: ''})
       ReactGA.event({
         category: 'Nutrition Mixer',
         action: 'Servings ratio changed',
@@ -131,16 +141,18 @@ export default class ServingsController extends React.Component {
   }
   getServingsAmountValidationState() {
     const {servingAmount} = this.state
-    return isValidString(servingAmount)
+    return isNumeric(servingAmount)
   }
   handleServingsAmountBlurred() {
     this.handleServingsAmountChange()
   }
   handleServingsAmountChange() {
     if (this.getServingsAmountValidationState() !== 'success') {
+      this.setState({servingAmountError: 'Invalid Input'})
       return
     }
     else {
+      this.setState({servingAmountError: ''})
       ReactGA.event({
         category: 'Nutrition Mixer',
         action: 'Servings amount changed',
@@ -154,6 +166,7 @@ export default class ServingsController extends React.Component {
   }
   render() {
     const {servingsControlModel} = this.props.servings
+    const {servingSizeError, servingUnitError, servingRatioError, servingAmountError} = this.state
     return (
       <div>
         <Row>
@@ -183,6 +196,7 @@ export default class ServingsController extends React.Component {
                   type='text'
                   label='Serving Size'
                   maxLength={50}
+                  error={servingSizeError}
                   value={this.state.servingSize}
                   onBlur={this.handleServingsSizeBlurred.bind(this)}
                   onChange={(value) => this.setState({servingSize: value})}
@@ -204,6 +218,7 @@ export default class ServingsController extends React.Component {
                   type='text'
                   label='Serving Units'
                   maxLength={50}
+                  error={servingUnitError}
                   value={this.state.servingUnit}
                   onBlur={this.handleServingUnitBlurred.bind(this)}
                   onChange={(value) => this.setState({servingUnit: value})}
@@ -226,6 +241,7 @@ export default class ServingsController extends React.Component {
                     type='text'
                     label='Serving Per'
                     maxLength={50}
+                    error={servingRatioError}
                     value={this.state.servingRatio}
                     onBlur={this.handleServingsRatioBlurred.bind(this)}
                     onChange={(value) => this.setState({servingRatio: value})}
@@ -247,6 +263,7 @@ export default class ServingsController extends React.Component {
                     type='text'
                     label='Serving Amount'
                     maxLength={50}
+                    error={servingAmountError}
                     value={this.state.servingAmount}
                     onBlur={this.handleServingsAmountBlurred.bind(this)}
                     onChange={(value) => this.setState({servingAmount: value})}

@@ -279,8 +279,10 @@ export function isNumeric(n) {
   // rationalToFloat expects a string. This also helps to catch things like
   // "" and " " which evaluate to numbers (isNan===false) with the second
   // predicate checking for string type.
-  if (!isNaN(n)) {
-    if ((typeof n) !== "string") {
+  if (n === '0' || n === '' || n === '0.' || n.toString().indexOf('-') !== -1)
+    return 'error'
+  else if (!isNaN(n)) {
+    if ((typeof n) !== "string" && n !== 0) {
       return 'success'
     }
   }

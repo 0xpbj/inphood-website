@@ -273,7 +273,6 @@ export default class Results extends React.Component {
         let ingredientData = JSON.parse(this.props.results.data.composite)
         let ingredient = new IngredientModel()
         ingredient.initializeFromSerialization(ingredientData)
-        console.log('\n\n\n\nINGREDIENT LABEL TYPE: ', ingredient.getLabelType())
         nutritionLabel = (ingredient.getLabelType() !== 4) ? <Label displayGeneratedStatement={true} ingredientComposite={ingredient}/> : <pre>{getTextLabel(ingredient)}</pre>
         ReactGA.event({
           category: 'User',
@@ -301,7 +300,7 @@ export default class Results extends React.Component {
         <div style={{backgroundColor: 'white'}}>
           <TopBar router={this.props.router}/>
           <Grid>
-            <Row>
+            <Row style={{marginTop: 25}}>
               <Col xs={12} sm={6} md={6} lg={6}>
                 <Row>
                   <Col xs={12} sm={12} md={10} lg={8}>

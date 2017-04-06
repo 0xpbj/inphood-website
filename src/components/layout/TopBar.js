@@ -57,10 +57,14 @@ export default class TopBar extends React.Component {
                 <img src={require('../../images/logoOnClear.png')}/>
               </Button>
             </Col>
-            <Col className='text-right' xs={6} style={{bottom:0, right:0, position:'absolute'}}>
-              <Button bsStyle="link" onClick={open} style={{fontSize: 18}}>
-                <Glyphicon glyph="glyphicon glyphicon-comment" />&nbsp;&nbsp;Say Hello!
-              </Button>
+            <Col className='text-right' xs={6}>
+              <Row>
+              <Col xs={4}/>
+              <Col xs={4}>
+                <Button bsStyle="link" onClick={open} style={{fontSize: 20, marginTop: 20}}>
+                  <Glyphicon glyph="glyphicon glyphicon-comment" />&nbsp;&nbsp;Say Hello!
+                </Button>
+              </Col>
               <Modal onHide={close} show={this.state.show} bsSize="small" aria-labelledby="contained-modal-title-sm">
                 <Modal.Header>
                   <Modal.Title id="contained-modal-title-sm">Say Hello</Modal.Title>
@@ -72,6 +76,8 @@ export default class TopBar extends React.Component {
                   <Button onClick={this.onSubmit.bind(this)}>Submit</Button>
                 </Modal.Footer>
               </Modal>
+              <Col xs={4}/>
+              </Row>
             </Col>
           </Row>
         </Col>

@@ -12,9 +12,9 @@ export default class Footer extends React.Component {
     const ml = new MarginLayout()
     const currentYear = new Date().getFullYear()
 
-    const {router} = this.props
+    const {router, fullPage} = this.props
 
-    const whiteBackground={
+    const blackBackground = (fullPage) ? {} : {
       borderWidth:0,
       borderRadius:15,
       backgroundColor:'rgba(0,0,0,0.6)',
@@ -23,9 +23,8 @@ export default class Footer extends React.Component {
     return (
       <Row>
         {fillerCol}
-
         <Col xs={12} sm={6} md={6} lg={4}>
-          <Row style={whiteBackground}>
+          <Row style={blackBackground}>
                 <Col xs={12} className='text-center'>
                   <Button bsStyle="link" onClick={() => router.push('/about')}>
                     About Us
@@ -41,7 +40,6 @@ export default class Footer extends React.Component {
                 </Col>
           </Row>
         </Col>
-
         {fillerCol}
       </Row>
     )

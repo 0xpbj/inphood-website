@@ -31,6 +31,25 @@ import {mapToSupportedUnitsStrict,
         getPossibleUnits} from '../helpers/ConversionUtils'
 const Config = require('Config')
 
+const matchResultsReady = (matchResultsModel) => {
+  for (let searchTerm in matchResultsModel.getSearches()) {
+    if (matchResultsModel.getSearchResultsLength(searchTerm) === 0) {
+      ReactGA.event({
+        category: 'Nutrition Mixer',
+        action: 'Missing data for ingredient',
+        nonInteraction: false,
+        label: searchTerm
+      });
+      continue
+    }
+    const searchResult = matchResultsModel.getSearchResultByIndex(searchTerm)
+    if ((searchResult.getStandardRefDataObj() === undefined) &&
+        (searchResult.getBrandedDataObj() === undefined)) {
+      return false
+    }
+  }
+  return true
+}
 
 // //TODO: make this work gracefully
 // function* changesFromSearchController() {
@@ -44,31 +63,18 @@ const Config = require('Config')
 //     put({type: SEARCH_TIMED_OUT})
 //   }
 // }
-
 function* changesFromRecipe() {
   console.log('changesFromRecipe ---------------------------------------------');
   const {newData, missingData} = yield select(state => state.nutritionReducer)
   const {matchResultsModel} = yield select(state => state.tagModelReducer)
-  // console.log('\n\n\nPBJERROR = SEARCH TERMS LOOPING: ', matchResultsModel.getSearches());
-  for (let searchTerm in matchResultsModel.getSearches()) {
-    if (matchResultsModel.getSearchResultsLength(searchTerm) === 0) {
-      ReactGA.event({
-        category: 'Nutrition Mixer',
-        action: 'Missing data for ingredient',
-        nonInteraction: false,
-        label: searchTerm
-      });
-      continue
-      // console.log('\n\n\nPBJERROR = SEARCH TERM NOT FOUND: ', searchTerm);
-    }
-    const searchResult = matchResultsModel.getSearchResultByIndex(searchTerm)
-    if ((searchResult.getStandardRefDataObj() === undefined) &&
-        (searchResult.getBrandedDataObj() === undefined)) {
-      return
-      // console.log('\n\n\nPBJERROR = SEARCH TERM UNDEFINED: ', searchTerm);
-    }
+
+  const resultsReady = yield call (matchResultsReady, matchResultsModel)
+  if (! resultsReady) {
+    return
   }
+
   for (let index in newData) {
+
     const parseObj = newData[index]
     const searchTerm = parseObj['name']
 

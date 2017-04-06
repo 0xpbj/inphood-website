@@ -1,4 +1,5 @@
 import {
+  CLEAR_DATA,
   MODEL_RESET,
   NM_ADD_INGREDIENT,
   NM_REM_INGREDIENT,
@@ -15,6 +16,7 @@ const initialState = {
 
 export default function nmModelFun(state = initialState, action) {
   switch (action.type) {
+    case CLEAR_DATA: 
     case MODEL_RESET:
     {
       return {

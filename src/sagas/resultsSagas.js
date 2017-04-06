@@ -35,20 +35,22 @@ const getRecipeText = (aNutritionModel) => {
 
 function* loadFirebaseData() {
   const {parsedData, rawData, key} = yield select(state => state.nutritionReducer)
-  const {nutritionModel} = yield select(state => state.nutritionModelReducer)
-  const user = Config.DEBUG ? 'test' : 'anonymous'
-  const full = nutritionModel.serialize()
-  const compositeModel = nutritionModel.getScaledCompositeIngredientModel()
-  const composite = compositeModel.serialize()
-  const userGeneratedData = getRecipeText(nutritionModel)
-  firebase.database().ref('/global/nutritionLabel/' + user + '/' + key).update({
-    full,
-    user,
-    rawData,
-    parsedData,
-    composite,
-    userGeneratedData
-  })
+  if (key !== '') {
+    const {nutritionModel} = yield select(state => state.nutritionModelReducer)
+    const user = Config.DEBUG ? 'test' : 'anonymous'
+    const full = nutritionModel.serialize()
+    const compositeModel = nutritionModel.getScaledCompositeIngredientModel()
+    const composite = compositeModel.serialize()
+    const userGeneratedData = getRecipeText(nutritionModel)
+    firebase.database().ref('/global/nutritionLabel/' + user + '/' + key).update({
+      full,
+      user,
+      rawData,
+      parsedData,
+      composite,
+      userGeneratedData
+    })
+  }
 }
 
 function* getLabelData() {

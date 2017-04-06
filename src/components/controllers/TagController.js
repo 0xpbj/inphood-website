@@ -59,6 +59,7 @@ export default class TagController extends React.Component {
                      borderRadius: 5,
                      padding: 10,
                      marginRight: 10,
+                     backgroundColor:'white',
                      marginLeft: 10}}>
           <Row>
             <Col xs={12} md={12}>

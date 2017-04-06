@@ -57,7 +57,7 @@ export default class Nutrition extends React.Component {
     let {matchResultsModel} = this.props.tagModel
     matchResultsModel.removeSearch(tag)
     this.props.updateMatchResultsModel(matchResultsModel)
-    this.props.initSerializedData()
+    this.props.serializeToFirebase()
     ReactGA.event({
       category: 'Nutrition Mixer',
       action: 'User deleted ingredient',

@@ -27,7 +27,7 @@ import {
   GET_MORE_DATA,
   SET_PARSED_DATA,
   SET_TITLE,
-  INIT_SERIALIZED_DATA,
+  SERIALIZE_TO_FIREBASE,
   SAVE_LABEL_AWS
 } from '../constants/ActionTypes'
 
@@ -226,9 +226,9 @@ export function setTitle(title) {
   }
 }
 
-export function initSerializedData() {
+export function serializeToFirebase() {
   return {
-    type: INIT_SERIALIZED_DATA
+    type: SERIALIZE_TO_FIREBASE
   }
 }
 

@@ -103,7 +103,7 @@ export default class IngredientController extends React.Component {
     ingredientControlModel.setDropdownUnitValue(units)
     this.props.updateIngredientControlModel(tag, ingredientControlModel)
     this.props.nutritionModelScaleIng(tag, value, units)
-    this.props.initSerializedData()
+    this.props.serializeToFirebase()
   }
   render() {
     const {tag, nutritionModel} = this.props

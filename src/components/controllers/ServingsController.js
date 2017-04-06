@@ -30,7 +30,7 @@ export default class ServingsController extends React.Component {
   updateReduxStore(servingsControlModel) {
     this.props.setServingsControllerModel(servingsControlModel)
     this.props.nutritionModelSetServings(servingsControlModel)
-    this.props.initSerializedData()
+    this.props.serializeToFirebase()
   }
   //
   //

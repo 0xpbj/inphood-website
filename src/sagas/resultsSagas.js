@@ -4,7 +4,7 @@ import {
   LABEL_DATA,
   GET_LABEL_ID,
   STORE_PARSED_DATA,
-  INIT_SERIALIZED_DATA,
+  SERIALIZE_TO_FIREBASE,
 } from '../constants/ActionTypes'
 
 import { call, fork, put, select, take, takeLatest } from 'redux-saga/effects'
@@ -73,5 +73,5 @@ function* initFirebaseKeys() {
 export default function* root() {
   yield fork(getLabelData)
   yield fork(takeLatest, CLEAR_DATA, initFirebaseKeys)
-  yield fork(takeLatest, INIT_SERIALIZED_DATA, loadFirebaseData)
+  yield fork(takeLatest, SERIALIZE_TO_FIREBASE, loadFirebaseData)
 }

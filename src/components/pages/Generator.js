@@ -129,7 +129,7 @@ export default class Generator extends React.Component {
   customLabelFlow(textLabel, labelType) {
     this.setState({textLabel})
     this.props.setLabelType(labelType)
-    this.props.initSerializedData()
+    this.props.serializeToFirebase()
   }
   customLabelButton(fullPage) {
     if (fullPage) {

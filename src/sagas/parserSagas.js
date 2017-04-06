@@ -16,7 +16,7 @@ import {
   SEARCH_TIMED_OUT,
   INITIALIZE_FIREBASE_DATA,
   INGREDIENT_FIREBASE_DATA,
-  INIT_SERIALIZED_DATA
+  SERIALIZE_TO_FIREBASE
 } from '../constants/ActionTypes'
 
 import ReactGA from 'react-ga'
@@ -217,7 +217,7 @@ function* changesFromRecipe() {
   const {servingsControlModel} = yield select(state => state.servingsControlsReducer)
   yield put ({type: NM_SET_SERVINGS, servingsControlModel})
   yield put ({type: UNUSED_TAGS, tags: missingData})
-  yield put ({type: INIT_SERIALIZED_DATA})
+  yield put ({type: SERIALIZE_TO_FIREBASE})
 }
 
 export default function* root() {

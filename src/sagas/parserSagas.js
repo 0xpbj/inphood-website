@@ -51,6 +51,26 @@ const matchResultsReady = (matchResultsModel) => {
   return true
 }
 
+const getParseQuantity = (parseObj) => {
+  let parseQuantity = undefined
+
+  // Sometimes the parseObj returns things like 'toTaste=true' and no
+  // amount or unit fields. TODO: we should probably exclude those tags/
+  // ingredients from the label in MVP3 or put them in their own bucket.
+  if ('amount' in parseObj) {
+    if ((parseObj['amount'].hasOwnProperty('min')) &&
+         parseObj['amount'].hasOwnProperty('max')) {
+      const parseMinQuantity = rationalToFloat(parseObj['amount'].min)
+      const parseMaxQuantity = rationalToFloat(parseObj['amount'].max)
+      parseQuantity = (parseMinQuantity + parseMaxQuantity) / 2.0
+    } else {
+      parseQuantity = rationalToFloat(parseObj['amount'])
+    }
+  }
+
+  return parseQuantity
+}
+
 // //TODO: make this work gracefully
 // function* changesFromSearchController() {
 //   // console.log('changesFromSearchController--------------------------------------------');
@@ -73,9 +93,7 @@ function* changesFromRecipe() {
     return
   }
 
-  for (let index in newData) {
-
-    const parseObj = newData[index]
+  for (let parseObj of newData) {
     const searchTerm = parseObj['name']
 
     if (matchResultsModel.getSearchResultsLength(searchTerm) === 0) {
@@ -88,9 +106,9 @@ function* changesFromRecipe() {
           label: searchTerm
         });
       }
-      // console.log('\n\n\nPBJERROR = SEARCH TERM HAS NO RESULTS: ', searchTerm);
       continue
     }
+
     const searchResult = matchResultsModel.getSearchResultByIndex(searchTerm)
     const description = searchResult.getDescription()
 
@@ -100,120 +118,86 @@ function* changesFromRecipe() {
     const brandedObj = searchResult.getBrandedDataObj()
     if (stdRefObj) {
       ingredientModel.initializeSingle(description, searchTerm, stdRefObj)
-    }
-    else { // brandedObj
+    } else if (brandedObj) {
       ingredientModel.initializeFromBrandedFdaObj(description, searchTerm, brandedObj)
-    }
-    let measureQuantity = ingredientModel.getMeasureQuantity()
-    let measureUnit = ingredientModel.getMeasureUnit()
-    let tryQuantity = measureQuantity
-    let tryUnit = measureUnit
-    let parseQuantity = undefined
-    let parseUnit = undefined
+    } // else big internal error (TODO: handle?)
 
-
-    // Sometimes the parseObj returns things like 'toTaste=true' and no
-    // amount or unit fields. TODO: we should probably exclude those tags/
-    // ingredients from the label in MVP3 or put them in their own bucket.
-    if ('amount' in parseObj) {
-      if ((parseObj['amount'].hasOwnProperty('min')) &&
-           parseObj['amount'].hasOwnProperty('max')) {
-        const parseMinQuantity = rationalToFloat(parseObj['amount'].min)
-        const parseMaxQuantity = rationalToFloat(parseObj['amount'].max)
-        parseQuantity = (parseMinQuantity + parseMaxQuantity) / 2.0
-      } else {
-        parseQuantity = rationalToFloat(parseObj['amount'])
-      }
-    }
-    if ('unit' in parseObj) {
-      parseUnit = mapToSupportedUnitsStrict(parseObj['unit'])
-    }
-    if ((parseQuantity !== undefined) && (parseQuantity !== "") && (!isNaN(parseQuantity))) {
-      //console.log(tag + ', setting measureQuantity to parseQuantity: ' + parseQuantity);
-      tryQuantity = parseQuantity
-    }
-    if ((parseUnit !== undefined) && (parseUnit !== "")) {
-      //console.log(tag + ', setting measureUnit to parseUnit: ' + parseUnit);
-      tryUnit = parseUnit
-    }
-
-    // Delete the ingredient if it's already in the model because we're going to
-    // add it again below.
-    //console.log('   Testing for ingredient in nutritionModel');
-    const {nutritionModel} = yield select(state => state.nutritionModelReducer)
-    const nmTags = nutritionModel.getTags()
-    for (let nmI = 0; nmI < nmTags.length; nmI++) {
-      //console.log("  " + nmTags[nmI]);
-    }
-    // if (nutritionModel.getIngredientModel(searchTerm) !== null) {
-      //console.log('   Deleting ingredient ' + searchTerm + ' from NutritionModel');
-      // yield put.resolve({type: NM_REM_INGREDIENT, tag: searchTerm})
-    // }
+    // First try to add the ingredient with the quantity and unit specified in the
+    // recipe by the user:
+    //
+    // TODO: probably need to also check if parsed quantity is '  '
+    let quantity = yield call(getParseQuantity, parseObj)
+    let unit = ('unit' in parseObj) ?
+      mapToSupportedUnitsStrict(parseObj['unit']) : undefined
+    //
+    const quantityOk = ((!isNaN(quantity)) && (quantity !== ''))
+    const unitOk = ((unit !== undefined) && (unit !== ""))
+    //
     let addIngredientErrorStr = ''
-    try {
-      //console.log('changesFromRecipe: addIngredient call #1 ', searchTerm);
-      yield put.resolve({type: NM_ADD_INGREDIENT,
-                         tag: searchTerm,
-                         ingredientModel,
-                         quantity: tryQuantity,
-                         unit: tryUnit,
-                         append: false})
-    }
-    catch(err) {
-      //console.log('changesFromRecipe: addIngredient call #1 threw!');
-      addIngredientErrorStr = err
-      ReactGA.event({
-        category: 'Nutrition Mixer',
-        action: 'Error adding ingredient',
-        nonInteraction: false,
-        label: searchTerm
-      });
-    }
-    finally {
-      // We failed to add the ingredient with the specified quantity/unit, so try
-      // using the FDA values (not try/catch--if this fails we have a serious internal
-      // error--i.e. this should always work.)
-      if (addIngredientErrorStr !== '') {
-        const originalAddIngredientErrorStr = addIngredientErrorStr
-        addIngredientErrorStr = ''
-        tryQuantity = measureQuantity
-        tryUnit = measureUnit
-        try {
-          //console.log('changesFromRecipe: addIngredient call #2 ', searchTerm);
-          yield put.resolve({type: NM_ADD_INGREDIENT,
-                             tag: searchTerm,
-                             ingredientModel,
-                             quantity: tryQuantity,
-                             unit: tryUnit,
-                             append: false})
-        } catch(err2) {
-          //console.log('changesFromRecipe: addIngredient call #2 threw!');
-          addIngredientErrorStr = err2 + '\n' + originalAddIngredientErrorStr
-          //console.log('Second attempt to add ingrdient to model failed: ' + addIngredientErrorStr);
-        }
+    if (quantityOk && unitOk) {
+      try {
+        yield put.resolve({type: NM_ADD_INGREDIENT,
+                           tag: searchTerm,
+                           ingredientModel,
+                           quantity: quantity,
+                           unit: unit,
+                           append: false})
+      } catch(err) {
+        addIngredientErrorStr = err
+        ReactGA.event({
+          category: 'Nutrition Mixer',
+          action: 'Error adding ingredient with parsed quantity and units',
+          nonInteraction: false,
+          label: searchTerm
+        });
       }
     }
-    // console.log('Adding ingredient control model ---------------------------');
-    // console.log('   addIngredientErrorStr: ', addIngredientErrorStr);
-    // console.log('   searchTerm: ', searchTerm);
+
+    // Second, if we failed to add the ingredient with the specified quantity/unit, try
+    // using the FDA default values (this should always  work)
+    //
+    if (addIngredientErrorStr !== '') {
+      const originalAddIngredientErrorStr = addIngredientErrorStr
+      addIngredientErrorStr = ''
+      quantity = ingredientModel.getMeasureQuantity()
+      unit = ingredientModel.getMeasureUnit()
+      try {
+        yield put.resolve({type: NM_ADD_INGREDIENT,
+                           tag: searchTerm,
+                           ingredientModel,
+                           quantity: quantity,
+                           unit: unit,
+                           append: false})
+      } catch(err) {
+        addIngredientErrorStr = err + '\n' + originalAddIngredientErrorStr
+        ReactGA.event({
+          category: 'Nutrition Mixer',
+          action: 'Error adding ingredient with the USDA quantity and units',
+          nonInteraction: false,
+          label: searchTerm
+        });
+      }
+    }
+
+    // Finally if we were successful, add a new ingredient control model
+    //
     if (addIngredientErrorStr === '') {
       let ingredientControlModel = new IngredientControlModel(
-        tryQuantity,
-        getPossibleUnits(tryUnit),
-        tryUnit,
+        quantity, getPossibleUnits(unit), unit,
         matchResultsModel.getSearchResultDescriptions(searchTerm),
         description)
-      // console.log('   calling IM_ADD_CONTROL_MODEL', ingredientControlModel);
       yield put ({type: IM_ADD_CONTROL_MODEL, tag: searchTerm, ingredientControlModel})
     } else {
       console.log('changesFromRecipe: unable to addIngredient');
     }
   }
+
   ReactGA.event({
     category: 'Nutrition Mixer',
     action: 'User recipe parsed',
     nonInteraction: false,
   });
+
   const {servingsControlModel} = yield select(state => state.servingsControlsReducer)
   yield put ({type: NM_SET_SERVINGS, servingsControlModel})
   yield put ({type: UNUSED_TAGS, tags: missingData})

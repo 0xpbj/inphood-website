@@ -69,7 +69,7 @@ export default class Nutrition extends React.Component {
     const {parsedData, missingData} = this.props.nutrition
     const {matchResultsModel} = this.props.tagModel
     const {nutritionModel} = this.props.nutritionModelRed
-    const {ingredientControlModels} = this.props.ingredientModel
+    const {ingredientControlModels} = this.props.ingredientControlModelRed
     // 1. Generate a list of tags not found in our DB and build the array of
     //    sliders:
     let sliders = []
@@ -137,10 +137,10 @@ export default class Nutrition extends React.Component {
               <PieChart nutritionModel={nutritionModel} tag={tag}/>
             </Col>
             <Col xs={1} sm={1} md={1}>
-              <TooltipButton 
-                tooltip='Click to delete ingredient' 
+              <TooltipButton
+                tooltip='Click to delete ingredient'
                 tooltipPosition='right'
-                tooltipDelay={500} 
+                tooltipDelay={500}
                 icon='delete'
                 style={{color: '#BD362F'}}
                 onClick={this.handleChipDelete.bind(this, tag)}

@@ -130,6 +130,7 @@ function* changesFromRecipe() {
     const quantityOk = ((!isNaN(quantity)) && (quantity !== ''))
     const unitOk = ((unit !== undefined) && (unit !== ""))
     //
+    // console.log('**********************\n\n\n\PBJ: ', quantity, quantityOk, unit, unitOk);
     let addIngredientErrorStr = ''
     if (quantityOk && unitOk) {
       console.log('                 -----------------------------------------');
@@ -151,6 +152,9 @@ function* changesFromRecipe() {
           label: searchTerm
         });
       }
+    }
+    else {
+      addIngredientErrorStr = 'quantity or unit not found'
     }
 
     // Second, if we failed to add the ingredient with the specified quantity/unit, try

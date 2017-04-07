@@ -22,6 +22,15 @@ import {IconButton} from 'react-toolbox/lib/button'
 import Tooltip from 'react-toolbox/lib/tooltip'
 const TooltipButton = Tooltip(IconButton)
 
+function tagInParsedData(tag, parsedData) {
+  for (let parseObj of parsedData) {
+    if (parseObj.name === tag) {
+      return true
+    }
+  }
+  return false
+}
+
 function getRecipeLine(aParseObj) {
   const amount = aParseObj.amount
   const unit = aParseObj.unit
@@ -88,11 +97,16 @@ export default class Nutrition extends React.Component {
     }
     this.props.setParsedData(parsedData)
 
-    // Remove the tag from the matchResultsModel:
-    let {matchResultsModel} = this.props.tagModel
-    matchResultsModel.removeSearch(tag)
-    this.props.updateMatchResultsModel(matchResultsModel)
+    // Remove the tag from the matchResultsModel if another ingredient isn't
+    // using it:
+    if (!tagInParsedData(tag, parsedData)) {
+      let {matchResultsModel} = this.props.tagModel
+      matchResultsModel.removeSearch(tag)
+      this.props.updateMatchResultsModel(matchResultsModel)
+    }
+
     this.props.serializeToFirebase()
+
     ReactGA.event({
       category: 'Nutrition Mixer',
       action: 'User deleted ingredient',

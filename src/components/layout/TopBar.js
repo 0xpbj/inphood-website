@@ -72,7 +72,7 @@ export default class TopBar extends React.Component {
               </Col>
               <Modal onHide={close} show={this.state.show} bsSize="small" aria-labelledby="contained-modal-title-sm">
                 <Modal.Header>
-                  <Modal.Title id="contained-modal-title-sm">Say Hello</Modal.Title>
+                  <Modal.Title id="contained-modal-title-sm">Suggestions</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                   <EmailForm data={(data) => this.getData(data)}/>

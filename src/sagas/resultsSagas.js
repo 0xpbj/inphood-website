@@ -20,7 +20,7 @@ const firebaseLogin = () => {
 
 const getRecipeText = (aNutritionModel) => {
   let recipeText = ''
-  const nmTags = aNutritionModel.getTags()
+  const nmTags = aNutritionModel.getIds()
   for (let index in nmTags) {
     const tag = nmTags[index]
     const scaledIngredient = aNutritionModel.getScaledIngredient(tag)

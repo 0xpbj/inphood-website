@@ -16,7 +16,7 @@ const initialState = {
 
 export default function nmModelFun(state = initialState, action) {
   switch (action.type) {
-    case CLEAR_DATA: 
+    case CLEAR_DATA:
     case MODEL_RESET:
     {
       return {
@@ -26,7 +26,7 @@ export default function nmModelFun(state = initialState, action) {
     case NM_ADD_INGREDIENT:
     {
       let {nutritionModel} = state
-      nutritionModel.addIngredient(action.tag, action.ingredientModel, action.quantity, action.unit)
+      nutritionModel.addIngredient(action.id, action.ingredientModel, action.quantity, action.unit)
       return {
         ...state,
         nutritionModel: nutritionModel
@@ -35,7 +35,7 @@ export default function nmModelFun(state = initialState, action) {
     case NM_REM_INGREDIENT:
     {
       let {nutritionModel} = state
-      nutritionModel.removeIngredient(action.tag)
+      nutritionModel.removeIngredient(action.id)
       return {
         ...state,
         nutritionModel: nutritionModel
@@ -58,7 +58,7 @@ export default function nmModelFun(state = initialState, action) {
     case NM_SCALE_INGREDIENT:
     {
       let {nutritionModel} = state
-      nutritionModel.scaleIngredientToUnit(action.tag, action.value, action.units)
+      nutritionModel.scaleIngredientToUnit(action.id, action.value, action.units)
       return {
         ...state,
         nutritionModel: nutritionModel

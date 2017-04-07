@@ -40,10 +40,11 @@ class Recipe extends React.Component {
       recipePopoverFlag: false,
       newRecipe: false
     }
-    this._id = 0
   }
   getId() {
-    return this._id++
+    const {uniqueId} = this.props.tagModel
+    this.props.incrementId()
+    return uniqueId
   }
   componentDidMount() {
     this.props.router.setRouteLeaveHook(this.props.route, this.routerWillLeave.bind(this))
@@ -98,12 +99,30 @@ class Recipe extends React.Component {
       }
     }
   }
+  //
+  isFetchComplete() {
+    const {matchResultsModel} = this.props.tagModel
+    const {parsedData} = this.props.nutrition
+
+    const searchTerms = matchResultsModel.getSearchTerms()
+
+    for (let parseObj of parsedData) {
+      const tag = parseObj.name
+      if (searchTerms.indexOf(tag) === -1) {
+        return false
+      }
+    }
+
+    return true
+  }
+  //
   getAddIngredientButton() {
     const {matchResultsModel} = this.props.tagModel
     const {parsedData} = this.props.nutrition
     const numIngredients = Object.keys(parsedData).length
     const loadedIngredients = matchResultsModel.getNumberOfSearches()
-    if (loadedIngredients < numIngredients) {
+
+    if (!this.isFetchComplete()) {
       return (
         <div className="text-center">
           <ProgressBar type='circular' mode='indeterminate' multicolor={true} />

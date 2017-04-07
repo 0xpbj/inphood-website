@@ -11,7 +11,8 @@ import {
   SUPER_SEARCH_RESULTS,
   REM_MATCH_RESULT_MODEL,
   UPDATE_MATCH_RESULTS_MODEL,
-  UPDATE_MATCH_RESULTS_SEARCH_INDEX
+  UPDATE_MATCH_RESULTS_SEARCH_INDEX,
+  INCREMENT_ID
 } from '../constants/ActionTypes'
 
 import {MatchResultsModel, SearchResult} from '../components/models/MatchResultsModel'
@@ -26,7 +27,8 @@ const initialState = {
   modelSetup: false,
   userSearch: false,
   unusedTags: [],
-  tag: ''
+  tag: '',
+  uniqueId: 0
 }
 
 export default function modelFun(state = initialState, action) {
@@ -43,7 +45,8 @@ export default function modelFun(state = initialState, action) {
         modelSetup: false,
         userSearch: false,
         unusedTags: [],
-        tag: ''
+        tag: '',
+        uniqueId: 0
       }
     }
     case SUPER_SEARCH_RESULTS:
@@ -190,6 +193,17 @@ export default function modelFun(state = initialState, action) {
         ...state,
         matchResultsModel,
         results: action.results
+      }
+    }
+    case INCREMENT_ID:
+    {
+      let {uniqueId} = state
+      console.log('tagModelReducer INCREMENT_ID, uniqueId:', uniqueId);
+      console.log('-----------------------------------------------------------');
+      uniqueId++
+      return {
+        ...state,
+        uniqueId
       }
     }
     default:

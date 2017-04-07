@@ -108,8 +108,8 @@ export class NutritionModel {
       this._roundingStyle = nutritionData._roundingStyle
     }
 
-    for (let tag in nutritionData._scaledIngredients) {
-      const scaledIngredient = nutritionData._scaledIngredients[tag]
+    for (let id in nutritionData._scaledIngredients) {
+      const scaledIngredient = nutritionData._scaledIngredients[id]
 
       const quantity = scaledIngredient._recipeQuantity
       const unit = scaledIngredient._recipeUnit
@@ -121,10 +121,10 @@ export class NutritionModel {
       ingredient.initializeFromSerialization(serializedIngredientData)
 
       try {
-        this.addIngredient(tag, ingredient, quantity, unit)
+        this.addIngredient(id, ingredient, quantity, unit)
       } catch (error) {
         // TODO ...
-        console.log('ERROR initializing ingredient, ' + tag + ', in nutrition model deserialization.');
+        console.log('ERROR initializing ingredient, ' + id + ', in nutrition model deserialization.');
       }
     }
   }
@@ -136,58 +136,58 @@ export class NutritionModel {
   }
 
   // throws if setRecipeAmount blows up
-  // throws if a duplicate tag is specified
-  addIngredient(tag, anIngredient, quantity, unit) {
-    if (tag in this._scaledIngredients) {
-      throw new Error("Tag " + tag + " already exists in nutrition model.")
+  // throws if a duplicate id is specified
+  addIngredient(id, anIngredient, quantity, unit) {
+    if (id in this._scaledIngredients) {
+      throw new Error("Id " + id + " already exists in nutrition model.")
     }
 
-    this._scaledIngredients[tag] = new ScaledIngredient(anIngredient)
+    this._scaledIngredients[id] = new ScaledIngredient(anIngredient)
 
     let errorStr = ''
     try {
-      this._scaledIngredients[tag].setRecipeAmount(quantity, unit)
+      this._scaledIngredients[id].setRecipeAmount(quantity, unit)
     } catch(err) {
       errorStr = err
     } finally {
       // If we weren't successful, remove the added ingredient
       if (errorStr !== '') {
-        delete this._scaledIngredients[tag]
+        delete this._scaledIngredients[id]
         throw new Error(errorStr)
       }
     }
   }
 
-  getTags() {
+  getIds() {
     return (Object.keys(this._scaledIngredients))
   }
 
-  getScaledIngredient(tag) {
-    if (tag in this._scaledIngredients) {
-      return this._scaledIngredients[tag]
+  getScaledIngredient(id) {
+    if (id in this._scaledIngredients) {
+      return this._scaledIngredients[id]
     }
 
     return null
   }
 
-  getIngredientModel(tag) {
-    if (tag in this._scaledIngredients) {
-      return this._scaledIngredients[tag].getIngredientModel()
+  getIngredientModel(id) {
+    if (id in this._scaledIngredients) {
+      return this._scaledIngredients[id].getIngredientModel()
     }
 
     return null
   }
 
-  removeIngredient(tag) {
-    if (tag in this._scaledIngredients) {
-      delete this._scaledIngredients[tag]
+  removeIngredient(id) {
+    if (id in this._scaledIngredients) {
+      delete this._scaledIngredients[id]
     }
   }
 
   // Scale the ingredient figures to the amount in the specified unit.
   //
-  scaleIngredientToUnit(tag, amount, unit) {
-    let scaledIngredient = this.getScaledIngredient(tag)
+  scaleIngredientToUnit(id, amount, unit) {
+    let scaledIngredient = this.getScaledIngredient(id)
     if (scaledIngredient !== null) {
       scaledIngredient.setRecipeAmount(amount, unit)
     }
@@ -221,21 +221,6 @@ export class NutritionModel {
     return this._displayServingRatio
   }
 
-  getIngredientScaledToServing(aTag) {
-    const scaledIngredient = this.getScaledIngredient(aTag)
-    let tempNM = new NutritionModel()
-    tempNM.addIngredient(aTag,
-                         scaledIngredient.getIngredientModel(),
-                         scaledIngredient.getQuantity(),
-                         scaledIngredient.getUnit(),
-                         false)
-    tempNM.setSuggestedServingAmount(this.getSuggestedServingValue(),
-                                     this.getSuggestedServingUnit(),
-                                     this.getDisplayServingCount(),
-                                     this.getDisplayServingUnit())
-    return tempNM.getScaledCompositeIngredientModel()
-  }
-
   getScaledCompositeIngredientModel() {
     var compositeIngredient = new IngredientModel()
     compositeIngredient.initializeComposite(this._scaledIngredients)
@@ -252,7 +237,7 @@ export class NutritionModel {
   getLabelType() {
     return this._labelType
   }
-  
+
   setLabelType(aLabelType) {
     this._labelType = aLabelType
   }

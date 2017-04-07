@@ -22,13 +22,44 @@ import {IconButton} from 'react-toolbox/lib/button'
 import Tooltip from 'react-toolbox/lib/tooltip'
 const TooltipButton = Tooltip(IconButton)
 
+function getRecipeLine(aParseObj) {
+  const amount = aParseObj.amount
+  const unit = aParseObj.unit
+  const name = aParseObj.name
+
+  let recipeLine = ''
+  if (amount) {
+    if (Object.prototype.hasOwnProperty.call(amount, 'min') &&
+        Object.prototype.hasOwnProperty.call(amount, 'max')) {
+      const parseMinQuantity = rationalToFloat(amount.min)
+      const parseMaxQuantity = rationalToFloat(amount.max)
+      const parseQuantity = (parseMinQuantity + parseMaxQuantity) / 2.0
+      recipeLine = recipeLine + parseQuantity + ' '
+    } else {
+      recipeLine = recipeLine + amount + ' '
+    }
+  }
+  if ((unit !== undefined) && (unit !== '')) {
+    recipeLine = recipeLine + unit.toLowerCase() + ' '
+  }
+  recipeLine = recipeLine + name
+
+  return recipeLine
+}
+
 export default class Nutrition extends React.Component {
   constructor(props) {
     super(props)
+    this._key = 0
   }
+  //
+  getKey() {
+    return this._key++
+  }
+  //
   getRecipeText(aNutritionModel) {
     let recipeText = ''
-    const nmTags = aNutritionModel.getTags()
+    const nmTags = aNutritionModel.getIds()
     for (let index in nmTags) {
       const tag = nmTags[index]
       const scaledIngredient = aNutritionModel.getScaledIngredient(tag)
@@ -40,19 +71,23 @@ export default class Nutrition extends React.Component {
     }
     return recipeText
   }
-  handleChipDelete(tag) {
+  //
+  handleChipDelete(id) {
+    const {nutritionModel} = this.props.nutritionModelRed
+    const tag = nutritionModel.getIngredientModel(id).getTag()
+
+    this.props.nutritionModelRemIng(id)
+    this.props.ingredientControlModelRemTag(id)
+
     let {parsedData} = this.props.nutrition
-
-    this.props.nutritionModelRemIng(tag)
-    this.props.ingredientControlModelRemTag(tag)
-
     for (let i = 0; i < parsedData.length; i++) {
-      if (tag === parsedData[i].name) {
+      if (id === parsedData[i].id) {
         parsedData.splice(i, 1)
         break
       }
     }
     this.props.setParsedData(parsedData)
+
     // Remove the tag from the matchResultsModel:
     let {matchResultsModel} = this.props.tagModel
     matchResultsModel.removeSearch(tag)
@@ -65,74 +100,42 @@ export default class Nutrition extends React.Component {
       label: tag
     });
   }
+  //
   render() {
-    const {parsedData, missingData} = this.props.nutrition
+    const {parsedData} = this.props.nutrition
     const {matchResultsModel} = this.props.tagModel
     const {nutritionModel} = this.props.nutritionModelRed
     const {ingredientControlModels} = this.props.ingredientControlModelRed
+
     // 1. Generate a list of tags not found in our DB and build the array of
     //    sliders:
     let sliders = []
-    let notFound = []
-    //  a. Order the tags so they appear in search + recipe order to the user:
-    let tagsInOrder = []
-    for (let i = 0; i < parsedData.length; i++) {
-      const tag = parsedData[i].name
-      tagsInOrder.push(tag)
-    }
-    const searchTerms = matchResultsModel.getSearchTerms()
-    for (let idx = 0; idx < searchTerms.length; idx++) {
-      const tag = searchTerms[idx]
-      if (tagsInOrder.indexOf(tag) === -1) {
-        tagsInOrder.splice(0, 0, tag)
-      }
-    }
-    //
-    //  b. Create a list of recipeLines for display
-    let recipeLines = {}
-    for (let i = 0; i < parsedData.length; i++) {
-      const amount = parsedData[i].amount
-      const unit = parsedData[i].unit
-      const name = parsedData[i].name
-      let recipeLine = ""
-      if (amount) {
-        if (Object.prototype.hasOwnProperty.call(amount, 'min') && Object.prototype.hasOwnProperty.call(amount, 'max')) {
-          const parseMinQuantity = rationalToFloat(amount.min)
-          const parseMaxQuantity = rationalToFloat(amount.max)
-          const parseQuantity = (parseMinQuantity + parseMaxQuantity) / 2.0
-          recipeLine = recipeLine + parseQuantity + " "
-        }
-        else {
-          recipeLine = recipeLine + amount + " "
-        }
-      }
-      if ((unit !== undefined) && (unit !== "")) {
-        recipeLine = recipeLine + unit.toLowerCase() + " "
-      }
-      recipeLine = recipeLine + name
-      recipeLines[name] = recipeLine
-    }
-    for (let i = 0; i < tagsInOrder.length; i++) {
-      const tag = tagsInOrder[i]
-      if (! matchResultsModel.hasSearchTerm(tag)) {
+
+    for (let idx = 0; idx < parsedData.length; idx++) {
+      const parseObj = parsedData[idx]
+      const id = parseObj.id
+      const recipeLine = getRecipeLine(parseObj)
+
+      const ingredientModel = nutritionModel.getIngredientModel(id)
+      if (!ingredientModel) {
         continue
       }
-      if (! (tag in ingredientControlModels)) {
-        notFound.push(tag)
+      const tag = ingredientModel.getTag()
+
+      // Skip ingredients we don't have results or a control model for.
+      if (!(matchResultsModel.hasSearchTerm(tag) &&
+          (id in ingredientControlModels))) {
         continue
       }
-      let recipeLine = tag
-      if (tag in recipeLines) {
-        recipeLine = recipeLines[tag]
-      }
+
       sliders.push(
-        <div key={tag}>
+        <div key={this.getKey()}>
           <Row style={{marginTop: 10, paddingRight: 15}}>
             <Col xs={10} sm={10} md={10} style={{paddingRight:0, paddingTop:10}}>
               <text style={{fontWeight: 'bold'}}>{recipeLine}</text>
             </Col>
             <Col xs={1} sm={1} md={1}>
-              <PieChart nutritionModel={nutritionModel} tag={tag}/>
+              <PieChart nutritionModel={nutritionModel} id={id}/>
             </Col>
             <Col xs={1} sm={1} md={1}>
               <TooltipButton
@@ -141,14 +144,15 @@ export default class Nutrition extends React.Component {
                 tooltipDelay={500}
                 icon='delete'
                 style={{color: '#BD362F'}}
-                onClick={this.handleChipDelete.bind(this, tag)}
+                onClick={this.handleChipDelete.bind(this, id)}
               />
             </Col>
           </Row>
-          <IngredientController recipeLine={recipeLine} tag={tag}/>
+          <IngredientController recipeLine={recipeLine} id={id}/>
         </div>
       )
     }
+
     return (
       <div
         style={{marginTop:10,

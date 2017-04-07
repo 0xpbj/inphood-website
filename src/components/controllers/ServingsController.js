@@ -13,7 +13,7 @@ export default class ServingsController extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      servingSize: 2,
+      servingSize: 1,
       servingUnit: 'plate',
       servingAmount: '1',
       servingRatio: 'Recipe, About',
@@ -239,7 +239,7 @@ export default class ServingsController extends React.Component {
                     tooltip='Type your servings ratio here'
                     tooltipPosition='bottom'
                     type='text'
-                    label='Serving Per'
+                    label='Servings Per'
                     maxLength={50}
                     error={servingRatioError}
                     value={this.state.servingRatio}

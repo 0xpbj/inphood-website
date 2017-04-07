@@ -27,8 +27,8 @@ export default class IngredientController extends React.Component {
     }
   }
   componentWillMount() {
-    const {tag} = this.props
-    let ingredientControlModel = this.props.ingredientControlModelRed.ingredientControlModels[tag]
+    const {id} = this.props
+    let ingredientControlModel = this.props.ingredientControlModelRed.ingredientControlModels[id]
     const editBoxValue = ingredientControlModel.getEditBoxValue()
     this.setState({editBoxValue})
   }
@@ -49,38 +49,42 @@ export default class IngredientController extends React.Component {
     else {
       const value = rationalToFloat(this.state.editBoxValue)
       if (value) {
-        const {tag} = this.props
+        const {id} = this.props
         ReactGA.event({
           category: 'Ingredient Model',
           action: 'Ingredient unit changed',
           nonInteraction: false,
-          label: tag
+          label: id
         });
-        let ingredientControlModel = this.props.ingredientControlModelRed.ingredientControlModels[tag]
+        let ingredientControlModel = this.props.ingredientControlModelRed.ingredientControlModels[id]
         ingredientControlModel.setEditBoxValue(value)
         const units = ingredientControlModel.getDropdownUnitValue()
-        this.updateReduxStore(tag, value, units)
+        this.updateReduxStore(id, value, units)
       }
       else
         return
     }
   }
   handleUnitDropdownChange(units) {
-    const {tag} = this.props
-    const ingredientControlModel = this.props.ingredientControlModelRed.ingredientControlModels[tag]
+    const {id} = this.props
+    const ingredientControlModel = this.props.ingredientControlModelRed.ingredientControlModels[id]
     const value = ingredientControlModel.getEditBoxValue()
     ReactGA.event({
       category: 'Nutrition Mixer',
       action: 'User changed units for ingredient',
       nonInteraction: false,
-      label: tag
+      label: id
     });
-    this.updateReduxStore(tag, value, units)
+    this.updateReduxStore(id, value, units)
   }
   handleMatchDropdownChange(value) {
-    const {tag} = this.props
+    const {id} = this.props
     const {matchResultsModel} = this.props.tagModel
+    const {nutritionModel} = this.props.nutritionModelRed
+
+    const tag = nutritionModel.getIngredientModel(id).getTag()
     const searchResult = matchResultsModel.getSearchResultByDesc(tag, value)
+
     if ((searchResult.getStandardRefDataObj() === undefined) &&
         (searchResult.getBrandedDataObj() === undefined)) {
       // Firebase lazy fetch
@@ -91,27 +95,27 @@ export default class IngredientController extends React.Component {
         label: tag
       });
       let index = matchResultsModel.getIndexForDescription(tag, value)
-      this.props.lazyFetchFirebase(value, tag, searchResult.getNdbNo(), index)
+      this.props.lazyFetchFirebase(value, id, tag, searchResult.getNdbNo(), index)
     }
     else {
-      this.props.completeMatchDropdownChange(tag, value)
+      this.props.completeMatchDropdownChange(id, value)
     }
   }
-  updateReduxStore(tag, value, units) {
-    let ingredientControlModel = this.props.ingredientControlModelRed.ingredientControlModels[tag]
+  updateReduxStore(id, value, units) {
+    let ingredientControlModel = this.props.ingredientControlModelRed.ingredientControlModels[id]
     ingredientControlModel.setEditBoxValue(value)
     ingredientControlModel.setDropdownUnitValue(units)
-    this.props.updateIngredientControlModel(tag, ingredientControlModel)
-    this.props.nutritionModelScaleIng(tag, value, units)
+    this.props.updateIngredientControlModel(id, ingredientControlModel)
+    this.props.nutritionModelScaleIng(id, value, units)
     this.props.serializeToFirebase()
   }
   render() {
-    const {tag, nutritionModel} = this.props
-    const ingredientControlModel = this.props.ingredientControlModelRed.ingredientControlModels[tag]
-    const formControlId = tag + "FormControlId"
+    const {id, nutritionModel} = this.props
+    const ingredientControlModel = this.props.ingredientControlModelRed.ingredientControlModels[id]
+    const formControlId = id + "FormControlId"
     const {editBoxValue} = this.state
     return (
-      <div ref={tag}>
+      <div ref={id}>
         <Row style={{paddingRight:15}}>
           <Col xs={2} md={2} style={{paddingRight: 5}}>
             <form

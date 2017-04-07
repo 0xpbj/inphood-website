@@ -20,17 +20,16 @@ export default function imModelFun(state = initialState, action) {
     case IM_ADD_CONTROL_MODEL:
     {
       let {ingredientControlModels} = state
-      ingredientControlModels[action.tag] = action.ingredientControlModel
+      ingredientControlModels[action.id] = action.ingredientControlModel
       return {
         ...state,
         ingredientControlModels: ingredientControlModels
       }
     }
-    // TODO: AC replace all the individual setters below with this
     case IM_UPDATE_MODEL:
     {
       let {ingredientControlModels} = state
-      ingredientControlModels[action.tag] = action.ingredientControlModel
+      ingredientControlModels[action.id] = action.ingredientControlModel
       return {
         ...state,
         ingredientControlModels: ingredientControlModels
@@ -39,7 +38,7 @@ export default function imModelFun(state = initialState, action) {
     case IM_REM_INGREDIENT_TAG:
     {
       let {ingredientControlModels} = state
-      delete ingredientControlModels[action.tag]
+      delete ingredientControlModels[action.id]
       return {
         ...state,
         ingredientControlModels: ingredientControlModels

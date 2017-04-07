@@ -20,7 +20,6 @@ import {parseRecipe, parseCaption} from '../../helpers/parseRecipe'
 import Chip from 'react-toolbox/lib/chip'
 import UploadModal from '../layout/UploadModal'
 import TagController from '../controllers/TagController'
-import ProgressBar from 'react-toolbox/lib/progress_bar'
 import * as constants from '../../constants/Constants'
 import CopyToClipboard from 'react-copy-to-clipboard'
 import browser from 'detect-browser'
@@ -211,8 +210,7 @@ export default class Generator extends React.Component {
     const {label, user} = this.props.location.query
     if (label && label !== '') {
       return <Results label={label} user={user} router={this.props.router}/>
-    }
-    else {
+    } else {
       const {showHelp, showBrowserWarning} = this.state
       let browserWarning = null
       if (showBrowserWarning) {

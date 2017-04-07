@@ -17,18 +17,18 @@ import {mapToSupportedUnits,
 
 function* completeMatchDropdownChange() {
   while (true) {
-    const {tag, value} = yield take(COMPLETE_DROPDOWN_CHANGE)
+    const {id, value} = yield take(COMPLETE_DROPDOWN_CHANGE)
     const {nutritionModel} = yield select(state => state.nutritionModelReducer)
     const {matchResultsModel} = yield select(state => state.tagModelReducer)
     const {ingredientControlModels} = yield select(state => state.ingredientControlModelReducer)
     // 1. Save the current ingredient key for deletion at the end of this
     //    process:
-    let ingredientControlModel = ingredientControlModels[tag]
+    let ingredientControlModel = ingredientControlModels[id]
     let ingredientKeyToDelete = ingredientControlModel.getDropdownMatchValue()
-    let ingredientModelToDelete = nutritionModel.getIngredientModel(tag)
+    let ingredientModelToDelete = nutritionModel.getIngredientModel(id)
     //
     // 2. Create a new IngredientModel:
-    const searchTerm = tag
+    const searchTerm = ingredientModelToDelete.getTag()
     const description = value
     const searchResult =
       matchResultsModel.getSearchResultByDesc(searchTerm, description)
@@ -65,27 +65,28 @@ function* completeMatchDropdownChange() {
     }
     // ?. Update the ingredient model from all the changes we've made above
     //    (replaces all the individual previous calls)
-    yield put.resolve({type: IM_UPDATE_MODEL, tag, ingredientControlModel})
+    yield put.resolve({type: IM_UPDATE_MODEL, id, ingredientControlModel})
     // 5. Remove the current IngredientModel from the NutritionModel:
-    yield put.resolve({type: NM_REM_INGREDIENT, tag})
+    yield put.resolve({type: NM_REM_INGREDIENT, id})
     // 6. Add the new IngredientModel to the NutritionModel:
     ReactGA.event({
       category: 'Nutrition Mixer',
       action: 'User added dropdown ingredient',
       nonInteraction: false,
-      label: tag
+      label: searchTerm
     });
-    yield put.resolve({type: NM_ADD_INGREDIENT, tag, ingredientModel, quantity: currentValue, unit: newUnit})
+    yield put.resolve({type: NM_ADD_INGREDIENT, id, ingredientModel, quantity: currentValue, unit: newUnit})
     yield put ({type: SERIALIZE_TO_FIREBASE})
   }
 }
 
 function* lazyFetchFirebaseData() {
+  // FYI: ingredient is actually tag in here
   while (true) {
-    const {foodName, ingredient, key, index} = yield take(LAZY_FETCH_FIREBASE)
+    const {foodName, id, ingredient, key, index} = yield take(LAZY_FETCH_FIREBASE)
     const data = (yield call(db.getPath, 'global/nutritionInfo/' + key)).val()
     yield put ({type: LAZY_LOAD_FIREBASE, foodName, ingredient, index, data})
-    yield put ({type: COMPLETE_DROPDOWN_CHANGE, tag: ingredient, value: foodName})
+    yield put ({type: COMPLETE_DROPDOWN_CHANGE, id, value: foodName})
   }
 }
 

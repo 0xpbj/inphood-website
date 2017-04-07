@@ -8,7 +8,6 @@ import {
   LAZY_FETCH_FIREBASE,
   MODEL_RESET,
   UPDATE_MATCH_RESULTS_MODEL,
-  NM_ADD_INGREDIENT,
   NM_REM_INGREDIENT,
   NM_SET_SERVINGS,
   NM_SCALE_INGREDIENT,
@@ -28,7 +27,8 @@ import {
   SET_PARSED_DATA,
   SET_TITLE,
   SERIALIZE_TO_FIREBASE,
-  SAVE_LABEL_AWS
+  SAVE_LABEL_AWS,
+  INCREMENT_ID
 } from '../constants/ActionTypes'
 
 export function saveToCloud() {
@@ -85,10 +85,11 @@ export function storeParsedData(parsedData, missingData, rawData, title, dietary
   }
 }
 
-export function lazyFetchFirebase(foodName, ingredient, key, index) {
+export function lazyFetchFirebase(foodName, id, ingredient, key, index) {
   return {
     type: LAZY_FETCH_FIREBASE,
     foodName,
+    id,
     ingredient,
     key,
     index
@@ -108,20 +109,10 @@ export function updateMatchResultsModel(matchResultsModel) {
   }
 }
 
-export function nutritionModelAddIng(tag, ingredientModel, quantity, unit) {
-  return {
-    type: NM_ADD_INGREDIENT,
-    tag,
-    ingredientModel,
-    quantity,
-    unit
-  }
-}
-
-export function nutritionModelRemIng(tag) {
+export function nutritionModelRemIng(id) {
   return {
     type: NM_REM_INGREDIENT,
-    tag
+    id
   }
 }
 
@@ -132,27 +123,28 @@ export function nutritionModelSetServings(servingsControlModel) {
   }
 }
 
-export function nutritionModelScaleIng(tag, value, units) {
+export function nutritionModelScaleIng(id, value, units) {
   return {
     type: NM_SCALE_INGREDIENT,
-    tag,
+    id,
     value,
     units
   }
 }
 
-export function updateIngredientControlModel(tag, ingredientControlModel) {
+export function updateIngredientControlModel(id, ingredientControlModel) {
   return {
     type: IM_UPDATE_MODEL,
-    tag,
+    id,
     ingredientControlModel
   }
 }
 
-export function ingredientControlModelRemTag(tag) {
+// TODO: rename to ingredientControlModelRemIng
+export function ingredientControlModelRemTag(id) {
   return {
     type: IM_REM_INGREDIENT_TAG,
-    tag
+    id
   }
 }
 
@@ -183,10 +175,10 @@ export function getEmailData(data) {
   }
 }
 
-export function completeMatchDropdownChange(tag, value) {
+export function completeMatchDropdownChange(id, value) {
   return {
     type: COMPLETE_DROPDOWN_CHANGE,
-    tag,
+    id,
     value
   }
 }
@@ -235,5 +227,11 @@ export function serializeToFirebase() {
 export function saveLabelToAws() {
   return {
     type: SAVE_LABEL_AWS
+  }
+}
+
+export function incrementId() {
+  return {
+    type: INCREMENT_ID
   }
 }

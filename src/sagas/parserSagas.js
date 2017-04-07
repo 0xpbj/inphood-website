@@ -1,7 +1,5 @@
 import {
   NM_ADD_INGREDIENT,
-  NM_REM_INGREDIENT,
-  IM_UPDATE_MODEL,
   IM_ADD_CONTROL_MODEL,
   UNUSED_TAGS,
   NM_SET_SERVINGS,
@@ -14,8 +12,6 @@ import {
   INITIALIZE_RECIPE_FLOW,
   INITIALIZE_SEARCH_FLOW,
   SEARCH_TIMED_OUT,
-  INITIALIZE_FIREBASE_DATA,
-  INGREDIENT_FIREBASE_DATA,
   SERIALIZE_TO_FIREBASE
 } from '../constants/ActionTypes'
 
@@ -95,6 +91,7 @@ function* changesFromRecipe() {
 
   for (let parseObj of newData) {
     const searchTerm = parseObj['name']
+    const uniqueId = parseObj['id']
 
     if (matchResultsModel.getSearchResultsLength(searchTerm) === 0) {
       if (missingData.indexOf(searchTerm) === -1) {
@@ -135,9 +132,12 @@ function* changesFromRecipe() {
     //
     let addIngredientErrorStr = ''
     if (quantityOk && unitOk) {
+      console.log('                 -----------------------------------------');
+      console.log('  trying to add ingredient id (user):', uniqueId)
+      console.log('  parseData', newData)
       try {
         yield put.resolve({type: NM_ADD_INGREDIENT,
-                           tag: searchTerm,
+                           id: uniqueId,
                            ingredientModel,
                            quantity: quantity,
                            unit: unit,
@@ -157,13 +157,17 @@ function* changesFromRecipe() {
     // using the FDA default values (this should always  work)
     //
     if (addIngredientErrorStr !== '') {
+      console.log('                 -----------------------------------------');
+      console.log('  trying to add ingredient id (usda):', uniqueId)
+      console.log('  parseData', newData)
+
       const originalAddIngredientErrorStr = addIngredientErrorStr
       addIngredientErrorStr = ''
       quantity = ingredientModel.getMeasureQuantity()
       unit = ingredientModel.getMeasureUnit()
       try {
         yield put.resolve({type: NM_ADD_INGREDIENT,
-                           tag: searchTerm,
+                           id: uniqueId,
                            ingredientModel,
                            quantity: quantity,
                            unit: unit,
@@ -186,7 +190,7 @@ function* changesFromRecipe() {
         quantity, getPossibleUnits(unit), unit,
         matchResultsModel.getSearchResultDescriptions(searchTerm),
         description)
-      yield put ({type: IM_ADD_CONTROL_MODEL, tag: searchTerm, ingredientControlModel})
+      yield put ({type: IM_ADD_CONTROL_MODEL, id: uniqueId, ingredientControlModel})
     } else {
       console.log('changesFromRecipe: unable to addIngredient');
     }

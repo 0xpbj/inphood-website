@@ -45,9 +45,9 @@ export default class NutritionChart extends React.Component {
     ]
   }
   render () {
-    const {nutritionModel, tag} = this.props
+    const {nutritionModel, id} = this.props
     const {showNutritionModal} = this.state
-    const scaledIngredient = nutritionModel.getScaledIngredient(tag)
+    const scaledIngredient = nutritionModel.getScaledIngredient(id)
 
     if (scaledIngredient) {
       const ingredientModel = scaledIngredient.getIngredientModel()
@@ -69,10 +69,10 @@ export default class NutritionChart extends React.Component {
       const calories = getScaledValue(ingredientModel.getCalories(), scale)
       return (
         <div>
-          <TooltipButton 
-            tooltip='Click to get ingredient nutrients' 
+          <TooltipButton
+            tooltip='Click to get ingredient nutrients'
             tooltipPosition='left'
-            tooltipDelay={500} 
+            tooltipDelay={500}
             icon='info'
             style={{color: '#0088CC'}}
             onClick={()=>this.setState({ showNutritionModal: true })}

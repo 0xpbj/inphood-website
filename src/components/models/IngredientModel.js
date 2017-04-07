@@ -591,6 +591,10 @@ export class IngredientModel {
     return this._key
   }
 
+  getTag() {
+    return this._tag
+  }
+
   getServingAmount() {
     return (this._servingAmount * this._scaleGettersTo).toFixed(this.decimalPlaces)
   }

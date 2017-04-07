@@ -125,39 +125,19 @@ function combineData(data) {
   let ret = []
   let names = []
   for (let i of data) {
-    let index = names.indexOf(i.name)
-    if (index === -1) {
-      if (i.name.toLowerCase() === 'salt and pepper' || i.name.toLowerCase() === 'salt & pepper') {
-        names.push('salt')
-        names.push('black pepper')
-
-        const {unit, amount, id} = i
-        ret.push({amount, unit, name: 'salt', id: id + '_salt'})
-        ret.push({amount, unit, name: 'black pepper',id: id + '_pepper'})
-      }
-      else {
-        names.push(i.name)
-        ret.push(i)
-      }
+    if (i.name.toLowerCase() === 'salt and pepper' || i.name.toLowerCase() === 'salt & pepper') {
+      const {unit, amount, id} = i
+      ret.push({amount, unit, name: 'salt', id: id + '_salt'})
+      ret.push({amount, unit, name: 'black pepper',id: id + '_pepper'})
     }
-    // else {
-    //   let info1 = {
-    //     name: i.name,
-    //     amount: i.amount,
-    //     unit: i.unit,
-    //   }
-    //   let info2 = {
-    //     name: data[index].name,
-    //     amount: data[index].amount,
-    //     unit: data[index].unit
-    //   }
-    //   console.log('Need to combine: ', info1, info2);
-    // }
+    else {
+      ret.push(i)
+    }
   }
   return ret
 }
 
-export function parseRecipe(data, id) {
+export function parseRecipe(data) {
   const regex = /[^\r\n]+/g
   const sRegex = /([^\*:><^#~] ?)([\.\-a-zA-Z0-9½⅓⅔¼¾⅕⅖⅗⅘⅙⅚⅛⅜⅝⅞/, ()]+)/g
   let phrases = data.match(regex)
@@ -174,7 +154,6 @@ export function parseRecipe(data, id) {
         }
         let clean = str !== '' ? removeSpecialChars(str) : i
         let parsed = ingp.parse(clean.toLowerCase())
-        parsed.id = id
         parsedData.push(parsed)
       }
     }

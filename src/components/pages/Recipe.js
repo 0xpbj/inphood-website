@@ -41,11 +41,6 @@ class Recipe extends React.Component {
       newRecipe: false
     }
   }
-  getId() {
-    const {uniqueId} = this.props.tagModel
-    this.props.incrementId()
-    return uniqueId
-  }
   componentDidMount() {
     this.props.router.setRouteLeaveHook(this.props.route, this.routerWillLeave.bind(this))
   }
@@ -89,9 +84,17 @@ class Recipe extends React.Component {
         nonInteraction: true
       });
       const {ingredients} = this.state
-      let data = parseRecipe(ingredients, this.getId())
+      let data = parseRecipe(ingredients)
+      let {uniqueId} = this.props.tagModel
       if (data.found) {
-        this.props.storeParsedData(data.found, data.missing, ingredients)
+        let vals = []
+        for (let val of data.found) {
+          this.props.incrementId()
+          val.id = uniqueId
+          uniqueId++
+          vals.push(val)
+        }
+        this.props.storeParsedData(vals, data.missing, ingredients)
         if (!this.state.showNutritionMixers) {
           this.setState({showNutritionMixers: true})
         }

@@ -285,14 +285,8 @@ export function isNumeric(n) {
     if ((typeof n) !== "string" && n !== 0) {
       return 'success'
     }
-    else if (n.toString().indexOf('-') !== -1) {
-      return 'error'
-    }
   }
   else {
-    if (n.indexOf('-') !== -1) {
-      return 'error'
-    }
     // Try and convert to a rational number from a variety of string
     // representations (i.e. "1/2" "024" etc.), failing that, return error.
     try {

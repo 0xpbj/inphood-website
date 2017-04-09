@@ -50,6 +50,19 @@ function almostEqual(value1, value2, epsilon) {
   return (Math.abs(value1 - value2) < epsilon)
 }
 
+// Fix for issue with result 'Candies, milk chocolate, with almonds' which is measured in
+// units of bar (i.e. a bar of chocolate), which our conversion library identifies as bars of
+// pressure:
+//
+function convIgnoredUnitTypesToOther(aUnitType) {
+  const lcUnitType = aUnitType.toLowerCase()
+  if ((lcUnitType === 'mass') ||
+      (lcUnitType === 'volume'))
+    return aUnitType
+
+  return 'other'
+}
+
 // Need to handle the following cases:
 //   - 1 1/2
 //   - 1/2
@@ -121,12 +134,14 @@ function isVolumeUnit(aUnit) {
 export function getValueInUnits(currentValue, currentUnit, newUnit, ingredientModel) {
   let currentUnitType = 'other'
   if (Convert().possibilities().includes(currentUnit)) {
-    currentUnitType = Convert().describe(currentUnit)['measure']
+    currentUnitType =
+      convIgnoredUnitTypesToOther(Convert().describe(currentUnit)['measure'])
   }
 
   let newUnitType = 'other'
   if (Convert().possibilities().includes(newUnit)) {
-    newUnitType = Convert().describe(newUnit)['measure']
+    newUnitType =
+      convIgnoredUnitTypesToOther(Convert().describe(newUnit)['measure'])
   }
 
   // TODO: consider a second call here to do custom mappings (i.e. 1 pat butter
@@ -247,7 +262,8 @@ export function getIngredientValueInUnits(newUnit, ingredientModel, ingredientCo
 export function getPossibleUnits(measureUnit) {
   const excludedUnits = [
     'mm3', 'cm3', 'm3', 'km3', 'in3', 'ft3', 'yd3', 'mcg', 'mg', 'cl', 'dl',
-    'krm', 'tsk', 'msk', 'kkp', 'glas', 'kanna']
+    'krm', 'tsk', 'msk', 'kkp', 'glas', 'kanna',
+    'Pa', 'kPa', 'MPa', 'hPa', 'torr', 'psi', 'ksi']
 
   let sanitizedMeasureUnit = mapToSupportedUnits(measureUnit)
   // We can also convert anything to grams so include those measures since

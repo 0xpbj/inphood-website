@@ -58,7 +58,6 @@ function* loadFirebaseData() {
       fingerprint
     })
     firebase.database().ref('/global/nutritionLabel/fingerprint/' + fingerprint + '/' + key).update({
-      key,
       date,
       userIP
     })

@@ -23,6 +23,7 @@ import TagController from '../controllers/TagController'
 import * as constants from '../../constants/Constants'
 import CopyToClipboard from 'react-copy-to-clipboard'
 import browser from 'detect-browser'
+import {Link} from 'react-router'
 
 import MarginLayout from '../../helpers/MarginLayout'
 import {getTextLabel} from '../../helpers/TextLabel'
@@ -37,9 +38,9 @@ import {getPossibleUnits, rationalToFloat} from '../../helpers/ConversionUtils'
 import {IngredientModel} from '../models/IngredientModel'
 import {IngredientControlModel} from '../models/IngredientControlModel'
 
-import {Link} from 'react-router'
-
 const Config = require('Config')
+// import ClientJS from 'clientjs'
+import 'clientjs'
 
 // import {Button} from 'react-toolbox/lib/button'
 // import Tooltip from 'react-toolbox/lib/tooltip'
@@ -61,17 +62,18 @@ export default class Generator extends React.Component {
   componentWillMount() {
     this.props.modelReset()
     this.props.clearData()
-    const {label, user, developer} = this.props.location.query
+    const Client = new ClientJS()
+    const fingerprint = Client.getFingerprint()
+    const {label, developer} = this.props.location.query
     if (label && label !== '') {
-      const hUser = user ? user : Config.DEBUG ? 'test' : 'anonymous'
-      this.props.getLabelId(hUser, label)
+      this.props.getLabelId(label)
     }
     if (!developer) {
       ReactGA.initialize('UA-88850545-2', {
         debug: Config.DEBUG,
         titleCase: false,
         gaOptions: {
-          userId: 'websiteUser'
+          userId: fingerprint
         }
       })
     }
@@ -207,9 +209,9 @@ export default class Generator extends React.Component {
     )
   }
   render() {
-    const {label, user} = this.props.location.query
+    const {label} = this.props.location.query
     if (label && label !== '') {
-      return <Results label={label} user={user} router={this.props.router}/>
+      return <Results label={label} router={this.props.router}/>
     } else {
       const {showHelp, showBrowserWarning} = this.state
       let browserWarning = null
@@ -233,7 +235,6 @@ export default class Generator extends React.Component {
           <h4>Please add ingredients to your label!</h4>
         </Alert>
       ) : null
-      const user = Config.DEBUG ? 'test' : 'anonymous'
       const {shareUrl, embedUrl} = this.props.results
       const {embed, showShareUrl, copiedUrl, textLabel} = this.state
       const url = (embed) ? embedUrl : shareUrl

@@ -160,8 +160,8 @@ export default function modelFun(state = initialState, action) {
     }
     case SET_FDA_RESULTS:
     {
-      console.log('tagModelReducer SET_FDA_RESULTS:');
-      console.log('-----------------------------------------------------------');
+      // console.log('tagModelReducer SET_FDA_RESULTS:');
+      // console.log('-----------------------------------------------------------');
       const fdaBrandedResults = action.results
       const {matchResultsModel} = state
       if (fdaBrandedResults.hasOwnProperty('count') &&
@@ -198,8 +198,8 @@ export default function modelFun(state = initialState, action) {
     case INCREMENT_ID:
     {
       let {uniqueId} = state
-      console.log('tagModelReducer INCREMENT_ID, uniqueId:', uniqueId);
-      console.log('-----------------------------------------------------------');
+      // console.log('tagModelReducer INCREMENT_ID, uniqueId:', uniqueId);
+      // console.log('-----------------------------------------------------------');
       uniqueId++
       return {
         ...state,

@@ -49,10 +49,9 @@ export default class Results extends React.Component {
     }
   }
   componentWillMount() {
-    const {label, user} = this.props
+    const {label} = this.props
     if (label && label !== '') {
-      const hUser = user ? user : Config.DEBUG ? 'test' : 'anonymous'
-      this.props.getLabelId(hUser, label)
+      this.props.getLabelId(label)
     }
   }
   // From https://toddmotto.com/methods-to-determine-if-an-object-has-a-given-property/
@@ -109,7 +108,7 @@ export default class Results extends React.Component {
         action: 'User in results page',
         nonInteraction: false
       });
-      const {label, user} = this.props
+      const {label} = this.props
       const socialContainerStyle = {
         marginTop: "20px",
         border: "2px solid black",
@@ -127,7 +126,6 @@ export default class Results extends React.Component {
       // rendering, otherwise display a loading message.
       //   - TODO: make the loading message suck less
       let nutritionLabel = <text> Loading ...</text>
-      const rUser =  user ? user : Config.DEBUG ? 'test' : 'anonymous'
       let recipeText = ''
       if (this.hasProp(this.props.results.data, 'composite') && this.hasProp(this.props.results.data, 'full')) {
         let ingredientData = JSON.parse(this.props.results.data.composite)

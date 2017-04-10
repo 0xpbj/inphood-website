@@ -11,6 +11,8 @@ import { call, fork, put, select, take, takeLatest } from 'redux-saga/effects'
 import * as db from './firebaseCommands'
 const Config = require('Config')
 const firebase = require('firebase')
+const ip = require('ip')
+import 'clientjs'
 
 const firebaseLogin = () => {
   return firebase.auth().signInAnonymously()
@@ -37,26 +39,36 @@ function* loadFirebaseData() {
   const {parsedData, rawData, key} = yield select(state => state.nutritionReducer)
   if (key !== '') {
     const {nutritionModel} = yield select(state => state.nutritionModelReducer)
-    const user = Config.DEBUG ? 'test' : 'anonymous'
     const full = nutritionModel.serialize()
     const compositeModel = nutritionModel.getScaledCompositeIngredientModel()
     const composite = compositeModel.serialize()
     const userGeneratedData = getRecipeText(nutritionModel)
-    firebase.database().ref('/global/nutritionLabel/' + user + '/' + key).update({
+    const userIP = ip.address()
+    const Client = new ClientJS()
+    const fingerprint = Client.getFingerprint()
+    var date = new Date(Date.now()).toDateString()
+    firebase.database().ref('/global/nutritionLabel/' + key).update({
       full,
-      user,
       rawData,
       parsedData,
       composite,
-      userGeneratedData
+      userGeneratedData,
+      userIP,
+      date,
+      fingerprint
+    })
+    firebase.database().ref('/global/nutritionLabel/fingerprint/' + fingerprint + '/' + key).update({
+      key,
+      date,
+      userIP
     })
   }
 }
 
 function* getLabelData() {
   while (true) {
-    const {userId, labelId} = yield take (GET_LABEL_ID)
-    const path = '/global/nutritionLabel/' + userId + '/' + labelId
+    const {labelId} = yield take (GET_LABEL_ID)
+    const path = '/global/nutritionLabel/' + labelId
     const data = (yield call(db.getPath, path)).val()
     yield put({type: LABEL_DATA, data})
   }
@@ -65,8 +77,7 @@ function* getLabelData() {
 function* initFirebaseKeys() {
   yield take (STORE_PARSED_DATA)
   yield call (firebaseLogin)
-  const user = Config.DEBUG ? 'test' : 'anonymous'
-  const key = firebase.database().ref('/global/nutritionLabel/' + user).push().key
+  const key = firebase.database().ref('/global/nutritionLabel/').push().key
   yield put ({type: RESULT_KEY, key})
 }
 

@@ -13,10 +13,10 @@ import domtoimage from 'dom-to-image'
 const getDomJpeg = () => {
   return domtoimage.toJpeg(document.getElementById('nutrition-label'), { quality: 1.0 })
   .then(data => ({data}))
-  .catch(error => console.error('*****&&&&&&DOM ERROR oops, something went wrong!', error));
+  .catch(error => console.error(error));
 }
 
-const uploadToAWS = (data, user, key, format, extension) => {
+const uploadToAWS = (data, key, format, extension) => {
   const s3 = new S3({
     accessKeyId:     Config.AWS_ACCESS_ID,
     secretAccessKey: Config.AWS_SECRET_KEY,
@@ -24,7 +24,7 @@ const uploadToAWS = (data, user, key, format, extension) => {
   })
   const params = {
     Bucket: 'inphoodlabelimagescdn',
-    Key: user + '/' + format + '/' + key + extension,
+    Key: key + '/' + format +  extension,
     Body: data,
     ContentEncoding: 'base64',
     ContentType: 'image/jpeg',
@@ -55,12 +55,11 @@ function* loadLabelToAWS() {
   const {nutritionModel} = yield select(state => state.nutritionModelReducer)
   const labelType = nutritionModel.getLabelType()
   const labelFormat = labelTypeConstant[labelType]
-  const user = Config.DEBUG ? 'test' : 'anonymous'
   const extension = '.jpeg'
   const {data} = yield call (getDomJpeg)
   const buffer = new Buffer(data.replace(/^data:image\/\w+;base64,/, ""),'base64')
-  yield call (uploadToAWS, buffer, user, key, labelFormat, extension)
-  const shareUrl = 'http://www.image.inphood.com/' + user + '/' + labelFormat + '/' + key + extension
+  yield call (uploadToAWS, buffer, key, labelFormat, extension)
+  const shareUrl = 'http://www.image.inphood.com/' + key + '/' + labelFormat + extension
   const embedUrl = '<a href=\'https://www.inphood.com\' target=\'_blank\'><img width="340" src=\''+shareUrl+'\'/></a>'
   yield put ({type: SET_SHARE_URL, shareUrl, embedUrl})
 }

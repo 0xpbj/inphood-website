@@ -20,8 +20,10 @@ export default class About extends React.Component {
     }
   }
   getTeamMember(memberName, title, flag, instagramUrl, linkedInUrl) {
-    const pbj = require('../../images/PBJ.jpg')
-    const ayc = require('../../images/AC.jpg')
+    // const pbj = require('../../images/PBJ.jpg')
+    const pbj = require('../../images/PBJ_1.png')
+    // const ayc = require('../../images/AC.jpg')
+    const ayc = require('../../images/AC_1.png')
     const avatar = flag ? pbj : ayc
     return (
       <div className="team-member">

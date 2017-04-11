@@ -134,8 +134,8 @@ function* changesFromRecipe() {
     let addIngredientErrorStr = ''
     if (quantityOk && unitOk) {
       console.log('                 -----------------------------------------');
-      console.log('  trying to add ingredient id (user):', uniqueId)
-      console.log('  parseData', newData)
+      console.log('  trying to add ingredient id (user):', uniqueId);
+      console.log('  parseData', newData);
       try {
         yield put.resolve({type: NM_ADD_INGREDIENT,
                            id: uniqueId,
@@ -162,8 +162,8 @@ function* changesFromRecipe() {
     //
     if (addIngredientErrorStr !== '') {
       console.log('                 -----------------------------------------');
-      console.log('  trying to add ingredient id (usda):', uniqueId)
-      console.log('  parseData', newData)
+      console.log('  trying to add ingredient id (usda):', uniqueId);
+      console.log('  parseData', newData);
 
       const originalAddIngredientErrorStr = addIngredientErrorStr
       addIngredientErrorStr = ''

@@ -22,7 +22,6 @@ import UploadModal from '../layout/UploadModal'
 import TagController from '../controllers/TagController'
 import * as constants from '../../constants/Constants'
 import CopyToClipboard from 'react-copy-to-clipboard'
-import browser from 'detect-browser'
 import {Link} from 'react-router'
 
 import MarginLayout from '../../helpers/MarginLayout'
@@ -39,9 +38,8 @@ import {IngredientModel} from '../models/IngredientModel'
 import {IngredientControlModel} from '../models/IngredientControlModel'
 
 const Config = require('Config')
-// import ClientJS from 'clientjs'
 import 'clientjs'
-
+const Client = new ClientJS()
 // import {Button} from 'react-toolbox/lib/button'
 // import Tooltip from 'react-toolbox/lib/tooltip'
 // const TooltipButton = Tooltip(Button)
@@ -62,7 +60,6 @@ export default class Generator extends React.Component {
   componentWillMount() {
     this.props.modelReset()
     this.props.clearData()
-    const Client = new ClientJS()
     const fingerprint = Client.getFingerprint()
     const {label, developer} = this.props.location.query
     if (label && label !== '') {
@@ -216,7 +213,7 @@ export default class Generator extends React.Component {
       const {showHelp, showBrowserWarning} = this.state
       let browserWarning = null
       if (showBrowserWarning) {
-        if (browser.name === "chrome")
+        if (Client.isChrome())
           browserWarning = null
         else
           browserWarning = (

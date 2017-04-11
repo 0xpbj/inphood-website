@@ -54,7 +54,7 @@ export default class About extends React.Component {
           <Col xs={ml.xsCol} sm={ml.smCol} md={ml.mdCol} lg={ml.lgCol}>
             <Row>
               <h1 className="page-header">About Us</h1>
-              <h4>inPhood LLC founded in 2016, labels food images across the internet.</h4>
+              <h4>inPhood Inc. founded in 2016, labels food images across the internet.</h4>
               <h4>Our products help users generate shareable nutrition labels, based on USDA information and proprietary sources.</h4>
               <h2 className="page-header">Our Team</h2>
             </Row>

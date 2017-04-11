@@ -40,10 +40,7 @@ import {IngredientControlModel} from '../models/IngredientControlModel'
 const Config = require('Config')
 import 'clientjs'
 const Client = new ClientJS()
-// import {Button} from 'react-toolbox/lib/button'
-// import Tooltip from 'react-toolbox/lib/tooltip'
-// const TooltipButton = Tooltip(Button)
-
+import Fingerprint2 from 'fingerprintjs2'
 
 export default class Generator extends React.Component {
   constructor() {
@@ -66,12 +63,14 @@ export default class Generator extends React.Component {
       this.props.getLabelId(label)
     }
     if (!developer) {
-      ReactGA.initialize('UA-88850545-2', {
-        debug: Config.DEBUG,
-        titleCase: false,
-        gaOptions: {
-          userId: fingerprint
-        }
+      Fingerprint2().get(function(result) {
+        ReactGA.initialize('UA-88850545-2', {
+          debug: Config.DEBUG,
+          titleCase: false,
+          gaOptions: {
+            userId: result
+          }
+        })
       })
     }
   }

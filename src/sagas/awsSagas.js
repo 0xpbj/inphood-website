@@ -9,11 +9,19 @@ const Config = require('Config')
 const S3 = require('aws-sdk').S3
 import ReactGA from 'react-ga'
 import domtoimage from 'dom-to-image'
+import html2canvas from 'html2canvas'
+import 'clientjs'
+const Client = new ClientJS()
 
 const getDomJpeg = () => {
   return domtoimage.toJpeg(document.getElementById('nutrition-label'), { quality: 1.0 })
   .then(data => ({data}))
   .catch(error => console.error(error));
+}
+
+const getCanvas = () => {
+  return html2canvas(document.getElementById('nutrition-label'))
+  .then(canvas => ({canvas}))
 }
 
 const uploadToAWS = (data, key, format, extension) => {
@@ -56,8 +64,16 @@ function* loadLabelToAWS() {
   const labelType = nutritionModel.getLabelType()
   const labelFormat = labelTypeConstant[labelType]
   const extension = '.jpeg'
-  const {data} = yield call (getDomJpeg)
-  const buffer = new Buffer(data.replace(/^data:image\/\w+;base64,/, ""),'base64')
+  let buffer
+  if (Client.isChrome()) {
+    const {data} = yield call (getDomJpeg)
+    buffer = new Buffer(data.replace(/^data:image\/\w+;base64,/, ""),'base64')
+  }
+  else {
+    const {canvas} = yield call (getCanvas)
+    const data = canvas.toDataURL('image/jpeg')
+    buffer = new Buffer(data.replace(/^data:image\/\w+;base64,/, ""),'base64')
+  }
   yield call (uploadToAWS, buffer, key, labelFormat, extension)
   const url = 'http://www.image.inphood.com/' + key + '/' + labelFormat + extension
   const shareUrl = <a href={url} target='_blank'>{url}</a>

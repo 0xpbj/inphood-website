@@ -59,8 +59,9 @@ function* loadLabelToAWS() {
   const {data} = yield call (getDomJpeg)
   const buffer = new Buffer(data.replace(/^data:image\/\w+;base64,/, ""),'base64')
   yield call (uploadToAWS, buffer, key, labelFormat, extension)
-  const shareUrl = 'http://www.image.inphood.com/' + key + '/' + labelFormat + extension
-  const embedUrl = '<a href=\'https://www.inphood.com\' target=\'_blank\'><img width="340" src=\''+shareUrl+'\'/></a>'
+  const url = 'http://www.image.inphood.com/' + key + '/' + labelFormat + extension
+  const shareUrl = <a href={url} target='_blank'>{url}</a>
+  const embedUrl = '<a href=\'https://www.inphood.com\' target=\'_blank\'><img width="340" src=\''+url+'\'/></a>'
   yield put ({type: SET_SHARE_URL, shareUrl, embedUrl})
 }
 

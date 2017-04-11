@@ -234,18 +234,22 @@ export default class Generator extends React.Component {
       const {shareUrl, embedUrl} = this.props.results
       const {embed, showShareUrl, copiedUrl, textLabel} = this.state
       const url = (embed) ? embedUrl : shareUrl
+      const clipboard = (embed) ? (
+        <Col xs={1}>
+          <CopyToClipboard text={url}
+            onCopy={() => this.setState({copiedUrl: true})}>
+            <Button><Glyphicon glyph="glyphicon glyphicon-copy"></Glyphicon></Button>
+          </CopyToClipboard>
+          {copiedUrl ? <div><span style={{color: 'red'}}>&nbsp;Copied.</span></div> : null}
+        </Col>
+      ) : null
+      const boxSize = (embed) ? 11 : 12
       const shareUrlBox = (url && showShareUrl) ? (
         <Row style={{marginBottom:0, marginTop:constants.VERT_SPACE}}>
-          <Col xs={11}>
-            <pre>{url}</pre>
+          <Col xs={boxSize}>
+            <Well style={{background: 'white'}}>{url}</Well>
           </Col>
-          <Col xs={1}>
-            <CopyToClipboard text={url}
-              onCopy={() => this.setState({copiedUrl: true})}>
-              <Button><Glyphicon glyph="glyphicon glyphicon-copy"></Glyphicon></Button>
-            </CopyToClipboard>
-            {copiedUrl ? <div><span style={{color: 'red'}}>&nbsp;Copied.</span></div> : null}
-          </Col>
+          {clipboard}
         </Row>
       ) : null
       const label = (textLabel) ? this.generateTextLabel(compositeModel)

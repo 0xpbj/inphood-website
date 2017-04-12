@@ -50,10 +50,9 @@ export function clearData() {
   }
 }
 
-export function getLabelId(userId, labelId) {
+export function getLabelId(labelId) {
   return {
     type: GET_LABEL_ID,
-    userId,
     labelId
   }
 }

@@ -9,14 +9,22 @@ const Config = require('Config')
 const S3 = require('aws-sdk').S3
 import ReactGA from 'react-ga'
 import domtoimage from 'dom-to-image'
+import html2canvas from 'html2canvas'
+import 'clientjs'
+const Client = new ClientJS()
 
 const getDomJpeg = () => {
   return domtoimage.toJpeg(document.getElementById('nutrition-label'), { quality: 1.0 })
   .then(data => ({data}))
-  .catch(error => console.error('*****&&&&&&DOM ERROR oops, something went wrong!', error));
+  .catch(error => console.error(error));
 }
 
-const uploadToAWS = (data, user, key, format, extension) => {
+const getCanvas = () => {
+  return html2canvas(document.getElementById('nutrition-label'))
+  .then(canvas => ({canvas}))
+}
+
+const uploadToAWS = (data, key, format, extension) => {
   const s3 = new S3({
     accessKeyId:     Config.AWS_ACCESS_ID,
     secretAccessKey: Config.AWS_SECRET_KEY,
@@ -24,7 +32,7 @@ const uploadToAWS = (data, user, key, format, extension) => {
   })
   const params = {
     Bucket: 'inphoodlabelimagescdn',
-    Key: user + '/' + format + '/' + key + extension,
+    Key: key + '/' + format +  extension,
     Body: data,
     ContentEncoding: 'base64',
     ContentType: 'image/jpeg',
@@ -55,13 +63,21 @@ function* loadLabelToAWS() {
   const {nutritionModel} = yield select(state => state.nutritionModelReducer)
   const labelType = nutritionModel.getLabelType()
   const labelFormat = labelTypeConstant[labelType]
-  const user = Config.DEBUG ? 'test' : 'anonymous'
   const extension = '.jpeg'
-  const {data} = yield call (getDomJpeg)
-  const buffer = new Buffer(data.replace(/^data:image\/\w+;base64,/, ""),'base64')
-  yield call (uploadToAWS, buffer, user, key, labelFormat, extension)
-  const shareUrl = 'http://www.image.inphood.com/' + user + '/' + labelFormat + '/' + key + extension
-  const embedUrl = '<a href=\'https://www.inphood.com\' target=\'_blank\'><img width="340" src=\''+shareUrl+'\'/></a>'
+  let buffer
+  if (Client.isChrome() && !Client.isMobile()) {
+    const {data} = yield call (getDomJpeg)
+    buffer = new Buffer(data.replace(/^data:image\/\w+;base64,/, ""),'base64')
+  }
+  else {
+    const {canvas} = yield call (getCanvas)
+    const data = canvas.toDataURL('image/jpeg')
+    buffer = new Buffer(data.replace(/^data:image\/\w+;base64,/, ""),'base64')
+  }
+  yield call (uploadToAWS, buffer, key, labelFormat, extension)
+  const url = 'http://www.image.inphood.com/' + key + '/' + labelFormat + extension
+  const shareUrl = <a href={url} target='_blank'>{url}</a>
+  const embedUrl = '<a href=\'https://www.inphood.com\' target=\'_blank\'><img width="340" src=\''+url+'\'/></a>'
   yield put ({type: SET_SHARE_URL, shareUrl, embedUrl})
 }
 

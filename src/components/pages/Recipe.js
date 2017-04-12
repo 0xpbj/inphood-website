@@ -23,6 +23,9 @@ import MarginLayout from '../../helpers/MarginLayout'
 import ServingsController from '../../containers/ServingsControllerContainer'
 import { withRouter } from 'react-router'
 
+import 'clientjs'
+const Client = new ClientJS()
+
 const TooltipInput = Tooltip(Input)
 const TooltipButton = Tooltip(Button)
 
@@ -124,7 +127,10 @@ class Recipe extends React.Component {
     const {parsedData} = this.props.nutrition
     const numIngredients = Object.keys(parsedData).length
     const loadedIngredients = matchResultsModel.getNumberOfSearches()
-
+    let IButton = Button
+    if (!Client.isMobile()) {
+      IButton = Tooltip(Button)
+    }
     if (!this.isFetchComplete()) {
       return (
         <div className="text-center">
@@ -133,33 +139,63 @@ class Recipe extends React.Component {
       )
     } else {
       const {matchResultsModel} = this.props.tagModel
-      const newRecipe = (matchResultsModel.getNumberOfSearches() > 0) ? (
-        <TooltipButton
-          tooltip='Click to start a new recipe'
-          tooltipPosition='left'
-          tooltipDelay={500}
-          icon='cake'
-          label='New Recipe'
-          onClick={() => this.setState({newRecipe: true})}
-          raised
-          style={{marginRight: 30, color: 'white', backgroundColor: '#BD362F', textTransform: 'none'}}
-        />
-      ) : (
-        <TooltipButton
-          tooltip='Click to try a sample recipe'
-          tooltipPosition='left'
-          tooltipDelay={500}
-          icon='cached'
-          label='Sample Recipe'
-          onClick={() => this.sampleRecipeFlow()}
-          style={{marginRight: 30, color: 'black', backgroundColor: 'white', textTransform: 'none'}}
-        />
-      )
-
-      return(
-        <div style={{marginTop: 10}} className="text-right">
-          {newRecipe}
-          <TooltipButton
+      let newRecipeButton = null
+      let addIngredientButton = null
+      if (matchResultsModel.getNumberOfSearches() > 0) {
+        if (!Client.isMobile()) {
+          newRecipeButton = (
+            <TooltipButton
+              tooltip='Click to start a new recipe'
+              tooltipPosition='left'
+              tooltipDelay={500}
+              icon='cake'
+              label='New Recipe'
+              onClick={() => this.setState({newRecipe: true})}
+              raised
+              style={{marginRight: 30, color: 'white', backgroundColor: '#BD362F', textTransform: 'none'}}
+            />
+          )
+        }
+        else {
+          newRecipeButton = (
+            <Button
+              icon='cake'
+              label='New Recipe'
+              onClick={() => this.setState({newRecipe: true})}
+              raised
+              style={{marginRight: 30, color: 'white', backgroundColor: '#BD362F', textTransform: 'none'}}
+            />
+          )
+        }
+      }
+      else {
+        if (!Client.isMobile()) {
+          newRecipeButton = (
+            <TooltipButton
+              tooltip='Click to try a sample recipe'
+              tooltipPosition='left'
+              tooltipDelay={500}
+              icon='cached'
+              label='Sample Recipe'
+              onClick={() => this.sampleRecipeFlow()}
+              style={{marginRight: 30, color: 'black', backgroundColor: 'white', textTransform: 'none'}}
+            />
+          )
+        }
+        else {
+          newRecipeButton = (
+            <Button
+              icon='cached'
+              label='Sample Recipe'
+              onClick={() => this.sampleRecipeFlow()}
+              style={{marginRight: 30, color: 'black', backgroundColor: 'white', textTransform: 'none'}}
+            />
+          )
+        }
+      }
+      if (!Client.isMobile()) {
+          addIngredientButton = (
+            <TooltipButton
             tooltip='Click to add ingredient(s) to label'
             tooltipPosition='left'
             tooltipDelay={500}
@@ -169,9 +205,62 @@ class Recipe extends React.Component {
             style={{color: 'white', backgroundColor: '#51A351', textTransform: 'none'}}
             onClick={() => this.recipeFlow()}
           />
+        )
+      }
+      else {
+        addIngredientButton = (
+          <Button
+            icon='add'
+            label='Add Ingredient(s)'
+            raised
+            style={{color: 'white', backgroundColor: '#51A351', textTransform: 'none'}}
+            onClick={() => this.recipeFlow()}
+          />
+        )
+      }
+      return(
+        <div style={{marginTop: 10}} className="text-right">
+          {newRecipeButton}
+          {addIngredientButton}
         </div>
       )
     }
+  }
+  getRecipeInput(recipeAlert) {
+    let recipeInput = null
+    if (!Client.isMobile()) {
+      recipeInput = (
+        <TooltipInput
+          tooltip='Type your ingredients here'
+          tooltipPosition='top'
+          type='text'
+          multiline label='Recipe Ingredients'
+          maxLength={5000}
+          value={this.state.ingredients}
+          onChange={this.handleChange.bind(this)}
+          error={recipeAlert}
+          hint='1 c spinach'
+          required
+          icon='restaurant'
+        />
+      )
+    }
+    else {
+      recipeInput = (
+        <Input
+          type='text'
+          multiline label='Recipe Ingredients'
+          maxLength={5000}
+          value={this.state.ingredients}
+          onChange={this.handleChange.bind(this)}
+          error={recipeAlert}
+          hint='1 c spinach'
+          required
+          icon='restaurant'
+        />
+      )
+    }
+    return recipeInput
   }
   render() {
     const newRecipeAlert = (this.state.newRecipe) ? (
@@ -195,19 +284,7 @@ class Recipe extends React.Component {
                   borderWidth:1,
                   padding:10,
                   borderStyle:'solid'}}>
-          <TooltipInput
-            tooltip='Type your ingredients here'
-            tooltipPosition='top'
-            type='text'
-            multiline label='Recipe Ingredients'
-            maxLength={5000}
-            value={this.state.ingredients}
-            onChange={this.handleChange.bind(this)}
-            error={recipeAlert}
-            hint='1 c spinach'
-            required
-            icon='restaurant'
-          />
+          {this.getRecipeInput(recipeAlert)}
         </FormGroup>
         {this.getAddIngredientButton()}
         <div style={{marginTop: 15, marginBottom: 15}}>

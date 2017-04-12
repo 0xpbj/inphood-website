@@ -22,7 +22,8 @@ import UploadModal from '../layout/UploadModal'
 import TagController from '../controllers/TagController'
 import * as constants from '../../constants/Constants'
 import CopyToClipboard from 'react-copy-to-clipboard'
-import browser from 'detect-browser'
+import {Link} from 'react-router'
+import ProgressBar from 'react-toolbox/lib/progress_bar'
 
 import MarginLayout from '../../helpers/MarginLayout'
 import {getTextLabel} from '../../helpers/TextLabel'
@@ -37,14 +38,10 @@ import {getPossibleUnits, rationalToFloat} from '../../helpers/ConversionUtils'
 import {IngredientModel} from '../models/IngredientModel'
 import {IngredientControlModel} from '../models/IngredientControlModel'
 
-import {Link} from 'react-router'
-
 const Config = require('Config')
-
-// import {Button} from 'react-toolbox/lib/button'
-// import Tooltip from 'react-toolbox/lib/tooltip'
-// const TooltipButton = Tooltip(Button)
-
+import 'clientjs'
+const Client = new ClientJS()
+import Fingerprint2 from 'fingerprintjs2'
 
 export default class Generator extends React.Component {
   constructor() {
@@ -61,18 +58,19 @@ export default class Generator extends React.Component {
   componentWillMount() {
     this.props.modelReset()
     this.props.clearData()
-    const {label, user, developer} = this.props.location.query
+    const {label, developer} = this.props.location.query
     if (label && label !== '') {
-      const hUser = user ? user : Config.DEBUG ? 'test' : 'anonymous'
-      this.props.getLabelId(hUser, label)
+      this.props.getLabelId(label)
     }
     if (!developer) {
-      ReactGA.initialize('UA-88850545-2', {
-        debug: Config.DEBUG,
-        titleCase: false,
-        gaOptions: {
-          userId: 'websiteUser'
-        }
+      Fingerprint2().get(function(result) {
+        ReactGA.initialize('UA-88850545-2', {
+          debug: Config.DEBUG,
+          titleCase: false,
+          gaOptions: {
+            userId: result
+          }
+        })
       })
     }
   }
@@ -207,14 +205,14 @@ export default class Generator extends React.Component {
     )
   }
   render() {
-    const {label, user} = this.props.location.query
+    const {label} = this.props.location.query
     if (label && label !== '') {
-      return <Results label={label} user={user} router={this.props.router}/>
+      return <Results label={label} router={this.props.router}/>
     } else {
       const {showHelp, showBrowserWarning} = this.state
       let browserWarning = null
       if (showBrowserWarning) {
-        if (browser.name === "chrome")
+        if (Client.isChrome())
           browserWarning = null
         else
           browserWarning = (
@@ -233,23 +231,31 @@ export default class Generator extends React.Component {
           <h4>Please add ingredients to your label!</h4>
         </Alert>
       ) : null
-      const user = Config.DEBUG ? 'test' : 'anonymous'
-      const {shareUrl, embedUrl} = this.props.results
+      const {shareUrl, embedUrl, inProgress} = this.props.results
       const {embed, showShareUrl, copiedUrl, textLabel} = this.state
       const url = (embed) ? embedUrl : shareUrl
+      const clipboard = (embed) ? (
+        <Col xs={1}>
+          <CopyToClipboard text={url}
+            onCopy={() => this.setState({copiedUrl: true})}>
+            <Button><Glyphicon glyph="glyphicon glyphicon-copy"></Glyphicon></Button>
+          </CopyToClipboard>
+          {copiedUrl ? <div><span style={{color: 'red'}}>&nbsp;Copied.</span></div> : null}
+        </Col>
+      ) : null
+      const boxSize = (embed) ? 11 : 12
       const shareUrlBox = (url && showShareUrl) ? (
         <Row style={{marginBottom:0, marginTop:constants.VERT_SPACE}}>
-          <Col xs={11}>
-            <pre>{url}</pre>
+          <Col xs={boxSize}>
+            <Well style={{background: 'white'}}>{url}</Well>
           </Col>
-          <Col xs={1}>
-            <CopyToClipboard text={url}
-              onCopy={() => this.setState({copiedUrl: true})}>
-              <Button><Glyphicon glyph="glyphicon glyphicon-copy"></Glyphicon></Button>
-            </CopyToClipboard>
-            {copiedUrl ? <div><span style={{color: 'red'}}>&nbsp;Copied.</span></div> : null}
-          </Col>
+          {clipboard}
         </Row>
+      ) : null
+      const urlProgress = (inProgress) ? (
+        <div className="text-center">
+          <ProgressBar type='circular' mode='indeterminate' multicolor={true} />
+        </div>
       ) : null
       const label = (textLabel) ? this.generateTextLabel(compositeModel)
       : (
@@ -290,7 +296,7 @@ export default class Generator extends React.Component {
                      md={ml.mdCol}
                      lg={ml.lgCol}>
                   <Row>
-                    {browserWarning}
+                    {/*{browserWarning}*/}
                     <Col xs={12} sm={6} md={7} lg={7}>
                       <div>
                         {labelError}
@@ -312,6 +318,7 @@ export default class Generator extends React.Component {
                       <Row>
                         <div style={{width:constants.LABEL_WIDTH, margin:'auto'}}>
                           <Col xs={12} style={{paddingLeft:2, paddingRight:2}}>
+                            {urlProgress}
                             {shareUrlBox}
                           </Col>
                         </div>

@@ -244,20 +244,6 @@ export function getValueInUnits(currentValue, currentUnit, newUnit, ingredientMo
   return newValue
 }
 
-
-// Given ingredientModel and ingredientControlModel instances, this returns the
-// value of the ingredientControlModel in the provided newUnit units, if possible.
-// Throws otherwise.
-//
-export function getIngredientValueInUnits(newUnit, ingredientModel, ingredientControlModel) {
-  // 1. Determine the type of measure for the current and proposed units:
-  //
-  const currentValue = ingredientControlModel.getEditBoxValue()
-  const currentUnit = ingredientControlModel.getDropdownUnitValue()
-
-  return getValueInUnits(currentValue, currentUnit, newUnit, ingredientModel)
-}
-
 // ...
 export function getPossibleUnits(measureUnit) {
   const excludedUnits = [

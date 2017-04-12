@@ -65,7 +65,7 @@ function* loadLabelToAWS() {
   const labelFormat = labelTypeConstant[labelType]
   const extension = '.jpeg'
   let buffer
-  if (Client.isChrome()) {
+  if (Client.isChrome() && !Client.isMobile()) {
     const {data} = yield call (getDomJpeg)
     buffer = new Buffer(data.replace(/^data:image\/\w+;base64,/, ""),'base64')
   }

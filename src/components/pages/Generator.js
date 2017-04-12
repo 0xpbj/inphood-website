@@ -57,7 +57,6 @@ export default class Generator extends React.Component {
   componentWillMount() {
     this.props.modelReset()
     this.props.clearData()
-    const fingerprint = Client.getFingerprint()
     const {label, developer} = this.props.location.query
     if (label && label !== '') {
       this.props.getLabelId(label)

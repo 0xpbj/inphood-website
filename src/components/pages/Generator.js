@@ -278,12 +278,10 @@ export default class Generator extends React.Component {
         width:{width},
         height:{height}
       }
-
       const fullPage = numSearches > 0
       const backgroundStyle = (fullPage) ?
-        {backgroundColor:'rgba(255,255,255,0.85)',width:{width},height:{height}} :
-        {backgroundColor:'rgba(255,255,255,0)',width:{width},height:{height}}
-
+        {backgroundColor:'rgba(255,255,255,0.85)'} :
+        {backgroundColor:'rgba(255,255,255,0)'}
       const nutrition = (fullPage) ? <Nutrition /> : null
       return (
         <Row style={sectionStyle}>
@@ -297,7 +295,6 @@ export default class Generator extends React.Component {
                      md={ml.mdCol}
                      lg={ml.lgCol}>
                   <Row>
-                    {/*{browserWarning}*/}
                     <Col xs={12} sm={6} md={7} lg={7}>
                       <Row>
                         {labelError}

@@ -31,9 +31,6 @@ function* getDataFromFireBase() {
   }
   else {
     yield put ({type: INGREDIENT_FIREBASE_DATA, foodName, ingredient, data: []})
-    let {unusedTags} = yield select(state => state.tagModelReducer)
-    unusedTags.push(ingredient)
-    yield put ({type: UNUSED_TAGS, tags: unusedTags})
   }
 }
 

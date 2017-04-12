@@ -179,22 +179,26 @@ function* loadFirebaseData() {
     const composite = compositeModel.serialize()
     const userGeneratedData = getRecipeText(nutritionModel)
     var date = new Date(Date.now()).toDateString()
+    const debug = Config.DEBUG
     firebase.database().ref('/global/nutritionLabel/' + key).update({
       full,
       rawData,
       parsedData,
       composite,
       userGeneratedData,
-      date
+      date,
+      debug
     })
-    Fingerprint2().get(function(result) {
-      firebase.database().ref('/global/nutritionLabel/' + key).update({
-        fingerprint: result
+    if (!debug) {
+      Fingerprint2().get(function(result) {
+        firebase.database().ref('/global/nutritionLabel/' + key).update({
+          fingerprint: result
+        })
+        firebase.database().ref('/global/nutritionLabel/fingerprint/' + result + '/' + key).update({
+          date
+        })
       })
-      firebase.database().ref('/global/nutritionLabel/fingerprint/' + result + '/' + key).update({
-        date
-      })
-    })
+    }
   }
 }
 

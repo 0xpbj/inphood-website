@@ -267,6 +267,7 @@ export default class Generator extends React.Component {
         150 :
         150 + 20 * (numSearches-3)
       const height = heightInVH.toString() + 'vh'
+      const width = (Client.isMobile()) ? '150vw' : '100vw'
       const home = require('../../images/homeHD.jpg')
       const sectionStyle = {
         backgroundImage:`url(${home})`,
@@ -274,14 +275,14 @@ export default class Generator extends React.Component {
         backgroundSize:'cover',
         backgroundAttachment: 'fixed',
         backgroundPosition: 'center',
-        width:'100vw',
+        width:{width},
         height:{height}
       }
 
       const fullPage = numSearches > 0
       const backgroundStyle = (fullPage) ?
-        {backgroundColor:'rgba(255,255,255,0.85)',width:'100vw',height:{height}} :
-        {backgroundColor:'rgba(255,255,255,0)',width:'100vw',height:{height}}
+        {backgroundColor:'rgba(255,255,255,0.85)',width:{width},height:{height}} :
+        {backgroundColor:'rgba(255,255,255,0)',width:{width},height:{height}}
 
       const nutrition = (fullPage) ? <Nutrition /> : null
       return (

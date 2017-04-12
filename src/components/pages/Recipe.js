@@ -226,6 +226,42 @@ class Recipe extends React.Component {
       )
     }
   }
+  getRecipeInput(recipeAlert) {
+    let recipeInput = null
+    if (!Client.isMobile()) {
+      recipeInput = (
+        <TooltipInput
+          tooltip='Type your ingredients here'
+          tooltipPosition='top'
+          type='text'
+          multiline label='Recipe Ingredients'
+          maxLength={5000}
+          value={this.state.ingredients}
+          onChange={this.handleChange.bind(this)}
+          error={recipeAlert}
+          hint='1 c spinach'
+          required
+          icon='restaurant'
+        />
+      )
+    }
+    else {
+      recipeInput = (
+        <Input
+          type='text'
+          multiline label='Recipe Ingredients'
+          maxLength={5000}
+          value={this.state.ingredients}
+          onChange={this.handleChange.bind(this)}
+          error={recipeAlert}
+          hint='1 c spinach'
+          required
+          icon='restaurant'
+        />
+      )
+    }
+    return recipeInput
+  }
   render() {
     const newRecipeAlert = (this.state.newRecipe) ? (
       <Alert bsStyle="danger" style={{marginTop: 10}} onDismiss={() => this.setState({newRecipe: false})}>
@@ -248,19 +284,7 @@ class Recipe extends React.Component {
                   borderWidth:1,
                   padding:10,
                   borderStyle:'solid'}}>
-          <TooltipInput
-            tooltip='Type your ingredients here'
-            tooltipPosition='top'
-            type='text'
-            multiline label='Recipe Ingredients'
-            maxLength={5000}
-            value={this.state.ingredients}
-            onChange={this.handleChange.bind(this)}
-            error={recipeAlert}
-            hint='1 c spinach'
-            required
-            icon='restaurant'
-          />
+          {this.getRecipeInput(recipeAlert)}
         </FormGroup>
         {this.getAddIngredientButton()}
         <div style={{marginTop: 15, marginBottom: 15}}>

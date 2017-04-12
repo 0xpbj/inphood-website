@@ -80,7 +80,7 @@ const getParseQuantity = (parseObj) => {
 //   }
 // }
 function* changesFromRecipe() {
-  console.log('changesFromRecipe ---------------------------------------------');
+  // console.log('changesFromRecipe ---------------------------------------------');
   const {newData, missingData} = yield select(state => state.nutritionReducer)
   const {matchResultsModel} = yield select(state => state.tagModelReducer)
 
@@ -133,9 +133,9 @@ function* changesFromRecipe() {
     // console.log('**********************\n\n\n\PBJ: ', quantity, quantityOk, unit, unitOk);
     let addIngredientErrorStr = ''
     if (quantityOk && unitOk) {
-      console.log('                 -----------------------------------------');
-      console.log('  trying to add ingredient id (user):', uniqueId);
-      console.log('  parseData', newData);
+      // console.log('                 -----------------------------------------');
+      // console.log('  trying to add ingredient id (user):', uniqueId);
+      // console.log('  parseData', newData);
       try {
         yield put.resolve({type: NM_ADD_INGREDIENT,
                            id: uniqueId,
@@ -161,9 +161,9 @@ function* changesFromRecipe() {
     // using the FDA default values (this should always  work)
     //
     if (addIngredientErrorStr !== '') {
-      console.log('                 -----------------------------------------');
-      console.log('  trying to add ingredient id (usda):', uniqueId);
-      console.log('  parseData', newData);
+      // console.log('                 -----------------------------------------');
+      // console.log('  trying to add ingredient id (usda):', uniqueId);
+      // console.log('  parseData', newData);
 
       const originalAddIngredientErrorStr = addIngredientErrorStr
       addIngredientErrorStr = ''

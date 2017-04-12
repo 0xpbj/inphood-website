@@ -290,7 +290,7 @@ export default class Generator extends React.Component {
                      md={ml.mdCol}
                      lg={ml.lgCol}>
                   <Row>
-                    {browserWarning}
+                    {/*{browserWarning}*/}
                     <Col xs={12} sm={6} md={7} lg={7}>
                       <div>
                         {labelError}

@@ -11,9 +11,7 @@ export default class Footer extends React.Component {
   render() {
     const ml = new MarginLayout()
     const currentYear = new Date().getFullYear()
-
     const {router, fullPage} = this.props
-
     const blackBackground = (fullPage) ? {} : {
       borderWidth:0,
       borderRadius:15,
@@ -25,19 +23,19 @@ export default class Footer extends React.Component {
         {fillerCol}
         <Col xs={12} sm={6} md={6} lg={4}>
           <Row style={blackBackground}>
-                <Col xs={12} className='text-center'>
-                  <Button bsStyle="link" onClick={() => router.push('/about')}>
-                    About Us
-                  </Button>
-                  <Button bsStyle="link">
-                    <Link to="http://www.inphood.com/privacy_policy.pdf" target="_blank">Privacy Policy</Link>
-                  </Button>
-                </Col>
-                <Col xs={12} className='text-center'>
-                  <p className="text-center" style={{color:'gray'}}>
-                    Copyright &copy; {currentYear} inPhood Inc., All rights reserved.
-                  </p>
-                </Col>
+            <Col xs={12} className='text-center'>
+              <Button bsStyle="link" onClick={() => router.push('/about')}>
+                About Us
+              </Button>
+              <Button bsStyle="link">
+                <Link to="http://www.inphood.com/privacy_policy.pdf" target="_blank">Privacy Policy</Link>
+              </Button>
+            </Col>
+            <Col xs={12} className='text-center'>
+              <p className="text-center" style={{color:'gray'}}>
+                Copyright &copy; {currentYear} inPhood Inc., All rights reserved.
+              </p>
+            </Col>
           </Row>
         </Col>
         {fillerCol}

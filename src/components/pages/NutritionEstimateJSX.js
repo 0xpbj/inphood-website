@@ -1,4 +1,5 @@
 const React = require('react')
+import Row from 'react-bootstrap/lib/Row'
 import Style from "../styles/NutritionEstimateStyles.js"
 import ProgressBar from 'react-bootstrap/lib/ProgressBar'
 import {IngredientModel} from '../models/IngredientModel'
@@ -414,14 +415,14 @@ export default class NutritionEstimateJSX extends React.Component {
 
     // The width & auto margin below force the width of the label to be the size
     // of the 'Nutrition Facts' title and center the label in the bounding box.
-    // It's important to have this sizing div encapsulate the id=
-    // "nutrition-label" div--this way when you save the label, the margin is
+    // It's important to have this sizing Row encapsulate the id=
+    // "nutrition-label" Row--this way when you save the label, the margin is
     // tight and the saved label looks correct.
-    // Other methods here: https://www.sitepoint.com/css-center-position-absolute-div/
+    // Other methods here: https://www.sitepoint.com/css-center-position-absolute-Row/
     return(
-      <div
+      <Row
         style={{width:constants.LABEL_WIDTH, margin:'auto'}}>
-        <div
+        <Row
           id="nutrition-label"
           style={{backgroundColor:'white', padding:2}}>
           <section style={myStyles.performanceFacts}>
@@ -437,8 +438,8 @@ export default class NutritionEstimateJSX extends React.Component {
             <p style={myStyles.smallInfo}>* Percent Daily Values are based on a 2,000 calorie diet. Your daily values may be higher or lower depending on your calorie needs.</p>
           </section>
           {this.getGeneratedStatement(displayGeneratedStatement)}
-        </div>
-      </div>
+        </Row>
+      </Row>
     )
   }
 }

@@ -26,7 +26,7 @@ export default class About extends React.Component {
     const ayc = require('../../images/AC_1.png')
     const avatar = flag ? pbj : ayc
     return (
-      <div className="team-member">
+      <Row className="team-member">
         <img src={avatar} className="img-responsive img-circle" width="256" height="256" style={{borderRadius: 10, borderWidth: 2, borderStyle: 'solid', borderColor: 'black'}}/>
         <h3>{memberName}</h3>
         <p className="text-muted">{title}</p>
@@ -36,7 +36,7 @@ export default class About extends React.Component {
           <li><Link to={linkedInUrl} target="_blank"><i className="fa fa-linkedin"><img src={linkedin} className="App-logo" alt="logo" height={40} width={40} /></i></Link>
           </li>
         </ul>
-      </div>
+      </Row>
     )
   }
   render() {
@@ -47,7 +47,7 @@ export default class About extends React.Component {
       nonInteraction: false
     });
     return (
-      <div>
+      <Row>
       <TopBar router={this.props.router}/>
         <Row style={{backgroundColor:'white'}}>
           {ml.marginCol}
@@ -79,7 +79,7 @@ export default class About extends React.Component {
         </Row>
         <Row style={{height:'38vh'}}/>
         <Footer fullPage={true} router={this.props.router}/>
-      </div>
+      </Row>
     )
   }
 }

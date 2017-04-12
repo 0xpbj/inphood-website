@@ -4,7 +4,8 @@ import {
   SET_TITLE,
   SELECTED_PHOTO,
   CLEAR_DATA,
-  SET_SHARE_URL
+  SET_SHARE_URL,
+  SAVE_LABEL_AWS
 } from '../constants/ActionTypes'
 
 const initialState = {
@@ -13,7 +14,8 @@ const initialState = {
   title: '',
   picture: '',
   shareUrl: '',
-  embedUrl: ''
+  embedUrl: '',
+  inProgress: false
 }
 export default function results(state = initialState, action) {
   switch (action.type) {
@@ -23,7 +25,13 @@ export default function results(state = initialState, action) {
         data: {},
         title: '',
         picture: '',
-        shareUrl: ''
+        shareUrl: '',
+        inProgress: false
+      }
+    case SAVE_LABEL_AWS:
+      return {
+        ...state,
+        inProgress: true
       }
     case LABEL_DATA:
       return {
@@ -50,7 +58,8 @@ export default function results(state = initialState, action) {
       return {
         ...state,
         shareUrl: action.shareUrl,
-        embedUrl: action.embedUrl
+        embedUrl: action.embedUrl,
+        inProgress: false
       }
     default:
       return state

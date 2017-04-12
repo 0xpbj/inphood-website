@@ -23,6 +23,7 @@ import TagController from '../controllers/TagController'
 import * as constants from '../../constants/Constants'
 import CopyToClipboard from 'react-copy-to-clipboard'
 import {Link} from 'react-router'
+import ProgressBar from 'react-toolbox/lib/progress_bar'
 
 import MarginLayout from '../../helpers/MarginLayout'
 import {getTextLabel} from '../../helpers/TextLabel'
@@ -230,7 +231,7 @@ export default class Generator extends React.Component {
           <h4>Please add ingredients to your label!</h4>
         </Alert>
       ) : null
-      const {shareUrl, embedUrl} = this.props.results
+      const {shareUrl, embedUrl, inProgress} = this.props.results
       const {embed, showShareUrl, copiedUrl, textLabel} = this.state
       const url = (embed) ? embedUrl : shareUrl
       const clipboard = (embed) ? (
@@ -250,6 +251,11 @@ export default class Generator extends React.Component {
           </Col>
           {clipboard}
         </Row>
+      ) : null
+      const urlProgress = (inProgress) ? (
+        <div className="text-center">
+          <ProgressBar type='circular' mode='indeterminate' multicolor={true} />
+        </div>
       ) : null
       const label = (textLabel) ? this.generateTextLabel(compositeModel)
       : (
@@ -312,6 +318,7 @@ export default class Generator extends React.Component {
                       <Row>
                         <div style={{width:constants.LABEL_WIDTH, margin:'auto'}}>
                           <Col xs={12} style={{paddingLeft:2, paddingRight:2}}>
+                            {urlProgress}
                             {shareUrlBox}
                           </Col>
                         </div>

@@ -18,6 +18,7 @@
   "license": "inphood llc.",
   "homepage": "https://www.inphood.com",
   "dependencies": {
+    "clientjs": "^0.1.11",
     "convert-units": "^2.0.1",
     "d3-scale": "^1.0.5",
     "dom-to-image": "^2.5.2",

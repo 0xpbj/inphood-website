@@ -34,8 +34,12 @@ class ScaledIngredient {
     // data is based on 100g servings, calculate a scale factor (percentage) to
     // modify the ingredientModel figures by:
     //
-    const valueInGrams = getValueInUnits(recipeQuantity, recipeUnit, 'g', this._ingredient)
-    this._scale = valueInGrams / 100.0
+    try {
+      const valueInGrams = getValueInUnits(recipeQuantity, recipeUnit, 'g', this._ingredient)
+      this._scale = valueInGrams / 100.0
+    } catch(err) {
+      alert('An error occured while trying to convert units. More details follow. \n' + err)
+    }
   }
 
   getIngredientModel() {

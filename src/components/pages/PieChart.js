@@ -1,5 +1,6 @@
 const React = require('react')
 import ReactGA from 'react-ga'
+import Row from 'react-bootstrap/lib/Row'
 import Modal from 'react-bootstrap/lib/Modal'
 import Legend from 'recharts/lib/component/Legend'
 import RadialBar from 'recharts/lib/polar/RadialBar'
@@ -68,7 +69,7 @@ export default class NutritionChart extends React.Component {
 
       const calories = getScaledValue(ingredientModel.getCalories(), scale)
       return (
-        <div>
+        <Row>
           <TooltipButton
             tooltip='Click to get ingredient nutrients'
             tooltipPosition='left'
@@ -88,7 +89,7 @@ export default class NutritionChart extends React.Component {
               </RadialBarChart>
             </Modal.Body>
           </Modal>
-        </div>
+        </Row>
       )
     }
     return null

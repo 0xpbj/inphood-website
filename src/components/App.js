@@ -10,8 +10,7 @@ import Layout from './pages/Layout'
 import NoMatch from './pages/NoMatch'
 import Generator from '../containers/GeneratorContainer'
 
-import './styles/App.css'
-import './styles/custom-styles.css'
+// import './styles/App.css'
 
 export default class App extends React.Component {
   render() {

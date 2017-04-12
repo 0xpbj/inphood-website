@@ -143,7 +143,7 @@ export default class Results extends React.Component {
         });
       }
       return (
-        <div style={{backgroundColor: 'white'}}>
+        <Row style={{backgroundColor: 'white'}}>
           <TopBar router={this.props.router}/>
           <Grid>
             <Row style={{marginTop: 25}}>
@@ -156,7 +156,7 @@ export default class Results extends React.Component {
               </Col>
             </Row>
           </Grid>
-        </div>
+        </Row>
       )
     }
   }

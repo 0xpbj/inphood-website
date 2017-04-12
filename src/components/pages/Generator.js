@@ -240,7 +240,7 @@ export default class Generator extends React.Component {
             onCopy={() => this.setState({copiedUrl: true})}>
             <Button><Glyphicon glyph="glyphicon glyphicon-copy"></Glyphicon></Button>
           </CopyToClipboard>
-          {copiedUrl ? <div><span style={{color: 'red'}}>&nbsp;Copied.</span></div> : null}
+          {copiedUrl ? <Row><span style={{color: 'red'}}>&nbsp;Copied.</span></Row> : null}
         </Col>
       ) : null
       const boxSize = (embed) ? 11 : 12
@@ -253,9 +253,9 @@ export default class Generator extends React.Component {
         </Row>
       ) : null
       const urlProgress = (inProgress) ? (
-        <div className="text-center">
+        <Row className="text-center">
           <ProgressBar type='circular' mode='indeterminate' multicolor={true} />
-        </div>
+        </Row>
       ) : null
       const label = (textLabel) ? this.generateTextLabel(compositeModel)
       : (
@@ -286,8 +286,8 @@ export default class Generator extends React.Component {
 
       const nutrition = (fullPage) ? <Nutrition /> : null
       return (
-        <div style={sectionStyle}>
-          <div style={backgroundStyle}>
+        <Row style={sectionStyle}>
+          <Row style={backgroundStyle}>
             <TopBar router={this.props.router} transparent={fullPage} />
             <Row>
               <Row style={{height:'40vh'}}>
@@ -299,30 +299,30 @@ export default class Generator extends React.Component {
                   <Row>
                     {/*{browserWarning}*/}
                     <Col xs={12} sm={6} md={7} lg={7}>
-                      <div>
+                      <Row>
                         {labelError}
                         <Recipe router={this.props.router} route={this.props.route} nutritionModelRed={this.props.nutritionModelRed}/>
                         {nutrition}
-                      </div>
+                      </Row>
                     </Col>
                     <Col xs={12} sm={6} md={5} lg={5}>
                       <Row style={{marginTop:25}}>
-                        <div style={{width:constants.LABEL_WIDTH, margin:'auto'}}>
+                        <Row style={{width:constants.LABEL_WIDTH, margin:'auto'}}>
                           <Col xs={6} className='text-left' style={{paddingLeft: 2}}>
                             {this.customLabelButton(fullPage)}
                           </Col>
                           <Col xs={6} className='text-right' style={{paddingRight: 2}}>
                             {this.shareLabelButton(fullPage)}
                           </Col>
-                        </div>
+                        </Row>
                       </Row>
                       <Row>
-                        <div style={{width:constants.LABEL_WIDTH, margin:'auto'}}>
+                        <Row style={{width:constants.LABEL_WIDTH, margin:'auto'}}>
                           <Col xs={12} style={{paddingLeft:2, paddingRight:2}}>
                             {urlProgress}
                             {shareUrlBox}
                           </Col>
-                        </div>
+                        </Row>
                       </Row>
                       <Row style={{marginTop:(constants.VERT_SPACE-2)}}>
                         <Col xs={12}>
@@ -330,14 +330,14 @@ export default class Generator extends React.Component {
                         </Col>
                       </Row>
                       <Row style={{marginTop:(constants.VERT_SPACE-2)}}>
-                        <div style={{width:constants.LABEL_WIDTH, margin:'auto'}}>
+                        <Row style={{width:constants.LABEL_WIDTH, margin:'auto'}}>
                           <Well style={{background: 'white'}}>
                             Values above are rounded according to FDA
                             guidelines, which differ significantly from mathematical
                             rounding. Read more here:
                             <Link to="https://www.fda.gov/Food/GuidanceRegulation/GuidanceDocumentsRegulatoryInformation/LabelingNutrition/ucm064932.htm" target="_blank"> Labeling Nutrition</Link>
                           </Well>
-                        </div>
+                        </Row>
                       </Row>
                       <Row style={{marginTop: 9}}>
                         <TagController
@@ -364,8 +364,8 @@ export default class Generator extends React.Component {
               </Col>
               {ml.marginCol}
             </Row>
-          </div>
-        </div>
+          </Row>
+        </Row>
       )
     }
   }

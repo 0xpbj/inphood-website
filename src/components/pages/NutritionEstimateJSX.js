@@ -412,7 +412,6 @@ export default class NutritionEstimateJSX extends React.Component {
       microNutrients = ''
     }
 
-
     // The width & auto margin below force the width of the label to be the size
     // of the 'Nutrition Facts' title and center the label in the bounding box.
     // It's important to have this sizing Row encapsulate the id=
@@ -421,24 +420,21 @@ export default class NutritionEstimateJSX extends React.Component {
     // Other methods here: https://www.sitepoint.com/css-center-position-absolute-Row/
     return(
       <Row
-        style={{width:constants.LABEL_WIDTH, margin:'auto'}}>
-        <Row
-          id="nutrition-label"
-          style={{backgroundColor:'white', padding:2}}>
-          <section style={myStyles.performanceFacts}>
-            {this.getLabelTitle(myStyles, ingredientComposite)}
-            <table style={myStyles.performanceFactsTable}>
-              <tbody>
-                {tableTitle}
-                {standardNutrients}
-                {requiredMicroNutrients}
-                {microNutrients}
-              </tbody>
-            </table>
-            <p style={myStyles.smallInfo}>* Percent Daily Values are based on a 2,000 calorie diet. Your daily values may be higher or lower depending on your calorie needs.</p>
-          </section>
-          {this.getGeneratedStatement(displayGeneratedStatement)}
-        </Row>
+        id="nutrition-label"
+        style={{width:constants.LABEL_WIDTH, margin:'auto', backgroundColor:'white', padding:2}}>
+        <section style={myStyles.performanceFacts}>
+          {this.getLabelTitle(myStyles, ingredientComposite)}
+          <table style={myStyles.performanceFactsTable}>
+            <tbody>
+              {tableTitle}
+              {standardNutrients}
+              {requiredMicroNutrients}
+              {microNutrients}
+            </tbody>
+          </table>
+          <p style={myStyles.smallInfo}>* Percent Daily Values are based on a 2,000 calorie diet. Your daily values may be higher or lower depending on your calorie needs.</p>
+        </section>
+        {this.getGeneratedStatement(displayGeneratedStatement)}
       </Row>
     )
   }

@@ -295,7 +295,7 @@ export default class Generator extends React.Component {
         150 :
         150 + 20 * (numSearches-3)
       const height = heightInVH.toString() + 'vh'
-      const width = (Client.isMobile()) ? '150vw' : '100vw'
+      const width = '100vw'
       const home = require('../../images/homeHD.jpg')
       const sectionStyle = {
         backgroundImage:`url(${home})`,
@@ -304,7 +304,8 @@ export default class Generator extends React.Component {
         backgroundAttachment: 'fixed',
         backgroundPosition: 'center',
         width:{width},
-        height:{height}
+        height:{height},
+        'overflowX': 'hidden'
       }
 
       const fullPage = numSearches > 0

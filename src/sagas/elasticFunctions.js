@@ -1,7 +1,5 @@
 import {
   INITIALIZE_FIREBASE_DATA,
-  INGREDIENT_FIREBASE_DATA,
-  SUPER_SEARCH_RESULTS,
   GET_FIREBASE_DATA,
   GET_COMMERCIAL_DATA
 } from '../constants/ActionTypes'
@@ -43,10 +41,25 @@ export function* callElasticSearchLambda(foodName, size, index, length) {
   })
   const json = yield call (elasticSearchFetch, request)
   const {data} = json
-  const info = data[0]
+  let info = data[0]
   if (info) {
-    yield put ({type: INITIALIZE_FIREBASE_DATA, foodName, data})
-    yield put ({type: GET_FIREBASE_DATA, foodName, ingredient: info._source.inPhood001, key: info._id, index, length})
+    yield put.resolve({type: INITIALIZE_FIREBASE_DATA, foodName, data})
+
+    // This used to use info = data[0], but now that heurisitics are applied in INITIALIZE_FIREBASE_DATA, we have to
+    // get the new ndbNo to fetch:
+    // yield put ({type: GET_FIREBASE_DATA, foodName, ingredient: info._source.inPhood001, key: info._id, index, length})
+    const {matchResultsModel} = yield select(state => state.tagModelReducer)
+    const searchResult = matchResultsModel.getSearchResultByIndex(foodName)
+    let key = searchResult.getNdbNo()
+    let ingredient = searchResult.getDescription()
+
+    console.log('callElasticSearchLambda ------------------------------------');
+    console.log('matchResultsModel: ', matchResultsModel)
+    console.log('searchResult: ', searchResult)
+    console.log('key: ', key)
+    console.log('ingredient: ', ingredient)
+
+    yield put({type: GET_FIREBASE_DATA, foodName, ingredient, key, index, length})
   }
   else {
     yield put ({type: GET_COMMERCIAL_DATA, foodName})

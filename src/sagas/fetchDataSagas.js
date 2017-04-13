@@ -20,6 +20,10 @@ import {callElasticSearchLambda, elasticSearchFetch} from './elasticFunctions'
 
 function* getDataFromFireBase() {
   const {foodName, ingredient, key, index, length} = yield take(GET_FIREBASE_DATA)
+  console.log('getDataFromFireBase ------------------------------------------');
+  console.log('foodName: ', foodName);
+  console.log('ingredient: ', ingredient);
+  console.log('key: ', key);
   const path = 'global/nutritionInfo/' + key
   const flag = (yield call(db.getPath, path)).exists()
   if (flag) {

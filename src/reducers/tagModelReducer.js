@@ -14,7 +14,7 @@ import {
   UPDATE_MATCH_RESULTS_SEARCH_INDEX,
   INCREMENT_ID
 } from '../constants/ActionTypes'
-
+import {SearchHeuristics} from '../constants/SearchHeuristics'
 import {MatchResultsModel, SearchResult} from '../components/models/MatchResultsModel'
 
 const initialState = {
@@ -101,12 +101,36 @@ export default function modelFun(state = initialState, action) {
       }
 
       matchResultsModel.addSearch(searchTerm)
+
+      // Add in results from heuristics
+      const lcSearchTerm = searchTerm.toLowerCase()
+      if (searchTerm.toLowerCase() in SearchHeuristics) {
+        let key = searchTerm.toLowerCase()
+        if (SearchHeuristics[key].hasOwnProperty('alias')) {
+          key = SearchHeuristics[key]['alias']
+        }
+        for (let heuristic of SearchHeuristics[key]) {
+          // The first inPhood001 below would normally be Description but the code
+          // was modified to take inPhood001--the second inPhood001 is actually supposed
+          // to be the highlighted result (i.e. one with <em> or <strong> wrapped around
+          // the search term):
+          const searchResult = new SearchResult(heuristic['inPhood001'],
+                                                heuristic['ndbNo'],
+                                                heuristic['inPhood001'])
+          matchResultsModel.appendSearchResult(searchTerm, searchResult)
+        }
+      }
+
+      // Add in results from search (either standard reference or branded data)
       for (let obj of action.data) {
         const displayDescription = obj.highlight.Description[0]
         const description = obj._source.inPhood001
         const ndbNo = obj._id
-        const searchResult = new SearchResult(description, ndbNo, displayDescription)
-        matchResultsModel.appendSearchResult(searchTerm, searchResult)
+
+        if (!matchResultsModel.hasSearchResult(searchTerm, ndbNo)) {
+          const searchResult = new SearchResult(description, ndbNo, displayDescription)
+          matchResultsModel.appendSearchResult(searchTerm, searchResult)
+        }
       }
 
       return {
@@ -182,9 +206,11 @@ export default function modelFun(state = initialState, action) {
               continue
             }
 
-            let searchResult = new SearchResult(foodObject.desc.name, foodObject.desc.ndbno)
-            searchResult.setBrandedDataObj(foodObject)
-            matchResultsModel.appendSearchResult(action.searchTerm, searchResult)
+            if (!matchResultsModel.hasSearchResult(searchTerm, foodObject.desc.ndbno)) {
+              let searchResult = new SearchResult(foodObject.desc.name, foodObject.desc.ndbno)
+              searchResult.setBrandedDataObj(foodObject)
+              matchResultsModel.appendSearchResult(action.searchTerm, searchResult)
+            }
           }
         }
       }

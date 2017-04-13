@@ -306,10 +306,12 @@ export default class Generator extends React.Component {
         width:{width},
         height:{height}
       }
+
       const fullPage = numSearches > 0
       const backgroundStyle = (fullPage) ?
-        {backgroundColor:'rgba(255,255,255,0.85)'} :
-        {backgroundColor:'rgba(255,255,255,0)'}
+        {backgroundColor:'rgba(255,255,255,0.85)',width:{width},height:{height}} :
+        {backgroundColor:'rgba(255,255,255,0)',width:{width},height:{height}}
+
       const nutrition = (fullPage) ? <Nutrition /> : null
       return (
         <Row style={sectionStyle}>
@@ -323,6 +325,7 @@ export default class Generator extends React.Component {
                      md={ml.mdCol}
                      lg={ml.lgCol}>
                   <Row>
+                    {/*{browserWarning}*/}
                     <Col xs={12} sm={6} md={7} lg={7}>
                       <Row>
                         {labelError}
@@ -330,40 +333,37 @@ export default class Generator extends React.Component {
                         {nutrition}
                       </Row>
                     </Col>
+
                     <Col xs={12} sm={6} md={5} lg={5}>
-                      <Row style={{marginTop:25}}>
-                        <Row style={{width:constants.LABEL_WIDTH, margin:'auto'}}>
-                          <Col xs={6} className='text-left' style={{paddingLeft: 2}}>
-                            {this.customLabelButton(fullPage)}
-                          </Col>
-                          <Col xs={6} className='text-right' style={{paddingRight: 2}}>
-                            {this.shareLabelButton(fullPage)}
-                          </Col>
-                        </Row>
-                      </Row>
-                      <Row>
-                        <Row style={{width:constants.LABEL_WIDTH, margin:'auto'}}>
-                          <Col xs={12} style={{paddingLeft:2, paddingRight:2}}>
-                            {urlProgress}
-                            {shareUrlBox}
-                          </Col>
-                        </Row>
-                      </Row>
-                      <Row style={{marginTop:(constants.VERT_SPACE-2)}}>
-                        <Col xs={12}>
-                          {label}
+                      <Row style={{width:constants.LABEL_WIDTH, margin:'auto', marginTop:25}}>
+                        <Col xs={6} className='text-left' style={{paddingLeft: 2}}>
+                          {this.customLabelButton(fullPage)}
+                        </Col>
+                        <Col xs={6} className='text-right' style={{paddingRight: 2}}>
+                          {this.shareLabelButton(fullPage)}
                         </Col>
                       </Row>
-                      <Row style={{marginTop:(constants.VERT_SPACE-2)}}>
-                        <Row style={{width:constants.LABEL_WIDTH, margin:'auto'}}>
-                          <Well style={{background: 'white'}}>
-                            Values above are rounded according to FDA
-                            guidelines, which differ significantly from mathematical
-                            rounding. Read more here:
-                            <Link to="https://www.fda.gov/Food/GuidanceRegulation/GuidanceDocumentsRegulatoryInformation/LabelingNutrition/ucm064932.htm" target="_blank"> Labeling Nutrition</Link>
-                          </Well>
-                        </Row>
+
+                      <Row style={{width:constants.LABEL_WIDTH, margin:'auto'}}>
+                        <Col xs={12} style={{paddingLeft:2, paddingRight:2}}>
+                          {urlProgress}
+                          {shareUrlBox}
+                        </Col>
                       </Row>
+
+                      <Row style={{width:constants.LABEL_WIDTH, margin:'auto'}}>
+                          {label}
+                      </Row>
+
+                      <Row style={{width:constants.LABEL_WIDTH, margin:'auto', marginTop:(constants.VERT_SPACE-2)}}>
+                        <Well style={{background: 'white'}}>
+                          Values above are rounded according to FDA
+                          guidelines, which differ significantly from mathematical
+                          rounding. Read more here:
+                          <Link to="https://www.fda.gov/Food/GuidanceRegulation/GuidanceDocumentsRegulatoryInformation/LabelingNutrition/ucm064932.htm" target="_blank"> Labeling Nutrition</Link>
+                        </Well>
+                      </Row>
+
                       <Row style={{marginTop: 9}}>
                         <TagController
                           tags={unusedTags}
@@ -371,6 +371,7 @@ export default class Generator extends React.Component {
                           deletable={false}
                         />
                       </Row>
+
                     </Col>
                   </Row>
                 </Col>

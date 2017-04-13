@@ -68,13 +68,17 @@ export class MatchResultsModel {
   //   (A search is a key - value pair in a dictionary called _searches. The
   //    key - value pair is the searchTerm and SearchResult respectively.
   //)
-  addSearch(aSearchTerm) {
+  addSearch(aSearchTerm, useHeuristics=true) {
     if (aSearchTerm in this._searches) {
       // throw new Error("Error, " + aSearchTerm + " already exists in searches.")
       return
     }
 
     this._searches[aSearchTerm] = []
+
+    if (useHeuristics) {
+
+    }
   }
 
   removeSearch(aSearchTerm) {
@@ -103,6 +107,18 @@ export class MatchResultsModel {
   //
   appendSearchResult(aSearchTerm, aSearchResult) {
     this._searches[aSearchTerm].push(aSearchResult)
+  }
+
+  hasSearchResult(aSearchTerm, aNdbNo) {
+    if (this.hasSearchTerm(aSearchTerm)) {
+      for (let searchResult of this._searches[aSearchTerm]) {
+        if (aNdbNo === searchResult.getNdbNo()) {
+          return true
+        }
+      }
+    }
+
+    return false
   }
 
   // Private -- do not call outside of this class
@@ -210,5 +226,4 @@ export class MatchResultsModel {
     }
     return objectStr
   }
-
 }

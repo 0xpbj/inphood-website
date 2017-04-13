@@ -43,6 +43,34 @@ import 'clientjs'
 const Client = new ClientJS()
 import Fingerprint2 from 'fingerprintjs2'
 
+import {
+  ShareCounts,
+  ShareButtons,
+  generateShareIcon
+} from 'react-share'
+
+const {
+  TwitterShareButton,
+  LinkedinShareButton,
+  FacebookShareButton,
+  PinterestShareButton,
+  GooglePlusShareButton,
+} = ShareButtons
+
+const {
+  TwitterShareCount,
+  FacebookShareCount,
+  LinkedinShareCount,
+  PinterestShareCount,
+  GooglePlusShareCount,
+} = ShareCounts
+
+const TwitterIcon = generateShareIcon('twitter')
+const FacebookIcon = generateShareIcon('facebook')
+const LinkedinIcon = generateShareIcon('linkedin')
+const GooglePlusIcon = generateShareIcon('google')
+const PinterestIcon = generateShareIcon('pinterest')
+
 export default class Generator extends React.Component {
   constructor() {
     super()
@@ -244,7 +272,7 @@ export default class Generator extends React.Component {
         </Col>
       ) : null
       const boxSize = (embed) ? 11 : 12
-      const shareUrlBox = (url && showShareUrl) ? (
+      const shareUrlBox = (url && showShareUrl && !inProgress) ? (
         <Row style={{marginBottom:0, marginTop:constants.VERT_SPACE}}>
           <Col xs={boxSize}>
             <Well style={{background: 'white'}}>{url}</Well>

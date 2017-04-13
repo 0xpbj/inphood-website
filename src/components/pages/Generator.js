@@ -43,33 +43,33 @@ import 'clientjs'
 const Client = new ClientJS()
 import Fingerprint2 from 'fingerprintjs2'
 
-import {
-  ShareCounts,
-  ShareButtons,
-  generateShareIcon
-} from 'react-share'
+// import {
+//   ShareCounts,
+//   ShareButtons,
+//   generateShareIcon
+// } from 'react-share'
 
-const {
-  TwitterShareButton,
-  LinkedinShareButton,
-  FacebookShareButton,
-  PinterestShareButton,
-  GooglePlusShareButton,
-} = ShareButtons
+// const {
+//   TwitterShareButton,
+//   LinkedinShareButton,
+//   FacebookShareButton,
+//   PinterestShareButton,
+//   GooglePlusShareButton,
+// } = ShareButtons
 
-const {
-  TwitterShareCount,
-  FacebookShareCount,
-  LinkedinShareCount,
-  PinterestShareCount,
-  GooglePlusShareCount,
-} = ShareCounts
+// const {
+//   TwitterShareCount,
+//   FacebookShareCount,
+//   LinkedinShareCount,
+//   PinterestShareCount,
+//   GooglePlusShareCount,
+// } = ShareCounts
 
-const TwitterIcon = generateShareIcon('twitter')
-const FacebookIcon = generateShareIcon('facebook')
-const LinkedinIcon = generateShareIcon('linkedin')
-const GooglePlusIcon = generateShareIcon('google')
-const PinterestIcon = generateShareIcon('pinterest')
+// const TwitterIcon = generateShareIcon('twitter')
+// const FacebookIcon = generateShareIcon('facebook')
+// const LinkedinIcon = generateShareIcon('linkedin')
+// const GooglePlusIcon = generateShareIcon('google')
+// const PinterestIcon = generateShareIcon('pinterest')
 
 export default class Generator extends React.Component {
   constructor() {

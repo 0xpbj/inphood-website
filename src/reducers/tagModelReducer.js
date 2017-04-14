@@ -206,7 +206,7 @@ export default function modelFun(state = initialState, action) {
               continue
             }
 
-            if (!matchResultsModel.hasSearchResult(searchTerm, foodObject.desc.ndbno)) {
+            if (!matchResultsModel.hasSearchResult(action.searchTerm, foodObject.desc.ndbno)) {
               let searchResult = new SearchResult(foodObject.desc.name, foodObject.desc.ndbno)
               searchResult.setBrandedDataObj(foodObject)
               matchResultsModel.appendSearchResult(action.searchTerm, searchResult)

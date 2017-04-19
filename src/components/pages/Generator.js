@@ -39,8 +39,6 @@ import {IngredientModel} from '../models/IngredientModel'
 import {IngredientControlModel} from '../models/IngredientControlModel'
 
 const Config = require('Config')
-import 'clientjs'
-const Client = new ClientJS()
 import Fingerprint2 from 'fingerprintjs2'
 
 // import {
@@ -238,17 +236,17 @@ export default class Generator extends React.Component {
       return <Results label={label} router={this.props.router}/>
     } else {
       const {showHelp, showBrowserWarning} = this.state
-      let browserWarning = null
-      if (showBrowserWarning) {
-        if (Client.isChrome())
-          browserWarning = null
-        else
-          browserWarning = (
-            <Alert bsStyle="warning" onDismiss={() => this.setState({showBrowserWarning: false})}>
-              <h4 className="text-center">inPhood works best with Chrome</h4>
-            </Alert>
-          )
-      }
+      // let browserWarning = null
+      // if (showBrowserWarning) {
+      //   if (Client.isChrome())
+      //     browserWarning = null
+      //   else
+      //     browserWarning = (
+      //       <Alert bsStyle="warning" onDismiss={() => this.setState({showBrowserWarning: false})}>
+      //         <h4 className="text-center">inPhood works best with Chrome</h4>
+      //       </Alert>
+      //     )
+      // }
       const {nutritionModel} = this.props.nutritionModelRed
       const compositeModel = nutritionModel.getScaledCompositeIngredientModel()
       const {unusedTags, matchResultsModel}

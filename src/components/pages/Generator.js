@@ -345,7 +345,7 @@ export default class Generator extends React.Component {
                         </Col>
                       </Row>
 
-                      <Row style={{width:constants.LABEL_WIDTH, margin:'auto'}}>
+                      <Row style={{width:constants.LABEL_WIDTH, margin:'auto', marginTop:(constants.VERT_SPACE-2)}}>
                         <Col xs={12} style={{paddingLeft:2, paddingRight:2}}>
                           {urlProgress}
                           {shareUrlBox}

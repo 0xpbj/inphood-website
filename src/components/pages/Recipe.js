@@ -14,6 +14,7 @@ import FormControl from 'react-bootstrap/lib/FormControl'
 import ControlLabel from 'react-bootstrap/lib/ControlLabel'
 import DropdownButton from 'react-bootstrap/lib/DropdownButton'
 import {parseRecipe, parseCaption} from '../../helpers/parseRecipe'
+import {mobileCheck} from '../../helpers/clientCheck'
 import Chip from 'react-toolbox/lib/chip'
 import Input from 'react-toolbox/lib/input'
 import Tooltip from 'react-toolbox/lib/tooltip'
@@ -22,9 +23,6 @@ import FontIcon from 'react-toolbox/lib/font_icon'
 import MarginLayout from '../../helpers/MarginLayout'
 import ServingsController from '../../containers/ServingsControllerContainer'
 import { withRouter } from 'react-router'
-
-import 'clientjs'
-const Client = new ClientJS()
 
 const TooltipInput = Tooltip(Input)
 const TooltipButton = Tooltip(Button)
@@ -128,7 +126,7 @@ class Recipe extends React.Component {
     const numIngredients = Object.keys(parsedData).length
     const loadedIngredients = matchResultsModel.getNumberOfSearches()
     let IButton = Button
-    if (!Client.isMobile()) {
+    if (!mobileCheck()) {
       IButton = Tooltip(Button)
     }
     if (!this.isFetchComplete()) {
@@ -142,7 +140,7 @@ class Recipe extends React.Component {
       let newRecipeButton = null
       let addIngredientButton = null
       if (matchResultsModel.getNumberOfSearches() > 0) {
-        if (!Client.isMobile()) {
+        if (!mobileCheck()) {
           newRecipeButton = (
             <TooltipButton
               tooltip='Click to start a new recipe'
@@ -169,7 +167,7 @@ class Recipe extends React.Component {
         }
       }
       else {
-        if (!Client.isMobile()) {
+        if (!mobileCheck()) {
           newRecipeButton = (
             <TooltipButton
               tooltip='Click to try a sample recipe'
@@ -193,7 +191,7 @@ class Recipe extends React.Component {
           )
         }
       }
-      if (!Client.isMobile()) {
+      if (!mobileCheck()) {
           addIngredientButton = (
             <TooltipButton
             tooltip='Click to add ingredient(s) to label'
@@ -228,7 +226,7 @@ class Recipe extends React.Component {
   }
   getRecipeInput(recipeAlert) {
     let recipeInput = null
-    if (!Client.isMobile()) {
+    if (!mobileCheck()) {
       recipeInput = (
         <TooltipInput
           tooltip='Type your ingredients here'

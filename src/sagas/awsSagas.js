@@ -10,9 +10,9 @@ const S3 = require('aws-sdk').S3
 import ReactGA from 'react-ga'
 import domtoimage from 'dom-to-image'
 import html2canvas from 'html2canvas'
-import 'clientjs'
-const Client = new ClientJS()
 import { delay } from 'redux-saga'
+import {mobileCheck, isChrome} from '../helpers/clientCheck'
+
 
 const getDomJpeg = () => {
   return domtoimage.toJpeg(document.getElementById('nutrition-label'), { quality: 1.0 })
@@ -66,7 +66,7 @@ function* loadLabelToAWS() {
   const labelFormat = labelTypeConstant[labelType]
   const extension = '.jpeg'
   let buffer
-  if (Client.isChrome() && !Client.isMobile()) {
+  if (isChrome() && !mobileCheck()) {
     const {data} = yield call (getDomJpeg)
     buffer = new Buffer(data.replace(/^data:image\/\w+;base64,/, ""),'base64')
   }

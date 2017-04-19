@@ -73,7 +73,6 @@ export default class Generator extends React.Component {
   constructor() {
     super()
     this.state = {
-      showBrowserWarning: true,
       labelErrorFlag: false,
       showShareUrl: false,
       textLabel: false,
@@ -235,18 +234,7 @@ export default class Generator extends React.Component {
     if (label && label !== '') {
       return <Results label={label} router={this.props.router}/>
     } else {
-      const {showHelp, showBrowserWarning} = this.state
-      // let browserWarning = null
-      // if (showBrowserWarning) {
-      //   if (Client.isChrome())
-      //     browserWarning = null
-      //   else
-      //     browserWarning = (
-      //       <Alert bsStyle="warning" onDismiss={() => this.setState({showBrowserWarning: false})}>
-      //         <h4 className="text-center">inPhood works best with Chrome</h4>
-      //       </Alert>
-      //     )
-      // }
+      const {showHelp} = this.state
       const {nutritionModel} = this.props.nutritionModelRed
       const compositeModel = nutritionModel.getScaledCompositeIngredientModel()
       const {unusedTags, matchResultsModel}
@@ -324,7 +312,6 @@ export default class Generator extends React.Component {
                      md={ml.mdCol}
                      lg={ml.lgCol}>
                   <Row>
-                    {/*{browserWarning}*/}
                     <Col xs={12} sm={6} md={7} lg={7}>
                       <Row>
                         {labelError}

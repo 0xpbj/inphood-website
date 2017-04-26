@@ -88,6 +88,11 @@ export default function modelFun(state = initialState, action) {
     }
     case INITIALIZE_FIREBASE_DATA:
     {
+      // Can be either 'Description' or 'inPhood001'.
+      // 'inPhood001' is not recommended b/c some of the results read as non-sensical.
+      // i.e. 'Oil, olive, ...' showed up as 'olive, ...'--people wouldn't know it was oil
+      const RESULT_FIELD = 'Description'
+
       // Initializes our dictionary of match data with ordered arrays of tuples
       // containing the description, ndbNo and undefined:
       // Clear the match data to prevent populating it twice on 'back' button actions etc.
@@ -110,13 +115,14 @@ export default function modelFun(state = initialState, action) {
           key = SearchHeuristics[key]['alias']
         }
         for (let heuristic of SearchHeuristics[key]) {
-          // The first inPhood001 below would normally be Description but the code
-          // was modified to take inPhood001--the second inPhood001 is actually supposed
-          // to be the highlighted result (i.e. one with <em> or <strong> wrapped around
-          // the search term):
-          const searchResult = new SearchResult(heuristic['inPhood001'],
-                                                heuristic['ndbNo'],
-                                                heuristic['inPhood001'])
+          const description = heuristic[RESULT_FIELD]
+          const ndbNo = heuristic['ndbNo']
+          // Using same field for displayDescription--could get fancy and try to
+          // find the search term in this and add markup, but not now.
+          const displayDescription = heuristic[RESULT_FIELD]
+          const searchResult =
+            new SearchResult(description, ndbNo, displayDescription)
+
           matchResultsModel.appendSearchResult(searchTerm, searchResult)
         }
       }
@@ -124,7 +130,7 @@ export default function modelFun(state = initialState, action) {
       // Add in results from search (either standard reference or branded data)
       for (let obj of action.data) {
         const displayDescription = obj.highlight.Description[0]
-        const description = obj._source.inPhood001
+        const description = obj._source[RESULT_FIELD]
         const ndbNo = obj._id
 
         if (!matchResultsModel.hasSearchResult(searchTerm, ndbNo)) {

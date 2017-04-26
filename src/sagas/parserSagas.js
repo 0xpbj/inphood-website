@@ -145,11 +145,12 @@ function* changesFromRecipe() {
                            append: false})
       } catch(err) {
         addIngredientErrorStr = err
+        let gaError = searchTerm + '/' + quantity + '/' + unit
         ReactGA.event({
           category: 'Nutrition Mixer',
           action: 'Error adding ingredient with parsed quantity and units',
           nonInteraction: false,
-          label: searchTerm
+          label: gaError
         });
       }
     }
@@ -178,11 +179,12 @@ function* changesFromRecipe() {
                            append: false})
       } catch(err) {
         addIngredientErrorStr = err + '\n' + originalAddIngredientErrorStr
+        let gaError = searchTerm + '/' + quantity + '/' + unit
         ReactGA.event({
           category: 'Nutrition Mixer',
           action: 'Error adding ingredient with the USDA quantity and units',
           nonInteraction: false,
-          label: searchTerm
+          label: gaError
         });
       }
     }
@@ -200,11 +202,11 @@ function* changesFromRecipe() {
     }
   }
 
-  ReactGA.event({
-    category: 'Nutrition Mixer',
-    action: 'User recipe parsed',
-    nonInteraction: false,
-  });
+  // ReactGA.event({
+  //   category: 'Nutrition Mixer',
+  //   action: 'User recipe parsed',
+  //   nonInteraction: false,
+  // });
 
   const {servingsControlModel} = yield select(state => state.servingsControlsReducer)
   yield put ({type: NM_SET_SERVINGS, servingsControlModel})

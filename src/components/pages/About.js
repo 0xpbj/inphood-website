@@ -1,5 +1,5 @@
 const React = require('react')
-import ReactGA from 'react-ga'
+// import ReactGA from 'react-ga'
 import Col from 'react-bootstrap/lib/Col'
 import Row from 'react-bootstrap/lib/Row'
 import Grid from 'react-bootstrap/lib/Grid'
@@ -41,11 +41,11 @@ export default class About extends React.Component {
   }
   render() {
     const ml = new MarginLayout()
-    ReactGA.event({
-      category: 'User',
-      action: 'User visited about page',
-      nonInteraction: false
-    });
+    // ReactGA.event({
+    //   category: 'User',
+    //   action: 'User visited about page',
+    //   nonInteraction: false
+    // });
     return (
       <Row>
       <TopBar router={this.props.router}/>

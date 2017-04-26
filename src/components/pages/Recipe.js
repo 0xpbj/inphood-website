@@ -1,5 +1,5 @@
 const React = require('react')
-import ReactGA from 'react-ga'
+// import ReactGA from 'react-ga'
 import Row from 'react-bootstrap/lib/Row'
 import Col from 'react-bootstrap/lib/Col'
 import Well from 'react-bootstrap/lib/Well'
@@ -63,11 +63,11 @@ class Recipe extends React.Component {
     this.setState({newRecipe: false})
   }
   sampleRecipeFlow() {
-    ReactGA.event({
-      category: 'User',
-      action: 'User trying sample recipe',
-      nonInteraction: true
-    });
+    // ReactGA.event({
+    //   category: 'User',
+    //   action: 'User trying sample recipe',
+    //   nonInteraction: true
+    // });
     const ingredients = '1 c chard\n2.5 lb spinach\n3 tbsp olive oil\n1/4 oz feta cheese\n1 tsp salt\n¼ oz cilantro'
     this.setState({ingredients})
   }
@@ -79,11 +79,11 @@ class Recipe extends React.Component {
       this.setState({recipeLengthError: true})
     }
     else {
-      ReactGA.event({
-        category: 'User',
-        action: 'User sending recipe',
-        nonInteraction: true
-      });
+      // ReactGA.event({
+      //   category: 'User',
+      //   action: 'User sending recipe',
+      //   nonInteraction: true
+      // });
       const {ingredients} = this.state
       let data = parseRecipe(ingredients)
       let {uniqueId} = this.props.tagModel

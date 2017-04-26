@@ -1,5 +1,5 @@
 const React = require('react')
-import ReactGA from 'react-ga'
+// import ReactGA from 'react-ga'
 import Row from 'react-bootstrap/lib/Row'
 import Modal from 'react-bootstrap/lib/Modal'
 import Legend from 'recharts/lib/component/Legend'
@@ -61,12 +61,12 @@ export default class NutritionChart extends React.Component {
       const ndbno = ingredientModel.getNdbno()
 
       if (showNutritionModal) {
-        ReactGA.event({
-          category: 'User',
-          action: 'User in ingredient nutrition modal',
-          nonInteraction: false,
-          label: key
-        });
+        // ReactGA.event({
+        //   category: 'User',
+        //   action: 'User in ingredient nutrition modal',
+        //   nonInteraction: false,
+        //   label: key
+        // });
       }
 
       const calories = getScaledValue(ingredientModel.getCalories(), scale)

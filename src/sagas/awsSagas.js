@@ -55,17 +55,18 @@ const labelTypeConstant = {
 }
 
 function* loadLabelToAWS() {
-  ReactGA.event({
-    category: 'Label',
-    action: 'User saving label',
-    nonInteraction: false
-  });
   const {key} = yield select(state => state.nutritionReducer)
   const {nutritionModel} = yield select(state => state.nutritionModelReducer)
   const labelType = nutritionModel.getLabelType()
   const labelFormat = labelTypeConstant[labelType]
   const extension = '.jpeg'
   let buffer
+  ReactGA.event({
+    category: 'Label',
+    action: 'User saving label',
+    nonInteraction: false,
+    label: labelFormat
+  });
   if (isChrome() && !mobileCheck()) {
     const {data} = yield call (getDomJpeg)
     buffer = new Buffer(data.replace(/^data:image\/\w+;base64,/, ""),'base64')

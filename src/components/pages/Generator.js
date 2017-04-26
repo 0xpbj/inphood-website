@@ -34,6 +34,7 @@ import Results from '../../containers/ResultsContainer'
 import Recipe from '../../containers/RecipeContainer'
 import Nutrition from '../../containers/NutritionContainer'
 import Label from './NutritionEstimateJSX'
+import Ingredients from './Ingredients'
 import {getPossibleUnits, rationalToFloat} from '../../helpers/ConversionUtils'
 import {IngredientModel} from '../models/IngredientModel'
 import {IngredientControlModel} from '../models/IngredientControlModel'
@@ -275,6 +276,7 @@ export default class Generator extends React.Component {
       : (
           <Label id='nutrition-label' ingredientComposite={compositeModel}/>
       )
+      const ingredients = (<Ingredients nutritionModel={nutritionModel}/>)
       // TODO: if screen size <= xs, make the backgroundSize = cover (mobile first)
       const numSearches = matchResultsModel.getNumberOfSearches()
       const heightInVH = (numSearches < 4) ?
@@ -340,6 +342,8 @@ export default class Generator extends React.Component {
                       <Row style={{width:constants.LABEL_WIDTH, margin:'auto'}}>
                           {label}
                       </Row>
+
+                      {ingredients}
 
                       <Row style={{width:constants.LABEL_WIDTH, margin:'auto', marginTop:(constants.VERT_SPACE-2)}}>
                         <Well style={{background: 'white'}}>

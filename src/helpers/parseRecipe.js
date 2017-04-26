@@ -141,7 +141,7 @@ function combineData(data) {
 
 export function parseRecipe(data) {
   const regex = /[^\r\n]+/g
-  const sRegex = /([^\*:><^#~] ?)([\.\-a-zA-Z0-9½⅓⅔¼¾⅕⅖⅗⅘⅙⅚⅛⅜⅝⅞/, ()]+)/g
+  const sRegex = /([^\*:><^#~• ] ?)([\.\-a-zA-Z0-9½⅓⅔¼¾⅕⅖⅗⅘⅙⅚⅛⅜⅝⅞/, ()]+)/g
   let phrases = data.match(regex)
   var ingp = require('../algorithms/parser/ingredientparser')
   let parsedData = []

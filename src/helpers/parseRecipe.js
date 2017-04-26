@@ -126,7 +126,9 @@ function combineData(data) {
   let names = []
   for (let i of data) {
     if (i.name.toLowerCase() === 'salt and pepper' || i.name.toLowerCase() === 'salt & pepper') {
-      const {unit, amount, id} = i
+      let {unit, amount, id} = i
+      unit = unit ? unit : 'tsp'
+      amount = amount ? amount : '1/4'
       ret.push({amount, unit, name: 'salt', id: id + '_salt'})
       ret.push({amount, unit, name: 'black pepper',id: id + '_pepper'})
     }

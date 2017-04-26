@@ -5,6 +5,7 @@ import Modal from 'react-bootstrap/lib/Modal'
 import Legend from 'recharts/lib/component/Legend'
 import RadialBar from 'recharts/lib/polar/RadialBar'
 import RadialBarChart from 'recharts/lib/chart/RadialBarChart'
+import {Link} from 'react-router'
 
 import {IconButton} from 'react-toolbox/lib/button'
 import Tooltip from 'react-toolbox/lib/tooltip'
@@ -57,6 +58,7 @@ export default class NutritionChart extends React.Component {
       const quantity = scaledIngredient.getQuantity()
       const unit = scaledIngredient.getUnit()
       const labelData = this.getLabelData(ingredientModel, scale)
+      const ndbno = ingredientModel.getNdbno()
 
       if (showNutritionModal) {
         ReactGA.event({
@@ -87,6 +89,10 @@ export default class NutritionChart extends React.Component {
                 <RadialBar minAngle={15} background clockWise={true} dataKey='uv'/>
                 <Legend iconSize={10} width={150} height={140} layout='vertical' verticalAlign='middle' align="right" wrapperStyle={style}/>
               </RadialBarChart>
+              <IconButton icon='info' style={{color: '#0088CC'}} />
+              <Link to={"https://ndb.nal.usda.gov/ndb/search/list?qlookup=" + ndbno} target="_blank">
+                FDA breakdown for {key}
+              </Link>
             </Modal.Body>
           </Modal>
         </Row>

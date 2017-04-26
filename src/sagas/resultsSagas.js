@@ -42,17 +42,26 @@ function* loadFirebaseData() {
     const compositeModel = nutritionModel.getScaledCompositeIngredientModel()
     const composite = compositeModel.serialize()
     const userGeneratedData = getRecipeText(nutritionModel)
-    var date = new Date(Date.now()).toDateString()
+    var fulldate = Date.now()
+    var date = new Date(fulldate).toDateString()
     const debug = Config.DEBUG
-    firebase.database().ref('/global/nutritionLabel/' + key).update({
-      full,
-      rawData,
-      parsedData,
-      composite,
-      userGeneratedData,
-      date,
-      debug
-    })
+    let path
+    if (debug)
+      path = '/global/nutritionLabel/debug/' + key
+    else
+      path = '/global/nutritionLabel/' + key
+    if (path) {
+      firebase.database().ref(path).update({
+        full,
+        rawData,
+        parsedData,
+        composite,
+        userGeneratedData,
+        date,
+        fulldate,
+        debug
+      })
+    }
   }
 }
 
@@ -71,13 +80,21 @@ function* initFirebaseKeys() {
   const key = firebase.database().ref('/global/nutritionLabel/').push().key
   const debug = Config.DEBUG
   if (!debug) {
-    var date = new Date(Date.now()).toDateString()
+    var fulldate = Date.now()
+    var date = new Date(fulldate).toDateString()
     Fingerprint2().get(function(result) {
       firebase.database().ref('/global/nutritionLabel/' + key).update({
         fingerprint: result
       })
       firebase.database().ref('/global/nutritionLabel/fingerprint/' + result + '/' + key).update({
-        date
+        date,
+        fulldate
+      })
+      firebase.database().ref('/global/nutritionLabel/analytics/' + date + '/fingerprints/' + result + '/' + key).update({
+        fulldate
+      })
+      firebase.database().ref('/global/nutritionLabel/analytics/' + date + '/keys/' + key).update({
+        fulldate
       })
     })
   }

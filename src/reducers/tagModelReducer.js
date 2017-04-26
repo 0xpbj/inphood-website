@@ -90,7 +90,7 @@ export default function modelFun(state = initialState, action) {
     {
       // Can be either 'Description' or 'inPhood001'.
       // 'inPhood001' is not recommended b/c some of the results read as non-sensical.
-      // i.e. 
+      // i.e. 'Oil, olive, ...' showed up as 'olive, ...'--people wouldn't know it was oil
       const RESULT_FIELD = 'Description'
 
       // Initializes our dictionary of match data with ordered arrays of tuples

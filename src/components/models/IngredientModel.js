@@ -243,6 +243,7 @@ export class IngredientModel {
     //
     //   National Database Number
     this._ndbno = parseInt(dataForKey['NDB'])
+    this._longNdbno = dataForKey['NDB']
     //
     //   Measures & conversions: (see more documentation above in constructor)
     this._measureWeight_g = parseFloat(dataForKey['Weight(g)'])
@@ -586,6 +587,10 @@ export class IngredientModel {
     return scaledValue.toFixed(this.decimalPlaces)
   }
   // End Private methods
+
+  getNdbno() {
+    return this._longNdbno
+  }
 
   getKey() {
     return this._key

@@ -182,75 +182,57 @@ export default class ServingsController extends React.Component {
                      marginRight: 0,
                      marginLeft: 0,
                      backgroundColor: 'white'}}>
+
           <Row>
-           <Col xs={5} md={5} style={{paddingRigh: 10}}>
-            <form
-              onSubmit={(event) => this.submitServingSize(event)}
-              autoComplete="off">
-              <FormGroup style={{marginBottom: 0}}
-                controlId='servingsControlUnit'
-                validationState={this.getServingsSizeValidationState()}>
-                <TooltipInput
-                  tooltip='Type your servings size here'
-                  tooltipPosition='bottom'
-                  type='text'
-                  label='Serving Size'
-                  maxLength={50}
-                  error={servingSizeError}
-                  value={this.state.servingSize}
-                  onBlur={this.handleServingsSizeBlurred.bind(this)}
-                  onChange={(value) => this.setState({servingSize: value})}
-                />
-              </FormGroup>
-            </form>
-           </Col>
-           <Col xs={1} md={1} />
-           <Col xs={5} md={5}>
-            <form
-              onSubmit={(event) => this.submitServingUnit(event)}
-              autoComplete="off">
-              <FormGroup style={{marginBottom: 0}}
-                controlId='servingsControlUnit'
-                validationState={this.getServingUnitValidationState()}>
-                <TooltipInput
-                  tooltip='Type your servings units here'
-                  tooltipPosition='bottom'
-                  type='text'
-                  label='Serving Units'
-                  maxLength={50}
-                  error={servingUnitError}
-                  value={this.state.servingUnit}
-                  onBlur={this.handleServingUnitBlurred.bind(this)}
-                  onChange={(value) => this.setState({servingUnit: value})}
-                />
-              </FormGroup>
-            </form>
+            <Col xs={12}>
+             <form
+               onSubmit={(event) => this.submitServingUnit(event)}
+               autoComplete="off">
+               <FormGroup style={{marginBottom: 0}}
+                 controlId='servingsControlUnit'
+                 validationState={this.getServingUnitValidationState()}>
+                 <TooltipInput
+                   tooltip='Leave this blank if it does not make sense to specify a portion name.'
+                   tooltipPosition='bottom'
+                   type='text'
+                   label='What is a portion of this food called (i.e. cookie, taco ...)?'
+                   maxLength={50}
+                   error={servingUnitError}
+                   value={this.state.servingUnit}
+                   onBlur={this.handleServingUnitBlurred.bind(this)}
+                   onChange={(value) => this.setState({servingUnit: value})}
+                 />
+               </FormGroup>
+             </form>
            </Col>
           </Row>
+
           <Row>
-            <Col xs={5} md={5} style={{paddingRight: 10}}>
+            <Col xs={12}>
               <form
-                onSubmit={(event) => this.submitServingRatio(event)}
+                onSubmit={(event) => this.submitServingSize(event)}
                 autoComplete="off">
-                <FormGroup
-                  controlId='servingsControlRatio'
-                  validationState={this.getServingsRatioValidationState()}>
+                <FormGroup style={{marginBottom: 0}}
+                  controlId='servingsControlUnit'
+                  validationState={this.getServingsSizeValidationState()}>
                   <TooltipInput
-                    tooltip='Type your servings ratio here'
+                    tooltip=''
                     tooltipPosition='bottom'
                     type='text'
-                    label='Servings Per'
+                    label='How many portions are in a serving of this food?'
                     maxLength={50}
-                    error={servingRatioError}
-                    value={this.state.servingRatio}
-                    onBlur={this.handleServingsRatioBlurred.bind(this)}
-                    onChange={(value) => this.setState({servingRatio: value})}
+                    error={servingSizeError}
+                    value={this.state.servingSize}
+                    onBlur={this.handleServingsSizeBlurred.bind(this)}
+                    onChange={(value) => this.setState({servingSize: value})}
                   />
                 </FormGroup>
               </form>
             </Col>
-            <Col xs={1} md={1} />
-            <Col xs={5} md={5}>
+          </Row>
+
+          <Row>
+            <Col xs={12}>
               <form
                 onSubmit={(event) => this.submitServingsAmount(event)}
                 autoComplete="off">
@@ -258,10 +240,10 @@ export default class ServingsController extends React.Component {
                   controlId='servingsControlAmount'
                   validationState={this.getServingsAmountValidationState()}>
                   <TooltipInput
-                    tooltip='Type your servings amount here'
+                    tooltip=''
                     tooltipPosition='bottom'
                     type='text'
-                    label='Serving Amount'
+                    label='How many servings does this recipe create?'
                     maxLength={50}
                     error={servingAmountError}
                     value={this.state.servingAmount}
@@ -272,6 +254,31 @@ export default class ServingsController extends React.Component {
               </form>
             </Col>
           </Row>
+
+          <Row>
+            <Col xs={12}>
+              <form
+                onSubmit={(event) => this.submitServingRatio(event)}
+                autoComplete="off">
+                <FormGroup
+                  controlId='servingsControlRatio'
+                  validationState={this.getServingsRatioValidationState()}>
+                  <TooltipInput
+                    tooltip=''
+                    tooltipPosition='bottom'
+                    type='text'
+                    label='What kind of packaging is the food sold in (bottle, container, carton ...)?'
+                    maxLength={50}
+                    error={servingRatioError}
+                    value={this.state.servingRatio}
+                    onBlur={this.handleServingsRatioBlurred.bind(this)}
+                    onChange={(value) => this.setState({servingRatio: value})}
+                  />
+                </FormGroup>
+              </form>
+            </Col>
+          </Row>
+
         </div>
       </div>
     )

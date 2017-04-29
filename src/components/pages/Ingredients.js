@@ -3,6 +3,26 @@ import Row from 'react-bootstrap/lib/Row'
 import Well from 'react-bootstrap/lib/Well'
 import * as constants from '../../constants/Constants'
 
+// Returns an array of mass, scaledIngredient pairs that have been sorted in
+// order of descending mass.
+function getSortedMassScaledIngredPairs(nutritionModel) {
+  const ingredientIds = nutritionModel.getIds()
+
+  let massScaledIngredArr = []
+
+  for (let id of ingredientIds) {
+    const scaledIngredient = nutritionModel.getScaledIngredient(id)
+    const ingredientMass = scaledIngredient.getQuantityInGrams()
+    massScaledIngredArr.push({ingredientMass, scaledIngredient})
+  }
+
+  massScaledIngredArr.sort(function(a, b) {
+    return b.ingredientMass - a.ingredientMass
+  });
+
+  return massScaledIngredArr
+}
+
 // The ingredients and contains statement as required under FALCPA are described
 // in depth here:
 //
@@ -17,17 +37,8 @@ export default class Ingredients extends React.Component {
     // Produce an ingredients list
     // Produce a contains list
     //
-    const ingredientIds = nutritionModel.getIds()
-    let massScaledIngredArr = []
-    for (let id of ingredientIds) {
-      const scaledIngredient = nutritionModel.getScaledIngredient(id)
-      const ingredientMass = scaledIngredient.getQuantityInGrams()
-      massScaledIngredArr.push({ingredientMass, scaledIngredient})
-    }
-    //
-    massScaledIngredArr.sort(function(a, b) {
-      return b.ingredientMass - a.ingredientMass
-    });
+    const massScaledIngredArr =
+      getSortedMassScaledIngredPairs(nutritionModel)
     //
     //
     let ingredients = ''

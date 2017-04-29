@@ -60,10 +60,13 @@ export default class Ingredients extends React.Component {
     //
     //
     return(
-      <Row style={{width:constants.LABEL_WIDTH, margin:'auto', marginTop:(constants.VERT_SPACE-2)}}>
-        <Well style={{background:'white'}}>
-          <b>INGREDIENTS:&nbsp;</b>{ingredients.toUpperCase()}
-        </Well>
+      <Row style={{
+          width:constants.LABEL_WIDTH, 
+          margin:'auto', 
+          marginTop:(constants.VERT_SPACE-2),
+          marginLeft: 2
+      }}>
+        <b>INGREDIENTS:&nbsp;</b>{ingredients.toUpperCase()}
       </Row>
     )
   }

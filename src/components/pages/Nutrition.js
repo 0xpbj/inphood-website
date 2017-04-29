@@ -1,5 +1,5 @@
 const React = require('react')
-import ReactGA from 'react-ga'
+// import ReactGA from 'react-ga'
 const Config = require('Config')
 import Row from 'react-bootstrap/lib/Row'
 import Col from 'react-bootstrap/lib/Col'
@@ -107,12 +107,12 @@ export default class Nutrition extends React.Component {
 
     this.props.serializeToFirebase()
 
-    ReactGA.event({
-      category: 'Nutrition Mixer',
-      action: 'User deleted ingredient',
-      nonInteraction: false,
-      label: tag
-    });
+    // ReactGA.event({
+    //   category: 'Nutrition Mixer',
+    //   action: 'User deleted ingredient',
+    //   nonInteraction: false,
+    //   label: tag
+    // });
   }
   //
   render() {

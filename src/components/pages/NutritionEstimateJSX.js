@@ -372,7 +372,7 @@ export default class NutritionEstimateJSX extends React.Component {
     // TODO: We should change this to always load from one or the other (one
     //       code path vs. these two--it creates problems for setting whether
     //       things are visible.)
-    let ingredientComposite = this.props.ingredientComposite
+    let {ingredients, ingredientComposite} = this.props
     // if (ingredientComposite === undefined) {
     //   const nutritionModel = this.props.nutritionModel
     //   if (nutritionModel != undefined) {
@@ -434,6 +434,7 @@ export default class NutritionEstimateJSX extends React.Component {
           </table>
           <p style={myStyles.smallInfo}>* Percent Daily Values are based on a 2,000 calorie diet. Your daily values may be higher or lower depending on your calorie needs.</p>
         </section>
+        {ingredients}
         {this.getGeneratedStatement(displayGeneratedStatement)}
       </Row>
     )

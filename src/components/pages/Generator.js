@@ -272,11 +272,11 @@ export default class Generator extends React.Component {
           <ProgressBar type='circular' mode='indeterminate' multicolor={true} />
         </Row>
       ) : null
+      const ingredients = (<Ingredients nutritionModel={nutritionModel}/>)
       const label = (textLabel) ? this.generateTextLabel(compositeModel)
       : (
-          <Label id='nutrition-label' ingredientComposite={compositeModel}/>
+          <Label id='nutrition-label' ingredientComposite={compositeModel} ingredients={ingredients}/>
       )
-      const ingredients = (<Ingredients nutritionModel={nutritionModel}/>)
       // TODO: if screen size <= xs, make the backgroundSize = cover (mobile first)
       const numSearches = matchResultsModel.getNumberOfSearches()
       const heightInVH = (numSearches < 4) ?
@@ -342,8 +342,6 @@ export default class Generator extends React.Component {
                       <Row style={{width:constants.LABEL_WIDTH, margin:'auto'}}>
                           {label}
                       </Row>
-
-                      {ingredients}
 
                       <Row style={{width:constants.LABEL_WIDTH, margin:'auto', marginTop:(constants.VERT_SPACE-2)}}>
                         <Well style={{background: 'white'}}>

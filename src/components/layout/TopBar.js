@@ -1,5 +1,5 @@
 const React = require('react')
-import ReactGA from 'react-ga'
+// import ReactGA from 'react-ga'
 import Row from 'react-bootstrap/lib/Row'
 import Col from 'react-bootstrap/lib/Col'
 import Modal from 'react-bootstrap/lib/Modal'
@@ -25,11 +25,11 @@ export default class TopBar extends React.Component {
   onSubmit() {
     this.setState({ show: false })
     if (this.state.data !== '') {
-      ReactGA.event({
-        category: 'User',
-        action: 'User sent email',
-        nonInteraction: false
-      });
+      // ReactGA.event({
+      //   category: 'User',
+      //   action: 'User sent email',
+      //   nonInteraction: false
+      // });
       this.props.initEmailFlow()
       this.props.getEmailData(this.state.data)
     }

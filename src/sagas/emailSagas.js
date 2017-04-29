@@ -3,7 +3,6 @@ import {
   GET_EMAIL_DATA,
 } from '../constants/ActionTypes'
 
-import ReactGA from 'react-ga'
 import { fork, take, takeLatest } from 'redux-saga/effects'
 const SES = require('aws-sdk').SES
 const Config = require('Config')

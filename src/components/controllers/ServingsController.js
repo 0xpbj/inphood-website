@@ -1,5 +1,5 @@
 const React = require('react')
-import ReactGA from 'react-ga'
+// import ReactGA from 'react-ga'
 import Row from 'react-bootstrap/lib/Row'
 import Col from 'react-bootstrap/lib/Col'
 import FormGroup from 'react-bootstrap/lib/FormGroup'
@@ -57,11 +57,11 @@ export default class ServingsController extends React.Component {
     }
     else {
       this.setState({servingSizeError: ''})
-      ReactGA.event({
-        category: 'Nutrition Mixer',
-        action: 'Servings size changed',
-        nonInteraction: false,
-      });
+      // ReactGA.event({
+      //   category: 'Nutrition Mixer',
+      //   action: 'Servings size changed',
+      //   nonInteraction: false,
+      // });
       const {servingsControlModel} = this.props.servings
       servingsControlModel.setServingSize(this.state.servingSize)
       this.updateReduxStore(servingsControlModel)
@@ -89,11 +89,11 @@ export default class ServingsController extends React.Component {
     }
     else {
       this.setState({servingUnitError: ''})
-      ReactGA.event({
-        category: 'Nutrition Mixer',
-        action: 'Servings unit changed',
-        nonInteraction: false,
-      });
+      // ReactGA.event({
+      //   category: 'Nutrition Mixer',
+      //   action: 'Servings unit changed',
+      //   nonInteraction: false,
+      // });
       const {servingsControlModel} = this.props.servings
       servingsControlModel.setServingUnit(this.state.servingUnit)
       this.updateReduxStore(servingsControlModel)
@@ -121,11 +121,11 @@ export default class ServingsController extends React.Component {
     }
     else {
       this.setState({servingRatioError: ''})
-      ReactGA.event({
-        category: 'Nutrition Mixer',
-        action: 'Servings ratio changed',
-        nonInteraction: false,
-      });
+      // ReactGA.event({
+      //   category: 'Nutrition Mixer',
+      //   action: 'Servings ratio changed',
+      //   nonInteraction: false,
+      // });
       const {servingsControlModel} = this.props.servings
       servingsControlModel.setServingRatio(this.state.servingRatio)
       this.updateReduxStore(servingsControlModel)
@@ -153,11 +153,11 @@ export default class ServingsController extends React.Component {
     }
     else {
       this.setState({servingAmountError: ''})
-      ReactGA.event({
-        category: 'Nutrition Mixer',
-        action: 'Servings amount changed',
-        nonInteraction: false,
-      });
+      // ReactGA.event({
+      //   category: 'Nutrition Mixer',
+      //   action: 'Servings amount changed',
+      //   nonInteraction: false,
+      // });
       const {servingsControlModel} = this.props.servings
       const value = rationalToFloat(this.state.servingAmount)
       servingsControlModel.setServingAmount(value)

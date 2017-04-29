@@ -1,5 +1,5 @@
 const React = require('react')
-import ReactGA from 'react-ga'
+// import ReactGA from 'react-ga'
 import Row from 'react-bootstrap/lib/Row'
 import Col from 'react-bootstrap/lib/Col'
 import Button from 'react-bootstrap/lib/Button'
@@ -49,12 +49,12 @@ export default class IngredientController extends React.Component {
       const value = rationalToFloat(this.state.editBoxValue)
       if (value) {
         const {id} = this.props
-        ReactGA.event({
-          category: 'Ingredient Model',
-          action: 'Ingredient unit changed',
-          nonInteraction: false,
-          label: id
-        });
+        // ReactGA.event({
+        //   category: 'Ingredient Model',
+        //   action: 'Ingredient unit changed',
+        //   nonInteraction: false,
+        //   label: id
+        // });
         let ingredientControlModel = this.props.ingredientControlModelRed.ingredientControlModels[id]
         ingredientControlModel.setEditBoxValue(value)
         const units = ingredientControlModel.getDropdownUnitValue()
@@ -68,12 +68,12 @@ export default class IngredientController extends React.Component {
     const {id} = this.props
     const ingredientControlModel = this.props.ingredientControlModelRed.ingredientControlModels[id]
     const value = ingredientControlModel.getEditBoxValue()
-    ReactGA.event({
-      category: 'Nutrition Mixer',
-      action: 'User changed units for ingredient',
-      nonInteraction: false,
-      label: id
-    });
+    // ReactGA.event({
+    //   category: 'Nutrition Mixer',
+    //   action: 'User changed units for ingredient',
+    //   nonInteraction: false,
+    //   label: id
+    // });
     this.updateReduxStore(id, value, units)
   }
   handleMatchDropdownChange(value) {
@@ -87,12 +87,12 @@ export default class IngredientController extends React.Component {
     if ((searchResult.getStandardRefDataObj() === undefined) &&
         (searchResult.getBrandedDataObj() === undefined)) {
       // Firebase lazy fetch
-      ReactGA.event({
-        category: 'Nutrition Mixer',
-        action: 'User triggered dropdown lazy firebase fetch',
-        nonInteraction: false,
-        label: tag
-      });
+      // ReactGA.event({
+      //   category: 'Nutrition Mixer',
+      //   action: 'User triggered dropdown lazy firebase fetch',
+      //   nonInteraction: false,
+      //   label: tag
+      // });
       let index = matchResultsModel.getIndexForDescription(tag, value)
       this.props.lazyFetchFirebase(value, id, tag, searchResult.getNdbNo(), index)
     }

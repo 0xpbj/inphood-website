@@ -5,7 +5,8 @@ import * as actionCreators from '../actions/Actions'
 
 function mapStateToProps (state) {
   return {
-    servings: state.servingsControlsReducer
+    servings: state.servingsControlsReducer,
+    nutritionModelRed: state.nutritionModelReducer,
   }
 }
 

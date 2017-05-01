@@ -301,6 +301,13 @@ export default class Generator extends React.Component {
         {backgroundColor:'rgba(255,255,255,0.85)',width:{width},height:{height}} :
         {backgroundColor:'rgba(255,255,255,0)',width:{width},height:{height}}
 
+      const nutritionTitle = (fullPage) ?
+        <Row>
+          <Col xs={12} md={12}>
+            <text style={{fontWeight: 'bold'}}>Ingredient Settings</text>
+          </Col>
+        </Row> :
+        null
       const nutrition = (fullPage) ? <Nutrition /> : null
       return (
         <Row style={sectionStyle}>
@@ -318,6 +325,7 @@ export default class Generator extends React.Component {
                       <Row>
                         {labelError}
                         <Recipe router={this.props.router} route={this.props.route} nutritionModelRed={this.props.nutritionModelRed}/>
+                        {nutritionTitle}
                         {nutrition}
                       </Row>
                     </Col>

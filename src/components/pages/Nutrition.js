@@ -169,7 +169,7 @@ export default class Nutrition extends React.Component {
 
     return (
       <div
-        style={{marginTop:10,
+        style={{marginTop:0,
                 backgroundColor:'white',
                 borderColor:'black',
                 borderRadius:5,

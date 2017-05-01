@@ -2,6 +2,7 @@ const React = require('react')
 // import ReactGA from 'react-ga'
 import Row from 'react-bootstrap/lib/Row'
 import Col from 'react-bootstrap/lib/Col'
+import Well from 'react-bootstrap/lib/Well'
 import FormGroup from 'react-bootstrap/lib/FormGroup'
 import Input from 'react-toolbox/lib/input'
 import Tooltip from 'react-toolbox/lib/tooltip'
@@ -167,6 +168,25 @@ export default class ServingsController extends React.Component {
   render() {
     const {servingsControlModel} = this.props.servings
     const {servingSizeError, servingUnitError, servingRatioError, servingAmountError} = this.state
+
+    // Ugly, but necessary for the time being--pull in the nutrition model from
+    // the nutrition model reducer to produce the mass calculated in the
+    // composite ingredient model:
+    //
+    //   TODO: look at better ways to share this data or calculate it once on
+    //         change
+    const {nutritionModel} = this.props.nutritionModelRed
+    const compositeModel = nutritionModel.getScaledCompositeIngredientModel()
+
+    let servingSzLine1 = 'Serving Size ' +
+      this.state.servingSize + ' ' + this.state.servingUnit +
+      ' (' + compositeModel.getServingAmount() + compositeModel.getServingUnit() + ')'
+
+    let servingSzLine2 = 'Servings Per ' +
+      this.state.servingRatio + ', ' + this.state.servingAmount
+
+    let servingSzLines = servingSzLine1 + '\n' + servingSzLine2
+
     return (
       <div>
         <Row>
@@ -183,17 +203,39 @@ export default class ServingsController extends React.Component {
                      marginLeft: 0,
                      backgroundColor: 'white'}}>
 
+         <Row>
+           <Col xs={12}>
+            <form
+              onSubmit={(event) => this.submitServingUnit(event)}
+              autoComplete="off">
+              <FormGroup
+                style={{marginBottom: 0}}
+                controlId='servingsControlUnit'
+                validationState={this.getServingUnitValidationState()}>
+                <Input
+                  type='text'
+                  label='What is a portion of this food called (i.e. cookie, taco ...)?'
+                  maxLength={50}
+                  error={servingUnitError}
+                  value={this.state.servingUnit}
+                  onBlur={this.handleServingUnitBlurred.bind(this)}
+                  onChange={(value) => this.setState({servingUnit: value})}
+                />
+              </FormGroup>
+            </form>
+          </Col>
+         </Row>
+
           <Row>
             <Col xs={12}>
               <form
                 onSubmit={(event) => this.submitServingSize(event)}
                 autoComplete="off">
-                <FormGroup style={{marginBottom: 0}}
+                <FormGroup
+                  style={{marginBottom: 0}}
                   controlId='servingsControlUnit'
                   validationState={this.getServingsSizeValidationState()}>
-                  <TooltipInput
-                    tooltip=''
-                    tooltipPosition='bottom'
+                  <Input
                     type='text'
                     label='How many portions are in a serving of this food?'
                     maxLength={50}
@@ -206,29 +248,38 @@ export default class ServingsController extends React.Component {
               </form>
             </Col>
           </Row>
-          
+
           <Row>
             <Col xs={12}>
-             <form
-               onSubmit={(event) => this.submitServingUnit(event)}
-               autoComplete="off">
-               <FormGroup style={{marginBottom: 0}}
-                 controlId='servingsControlUnit'
-                 validationState={this.getServingUnitValidationState()}>
-                 <TooltipInput
-                   tooltip='Leave this blank if it does not make sense to specify a portion name.'
-                   tooltipPosition='bottom'
-                   type='text'
-                   label='What is a portion of this food called (i.e. cookie, taco ...)?'
-                   maxLength={50}
-                   error={servingUnitError}
-                   value={this.state.servingUnit}
-                   onBlur={this.handleServingUnitBlurred.bind(this)}
-                   onChange={(value) => this.setState({servingUnit: value})}
-                 />
-               </FormGroup>
-             </form>
-           </Col>
+              <Well className="small" style={{background: 'white', padding:5, color:'silver'}}>
+                FDA guidance for portion sizes can be found here: <a href='https://www.gpo.gov/fdsys/pkg/CFR-2012-title21-vol2/xml/CFR-2012-title21-vol2-sec101-12.xml'>
+                  CFR-2012 Sec. 101.12</a>. A newer document for the new 2018 label standard is also available: <a href='https://www.ecfr.gov/cgi-bin/text-idx?SID=62495b8594bd56b22aa3e34ae8cbbf67&mc=true&node=se21.2.101_112&rgn=div8'>
+                  e-CFR-2017 Sec. 101.12</a>.
+              </Well>
+            </Col>
+          </Row>
+
+          <Row>
+            <Col xs={12}>
+              <form
+                onSubmit={(event) => this.submitServingRatio(event)}
+                autoComplete="off">
+                <FormGroup
+                  style={{marginBottom: 0, marginTop: 20}}
+                  controlId='servingsControlRatio'
+                  validationState={this.getServingsRatioValidationState()}>
+                  <Input
+                    type='text'
+                    label='How is this food distributed (bottle, container, package, recipe ...)?'
+                    maxLength={50}
+                    error={servingRatioError}
+                    value={this.state.servingRatio}
+                    onBlur={this.handleServingsRatioBlurred.bind(this)}
+                    onChange={(value) => this.setState({servingRatio: value})}
+                  />
+                </FormGroup>
+              </form>
+            </Col>
           </Row>
 
           <Row>
@@ -237,11 +288,10 @@ export default class ServingsController extends React.Component {
                 onSubmit={(event) => this.submitServingsAmount(event)}
                 autoComplete="off">
                 <FormGroup
+                  style={{marginBottom: 0}}
                   controlId='servingsControlAmount'
                   validationState={this.getServingsAmountValidationState()}>
-                  <TooltipInput
-                    tooltip=''
-                    tooltipPosition='bottom'
+                  <Input
                     type='text'
                     label='How many servings does this recipe create?'
                     maxLength={50}
@@ -255,25 +305,23 @@ export default class ServingsController extends React.Component {
             </Col>
           </Row>
 
+          {/* Reflect the two lines shown in the nutrition label--allow them
+              to be edited--full-override--by the user: */}
           <Row>
             <Col xs={12}>
               <form
-                onSubmit={(event) => this.submitServingRatio(event)}
                 autoComplete="off">
                 <FormGroup
-                  controlId='servingsControlRatio'
-                  validationState={this.getServingsRatioValidationState()}>
-                  <TooltipInput
-                    tooltip=''
-                    tooltipPosition='bottom'
+                  style={{marginBottom: 0, marginTop: 20}}
+                  controlId='servingsControlRatio'>
+                  <Input
+                    style={{paddingTop: 20}}
+                    multiline
+                    rows={2}
                     type='text'
-                    label='What kind of packaging is the food sold in (bottle, container, carton ...)?'
-                    maxLength={50}
-                    error={servingRatioError}
-                    value={this.state.servingRatio}
-                    onBlur={this.handleServingsRatioBlurred.bind(this)}
-                    onChange={(value) => this.setState({servingRatio: value})}
-                  />
+                    label='These serving size statements appear on your label (but can be further customized here):'
+                    maxLength={200}
+                    value={servingSzLines}/>
                 </FormGroup>
               </form>
             </Col>

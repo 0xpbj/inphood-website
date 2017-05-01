@@ -185,30 +185,6 @@ export default class ServingsController extends React.Component {
 
           <Row>
             <Col xs={12}>
-             <form
-               onSubmit={(event) => this.submitServingUnit(event)}
-               autoComplete="off">
-               <FormGroup style={{marginBottom: 0}}
-                 controlId='servingsControlUnit'
-                 validationState={this.getServingUnitValidationState()}>
-                 <TooltipInput
-                   tooltip='Leave this blank if it does not make sense to specify a portion name.'
-                   tooltipPosition='bottom'
-                   type='text'
-                   label='What is a portion of this food called (i.e. cookie, taco ...)?'
-                   maxLength={50}
-                   error={servingUnitError}
-                   value={this.state.servingUnit}
-                   onBlur={this.handleServingUnitBlurred.bind(this)}
-                   onChange={(value) => this.setState({servingUnit: value})}
-                 />
-               </FormGroup>
-             </form>
-           </Col>
-          </Row>
-
-          <Row>
-            <Col xs={12}>
               <form
                 onSubmit={(event) => this.submitServingSize(event)}
                 autoComplete="off">
@@ -229,6 +205,30 @@ export default class ServingsController extends React.Component {
                 </FormGroup>
               </form>
             </Col>
+          </Row>
+          
+          <Row>
+            <Col xs={12}>
+             <form
+               onSubmit={(event) => this.submitServingUnit(event)}
+               autoComplete="off">
+               <FormGroup style={{marginBottom: 0}}
+                 controlId='servingsControlUnit'
+                 validationState={this.getServingUnitValidationState()}>
+                 <TooltipInput
+                   tooltip='Leave this blank if it does not make sense to specify a portion name.'
+                   tooltipPosition='bottom'
+                   type='text'
+                   label='What is a portion of this food called (i.e. cookie, taco ...)?'
+                   maxLength={50}
+                   error={servingUnitError}
+                   value={this.state.servingUnit}
+                   onBlur={this.handleServingUnitBlurred.bind(this)}
+                   onChange={(value) => this.setState({servingUnit: value})}
+                 />
+               </FormGroup>
+             </form>
+           </Col>
           </Row>
 
           <Row>

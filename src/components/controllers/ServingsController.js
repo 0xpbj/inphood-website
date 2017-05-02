@@ -4,9 +4,13 @@ import Row from 'react-bootstrap/lib/Row'
 import Col from 'react-bootstrap/lib/Col'
 import Well from 'react-bootstrap/lib/Well'
 import FormGroup from 'react-bootstrap/lib/FormGroup'
+
 import Input from 'react-toolbox/lib/input'
 import Tooltip from 'react-toolbox/lib/tooltip'
 const TooltipInput = Tooltip(Input)
+import {IconButton} from 'react-toolbox/lib/button'
+const TooltipButton = Tooltip(IconButton)
+
 import {isNumeric, isValidString, rationalToFloat} from '../../helpers/ConversionUtils'
 
 
@@ -21,8 +25,53 @@ export default class ServingsController extends React.Component {
       servingSizeError: '',
       servingUnitError: '',
       servingAmountError: '',
-      servingRatioError: ''
+      servingRatioError: '',
+      servingSizeLines: '',
+      userServingSizeLines: false
     }
+  }
+  getGeneratedServingSizeLines() {
+    // Ugly, but necessary for the time being--pull in the nutrition model from
+    // the nutrition model reducer to produce the mass calculated in the
+    // composite ingredient model:
+    //
+    //   TODO: look at better ways to share this data or calculate it once on
+    //         change
+    const {nutritionModel} = this.props.nutritionModelRed
+    const compositeModel = nutritionModel.getScaledCompositeIngredientModel()
+
+    let servingSzLine1 = 'Serving Size ' +
+      this.state.servingSize + ' ' + this.state.servingUnit +
+      ' (' + compositeModel.getServingAmount() + compositeModel.getServingUnit() + ')'
+
+    let servingSzLine2 = 'Servings Per ' +
+      this.state.servingRatio + ', ' + this.state.servingAmount
+
+    return servingSzLine1 + '\n' + servingSzLine2
+  }
+  updateServingSizeLines(reset = false) {
+    if (this.state.userServingSizeLines && !reset) {
+      return
+    }
+
+    const servingSizeLines = this.getGeneratedServingSizeLines()
+    if (reset === true) {
+      this.setState({servingSizeLines, userServingSizeLines: false})
+    } else {
+      this.setState({servingSizeLines})
+    }
+  }
+  handleServingSizeLinesChange(editBoxValue) {
+    this.setState({servingSizeLines: editBoxValue.value, userServingSizeLines: true})
+  }
+  handleReset() {
+    this.updateServingSizeLines(true)
+  }
+  //
+  componentWillReceiveProps() {
+    // TODO: probably look at using redux store based update model for servingSizeLines
+    //       (this works b/c the nutrition model changes and results in this getting called)
+    this.updateServingSizeLines()
   }
   componentWillMount() {
     const {servingsControlModel} = this.props.servings
@@ -36,6 +85,8 @@ export default class ServingsController extends React.Component {
     this.props.setServingsControllerModel(servingsControlModel)
     this.props.nutritionModelSetServings(servingsControlModel)
     this.props.serializeToFirebase()
+
+    this.updateServingSizeLines()
   }
   //
   //
@@ -178,15 +229,6 @@ export default class ServingsController extends React.Component {
     const {nutritionModel} = this.props.nutritionModelRed
     const compositeModel = nutritionModel.getScaledCompositeIngredientModel()
 
-    let servingSzLine1 = 'Serving Size ' +
-      this.state.servingSize + ' ' + this.state.servingUnit +
-      ' (' + compositeModel.getServingAmount() + compositeModel.getServingUnit() + ')'
-
-    let servingSzLine2 = 'Servings Per ' +
-      this.state.servingRatio + ', ' + this.state.servingAmount
-
-    let servingSzLines = servingSzLine1 + '\n' + servingSzLine2
-
     return (
       <div>
         <Row>
@@ -232,7 +274,7 @@ export default class ServingsController extends React.Component {
                 onSubmit={(event) => this.submitServingSize(event)}
                 autoComplete="off">
                 <FormGroup
-                  style={{marginBottom: 0}}
+                  style={{marginBottom: 5}}
                   controlId='servingsControlUnit'
                   validationState={this.getServingsSizeValidationState()}>
                   <Input
@@ -288,7 +330,7 @@ export default class ServingsController extends React.Component {
                 onSubmit={(event) => this.submitServingsAmount(event)}
                 autoComplete="off">
                 <FormGroup
-                  style={{marginBottom: 0}}
+                  style={{marginBottom: 5}}
                   controlId='servingsControlAmount'
                   validationState={this.getServingsAmountValidationState()}>
                   <Input
@@ -305,25 +347,44 @@ export default class ServingsController extends React.Component {
             </Col>
           </Row>
 
+          <Row>
+            <Col xs={12}>
+              <Well className="small" style={{background: 'white', padding:5, color:'silver'}}>
+                Based on the number of servings this recipe creates, we've determined that each serving weighs: {compositeModel.getServingAmount()}{compositeModel.getServingUnit()}
+              </Well>
+            </Col>
+          </Row>
+
           {/* Reflect the two lines shown in the nutrition label--allow them
               to be edited--full-override--by the user: */}
           <Row>
-            <Col xs={12}>
+            <Col xs={11} style={{paddingRight: 0}}>
               <form
                 autoComplete="off">
                 <FormGroup
                   style={{marginBottom: 0, marginTop: 20}}
                   controlId='servingsControlRatio'>
                   <Input
+                    type='text'
+                    label='These serving size statements appear on your label (but can be further customized here):'
                     style={{paddingTop: 20}}
                     multiline
                     rows={2}
-                    type='text'
-                    label='These serving size statements appear on your label (but can be further customized here):'
                     maxLength={200}
-                    value={servingSzLines}/>
+                    value={this.state.servingSizeLines}
+                    onChange={(value) => this.handleServingSizeLinesChange({value})}/>
                 </FormGroup>
               </form>
+            </Col>
+            <Col>
+              <TooltipButton
+                tooltip='Reset the serving size statements to generated values.'
+                tooltipPosition='right'
+                tooltipDelay={500}
+                icon='repeat'
+                style={{color: 'green', paddingTop: 60}}
+                onClick={this.handleReset.bind(this)}
+              />
             </Col>
           </Row>
 

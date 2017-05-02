@@ -5,6 +5,20 @@
 //       Alternately we could populate this in a build step.
 //
 export const SearchHeuristics = {
+  'kiwi' : {'alias' : 'kiwi fruit'},
+  'kiwis' : {'alias' : 'kiwi fruit'},
+  'kiwi fruit' : [
+      {
+        'ndbNo' : '09148',
+        'Description' : 'Kiwifruit, green, raw',
+        'inPhood001' : 'Kiwifruit, green, raw'
+      },
+      {
+        'ndbNo' : '09520',
+        'Description' : 'Kiwifruit, ZESPRI SunGold, raw',
+        'inPhood001' : 'Kiwifruit, ZESPRI SunGold, raw'
+      }
+    ],
   'cinnamon' : [
       {
         'ndbNo' : '02010',

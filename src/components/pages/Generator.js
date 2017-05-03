@@ -32,7 +32,7 @@ import TopBar from '../../containers/TopBarContainer'
 import Results from '../../containers/ResultsContainer'
 
 // import Login from '../../containers/LoginContainer'
-import LoginDialog from './LoginDialog'
+// import LoginDialog from './LoginDialog'
 import Recipe from '../../containers/RecipeContainer'
 import Nutrition from '../../containers/NutritionContainer'
 import Label from './NutritionEstimateJSX'
@@ -332,7 +332,7 @@ export default class Generator extends React.Component {
                       <Row>
                         {labelError}
                         <Recipe router={this.props.router} route={this.props.route} nutritionModelRed={this.props.nutritionModelRed}/>
-                        <LoginDialog handleLoginToggle={this.handleLoginToggle.bind(this)} />
+                        {/*<LoginDialog handleLoginToggle={this.handleLoginToggle.bind(this)} />*/}
                         {nutritionTitle}
                         {nutrition}
                       </Row>

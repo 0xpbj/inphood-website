@@ -31,6 +31,8 @@ import Footer from '../../containers/FooterContainer'
 import TopBar from '../../containers/TopBarContainer'
 import Results from '../../containers/ResultsContainer'
 
+// import Login from '../../containers/LoginContainer'
+import LoginDialog from './LoginDialog'
 import Recipe from '../../containers/RecipeContainer'
 import Nutrition from '../../containers/NutritionContainer'
 import Label from './NutritionEstimateJSX'
@@ -78,7 +80,8 @@ export default class Generator extends React.Component {
       showShareUrl: false,
       textLabel: false,
       copiedUrl: false,
-      embed: false
+      embed: false,
+      loginActive: false
     }
   }
   componentWillMount() {
@@ -108,6 +111,9 @@ export default class Generator extends React.Component {
       this.setState({copiedUrl: false, showShareUrl: false})
     }
   }
+  handleLoginToggle() {
+    this.setState({loginActive: !this.state.loginActive})
+  }
   shareLabel(flag) {
     const {unusedTags, matchResultsModel} = this.props.tagModel
     const usefulIngredients = matchResultsModel.getNumberOfSearches() - unusedTags.length
@@ -119,6 +125,7 @@ export default class Generator extends React.Component {
         nonInteraction: false
       });
       this.setState({embed: flag, showShareUrl: true})
+      this.handleLoginToggle()
     }
     else {
       this.setState({labelErrorFlag: true, showShareUrl: false, copiedUrl: false})
@@ -129,18 +136,18 @@ export default class Generator extends React.Component {
       return (
         <Dropdown id='shareDropdown'>
           <Dropdown.Toggle bsStyle='success'>
-            <Glyphicon glyph="share-alt" />&nbsp;&nbsp;Share Label
+            <Glyphicon glyph="share-alt" />&nbsp;&nbsp;Generate Label
           </Dropdown.Toggle>
           <Dropdown.Menu>
             <MenuItem
               eventKey='1'
-              onClick={() => this.shareLabel(true)}>
-              Embed Link&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-edit"></Glyphicon>
+              onClick={() => this.shareLabel(false)}>
+              Print Label&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-share"></Glyphicon>
             </MenuItem>
             <MenuItem
               eventKey='2'
-              onClick={() => this.shareLabel(false)}>
-              Share Link&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-share"></Glyphicon>
+              onClick={() => this.shareLabel(true)}>
+              Embed Label&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-edit"></Glyphicon>
             </MenuItem>
           </Dropdown.Menu>
         </Dropdown>
@@ -159,7 +166,7 @@ export default class Generator extends React.Component {
       return (
         <Dropdown id='customLabelDropdown'>
           <Dropdown.Toggle bsStyle='warning'>
-            <Glyphicon glyph="wrench" />&nbsp;&nbsp;Custom Label
+            <Glyphicon glyph="wrench" />&nbsp;&nbsp;Customize Label
           </Dropdown.Toggle>
           <Dropdown.Menu>
             <MenuItem
@@ -325,6 +332,7 @@ export default class Generator extends React.Component {
                       <Row>
                         {labelError}
                         <Recipe router={this.props.router} route={this.props.route} nutritionModelRed={this.props.nutritionModelRed}/>
+                        <LoginDialog handleLoginToggle={this.handleLoginToggle.bind(this)} />
                         {nutritionTitle}
                         {nutrition}
                       </Row>

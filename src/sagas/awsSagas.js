@@ -80,7 +80,7 @@ function* loadLabelToAWS() {
   const url = 'http://www.image.inphood.com/' + key + '/' + labelFormat + extension
   const shareUrl = <a href={url} target='_blank'>{url}</a>
   const embedUrl = '<a href=\'https://www.inphood.com\' target=\'_blank\'><img width="340" src=\''+url+'\'/></a>'
-  yield call(delay, 100)
+  yield call(delay, 500)
   yield put ({type: SET_SHARE_URL, shareUrl, embedUrl})
 }
 

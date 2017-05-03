@@ -25,20 +25,33 @@ export default class NutritionEstimateJSX extends React.Component {
   }
 
   getLabelTitle(styles, ingredientComposite) {
-    const servingSizeSentence =
-      "Serving Size " +
-      ingredientComposite.getDisplayServingCount() + " " +
-      ingredientComposite.getDisplayServingUnit() + " (" +
-      ingredientComposite.getServingAmount() +
-      ingredientComposite.getServingUnit() + ")"
+    let servingInfo = []
+    let suggestedServingsLines = ingredientComposite.getSuggestedServingsLines()
+    if (suggestedServingsLines || suggestedServingsLines === '') {
+      let servingLines = suggestedServingsLines.split(/\r?\n/)
+      // TODO: error check (i.e. max 2 lines etc.)
+      for (let line = 0; line < servingLines.length; ++line) {
+        servingInfo.push(servingLines[line])
+        if (line !== (servingLines.length - 1)) {
+          servingInfo.push(<br key={0}/>)
+        }
+      }
+    } else {
+      const servingSizeSentence =
+        "Serving Size " +
+        ingredientComposite.getDisplayServingCount() + " " +
+        ingredientComposite.getDisplayServingUnit() + " (" +
+        ingredientComposite.getServingAmount() +
+        ingredientComposite.getServingUnit() + ")"
 
-    let servingInfo = [servingSizeSentence]
-    if (ingredientComposite.getSuggestedServingUnit() === 'people') {
-      servingInfo.push(<br key={0}/>)
-      servingInfo.push('Servings Per ' +
-                       ingredientComposite.getDisplayServingRatio() +
-                       ' ' +
-                       ingredientComposite.getSuggestedServingAmount())
+      servingInfo = [servingSizeSentence]
+      if (ingredientComposite.getSuggestedServingUnit() === 'people') {
+        servingInfo.push(<br key={0}/>)
+        servingInfo.push('Servings Per ' +
+                         ingredientComposite.getDisplayServingRatio() +
+                         ' ' +
+                         ingredientComposite.getSuggestedServingAmount())
+      }
     }
 
     return (

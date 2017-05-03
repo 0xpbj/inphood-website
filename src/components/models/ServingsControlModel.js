@@ -1,6 +1,6 @@
 export class ServingsControlModel {
   constructor() {
-    this._servingSize = 2
+    this._servingSize = 1
     // _servingUnit, _servingRatio and _servingAmount are solely for display purposes on the
     // label--i.e. 2 tacos.  The real math is done with this._servingSize above.
     this._servingUnit = 'plate'

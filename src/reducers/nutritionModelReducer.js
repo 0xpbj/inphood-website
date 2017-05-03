@@ -4,6 +4,7 @@ import {
   NM_ADD_INGREDIENT,
   NM_REM_INGREDIENT,
   NM_SET_SERVINGS,
+  NM_SET_SERVINGS_LINES,
   NM_SCALE_INGREDIENT,
   NM_SET_LABEL_TYPE
 } from '../constants/ActionTypes'
@@ -50,6 +51,15 @@ export default function nmModelFun(state = initialState, action) {
                                                servingsControlModel.getServingSize(),
                                                servingsControlModel.getServingUnit(),
                                                servingsControlModel.getServingRatio())
+      return {
+        ...state,
+        nutritionModel: nutritionModel
+      }
+    }
+    case NM_SET_SERVINGS_LINES:
+    {
+      let {nutritionModel} = state
+      nutritionModel.setSuggestedServingsLines(action.servingsLines)
       return {
         ...state,
         nutritionModel: nutritionModel

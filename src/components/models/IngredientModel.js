@@ -159,6 +159,8 @@ export class IngredientModel {
     this._displayServingUnit = 'serving'
 
     this._displayServingRatio = 'Recipe, About'
+
+    this._suggestedServingsLines = undefined
     //
     //   Generic measures/Unit:
     this._servingAmount = 1
@@ -337,6 +339,9 @@ export class IngredientModel {
     }
     if (ingredientData.hasOwnProperty('_displayServingRatio')) {
       this._displayServingRatio = ingredientData._displayServingRatio
+    }
+    if (ingredientData.hasOwnProperty('_suggestedServingsLines')) {
+      this._suggestedServingsLines = ingredientData._suggestedServingsLines
     }
     // 9 calories per gram of fat:
     this._caloriesFromFat = ingredientData._caloriesFromFat
@@ -642,6 +647,14 @@ export class IngredientModel {
 
   getDisplayServingRatio() {
     return this._displayServingRatio
+  }
+
+  setSuggestedServingsLines(suggestedServingsLines) {
+    this._suggestedServingsLines = suggestedServingsLines
+  }
+
+  getSuggestedServingsLines() {
+    return this._suggestedServingsLines
   }
 
   setLabelType(aLabelType) {

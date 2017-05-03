@@ -10,6 +10,7 @@ import {
   UPDATE_MATCH_RESULTS_MODEL,
   NM_REM_INGREDIENT,
   NM_SET_SERVINGS,
+  NM_SET_SERVINGS_LINES,
   NM_SCALE_INGREDIENT,
   NM_SET_LABEL_TYPE,
   IM_UPDATE_MODEL,
@@ -119,6 +120,13 @@ export function nutritionModelSetServings(servingsControlModel) {
   return {
     type: NM_SET_SERVINGS,
     servingsControlModel
+  }
+}
+
+export function nutritionModelSetServingsLines(servingsLines) {
+  return {
+    type: NM_SET_SERVINGS_LINES,
+    servingsLines
   }
 }
 

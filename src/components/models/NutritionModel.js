@@ -75,6 +75,8 @@ export class NutritionModel {
     // 'Servings Per Recipe, About 4' or '1 serving per container'
     this._displayServingRatio = 'Recipe, About'
 
+    this._suggestedServingsLines = undefined
+
     // Persist the type of label in the nutrition model and composite
     // ingredient model. Valid label types include:
     //    - standard
@@ -102,6 +104,10 @@ export class NutritionModel {
 
     if (nutritionData.hasOwnProperty('_displayServingRatio')) {
       this._displayServingRatio = nutritionData._displayServingRatio
+    }
+
+    if (nutritionData.hasOwnProperty('_suggestedServingsLines')) {
+      this._suggestedServingsLines = nutritionData._suggestedServingsLines
     }
 
     //
@@ -210,6 +216,10 @@ export class NutritionModel {
     this._displayServingRatio = displayServingRatio
   }
 
+  setSuggestedServingsLines(suggestedServingsLines) {
+    this._suggestedServingsLines = suggestedServingsLines
+  }
+
   getSuggestedServingValue() {
     return this._suggestedServingValue
   }
@@ -230,6 +240,10 @@ export class NutritionModel {
     return this._displayServingRatio
   }
 
+  getSuggestedServingsLines() {
+    return this._suggestedServingsLines
+  }
+
   getScaledCompositeIngredientModel() {
     var compositeIngredient = new IngredientModel()
     compositeIngredient.initializeComposite(this._scaledIngredients)
@@ -240,6 +254,7 @@ export class NutritionModel {
                                           this._displayServingRatio)
     compositeIngredient.setLabelType(this._labelType)
     compositeIngredient.setRoundingStyle(this._roundingStyle)
+    compositeIngredient.setSuggestedServingsLines(this._suggestedServingsLines)
     return compositeIngredient
   }
 

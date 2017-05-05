@@ -6,6 +6,7 @@ import email from './emailSagas'
 import aws from './awsSagas'
 import fda from './fdaSagas'
 import parser from './parserSagas'
+import login from './loginSagas'
 
 export default function* rootSaga() {
   yield fork(match)
@@ -15,4 +16,5 @@ export default function* rootSaga() {
   yield fork(aws)
   yield fork(fda)
   yield fork(parser)
+  yield fork(login)
 }

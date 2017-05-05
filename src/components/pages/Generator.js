@@ -31,8 +31,7 @@ import Footer from '../../containers/FooterContainer'
 import TopBar from '../../containers/TopBarContainer'
 import Results from '../../containers/ResultsContainer'
 
-// import Login from '../../containers/LoginContainer'
-// import LoginDialog from './LoginDialog'
+import Login from '../../containers/LoginContainer'
 import Recipe from '../../containers/RecipeContainer'
 import Nutrition from '../../containers/NutritionContainer'
 import Label from './NutritionEstimateJSX'
@@ -43,34 +42,6 @@ import {IngredientControlModel} from '../models/IngredientControlModel'
 
 const Config = require('Config')
 import Fingerprint2 from 'fingerprintjs2'
-
-// import {
-//   ShareCounts,
-//   ShareButtons,
-//   generateShareIcon
-// } from 'react-share'
-
-// const {
-//   TwitterShareButton,
-//   LinkedinShareButton,
-//   FacebookShareButton,
-//   PinterestShareButton,
-//   GooglePlusShareButton,
-// } = ShareButtons
-
-// const {
-//   TwitterShareCount,
-//   FacebookShareCount,
-//   LinkedinShareCount,
-//   PinterestShareCount,
-//   GooglePlusShareCount,
-// } = ShareCounts
-
-// const TwitterIcon = generateShareIcon('twitter')
-// const FacebookIcon = generateShareIcon('facebook')
-// const LinkedinIcon = generateShareIcon('linkedin')
-// const GooglePlusIcon = generateShareIcon('google')
-// const PinterestIcon = generateShareIcon('pinterest')
 
 export default class Generator extends React.Component {
   constructor() {
@@ -111,28 +82,30 @@ export default class Generator extends React.Component {
       this.setState({copiedUrl: false, showShareUrl: false})
     }
   }
-  handleLoginToggle() {
-    this.setState({loginActive: !this.state.loginActive})
-  }
   shareLabel(flag) {
-    const {unusedTags, matchResultsModel} = this.props.tagModel
-    const usefulIngredients = matchResultsModel.getNumberOfSearches() - unusedTags.length
-    if (this.props.nutrition.key && usefulIngredients) {
-      this.props.saveLabelToAws()
-      ReactGA.event({
-        category: 'Results',
-        action: 'User sharing results',
-        nonInteraction: false
-      });
-      this.setState({embed: flag, showShareUrl: true})
-      this.handleLoginToggle()
+    const {initLogin} = this.props.loginRed
+    if (initLogin) {
+      const {unusedTags, matchResultsModel} = this.props.tagModel
+      const usefulIngredients = matchResultsModel.getNumberOfSearches() - unusedTags.length
+      if (this.props.nutrition.key && usefulIngredients) {
+        this.props.saveLabelToAws()
+        ReactGA.event({
+          category: 'Results',
+          action: 'User sharing results',
+          nonInteraction: false
+        });
+        this.setState({embed: flag, showShareUrl: true})
+      }
+      else {
+        this.setState({labelErrorFlag: true, showShareUrl: false, copiedUrl: false})
+      }
     }
-    else {
-      this.setState({labelErrorFlag: true, showShareUrl: false, copiedUrl: false})
-    }
+    else
+      this.props.initLogin()
   }
   shareLabelButton(fullPage) {
     if (fullPage) {
+      const {embed, showShareUrl} = this.state
       return (
         <Dropdown id='shareDropdown'>
           <Dropdown.Toggle bsStyle='success'>
@@ -141,11 +114,13 @@ export default class Generator extends React.Component {
           <Dropdown.Menu>
             <MenuItem
               eventKey='1'
+              active={!embed && showShareUrl}
               onClick={() => this.shareLabel(false)}>
               Print Label&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-share"></Glyphicon>
             </MenuItem>
             <MenuItem
               eventKey='2'
+              active={embed && showShareUrl}
               onClick={() => this.shareLabel(true)}>
               Embed Label&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-edit"></Glyphicon>
             </MenuItem>
@@ -157,12 +132,19 @@ export default class Generator extends React.Component {
       return null
   }
   customLabelFlow(textLabel, labelType) {
-    this.setState({textLabel})
-    this.props.setLabelType(labelType)
-    this.props.serializeToFirebase()
+    const {initLogin} = this.props.loginRed
+    if (initLogin) {
+      this.setState({textLabel})
+      this.props.setLabelType(labelType)
+      this.props.serializeToFirebase()
+    }
+    else
+      this.props.initLogin()
   }
   customLabelButton(fullPage) {
     if (fullPage) {
+      const {nutritionModel} = this.props.nutritionModelRed
+      const labelType = nutritionModel.getLabelType()
       return (
         <Dropdown id='customLabelDropdown'>
           <Dropdown.Toggle bsStyle='warning'>
@@ -171,16 +153,19 @@ export default class Generator extends React.Component {
           <Dropdown.Menu>
             <MenuItem
               eventKey='1'
+              active={labelType === IngredientModel.labelTypes.standard}
               onClick={() => this.customLabelFlow(false, IngredientModel.labelTypes.standard)}>
               Standard Label&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-grain"></Glyphicon>
             </MenuItem>
             <MenuItem
               eventKey='2'
+              active={labelType === IngredientModel.labelTypes.complete}
               onClick={() => this.customLabelFlow(false, IngredientModel.labelTypes.complete)}>
               Complete Label&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-tree-deciduous"></Glyphicon>
             </MenuItem>
             <MenuItem
               eventKey='3'
+              active={labelType === IngredientModel.labelTypes.micronut}
               onClick={() => this.customLabelFlow(false, IngredientModel.labelTypes.micronut)}>
               Micronutrient Label&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-stats"></Glyphicon>
             </MenuItem>
@@ -191,6 +176,7 @@ export default class Generator extends React.Component {
             </MenuItem>*/}
             <MenuItem
               eventKey='5'
+              active={labelType === IngredientModel.labelTypes.text}
               onClick={() => this.customLabelFlow(true, IngredientModel.labelTypes.text)}>
               Text Label&nbsp;&nbsp;<Glyphicon glyph="glyphicon glyphicon-text-color"></Glyphicon>
             </MenuItem>
@@ -332,7 +318,7 @@ export default class Generator extends React.Component {
                       <Row>
                         {labelError}
                         <Recipe router={this.props.router} route={this.props.route} nutritionModelRed={this.props.nutritionModelRed}/>
-                        {/*<LoginDialog handleLoginToggle={this.handleLoginToggle.bind(this)} />*/}
+                        <Login />
                         {nutritionTitle}
                         {nutrition}
                       </Row>

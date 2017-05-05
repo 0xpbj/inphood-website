@@ -66,8 +66,8 @@ export default class TopBar extends React.Component {
               <Row>
               <Col xs={4}/>
               <Col xs={4}>
-                <Button bsStyle="link" onClick={open} style={{fontSize: 20, marginTop: 20}}>
-                  <Glyphicon glyph="glyphicon glyphicon-comment" />&nbsp;&nbsp;Suggestions?
+                <Button bsStyle="link" onClick={() => this.props.initLogin()} style={{fontSize: 20, marginTop: 20}}>
+                  Login
                 </Button>
               </Col>
               <Modal onHide={close} show={this.state.show} bsSize="small" aria-labelledby="contained-modal-title-sm">

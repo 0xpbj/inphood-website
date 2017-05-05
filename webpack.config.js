@@ -82,7 +82,9 @@ module.exports = {
   externals: {
     'Config': JSON.stringify({
       instagram : '7ca65e72ec6f4763aae5ad5e3779a1f8',
-      redirect_uri:'http://127.0.0.1:3000/',
+      facebook: '669941103143805',
+      google: '529180412076-r0tlp01nvvavi339qodfo4n6716ohjcg.apps.googleusercontent.com',
+      redirect_uri:'http://localhost:3000/',
       FIREBASE_API_KEY:'AIzaSyBmW9xYOdOWcasrKN102p9RCoWhG97hMeY',
       FIREBASE_AUTH_DOMAIN:'inphooddb-e0dfd.firebaseio.com',
       FIREBASE_DATABASE_URL:'https://inphooddb-e0dfd.firebaseio.com',

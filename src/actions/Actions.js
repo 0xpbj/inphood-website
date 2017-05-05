@@ -31,9 +31,11 @@ import {
   SAVE_LABEL_AWS,
   INCREMENT_ID,
   INIT_LOG_IN,
+  INIT_LOG_OUT,
   CANCEL_LOG_IN,
   LOGIN_REQUEST,
   LOGOUT_REQUEST,
+  EM_LOGIN_REQUEST
 } from '../constants/ActionTypes'
 
 export function saveToCloud() {
@@ -253,6 +255,12 @@ export function initLogin() {
   }
 }
 
+export function initLogout() {
+  return {
+    type: INIT_LOG_OUT
+  }
+}
+
 export function cancelLogin() {
   return {
     type: CANCEL_LOG_IN
@@ -269,5 +277,14 @@ export function loginRequest(flag) {
 export function logoutRequest() {
   return {
     type: LOGOUT_REQUEST
+  }
+}
+
+export function emailLogin(user, password, signup) {
+  return {
+    type: EM_LOGIN_REQUEST,
+    user,
+    password,
+    signup
   }
 }

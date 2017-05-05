@@ -83,8 +83,8 @@ export default class Generator extends React.Component {
     }
   }
   shareLabel(flag) {
-    const {initLogin} = this.props.loginRed
-    if (initLogin) {
+    const {result} = this.props.loginRed
+    if (result) {
       const {unusedTags, matchResultsModel} = this.props.tagModel
       const usefulIngredients = matchResultsModel.getNumberOfSearches() - unusedTags.length
       if (this.props.nutrition.key && usefulIngredients) {
@@ -132,8 +132,8 @@ export default class Generator extends React.Component {
       return null
   }
   customLabelFlow(textLabel, labelType) {
-    const {initLogin} = this.props.loginRed
-    if (initLogin) {
+    const {result} = this.props.loginRed
+    if (result) {
       this.setState({textLabel})
       this.props.setLabelType(labelType)
       this.props.serializeToFirebase()

@@ -4,7 +4,9 @@ import TopBar from '../components/layout/TopBar'
 import * as actionCreators from '../actions/Actions'
 
 function mapStateToProps (state) {
-  return {}
+  return {
+    loginRed: state.loginReducer
+  }
 }
 
 function mapDispatchToProps (dispatch) {

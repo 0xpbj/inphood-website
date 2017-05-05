@@ -13,11 +13,11 @@ const Config = require('Config')
 const firebase = require('firebase')
 import Fingerprint2 from 'fingerprintjs2'
 
-const firebaseLogin = () => {
-  return firebase.auth().signInAnonymously()
-  .then(user => ({ user }))
-  .catch(error => ({ error }))
-}
+// const firebaseLogin = () => {
+//   return firebase.auth().signInAnonymously()
+//   .then(user => ({ user }))
+//   .catch(error => ({ error }))
+// }
 
 const getRecipeText = (aNutritionModel) => {
   let recipeText = ''
@@ -76,7 +76,7 @@ function* getLabelData() {
 
 function* initFirebaseKeys() {
   yield take (STORE_PARSED_DATA)
-  yield call (firebaseLogin)
+  // yield call (firebaseLogin)
   const key = firebase.database().ref('/global/nutritionLabel/').push().key
   const debug = Config.DEBUG
   if (!debug) {

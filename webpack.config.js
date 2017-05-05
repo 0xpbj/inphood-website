@@ -86,7 +86,7 @@ module.exports = {
       google: '529180412076-r0tlp01nvvavi339qodfo4n6716ohjcg.apps.googleusercontent.com',
       redirect_uri:'http://localhost:3000/',
       FIREBASE_API_KEY:'AIzaSyBmW9xYOdOWcasrKN102p9RCoWhG97hMeY',
-      FIREBASE_AUTH_DOMAIN:'inphooddb-e0dfd.firebaseio.com',
+      FIREBASE_AUTH_DOMAIN:'inphooddb-e0dfd.firebaseapp.com',
       FIREBASE_DATABASE_URL:'https://inphooddb-e0dfd.firebaseio.com',
       FIREBASE_STORAGE_BUCKET:'inphooddb-e0dfd.appspot.com',
       AWS_ACCESS_ID: 'AKIAI25XHNISG4KDDM3Q',

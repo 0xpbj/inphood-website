@@ -37,21 +37,26 @@ export default class TopBar extends React.Component {
   render() {
     let open  = () => this.setState({ show: true })
     let close = () => this.setState({ show: false })
-
     const ml = new MarginLayout()
-
-    const {router, transparent} = this.props
-
+    const {router, transparent, loginRed} = this.props
     const whiteBackground = transparent ?
-      {
-        borderWidth:0, borderBottom:1, borderColor:'gray', borderStyle:'solid',
-        backgroundColor:'rgba(255,255,255,0.0)'
-      } :
-      {
-        borderWidth:0, borderBottom:1, borderColor:'gray', borderStyle:'solid',
-        backgroundColor:'rgba(255,255,255,0.85)'
-      }
-
+    {
+      borderWidth:0, borderBottom:1, borderColor:'gray', borderStyle:'solid',
+      backgroundColor:'rgba(255,255,255,0.0)'
+    } :
+    {
+      borderWidth:0, borderBottom:1, borderColor:'gray', borderStyle:'solid',
+      backgroundColor:'rgba(255,255,255,0.85)'
+    }
+    const loginButton = loginRed.result ? (
+      <Button bsStyle="link" onClick={() => this.props.initLogout()} style={{fontSize: 20, marginTop: 20}}>
+        Log Out
+      </Button>
+    ) : (
+      <Button bsStyle="link" onClick={() => this.props.initLogin()} style={{fontSize: 20, marginTop: 20}}>
+        Log In
+      </Button>
+    )
     return (
       <Row style={whiteBackground}>
         {ml.marginCol}
@@ -66,9 +71,7 @@ export default class TopBar extends React.Component {
               <Row>
               <Col xs={4}/>
               <Col xs={4}>
-                <Button bsStyle="link" onClick={() => this.props.initLogin()} style={{fontSize: 20, marginTop: 20}}>
-                  Login
-                </Button>
+                {loginButton}
               </Col>
               <Modal onHide={close} show={this.state.show} bsSize="small" aria-labelledby="contained-modal-title-sm">
                 <Modal.Header>

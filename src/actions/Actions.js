@@ -29,7 +29,11 @@ import {
   SET_TITLE,
   SERIALIZE_TO_FIREBASE,
   SAVE_LABEL_AWS,
-  INCREMENT_ID
+  INCREMENT_ID,
+  INIT_LOG_IN,
+  CANCEL_LOG_IN,
+  LOGIN_REQUEST,
+  LOGOUT_REQUEST,
 } from '../constants/ActionTypes'
 
 export function saveToCloud() {
@@ -240,5 +244,30 @@ export function saveLabelToAws() {
 export function incrementId() {
   return {
     type: INCREMENT_ID
+  }
+}
+
+export function initLogin() {
+  return {
+    type: INIT_LOG_IN
+  }
+}
+
+export function cancelLogin() {
+  return {
+    type: CANCEL_LOG_IN
+  }
+}
+
+export function loginRequest(flag) {
+  return {
+    type: LOGIN_REQUEST,
+    flag
+  }
+}
+
+export function logoutRequest() {
+  return {
+    type: LOGOUT_REQUEST
   }
 }

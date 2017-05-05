@@ -10,6 +10,7 @@ import Tooltip from 'react-toolbox/lib/tooltip'
 const TooltipInput = Tooltip(Input)
 import {IconButton} from 'react-toolbox/lib/button'
 const TooltipButton = Tooltip(IconButton)
+import {Link} from 'react-router'
 
 import {isNumeric, isValidString, rationalToFloat} from '../../helpers/ConversionUtils'
 
@@ -209,7 +210,7 @@ export default class ServingsController extends React.Component {
                 tooltipPosition='left'
                 tooltipDelay={500}
                 icon='repeat'
-                style={{color: 'green', paddingTop: 50}}
+                style={{color: 'green', backgroundColor: 'white', paddingTop: 50}}
                 onClick={this.handleReset.bind(this)}
               />
             </Col>
@@ -217,9 +218,10 @@ export default class ServingsController extends React.Component {
 
           <Row>
             <Col xs={12} className="small" style={{color:'silver'}}>
-              FDA guidance for portion sizes can be found here: <a href='https://www.gpo.gov/fdsys/pkg/CFR-2012-title21-vol2/xml/CFR-2012-title21-vol2-sec101-12.xml'>
-                CFR-2012 Sec. 101.12</a>. A newer document for the new 2018 label standard is also available: <a href='https://www.ecfr.gov/cgi-bin/text-idx?SID=62495b8594bd56b22aa3e34ae8cbbf67&mc=true&node=se21.2.101_112&rgn=div8'>
-                e-CFR-2017 Sec. 101.12</a>.
+              <p>FDA guidance for portion sizes can be found here: <Link to='https://www.gpo.gov/fdsys/pkg/CFR-2012-title21-vol2/xml/CFR-2012-title21-vol2-sec101-12.xml' target="_blank">
+                CFR-2012 Sec. 101.12</Link>.</p>
+              <p>A newer document for the new 2018 label standard is also available: <Link to='https://www.ecfr.gov/cgi-bin/text-idx?SID=62495b8594bd56b22aa3e34ae8cbbf67&mc=true&node=se21.2.101_112&rgn=div8' target="_blank">
+                e-CFR-2017 Sec. 101.12</Link>.</p>
             </Col>
           </Row>
 

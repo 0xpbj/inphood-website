@@ -1,20 +1,22 @@
 import { combineReducers } from 'redux'
+import loginReducer from './loginReducer'
 import searchReducer from './searchReducer'
 import resultsReducer from './resultsReducer'
 import tagModelReducer from './tagModelReducer'
 import nutritionReducer from './nutritionReducer'
 import nutritionModelReducer from './nutritionModelReducer'
-import ingredientControlModelReducer from './ingredientControlModelReducer'
 import servingsControlsReducer from './servingsControllerReducer'
+import ingredientControlModelReducer from './ingredientControlModelReducer'
 
 const appReducer = combineReducers({
+    loginReducer,
     searchReducer,
     resultsReducer,
     tagModelReducer,
     nutritionReducer,
     nutritionModelReducer,
+    servingsControlsReducer,
     ingredientControlModelReducer,
-    servingsControlsReducer
 })
 
 const rootReducer = (state, action) => {

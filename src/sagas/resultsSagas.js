@@ -2,6 +2,7 @@ import {
   CLEAR_DATA,
   RESULT_KEY,
   LABEL_DATA,
+  LOGIN_SUCCESS,
   GET_LABEL_ID,
   STORE_PARSED_DATA,
   SERIALIZE_TO_FIREBASE,
@@ -13,11 +14,11 @@ const Config = require('Config')
 const firebase = require('firebase')
 import Fingerprint2 from 'fingerprintjs2'
 
-// const firebaseLogin = () => {
-//   return firebase.auth().signInAnonymously()
-//   .then(user => ({ user }))
-//   .catch(error => ({ error }))
-// }
+const firebaseLogin = () => {
+  return firebase.auth().signInAnonymously()
+  .then(user => ({ user }))
+  .catch(error => ({ error }))
+}
 
 const getRecipeText = (aNutritionModel) => {
   let recipeText = ''
@@ -45,11 +46,16 @@ function* loadFirebaseData() {
     var fulldate = Date.now()
     var date = new Date(fulldate).toDateString()
     const debug = Config.DEBUG
+    const {result} = yield select(state => state.loginReducer)
+    let userName = 'anonymous'
+    if (result && result !== 'anonymous') {
+      userName = result.user.uid
+    }
     let path
     if (debug)
-      path = '/global/nutritionLabel/debug/' + key
+      path = '/global/inphoodLabel/' + userName + '/debug/' + key
     else
-      path = '/global/nutritionLabel/' + key
+      path = '/global/inphoodLabel/' + userName + '/' + key
     if (path) {
       firebase.database().ref(path).update({
         full,
@@ -65,10 +71,45 @@ function* loadFirebaseData() {
   }
 }
 
+function* moveFirebaseData() {
+  const {key} = yield select(state => state.nutritionReducer)
+  if (key !== '') {
+    const debug = Config.DEBUG
+    const {result} = yield select(state => state.loginReducer)
+    let userName = 'anonymous'
+    let path
+    if (debug) {
+      path = '/global/inphoodLabel/' + userName + '/debug/' + key
+    }
+    else {
+      path = '/global/inphoodLabel/' + userName + '/' + key
+    }
+    if (path) {
+      const flag = (yield call(db.getPath, path)).exists()
+      if (flag) {
+        const data = (yield call(db.getPath, path)).val()
+        console.log(firebase.auth().currentUser.user)
+        userName = result.user.uid
+        const newKey = firebase.database().ref('/global/inphoodLabel/' + userName).push().key
+        if (debug) {
+          path = '/global/inphoodLabel/' + userName + '/debug/' + newKey
+        }
+        else {
+          path = '/global/inphoodLabel/' + userName + '/' + newKey
+        }
+        firebase.database().ref(path).update({
+          ...data
+        })
+        yield put ({type: RESULT_KEY, key: newKey})
+      }
+    }
+  }
+}
+
 function* getLabelData() {
   while (true) {
     const {labelId} = yield take (GET_LABEL_ID)
-    const path = '/global/nutritionLabel/' + labelId
+    const path = '/global/inphoodLabel/' + labelId
     const data = (yield call(db.getPath, path)).val()
     yield put({type: LABEL_DATA, data})
   }
@@ -76,24 +117,31 @@ function* getLabelData() {
 
 function* initFirebaseKeys() {
   yield take (STORE_PARSED_DATA)
-  // yield call (firebaseLogin)
-  const key = firebase.database().ref('/global/nutritionLabel/').push().key
+  const {result} = yield select(state => state.loginReducer)
+  let userName = 'anonymous'
+  if (firebase.auth().currentUser && (result && result !== 'anonymous')) {
+    userName = result.user.uid
+  }
+  else {
+    yield call (firebaseLogin)
+  }
+  const key = firebase.database().ref('/global/inphoodLabel/' + userName).push().key
   const debug = Config.DEBUG
   if (!debug) {
     var fulldate = Date.now()
     var date = new Date(fulldate).toDateString()
     Fingerprint2().get(function(result) {
-      firebase.database().ref('/global/nutritionLabel/' + key).update({
+      firebase.database().ref('/global/inphoodLabel/' + userName + '/' + key).update({
         fingerprint: result
       })
-      firebase.database().ref('/global/nutritionLabel/fingerprint/' + result + '/' + key).update({
+      firebase.database().ref('/global/inphoodLabel/' + userName + '/' + '/fingerprint/' + result + '/' + key).update({
         date,
         fulldate
       })
-      firebase.database().ref('/global/nutritionLabel/analytics/' + date + '/fingerprints/' + result + '/' + key).update({
+      firebase.database().ref('/global/inphoodLabel/analytics/' + date + '/fingerprints/' + result + '/' + key).update({
         fulldate
       })
-      firebase.database().ref('/global/nutritionLabel/analytics/' + date + '/keys/' + key).update({
+      firebase.database().ref('/global/inphoodLabel/analytics/' + date + '/keys/' + key).update({
         fulldate
       })
     })
@@ -105,4 +153,5 @@ export default function* root() {
   yield fork(getLabelData)
   yield fork(takeLatest, CLEAR_DATA, initFirebaseKeys)
   yield fork(takeLatest, SERIALIZE_TO_FIREBASE, loadFirebaseData)
+  yield fork(takeLatest, LOGIN_SUCCESS, moveFirebaseData)
 }

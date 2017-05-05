@@ -4,7 +4,6 @@ import {
 } from '../constants/ActionTypes'
 
 import { call, fork, put, select, take, takeLatest } from 'redux-saga/effects'
-const firebase = require('firebase')
 const Config = require('Config')
 const S3 = require('aws-sdk').S3
 import ReactGA from 'react-ga'

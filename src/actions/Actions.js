@@ -35,7 +35,8 @@ import {
   CANCEL_LOG_IN,
   LOGIN_REQUEST,
   LOGOUT_REQUEST,
-  EM_LOGIN_REQUEST
+  EM_LOGIN_REQUEST,
+  ANONYMOUS_FLOW
 } from '../constants/ActionTypes'
 
 export function saveToCloud() {
@@ -277,6 +278,12 @@ export function loginRequest(flag) {
 export function logoutRequest() {
   return {
     type: LOGOUT_REQUEST
+  }
+}
+
+export function anonymousFlow() {
+  return {
+    type: ANONYMOUS_FLOW
   }
 }
 

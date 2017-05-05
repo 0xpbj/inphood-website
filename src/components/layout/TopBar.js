@@ -48,9 +48,10 @@ export default class TopBar extends React.Component {
       borderWidth:0, borderBottom:1, borderColor:'gray', borderStyle:'solid',
       backgroundColor:'rgba(255,255,255,0.85)'
     }
+    const logout = loginRed.result === 'anonymous' ? 'Anonymous' : 'Log Out'
     const loginButton = loginRed.result ? (
       <Button bsStyle="link" onClick={() => this.props.initLogout()} style={{fontSize: 20, marginTop: 20}}>
-        Log Out
+        {logout}
       </Button>
     ) : (
       <Button bsStyle="link" onClick={() => this.props.initLogin()} style={{fontSize: 20, marginTop: 20}}>

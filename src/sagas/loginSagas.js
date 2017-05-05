@@ -14,16 +14,9 @@ const Config = require('Config')
 const firebase = require('firebase')
 
 const login = (provider) => {
-  if (provider) {
-    return firebase.auth().signInWithPopup(provider)
-    .then(result => ({ result }))
-    .catch(error => ({ error }))
-  }
-  else {
-    return firebase.auth().signInAnonymously()
-    .then(result => ({ result }))
-    .catch(error => ({ error }))
-  }
+  return firebase.auth().signInWithPopup(provider)
+  .then(result => ({ result }))
+  .catch(error => ({ error }))
 }
 
 function* socialFlow() {
@@ -65,7 +58,7 @@ function* emailFlow() {
     yield put ({type: LOGIN_ERROR, error})
   }
   else {
-    yield put({type: LOGIN_SUCCESS})
+    yield put({type: LOGIN_SUCCESS, result: {user: firebase.auth().currentUser}})
   }
 }
 
@@ -100,7 +93,7 @@ function* logoutFlow() {
 }
 
 export default function* root() {
-  yield fork(takeLatest, INIT_LOG_IN, socialRace)
-  yield fork(takeLatest, INIT_LOG_IN, emailRace)
+  yield fork(takeLatest, [INIT_LOG_IN, LOGIN_ERROR], socialRace)
+  yield fork(takeLatest, [INIT_LOG_IN, LOGIN_ERROR], emailRace)
   yield fork(takeLatest, INIT_LOG_OUT, logoutFlow)
 }

@@ -54,10 +54,10 @@ export function* callElasticSearchLambda(foodName, size, index, length) {
     let ingredient = searchResult.getDescription()
 
     console.log('callElasticSearchLambda ------------------------------------');
-    console.log('matchResultsModel: ', matchResultsModel)
-    console.log('searchResult: ', searchResult)
-    console.log('key: ', key)
-    console.log('ingredient: ', ingredient)
+    console.log('matchResultsModel: ', matchResultsModel);
+    console.log('searchResult: ', searchResult);
+    console.log('key: ', key);
+    console.log('ingredient: ', ingredient);
 
     yield put({type: GET_FIREBASE_DATA, foodName, ingredient, key, index, length})
   }

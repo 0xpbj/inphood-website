@@ -13,6 +13,8 @@ import {
   CANCEL_LOG_OUT
 } from '../constants/ActionTypes'
 
+import {REHYDRATE} from 'redux-persist/constants'
+
 const initialState = {
   initLogin: false,
   inProgress: false,
@@ -22,6 +24,10 @@ const initialState = {
 }
 export default function loginReducer(state = initialState, action) {
   switch (action.type) {
+    case REHYDRATE:
+      return {
+        ...action.payload.loginReducer
+      }
     case INIT_LOG_IN:
       return {
         ...state,

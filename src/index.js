@@ -2,8 +2,10 @@ const React = require('react')
 const ReactDOM = require('react-dom')
 import { Provider } from 'react-redux'
 import ReactGA from 'react-ga'
-import { createStore, applyMiddleware } from 'redux'
+import { compose, createStore, applyMiddleware } from 'redux'
+import {persistStore, autoRehydrate} from 'redux-persist'
 import createSagaMiddleware from 'redux-saga'
+import localForage from 'localForage'
 import rootReducer from './reducers'
 import rootSaga from './sagas'
 import './index.css'
@@ -27,9 +29,30 @@ const sagaMiddleware = Config.DEBUG ? createSagaMiddleware({sagaMonitor}) : crea
 
 const store = createStore(
   rootReducer,
-  applyMiddleware(sagaMiddleware)
+  undefined,
+  compose(
+    applyMiddleware(sagaMiddleware)
+  )
 )
+
+const persistConfig = { 
+  whitelist: [
+    'loginReducer',
+  ],  
+  blacklist: [
+    'searchReducer',
+    'resultsReducer',
+    'tagModelReducer',
+    'nutritionReducer',
+    'nutritionModelReducer',
+    'servingsControllerReducer',
+    'ingredientControlModelReducer'
+  ],  
+  storage: localForage,
+}
+
 sagaMiddleware.run(rootSaga)
+persistStore(store, persistConfig, () => {}).purge(persistConfig.blacklist)
 
 function fireTracking() {
   ReactGA.set({ page: window.location.pathname })

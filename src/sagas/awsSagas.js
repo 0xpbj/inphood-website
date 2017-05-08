@@ -38,10 +38,10 @@ const uploadToAWS = (data, key, format, extension) => {
     ContentType: 'image/jpeg',
     ACL: 'public-read'
   }
-  s3.upload(params, (error, info) => {
-    console.log('Error: ', error);
-    console.log('Data:  ', info);
-  })
+  const s3promise = s3.upload(params).promise()
+  return s3promise
+  .then(info => ({info}))
+  .catch(error => console.error(error));
 }
 
 const labelTypeConstant = {
@@ -79,7 +79,6 @@ function* loadLabelToAWS() {
   const url = 'http://www.image.inphood.com/' + key + '/' + labelFormat + extension
   const shareUrl = <a href={url} target='_blank'>{url}</a>
   const embedUrl = '<a href=\'https://www.inphood.com\' target=\'_blank\'><img width="340" src=\''+url+'\'/></a>'
-  yield call(delay, 500)
   yield put ({type: SET_SHARE_URL, shareUrl, embedUrl})
 }
 

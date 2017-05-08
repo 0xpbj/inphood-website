@@ -50,12 +50,12 @@ export default class TopBar extends React.Component {
     }
     const logout = loginRed.result === 'anonymous' ? 'Anonymous' : 'Log Out'
     const loginButton = loginRed.result ? (
-      <Button bsStyle="link" onClick={() => this.props.initLogout()} style={{fontSize: 20, marginTop: 20}}>
-        {logout}
+      <Button bsStyle="link" onClick={() => this.props.promptLogout()} style={{fontSize: 20, marginTop: 20}}>
+        <Glyphicon glyph="glyphicon glyphicon-log-out" />&nbsp;&nbsp;{logout}
       </Button>
     ) : (
       <Button bsStyle="link" onClick={() => this.props.initLogin()} style={{fontSize: 20, marginTop: 20}}>
-        Log In
+        <Glyphicon glyph="glyphicon glyphicon-log-in" />&nbsp;&nbsp;Log In
       </Button>
     )
     return (
@@ -70,13 +70,19 @@ export default class TopBar extends React.Component {
             </Col>
             <Col className='text-right' xs={6}>
               <Row>
-              <Col xs={4}/>
-              <Col xs={4}>
+              <Col xs={3}/>
+              <Col xs={3}>
+                <Button bsStyle="link" onClick={open} style={{fontSize: 20, marginTop: 20}}>
+                  <Glyphicon glyph="glyphicon glyphicon-comment" />&nbsp;&nbsp;Suggestions?
+                </Button>
+              </Col>
+              <Col xs={2}/>
+              <Col xs={3}>
                 {loginButton}
               </Col>
               <Modal onHide={close} show={this.state.show} bsSize="small" aria-labelledby="contained-modal-title-sm">
                 <Modal.Header>
-                  <Modal.Title id="contained-modal-title-sm">Suggestions</Modal.Title>
+                  <Modal.Title id="contained-modal-title-sm">How can we help?</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                   <EmailForm data={(data) => this.getData(data)}/>
@@ -85,7 +91,7 @@ export default class TopBar extends React.Component {
                   <Button onClick={this.onSubmit.bind(this)}>Submit</Button>
                 </Modal.Footer>
               </Modal>
-              <Col xs={4}/>
+              <Col xs={1}/>
               </Row>
             </Col>
           </Row>

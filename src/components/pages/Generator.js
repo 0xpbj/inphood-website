@@ -223,11 +223,22 @@ export default class Generator extends React.Component {
       </Row>
     )
   }
+  logoutUser() {
+    this.props.modelReset()
+    this.props.clearData()
+    this.props.initLogout()
+  }
   render() {
     const {label} = this.props.location.query
     if (label && label !== '') {
       return <Results label={label} router={this.props.router}/>
     } else {
+      const logoutAlert = (this.props.loginRed.promptLogout) ? (
+        <Alert bsStyle="danger" style={{marginTop: 10}} onDismiss={() => this.props.cancelLogout()}>
+          <h4>Are you sure you want to logout?</h4>
+          <h2><Button bsStyle="danger" onClick={() => this.logoutUser()}>Continue</Button></h2>
+        </Alert>
+      ) : null
       const {showHelp} = this.state
       const {nutritionModel} = this.props.nutritionModelRed
       const compositeModel = nutritionModel.getScaledCompositeIngredientModel()
@@ -317,6 +328,7 @@ export default class Generator extends React.Component {
                     <Col xs={12} sm={6} md={7} lg={7}>
                       <Row>
                         {labelError}
+                        {logoutAlert}
                         <Recipe router={this.props.router} route={this.props.route} nutritionModelRed={this.props.nutritionModelRed}/>
                         <Login />
                         {nutritionTitle}

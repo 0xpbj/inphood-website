@@ -1,5 +1,6 @@
 import {
   INIT_LOG_IN,
+  INIT_LOG_OUT,
   LOGIN_ERROR,
   LOGIN_SUCCESS,
   LOGOUT_ERROR,
@@ -8,13 +9,16 @@ import {
   LOGIN_REQUEST,
   EM_LOGIN_REQUEST,
   ANONYMOUS_FLOW,
+  PROMPT_LOG_OUT,
+  CANCEL_LOG_OUT
 } from '../constants/ActionTypes'
 
 const initialState = {
   initLogin: false,
   inProgress: false,
   result: null,
-  error: null
+  error: null,
+  promptLogout: false
 }
 export default function loginReducer(state = initialState, action) {
   switch (action.type) {
@@ -23,6 +27,11 @@ export default function loginReducer(state = initialState, action) {
         ...state,
         initLogin: true,
         inProgress: false
+      }
+    case INIT_LOG_OUT:
+      return {
+        ...state,
+        promptLogout: false
       }
     case ANONYMOUS_FLOW:
       return {
@@ -65,6 +74,16 @@ export default function loginReducer(state = initialState, action) {
       return {
         ...state,
         inProgress: true
+      }
+    case PROMPT_LOG_OUT:
+      return {
+        ...state,
+        promptLogout: true
+      }
+    case CANCEL_LOG_OUT:
+      return {
+        ...state,
+        promptLogout: false
       }
     default:
       return state

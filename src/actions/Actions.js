@@ -31,6 +31,8 @@ import {
   SAVE_LABEL_AWS,
   INCREMENT_ID,
   INIT_LOG_IN,
+  PROMPT_LOG_OUT,
+  CANCEL_LOG_OUT,
   INIT_LOG_OUT,
   CANCEL_LOG_IN,
   LOGIN_REQUEST,
@@ -253,6 +255,18 @@ export function incrementId() {
 export function initLogin() {
   return {
     type: INIT_LOG_IN
+  }
+}
+
+export function promptLogout() {
+  return {
+    type: PROMPT_LOG_OUT
+  }
+}
+
+export function cancelLogout() {
+  return {
+    type: CANCEL_LOG_OUT
   }
 }
 

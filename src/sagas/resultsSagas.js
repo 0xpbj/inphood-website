@@ -71,31 +71,41 @@ function* loadFirebaseData() {
   }
 }
 
+function* firebaseAnalytics(key, uid, result, data) {
+  const path = '/global/inphoodLabel/analytics/'
+  const {fulldate, date, fingerprint} = data
+  firebase.database().ref(path + 'users' + '/' + uid + '/' + key).push({
+    fingerprint,
+    date,
+    fulldate
+  })
+}
+
 function* moveFirebaseData() {
   const {key} = yield select(state => state.nutritionReducer)
   if (key !== '') {
     const debug = Config.DEBUG
     const {result} = yield select(state => state.loginReducer)
-    let userName = 'anonymous'
+    let uid = 'anonymous'
     let path
     if (debug) {
-      path = '/global/inphoodLabel/' + userName + '/debug/' + key
+      path = '/global/inphoodLabel/' + uid + '/debug/' + key
     }
     else {
-      path = '/global/inphoodLabel/' + userName + '/' + key
+      path = '/global/inphoodLabel/' + uid + '/' + key
     }
     if (path) {
       const flag = (yield call(db.getPath, path)).exists()
       if (flag) {
         const data = (yield call(db.getPath, path)).val()
-        console.log(firebase.auth().currentUser.user)
-        userName = result.user.uid
-        const newKey = firebase.database().ref('/global/inphoodLabel/' + userName).push().key
+        uid = result.user.uid
+        const newKey = firebase.database().ref('/global/inphoodLabel/' + uid).push().key
         if (debug) {
-          path = '/global/inphoodLabel/' + userName + '/debug/' + newKey
+          path = '/global/inphoodLabel/' + uid + '/debug/' + newKey
         }
         else {
-          path = '/global/inphoodLabel/' + userName + '/' + newKey
+          path = '/global/inphoodLabel/' + uid + '/' + newKey
+          yield fork (firebaseAnalytics, newKey, uid, result, data)
         }
         firebase.database().ref(path).update({
           ...data
@@ -118,32 +128,36 @@ function* getLabelData() {
 function* initFirebaseKeys() {
   yield take (STORE_PARSED_DATA)
   const {result} = yield select(state => state.loginReducer)
-  let userName = 'anonymous'
+  let uid = 'anonymous'
+  let validUser = false
   if (firebase.auth().currentUser && (result && result !== 'anonymous')) {
-    userName = result.user.uid
+    uid = result.user.uid
+    validUser = true
   }
   else {
     yield call (firebaseLogin)
   }
-  const key = firebase.database().ref('/global/inphoodLabel/' + userName).push().key
-  const debug = Config.DEBUG
-  if (!debug) {
+  const key = firebase.database().ref('/global/inphoodLabel/' + uid).push().key
+  if (!Config.DEBUG) {
     var fulldate = Date.now()
-    var date = new Date(fulldate).toDateString()
-    Fingerprint2().get(function(result) {
-      firebase.database().ref('/global/inphoodLabel/' + userName + '/' + key).update({
-        fingerprint: result
-      })
-      firebase.database().ref('/global/inphoodLabel/' + userName + '/' + '/fingerprint/' + result + '/' + key).update({
+    var dateValue = new Date(fulldate)
+    var date = dateValue.toDateString()
+    var day = dateValue.getDate()
+    var weekday = dateValue.getDay()
+    var month = dateValue.getMonth()
+    Fingerprint2().get((fingerprint) => {
+      firebase.database().ref('/global/inphoodLabel/' + uid + '/' + key).update({
+        fingerprint,
         date,
         fulldate
       })
-      firebase.database().ref('/global/inphoodLabel/analytics/' + date + '/fingerprints/' + result + '/' + key).update({
-        fulldate
-      })
-      firebase.database().ref('/global/inphoodLabel/analytics/' + date + '/keys/' + key).update({
-        fulldate
-      })
+      if (validUser) {
+        firebase.database().ref('/global/inphoodLabel/analytics/users/' + uid + '/labels/' + key).push({
+          fingerprint,
+          date,
+          fulldate
+        })
+      }
     })
   }
   yield put ({type: RESULT_KEY, key})

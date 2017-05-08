@@ -9,9 +9,12 @@ import {
   EM_LOGIN_REQUEST
 } from '../constants/ActionTypes'
 
+import {REHYDRATE} from 'redux-persist/constants'
+
 import { race, take, put, call, fork, select, takeLatest } from 'redux-saga/effects'
 const Config = require('Config')
 const firebase = require('firebase')
+import Fingerprint2 from 'fingerprintjs2'
 
 const login = (provider) => {
   return firebase.auth().signInWithPopup(provider)
@@ -92,7 +95,39 @@ function* logoutFlow() {
   }
 }
 
+function* userInfo() {
+  if (!Config.DEBUG) {
+    const path = '/global/inphoodLabel/analytics'
+    const {result} = yield select(state => state.loginReducer)
+    if (result) {
+      const {user, credential} = result
+      let {displayName, uid, email} = user
+      email = email ? email : ''
+      displayName = displayName ? displayName : 'unknown'
+      const provider = credential ? credential.provider.substr(0, credential.provider.indexOf('.')) : 'email'
+      var fulldate = Date.now()
+      var dateValue = new Date(fulldate)
+      var date = dateValue.toDateString()
+      Fingerprint2().get(function(fingerprint) {
+        firebase.database().ref('/global/inphoodLabel/analytics/users/' + uid + '/userInfo/').update({
+          date,
+          email,
+          fulldate,
+          provider,
+          fingerprint,
+          displayName
+        })
+        firebase.database().ref('/global/inphoodLabel/analytics/' + provider + '/' + uid).push({
+          date,
+          fulldate,
+        })
+      })
+    }
+  }
+}
+
 export default function* root() {
+  yield fork(takeLatest, [LOGIN_SUCCESS, REHYDRATE], userInfo)
   yield fork(takeLatest, [INIT_LOG_IN, LOGIN_ERROR], socialRace)
   yield fork(takeLatest, [INIT_LOG_IN, LOGIN_ERROR], emailRace)
   yield fork(takeLatest, INIT_LOG_OUT, logoutFlow)

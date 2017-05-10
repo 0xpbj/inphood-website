@@ -154,6 +154,7 @@ export class NutritionModel {
   // throws if a duplicate id is specified
   addIngredient(id, anIngredient, quantity, unit) {
     if (id in this._scaledIngredients) {
+      // this.dumpNutritionModel()
       throw new Error("Id " + id + " already exists in nutrition model.")
     }
 
@@ -268,5 +269,20 @@ export class NutritionModel {
 
   setRoundingStyle(aRoundingStyle) {
     this._roundingStyle = aRoundingStyle
+  }
+
+  dumpNutritionModel() {
+    console.log('dumpNutritionModel:');
+    console.log('-------------------------------------------------------------');
+
+    const ids = this.getIds()
+    for (let id of ids) {
+      const scaledIng = this.getScaledIngredient(id)
+      const ing = scaledIng.getIngredientModel()
+
+      console.log('\t' + id + ' ' + ing.getTag());
+      console.log('\t' + ing.getKey() + ' ' + ing.getNdbno() + ' (' + scaledIng._recipeQuantity + ' ' + scaledIng._recipeUnit + ')');
+    }
+    console.log('');
   }
 }

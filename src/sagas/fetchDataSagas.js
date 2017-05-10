@@ -7,8 +7,7 @@ import {
   GET_MORE_DATA,
   PARSE_SEARCH_DATA,
   INITIALIZE_RECIPE_FLOW,
-  INITIALIZE_SEARCH_FLOW,
-  UNUSED_TAGS
+  INITIALIZE_SEARCH_FLOW
 } from '../constants/ActionTypes'
 
 import {MatchResultsModel} from '../components/models/MatchResultsModel'

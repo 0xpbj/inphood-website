@@ -37,10 +37,17 @@ function* completeMatchDropdownChange() {
     }
     // TODO: expand this to handle searchResult.getBrandedDataObj() to support FDA
     //       data objects
+    const stdRefObj = searchResult.getStandardRefDataObj()
+    const brandedObj = searchResult.getBrandedDataObj()
     let ingredientModel = new IngredientModel()
-    ingredientModel.initializeSingle(description,
-                                     searchTerm,
-                                     searchResult.getStandardRefDataObj())
+    if (stdRefObj) {
+      ingredientModel.initializeSingle(description, searchTerm, stdRefObj)
+    } else if (brandedObj) {
+      ingredientModel.initializeFromBrandedFdaObj(
+        description, searchTerm, brandedObj)
+    } else {
+      throw new Error("Unable to get standard reference or branded data in completeMatchDropdownChange")
+    }
 
     // 3. Update the match value state for the dropdown:
     ingredientControlModel.setDropdownMatchValue(value)

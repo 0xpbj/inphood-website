@@ -210,7 +210,7 @@ function* changesFromRecipe() {
 
   const {servingsControlModel} = yield select(state => state.servingsControlsReducer)
   yield put ({type: NM_SET_SERVINGS, servingsControlModel})
-  yield put ({type: UNUSED_TAGS, tags: missingData})
+  // yield put ({type: UNUSED_TAGS, tags: missingData})
   yield put ({type: SERIALIZE_TO_FIREBASE})
 }
 

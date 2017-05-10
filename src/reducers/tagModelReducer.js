@@ -66,7 +66,7 @@ export default function modelFun(state = initialState, action) {
     {
       return {
         ...state,
-        unusedTags: action.tags
+        unusedTags: [...state.unusedTags, action.tags]
       }
     }
     case UPDATE_MATCH_RESULTS_MODEL:

@@ -1,4 +1,5 @@
 import {
+  UNUSED_TAGS,
   GET_MORE_DATA,
   GET_COMMERCIAL_DATA,
   SET_FDA_RESULTS,
@@ -59,6 +60,7 @@ function* searchFDA(searchIngredient) {
     yield put ({type: INITIALIZE_FIREBASE_DATA, foodName: searchIngredient, data: []})
     yield put ({type: GET_FIREBASE_DATA, foodName: searchIngredient, ingredient: searchIngredient, key: 'undefined', index: 0, length: 0})
     yield put ({type: INITIALIZE_RECIPE_FLOW})
+    yield put ({type: UNUSED_TAGS, tags: searchIngredient})
   }
 }
 

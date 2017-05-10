@@ -129,8 +129,8 @@ export default function modelFun(state = initialState, action) {
 
       // Add in results from search (either standard reference or branded data)
       for (let obj of action.data) {
-        const displayDescription = obj.highlight.Description[0]
         const description = obj._source[RESULT_FIELD]
+        const displayDescription = obj.highlight ? obj.highlight.Description[0] : description
         const ndbNo = obj._id
 
         if (!matchResultsModel.hasSearchResult(searchTerm, ndbNo)) {

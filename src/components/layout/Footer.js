@@ -28,7 +28,7 @@ export default class Footer extends React.Component {
                 About Us
               </Button>
               <Button bsStyle="link">
-                <Link to="http://www.inphood.com/privacy_policy.pdf" target="_blank">Privacy Policy</Link>
+                <Link to="http://www.inphood.com/privacy_policy" target="_blank">Privacy Policy</Link>
               </Button>
             </Col>
             <Col xs={12} className='text-center'>

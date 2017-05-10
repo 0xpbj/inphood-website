@@ -175,8 +175,8 @@ export class MatchResultsModel {
       let descriptions = []
       for (let idx = 0; idx < searchTermResults.length; idx++) {
         //EMPHASIS TAGS STUFF HERE
-        // descriptions.push(searchTermResults[idx].getDisplayDescription())
-        descriptions.push(searchTermResults[idx].getDescription())
+        descriptions.push(searchTermResults[idx].getDisplayDescription())
+        // descriptions.push(searchTermResults[idx].getDescription())
       }
       return descriptions
     }

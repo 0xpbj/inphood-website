@@ -44,7 +44,6 @@
     "redux-persist": "^4.8.0",
     "redux-saga": "^0.14.0",
     "request": "^2.79.0",
-    "stripe": "^4.19.0",
     "whatwg-fetch": "^2.0.2"
   },
   "devDependencies": {

@@ -55,10 +55,12 @@ module.exports = {
   externals: {
     'Config': JSON.stringify({
       redirect_uri:'https://www.inphood.com/',
-      FIREBASE_API_KEY:'AIzaSyBmW9xYOdOWcasrKN102p9RCoWhG97hMeY',
+      FIREBASE_API_KEY:'AIzaSyCIK-BH57F-4S9cP-cVR1_GbRD3tsWtTu8',
       FIREBASE_AUTH_DOMAIN:'inphooddb-e0dfd.firebaseapp.com',
       FIREBASE_DATABASE_URL:'https://inphooddb-e0dfd.firebaseio.com',
       FIREBASE_STORAGE_BUCKET:'inphooddb-e0dfd.appspot.com',
+      FIREBASE_PROJECT_ID: 'inphooddb-e0dfd',
+      FIREBASE_MESSAGING_SENDER_ID: '529180412076',
       AWS_ACCESS_ID: 'AKIAI25XHNISG4KDDM3Q',
       AWS_SECRET_KEY: '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',
       ELASTIC_LAMBDA_URL: 'https://xmucc9zjlh.execute-api.us-west-2.amazonaws.com/prod/ingredients',

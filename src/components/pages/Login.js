@@ -22,8 +22,8 @@ export default class LoginDialog extends React.Component {
     }
   }
   actions = [
-    { label: "Cancel", onClick: () => this.cancelLogin() },
     { label: "SignUp", onClick: () => this.emailLogin(true) },
+    { label: "Cancel", onClick: () => this.cancelLogin() },
     { label: "SignIn", onClick: () => this.emailLogin(false) }
   ]
   handleChange (name, value) {
@@ -93,11 +93,11 @@ export default class LoginDialog extends React.Component {
               <SocialIcon network="email"/>
             </Button>
           </OverlayTrigger>
-          <OverlayTrigger placement="top" overlay={<Tooltip id="anonymous"><strong>Login Anonymously</strong></Tooltip>}>
+          {/*<OverlayTrigger placement="top" overlay={<Tooltip id="anonymous"><strong>Login Anonymously</strong></Tooltip>}>
             <Button bsStyle="link" onClick={() => this.props.anonymousFlow()}>
               <SocialIcon network="snapchat" color="red"/>
             </Button>
-          </OverlayTrigger>
+          </OverlayTrigger>*/}
         </Row>
       </Dialog>
     )

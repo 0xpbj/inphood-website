@@ -30,6 +30,8 @@ function* socialFlow() {
   }
   else if (flag === 2) {
     provider = new firebase.auth.GoogleAuthProvider()
+    provider.addScope('profile');
+    provider.addScope('email');
   }
   else if (flag === 3) {
     provider = new firebase.auth.TwitterAuthProvider()

@@ -167,29 +167,31 @@ class Recipe extends React.Component {
         }
       }
       else {
-        if (!mobileCheck()) {
-          newRecipeButton = (
-            <TooltipButton
-              tooltip='Click to try a sample recipe'
-              tooltipPosition='left'
-              tooltipDelay={500}
-              icon='cached'
-              label='Sample Recipe'
-              onClick={() => this.sampleRecipeFlow()}
-              style={{marginRight: 30, color: 'black', backgroundColor: 'white', textTransform: 'none'}}
-            />
-          )
-        }
-        else {
-          newRecipeButton = (
-            <Button
-              icon='cached'
-              label='Sample Recipe'
-              onClick={() => this.sampleRecipeFlow()}
-              style={{marginRight: 30, color: 'black', backgroundColor: 'white', textTransform: 'none'}}
-            />
-          )
-        }
+        // sample recipe disabled
+        // if (!mobileCheck()) {
+        //   newRecipeButton = (
+        //     <TooltipButton
+        //       tooltip='Click to try a sample recipe'
+        //       tooltipPosition='left'
+        //       tooltipDelay={500}
+        //       icon='cached'
+        //       label='Sample Recipe'
+        //       onClick={() => this.sampleRecipeFlow()}
+        //       style={{marginRight: 30, color: 'black', backgroundColor: 'white', textTransform: 'none'}}
+        //     />
+        //   )
+        // }
+        // else {
+        //   newRecipeButton = (
+        //     <Button
+        //       icon='cached'
+        //       label='Sample Recipe'
+        //       onClick={() => this.sampleRecipeFlow()}
+        //       style={{marginRight: 30, color: 'black', backgroundColor: 'white', textTransform: 'none'}}
+        //     />
+        //   )
+        // }
+        newRecipeButton = null
       }
       if (!mobileCheck()) {
           addIngredientButton = (

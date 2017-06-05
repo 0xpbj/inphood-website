@@ -55,7 +55,7 @@ module.exports = {
   externals: {
     'Config': JSON.stringify({
       redirect_uri:'https://www.inphood.com/',
-      FIREBASE_API_KEY:'AIzaSyCIK-BH57F-4S9cP-cVR1_GbRD3tsWtTu8',
+      FIREBASE_API_KEY:'AIzaSyBQTHsQA5GuDG7Ttk17o3LBQfXjn7MtUQ8',
       FIREBASE_AUTH_DOMAIN:'inphooddb-e0dfd.firebaseapp.com',
       FIREBASE_DATABASE_URL:'https://inphooddb-e0dfd.firebaseio.com',
       FIREBASE_STORAGE_BUCKET:'inphooddb-e0dfd.appspot.com',

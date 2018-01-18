@@ -81,22 +81,6 @@ module.exports = {
 	},
   externals: {
     'Config': JSON.stringify({
-      redirect_uri:'http://localhost:3000/',
-      FIREBASE_API_KEY:'AIzaSyBQTHsQA5GuDG7Ttk17o3LBQfXjn7MtUQ8',
-      FIREBASE_AUTH_DOMAIN:'inphooddb-e0dfd.firebaseapp.com',
-      FIREBASE_DATABASE_URL:'https://inphooddb-e0dfd.firebaseio.com',
-      FIREBASE_STORAGE_BUCKET:'inphooddb-e0dfd.appspot.com',
-      FIREBASE_PROJECT_ID: 'inphooddb-e0dfd',
-      FIREBASE_MESSAGING_SENDER_ID: '529180412076',
-      AWS_ACCESS_ID: 'AKIAI25XHNISG4KDDM3Q',
-      AWS_SECRET_KEY: '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',
-      ELASTIC_LAMBDA_URL: 'https://tah21v2noa.execute-api.us-west-2.amazonaws.com/prod/ingredients',
-      SCRAPER_LAMBDA_URL: 'https://3cv8ktguzh.execute-api.us-west-2.amazonaws.com/prod/url',
-      CLARIFAI_CLIENT_ID: 'Gk0xpb23IWIY4vRMbHlgQdUxSjlUPBcySEd_gbXN',
-      CLARIFAI_CLIENT_SECRET: 'MwkyjpQgC30xwvW6wzext0FyqXle32BcuGX3ZUEe',
-      FDA_API_KEY: 'H1ZzD2r8SswyxTBHor63KGLAE4wcBv0UFtSikijz',
-      FDA_SEARCH_URL: 'https://api.nal.usda.gov/ndb/search/',
-      FDA_REPORT_URL: 'https://api.nal.usda.gov/ndb/V2/reports/',
       DEBUG: true
     }),
     'react': 'React',
